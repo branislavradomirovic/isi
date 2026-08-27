@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "source_url": "https://isi.rs/en/homepage-english/",
+  "legacy_path": "/en/homepage-english/",
+  "language": "en",
+  "fetched_at": "2026-08-27T15:49:48+00:00",
+  "content_title": "Homepage – English",
+  "body_html": "<h1>Homepage – English</h1>",
+  "body_text": "Homepage – English",
+  "content_sha256": "64dfa8e059f5afec0b10bff081f847c7fb7f1451b56fa273f49e02620ed5fd2e",
+  "source_html_sha256": "75640f96906d368c9da6e4288e56473446e55f84846952978804ef5b316681a7",
+  "inventory_content_sha256": "12edd811f5221363a6cb34d2bff396c1a1596060949c43ecb038b579e3bc7e76",
+  "current_inventory_style_sha256": "12edd811f5221363a6cb34d2bff396c1a1596060949c43ecb038b579e3bc7e76",
+  "extraction_method": "article"
+}

@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "source_url": "https://isi.rs/biblioteka/page/3/",
+  "legacy_path": "/biblioteka/page/3/",
+  "language": "sr-Latn",
+  "fetched_at": "2026-08-27T15:49:46+00:00",
+  "content_title": "Biblioteka",
+  "body_html": "<div><div><div><h1>Biblioteka</h1></div></div></div>\n<div><div><div><a href=\"https://isi.rs/wp-content/uploads/2025/12/Polozaj-Bosnjaka-u-Sandzaku.pdf\"><img alt=\"\" height=\"765\" width=\"500\"><h4>Položaj Bošnjaka u Sandžaku, 2002.</h4></a></div></div><div><div><a href=\"https://isi.rs/wp-content/uploads/2025/12/Demokratija-i-nacionalne-manjine.pdf\"><img alt=\"\" height=\"743\" width=\"576\"><h4>DEMOKRATIJA I NACIONALNE MANJINE, 2002.</h4></a></div></div><div><div><a href=\"https://isi.rs/wp-content/uploads/2025/12/ljudi-bez-krova.pdf\"><img alt=\"\" height=\"528\" width=\"355\"><h4>LJUDI BEZ KROVA, 2002.</h4></a></div></div><div></div></div><div><div><ul>\n<li><a href=\"https://isi.rs/biblioteka/page/2/\"><i></i></a></li>\n<li><a href=\"https://isi.rs/biblioteka/\">1</a></li>\n<li><a href=\"https://isi.rs/biblioteka/page/2/\">2</a></li>\n<li><span>3</span></li>\n</ul>\n</div></div>",
+  "body_text": "Biblioteka Položaj Bošnjaka u Sandžaku, 2002. DEMOKRATIJA I NACIONALNE MANJINE, 2002. LJUDI BEZ KROVA, 2002. 1 2 3",
+  "content_sha256": "9baa42282f5bb23e41496c818eb653ec8b10079b3cd3a07a60e1b239e6ac45b3",
+  "source_html_sha256": "9721623b3280f75a6498285fd1d9d3cbe9edebb4c4d52e24b0fa40e85505dc80",
+  "inventory_content_sha256": "24837a8353a6a3714136fdd065efc4a26945d7b30334b2cb1493c6fa7a8e1db4",
+  "current_inventory_style_sha256": "24837a8353a6a3714136fdd065efc4a26945d7b30334b2cb1493c6fa7a8e1db4",
+  "extraction_method": "main"
+}

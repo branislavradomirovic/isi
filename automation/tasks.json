@@ -33,9 +33,16 @@
     {
       "id": "ISI-03A-LEGACY-CONTENT-INVENTORY",
       "title": "Legacy isi.rs Content Inventory",
-      "status": "ready",
+      "status": "done",
       "spec": "automation/specs/ISI-03A-LEGACY-CONTENT-INVENTORY.md",
       "next": "ISI-03B-PUBLIC-CONTENT-MODEL-IMPORT"
+    },
+    {
+      "id": "ISI-03B-PUBLIC-CONTENT-MODEL-IMPORT",
+      "title": "Public Content Model and Legacy Content Import",
+      "status": "ready",
+      "spec": "automation/specs/ISI-03B-PUBLIC-CONTENT-MODEL-IMPORT.md",
+      "next": "ISI-03C-MEDIA-REDIRECT-VALIDATION"
     }
   ]
 }

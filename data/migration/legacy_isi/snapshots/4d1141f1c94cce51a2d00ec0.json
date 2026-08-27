@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "source_url": "https://isi.rs/aktivnosti/",
+  "legacy_path": "/aktivnosti/",
+  "language": "sr-Latn",
+  "fetched_at": "2026-08-27T15:49:41+00:00",
+  "content_title": "Aktivnosti",
+  "body_html": "<div><div><div><h1>Aktivnosti</h1></div></div></div>\n<div><div><div><div><a href=\"https://isi.rs/medjunarodna-konferencija-inkluzivna-revolucija-novi-horizonti-drustvene-pravde-beograd-23-25-april-2026-godine/\"><img alt=\"\" height=\"410\" width=\"1024\"></a><h3><a href=\"https://isi.rs/medjunarodna-konferencija-inkluzivna-revolucija-novi-horizonti-drustvene-pravde-beograd-23-25-april-2026-godine/\">Međunarodna konferencija Inkluzivna revolucija: Novi horizonti društvene pravde Beograd, 23–25. april 2026. godine</a></h3><div><p>Institut za socijalnu inkluziju, u partnerstvu sa Institutom društvenih nauka i Akademskom mrežom za saradnju u Jugoistočnoj Evropi, organizuje međunarodnu naučnu konferenciju „Inkluzivna revolucija: Novi horizonti društvene pravde“.</p>\n</div></div></div></div><div><div><div><a href=\"https://isi.rs/saopstenje-instituta-za-socijalnu-inkluziju-o-stanju-socijalne-inkluzije-u-srbiji/\"><img alt=\"\" height=\"461\" width=\"1024\"></a><h3><a href=\"https://isi.rs/saopstenje-instituta-za-socijalnu-inkluziju-o-stanju-socijalne-inkluzije-u-srbiji/\">Saopštenje Instituta za socijalnu inkluziju o stanju socijalne inkluzije u Srbiji</a></h3><div><p>Stanje socijalne inkluzije u Srbiji pokazuje dubok raskorak između normativnih obaveza i društvene stvarnosti. Iako Srbija poseduje strategije, zakone i međunarodne obaveze u oblasti socijalne inkluzije, njihova primena ostaje fragmentisana, selektivna i često svedena na administrativnu formu bez stvarnog društvenog učinka.</p>\n</div></div></div></div><div></div></div>",
+  "body_text": "Aktivnosti Međunarodna konferencija Inkluzivna revolucija: Novi horizonti društvene pravde Beograd, 23–25. april 2026. godine Institut za socijalnu inkluziju, u partnerstvu sa Institutom društvenih nauka i Akademskom mrežom za saradnju u Jugoistočnoj Evropi, organizuje međunarodnu naučnu konferenciju „Inkluzivna revolucija: Novi horizonti društvene pravde“. Saopštenje Instituta za socijalnu inkluziju o stanju socijalne inkluzije u Srbiji Stanje socijalne inkluzije u Srbiji pokazuje dubok raskorak između normativnih obaveza i društvene stvarnosti. Iako Srbija poseduje strategije, zakone i međunarodne obaveze u oblasti socijalne inkluzije, njihova primena ostaje fragmentisana, selektivna i često svedena na administrativnu formu bez stvarnog društvenog učinka.",
+  "content_sha256": "490a4cf047f7c6d0eeabacb2f201b981896e6fe4497a4c79b2ddf315f5fe2eb9",
+  "source_html_sha256": "13e9eb115ab7e605a7ad29b32f2666b0b54c6fbeb4e055a8b2b592bf5f5bc291",
+  "inventory_content_sha256": "3b051812e5e58abb5b370762faafe7b2faaef0cbbdb835c039e5b3ea97fbb64a",
+  "current_inventory_style_sha256": "3b051812e5e58abb5b370762faafe7b2faaef0cbbdb835c039e5b3ea97fbb64a",
+  "extraction_method": "main"
+}

@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "inventory_base_url": "https://isi.rs/",
+  "successful_inventory_pages": 14,
+  "logical_pages": 12,
+  "logical_page_translations": 13,
+  "legacy_alias_pages": 1,
+  "inventory_assets": 27,
+  "redirect_candidates": 14,
+  "changes": {
+    "pages_created": 0,
+    "pages_updated": 13,
+    "translations_created": 0,
+    "translations_updated": 13,
+    "sources_created": 0,
+    "sources_updated": 14,
+    "assets_created": 0,
+    "assets_updated": 27,
+    "redirects_created": 0,
+    "redirects_updated": 14
+  },
+  "totals": {
+    "public_pages": 12,
+    "public_page_translations": 13,
+    "public_legacy_sources": 14,
+    "public_media_assets": 27,
+    "public_redirects": 14
+  },
+  "publication_policy": "draft_only",
+  "redirect_policy": "pending_only",
+  "alias_policy": "all legacy source URLs preserved; one translation per logical page and locale"
+}
