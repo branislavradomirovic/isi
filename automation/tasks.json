@@ -12,9 +12,16 @@
     {
       "id": "ISI-02A-IDENTITY-ACCESS-MODEL",
       "title": "Identity, Organization, Access and Workspace Data Model",
-      "status": "ready",
+      "status": "done",
       "spec": "automation/specs/ISI-02A-IDENTITY-ACCESS-MODEL.md",
       "next": "ISI-02B-AUTHENTICATION-LIFECYCLE"
+    },
+    {
+      "id": "ISI-02B-AUTHENTICATION-LIFECYCLE",
+      "title": "Authentication Lifecycle",
+      "status": "ready",
+      "spec": "automation/specs/ISI-02B-AUTHENTICATION-LIFECYCLE.md",
+      "next": "ISI-02C-AUTHENTICATED-APP-CONTEXT"
     }
   ]
 }

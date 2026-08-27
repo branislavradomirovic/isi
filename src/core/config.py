@@ -15,6 +15,10 @@ class Settings(BaseSettings):
     streamlit_port: int = 8501
     public_base_url: str = "http://localhost:8000"
     app_base_url: str = "http://localhost:8501"
+    auth_session_ttl_seconds: int = 43200
+    auth_email_verification_ttl_seconds: int = 86400
+    auth_password_reset_ttl_seconds: int = 1800
+    auth_invitation_ttl_seconds: int = 604800
 
 
 @lru_cache

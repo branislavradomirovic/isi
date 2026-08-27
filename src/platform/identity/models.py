@@ -24,6 +24,9 @@ class User(TimestampMixin, Base):
     display_name: Mapped[str] = mapped_column(String(200), nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, server_default="true")
     is_platform_admin: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default="false")
+    email_verified_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    last_login_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    password_changed_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     memberships: Mapped[list["Membership"]] = relationship(back_populates="user", cascade="all, delete-orphan")
 
