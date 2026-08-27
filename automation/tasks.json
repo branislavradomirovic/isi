@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "project": "ISI Platform",
+  "tasks": [
+    {
+      "id": "ISI-00-01-FOUNDATION",
+      "title": "Architecture Freeze + Repository Foundation",
+      "status": "ready",
+      "spec": "automation/specs/ISI-00-01-FOUNDATION.md",
+      "next": "ISI-02-IDENTITY-ORGANIZATIONS-ENTITLEMENTS"
+    }
+  ]
+}

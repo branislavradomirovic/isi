@@ -1,0 +1,19 @@
+from pathlib import Path
+
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+
+from src.core.logging import configure_logging
+from src.public.routes import router as public_router
+
+configure_logging()
+app = FastAPI(title="ISI Platform API", version="0.1.0")
+
+PUBLIC_DIR = Path(__file__).resolve().parents[1] / "public"
+app.mount("/static", StaticFiles(directory=str(PUBLIC_DIR / "static")), name="static")
+app.include_router(public_router)
+
+
+@app.get("/api/v1/health")
+def health() -> dict[str, str]:
+    return {"status": "ok", "service": "isi-api", "phase": "foundation"}
