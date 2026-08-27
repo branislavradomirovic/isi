@@ -3,22 +3,18 @@ services:
     image: postgres:17-alpine
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-isi}
-      POSTGRES_USER: ${POSTGRES_USER:-isi}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-isi}
-    ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      POSTGRES_USER: ${POSTGRES_USER:-isi_app}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
     volumes:
       - isi_postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-isi} -d ${POSTGRES_DB:-isi}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-isi_app} -d ${POSTGRES_DB:-isi}"]
       interval: 5s
       timeout: 5s
       retries: 10
 
   redis:
     image: redis:7-alpine
-    ports:
-      - "${REDIS_PORT:-6379}:6379"
     volumes:
       - isi_redis_data:/data
     healthcheck:
@@ -33,7 +29,7 @@ services:
       dockerfile: docker/Dockerfile
     command: python -m uvicorn src.api.app:app --host 0.0.0.0 --port 8000
     environment:
-      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-isi}:${POSTGRES_PASSWORD:-isi}@postgres:5432/${POSTGRES_DB:-isi}
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-isi_app}:${POSTGRES_PASSWORD:-change-me}@postgres:5432/${POSTGRES_DB:-isi}
       REDIS_URL: redis://redis:6379/0
     ports:
       - "${API_PORT:-8000}:8000"
@@ -62,7 +58,7 @@ services:
       dockerfile: docker/Dockerfile
     command: python -m src.workers.worker
     environment:
-      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-isi}:${POSTGRES_PASSWORD:-isi}@postgres:5432/${POSTGRES_DB:-isi}
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-isi_app}:${POSTGRES_PASSWORD:-change-me}@postgres:5432/${POSTGRES_DB:-isi}
       REDIS_URL: redis://redis:6379/0
     depends_on:
       postgres:

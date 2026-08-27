@@ -5,9 +5,16 @@
     {
       "id": "ISI-00-01-FOUNDATION",
       "title": "Architecture Freeze + Repository Foundation",
-      "status": "ready",
+      "status": "done",
       "spec": "automation/specs/ISI-00-01-FOUNDATION.md",
-      "next": "ISI-02-IDENTITY-ORGANIZATIONS-ENTITLEMENTS"
+      "next": "ISI-02A-IDENTITY-ACCESS-MODEL"
+    },
+    {
+      "id": "ISI-02A-IDENTITY-ACCESS-MODEL",
+      "title": "Identity, Organization, Access and Workspace Data Model",
+      "status": "ready",
+      "spec": "automation/specs/ISI-02A-IDENTITY-ACCESS-MODEL.md",
+      "next": "ISI-02B-AUTHENTICATION-LIFECYCLE"
     }
   ]
 }
