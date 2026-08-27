@@ -1,0 +1,331 @@
+/* ISI-04C — Public Website Polish & Production Readiness */
+
+:root {
+  --readiness-focus: #b6781a;
+  --readiness-header-height: 88px;
+}
+
+html {
+  scroll-behavior: smooth;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  overflow-x: clip;
+}
+
+img,
+svg {
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 3px solid var(--readiness-focus);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.skip-link {
+  position: fixed;
+  z-index: 9999;
+  top: 12px;
+  left: 12px;
+  transform: translateY(-180%);
+  padding: 10px 14px;
+  background: #103d34;
+  color: #fff;
+  border-radius: 8px;
+  transition: transform .16s ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+.readiness-site-header a[aria-current="page"] {
+  text-decoration-thickness: 2px;
+  text-underline-offset: 7px;
+}
+
+.nav-toggle {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.catalog-chip,
+.button,
+.app-link,
+.semantic-read-more,
+.semantic-circle-link {
+  min-height: 44px;
+}
+
+.approved-search input {
+  min-height: 44px;
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.readiness-error-body {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: #f5f0e6;
+  color: #103d34;
+}
+
+.readiness-error-shell {
+  width: min(760px, calc(100% - 40px));
+  margin: 0 auto;
+  text-align: center;
+  padding: 64px 24px;
+}
+
+.readiness-error-brand img {
+  width: min(280px, 70vw);
+  max-height: 88px;
+  object-fit: contain;
+  margin-bottom: 42px;
+}
+
+.readiness-error-shell h1 {
+  margin: 10px 0 16px;
+  font-size: clamp(44px, 7vw, 78px);
+  line-height: .98;
+}
+
+.readiness-error-shell p:not(.eyebrow) {
+  max-width: 560px;
+  margin: 0 auto 30px;
+  font-size: 18px;
+  line-height: 1.65;
+}
+
+@media (max-width: 1180px) {
+  .semantic-header-inner {
+    gap: 20px;
+  }
+
+  .semantic-primary-nav {
+    gap: 16px;
+  }
+
+  .semantic-primary-nav > a:not(.app-link) {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 980px) {
+  :root {
+    --readiness-header-height: 76px;
+  }
+
+  .semantic-header-inner {
+    position: relative;
+    min-height: var(--readiness-header-height);
+  }
+
+  .nav-toggle {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    margin-left: auto;
+  }
+
+  .nav-toggle > span:not(.sr-only) {
+    width: 24px;
+    height: 2px;
+    background: currentColor;
+    border-radius: 2px;
+  }
+
+  .semantic-primary-nav {
+    position: absolute;
+    z-index: 80;
+    top: calc(100% + 10px);
+    left: 18px;
+    right: 18px;
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    padding: 18px;
+    background: rgba(247, 243, 234, .99);
+    border: 1px solid rgba(16, 61, 52, .14);
+    border-radius: 18px;
+    box-shadow: 0 22px 70px rgba(16, 61, 52, .16);
+  }
+
+  .semantic-primary-nav[data-open="true"] {
+    display: grid;
+  }
+
+  .semantic-primary-nav > a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 9px 11px;
+    border-radius: 9px;
+  }
+
+  .semantic-primary-nav .app-link {
+    grid-column: 1 / -1;
+    justify-content: center;
+    margin-top: 5px;
+  }
+
+  .semantic-primary-nav .locale-link {
+    justify-content: center;
+  }
+
+  .semantic-home-hero-grid,
+  .semantic-activities-hero-grid,
+  .approved-library-hero-grid,
+  .approved-inclusive-hero-grid,
+  .semantic-platform-hero-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .semantic-system-diagram,
+  .semantic-activities-hero-art {
+    max-width: 680px;
+    margin-inline: auto;
+  }
+
+  .semantic-flagship-grid,
+  .approved-trust-grid,
+  .semantic-activity-card-grid,
+  .approved-library-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .semantic-public-preview-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .approved-institution-row {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 680px) {
+  .shell {
+    width: min(100% - 28px, var(--shell, 1180px));
+  }
+
+  .semantic-brand-logo,
+  .approved-brand-logo {
+    max-width: 210px;
+    max-height: 64px;
+  }
+
+  .semantic-primary-nav {
+    grid-template-columns: 1fr;
+    left: 10px;
+    right: 10px;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+  }
+
+  .semantic-primary-nav .app-link {
+    grid-column: auto;
+  }
+
+  .semantic-home-hero,
+  .semantic-activities-hero,
+  .approved-library-hero,
+  .approved-inclusive-hero {
+    padding-top: 46px !important;
+    padding-bottom: 46px !important;
+  }
+
+  h1,
+  .semantic-home-hero h1 {
+    overflow-wrap: anywhere;
+    hyphens: auto;
+  }
+
+  .semantic-flagship-grid,
+  .approved-trust-grid,
+  .semantic-activity-card-grid,
+  .approved-library-grid,
+  .semantic-result-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .semantic-featured-activity {
+    grid-template-columns: 1fr !important;
+  }
+
+  .semantic-activity-filters,
+  .approved-filter-row,
+  .semantic-topic-chips {
+    overflow-x: auto;
+    flex-wrap: nowrap !important;
+    padding-bottom: 7px;
+    scrollbar-width: thin;
+  }
+
+  .semantic-activity-filters > *,
+  .approved-filter-row > *,
+  .semantic-topic-chips > * {
+    flex: 0 0 auto;
+  }
+
+  .semantic-flagship-lockup {
+    align-items: center;
+  }
+
+  .semantic-flagship-lockup img {
+    flex: 0 0 auto;
+  }
+
+  .semantic-flagship-lockup h2 {
+    white-space: nowrap;
+    font-size: clamp(30px, 10vw, 40px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :where(a, button, input, select, textarea):focus-visible {
+    outline-width: 4px;
+  }
+
+  .semantic-primary-nav,
+  .approved-document-card,
+  .approved-library-card,
+  .semantic-activity-card {
+    border-color: currentColor;
+  }
+}

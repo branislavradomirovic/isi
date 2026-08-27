@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="{{ 'en' if locale == 'en' else 'sr-Latn' }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#103d34">
+  <title>{{ 'Page not found' if locale == 'en' else 'Stranica nije pronađena' }} · ISI</title>
+  <link rel="icon" href="/static/img/brand/isi-logo-transparent.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/css/site.css">
+  <link rel="stylesheet" href="/static/css/public-readiness.css">
+</head>
+<body class="site-body readiness-error-body">
+  <main class="readiness-error-shell">
+    <a class="readiness-error-brand" href="{{ '/en/' if locale == 'en' else '/' }}">
+      <img src="/static/img/brand/isi-logo-transparent.svg" alt="ISI — Institut za socijalnu inkluziju">
+    </a>
+    <p class="eyebrow">404</p>
+    <h1>{{ 'Page not found.' if locale == 'en' else 'Stranica nije pronađena.' }}</h1>
+    <p>{{ 'The address may be outdated or the page may have moved.' if locale == 'en' else 'Adresa je možda zastarela ili je stranica premeštena.' }}</p>
+    <a class="button button-primary" href="{{ '/en/' if locale == 'en' else '/' }}">{{ 'Back to homepage' if locale == 'en' else 'Nazad na početnu' }} →</a>
+  </main>
+</body>
+</html>

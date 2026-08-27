@@ -1,0 +1,21 @@
+<meta name="description" content="{{ meta_description }}">
+<meta name="robots" content="{{ robots_directive }}">
+<meta name="theme-color" content="#103d34">
+<link rel="canonical" href="{{ canonical_path }}">
+<link rel="alternate" hreflang="{{ 'en' if locale == 'en' else 'sr-Latn' }}" href="{{ canonical_path }}">
+{% if alternate_path %}<link rel="alternate" hreflang="{{ 'sr-Latn' if locale == 'en' else 'en' }}" href="{{ alternate_path }}">{% endif %}
+<link rel="alternate" hreflang="x-default" href="{{ x_default_path }}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ISI — Institut za socijalnu inkluziju">
+<meta property="og:title" content="{{ title }} · ISI">
+<meta property="og:description" content="{{ meta_description }}">
+<meta property="og:url" content="{{ canonical_path }}">
+<meta property="og:locale" content="{{ og_locale }}">
+{% if og_locale_alternate %}<meta property="og:locale:alternate" content="{{ og_locale_alternate }}">{% endif %}
+<meta property="og:image" content="{{ share_image_url }}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="{{ title }} · ISI">
+<meta name="twitter:description" content="{{ meta_description }}">
+<meta name="twitter:image" content="{{ share_image_url }}">
+<link rel="icon" href="/static/img/brand/isi-logo-transparent.svg" type="image/svg+xml">
+<link rel="manifest" href="/site.webmanifest">

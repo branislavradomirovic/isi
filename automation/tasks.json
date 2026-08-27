@@ -64,6 +64,13 @@
       "status": "done",
       "spec": "automation/specs/ISI-04B-DOMAIN-KNOWLEDGE-CONTENT-ENRICHMENT.md",
       "next": "ISI-04C-INSTITUTIONAL-POLISH-SEO-ACCESSIBILITY"
+    },
+    {
+      "id": "ISI-04C-PUBLIC-WEBSITE-POLISH-PRODUCTION-READINESS",
+      "title": "Public Website Polish & Production Readiness",
+      "status": "done",
+      "spec": "automation/specs/ISI-04C-PUBLIC-WEBSITE-POLISH-PRODUCTION-READINESS.md",
+      "next": "ISI-05-AUTHENTICATED-APP-SHELL"
     }
   ]
 }

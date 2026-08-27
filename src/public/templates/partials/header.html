@@ -1,22 +1,22 @@
-<header class="site-header approved-site-header semantic-site-header" data-site-header>
+<header class="site-header approved-site-header semantic-site-header readiness-site-header" data-site-header>
   <div class="shell approved-header-inner semantic-header-inner">
-    <a class="approved-brand semantic-brand" href="{{ '/en/' if locale == 'en' else '/' }}" aria-label="Institut za socijalnu inkluziju">
+    <a class="approved-brand semantic-brand" href="{{ '/en/' if locale == 'en' else '/' }}" aria-label="{{ 'ISI homepage' if locale == 'en' else 'ISI početna stranica' }}">
       <img class="approved-brand-logo semantic-brand-logo" src="/static/img/brand/isi-logo-transparent.svg" data-approved-logo="/static/img/brand/isi-logo.svg" alt="ISI — Institut za socijalnu inkluziju">
     </a>
-    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" data-nav-toggle>
-      <span></span><span></span><span></span><span class="sr-only">Menu</span>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="{{ 'Open navigation' if locale == 'en' else 'Otvori navigaciju' }}" data-nav-toggle>
+      <span></span><span></span><span></span><span class="sr-only">{{ 'Menu' if locale == 'en' else 'Meni' }}</span>
     </button>
-    <nav id="primary-nav" class="primary-nav approved-primary-nav semantic-primary-nav" aria-label="Primary" data-primary-nav>
-      <a class="{{ 'is-active' if page.page_key == 'home' else '' }}" href="{{ '/en/' if locale == 'en' else '/' }}">{{ 'Home' if locale == 'en' else 'Početna' }}</a>
-      <a class="platform-link simpa-link semantic-platform-nav {{ 'is-active' if page.page_key == 'platform.simpa' else '' }}" href="{{ '/en/simpa/' if locale == 'en' else '/simpa/' }}"><img src="/static/img/simpa-mark.svg" alt=""><span>SIMPA</span></a>
-      <a class="platform-link ordo-link semantic-platform-nav {{ 'is-active' if page.page_key == 'platform.ordo' else '' }}" href="{{ '/en/ordo/' if locale == 'en' else '/ordo/' }}"><img src="/static/img/ordo-mark.svg" alt=""><span>ORDO</span></a>
+    <nav id="primary-nav" class="primary-nav approved-primary-nav semantic-primary-nav" aria-label="{{ 'Primary navigation' if locale == 'en' else 'Glavna navigacija' }}" data-primary-nav>
+      <a class="{{ 'is-active' if page.page_key == 'home' else '' }}" {% if page.page_key == 'home' %}aria-current="page"{% endif %} href="{{ '/en/' if locale == 'en' else '/' }}">{{ 'Home' if locale == 'en' else 'Početna' }}</a>
+      <a class="platform-link simpa-link semantic-platform-nav {{ 'is-active' if page.page_key == 'platform.simpa' else '' }}" {% if page.page_key == 'platform.simpa' %}aria-current="page"{% endif %} href="{{ '/en/simpa/' if locale == 'en' else '/simpa/' }}"><img src="/static/img/simpa-mark.svg" alt=""><span>SIMPA</span></a>
+      <a class="platform-link ordo-link semantic-platform-nav {{ 'is-active' if page.page_key == 'platform.ordo' else '' }}" {% if page.page_key == 'platform.ordo' %}aria-current="page"{% endif %} href="{{ '/en/ordo/' if locale == 'en' else '/ordo/' }}"><img src="/static/img/ordo-mark.svg" alt=""><span>ORDO</span></a>
       {% for item in navigation %}
         {% if item.page_key not in ['platform.simpa', 'platform.ordo'] %}
-          <a class="{{ 'is-active' if item.page_key == page.page_key else '' }}" href="{{ item.route_path }}">{{ item.title }}</a>
+          <a class="{{ 'is-active' if item.page_key == page.page_key else '' }}" {% if item.page_key == page.page_key %}aria-current="page"{% endif %} href="{{ item.route_path }}">{{ item.title }}</a>
         {% endif %}
       {% endfor %}
-      {% if alternate_path %}<a class="locale-link" href="{{ alternate_path }}">{{ alternate_label }}</a>{% endif %}
-      <a class="app-link approved-app-link" href="{{ app_url }}">{{ 'Open platform' if locale == 'en' else 'Otvori platformu' }} <span>→</span></a>
+      {% if alternate_path %}<a class="locale-link" hreflang="{{ 'sr-Latn' if locale == 'en' else 'en' }}" href="{{ alternate_path }}">{{ alternate_label }}</a>{% endif %}
+      <a class="app-link approved-app-link" href="{{ app_url }}">{{ 'Open platform' if locale == 'en' else 'Otvori platformu' }} <span aria-hidden="true">→</span></a>
     </nav>
   </div>
 </header>

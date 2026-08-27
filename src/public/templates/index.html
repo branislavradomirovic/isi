@@ -83,7 +83,7 @@
       <div class="semantic-library-preview-grid">
         {% if home_library_entries %}
           {% for entry in home_library_entries[:4] %}
-            <a href="{{ entry.href }}" class="semantic-library-preview-card"><div class="semantic-cover">{% if entry.image_src %}<img src="{{ entry.image_src }}" alt="">{% else %}<svg><use href="/static/img/icons.svg#{{ semantic_icon('', '', '', entry.collection, 'domain') }}"/></svg><b>ISI</b>{% endif %}</div><strong>{{ entry.title }}</strong><small>{{ entry.collection }}{% if entry.year %} · {{ entry.year }}{% endif %}</small></a>
+            <a href="{{ entry.href }}" class="semantic-library-preview-card"><div class="semantic-cover">{% if entry.image_src %}<img src="{{ entry.image_src }}" alt="{{ entry.title }}" loading="lazy" decoding="async">{% else %}<svg><use href="/static/img/icons.svg#{{ semantic_icon('', '', '', entry.collection, 'domain') }}"/></svg><b>ISI</b>{% endif %}</div><strong>{{ entry.title }}</strong><small>{{ entry.collection }}{% if entry.year %} · {{ entry.year }}{% endif %}</small></a>
           {% endfor %}
         {% else %}<p class="semantic-empty">{{ 'The migrated library is ready for enrichment.' if locale == 'en' else 'Migrirana biblioteka je spremna za obogaćivanje.' }}</p>{% endif %}
       </div>

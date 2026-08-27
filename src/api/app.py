@@ -7,6 +7,7 @@ from src.api.auth_routes import router as auth_router
 from src.api.app_context_routes import router as app_context_router
 from src.core.logging import configure_logging
 from src.public.routes import router as public_router
+from src.public.error_handlers import register_public_error_handlers
 
 configure_logging()
 app = FastAPI(title="ISI Platform API", version="0.1.0")
@@ -15,6 +16,7 @@ PUBLIC_DIR = Path(__file__).resolve().parents[1] / "public"
 app.mount("/static", StaticFiles(directory=str(PUBLIC_DIR / "static")), name="static")
 app.mount("/media", StaticFiles(directory="var/media/public", check_dir=False), name="media")
 app.include_router(public_router)
+register_public_error_handlers(app)
 app.include_router(auth_router)
 app.include_router(app_context_router)
 

@@ -3,24 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="{{ meta_description }}">
-  <meta name="theme-color" content="#103d34">
-  <link rel="canonical" href="{{ canonical_path }}">
-  {% if alternate_path %}<link rel="alternate" hreflang="{{ 'sr-Latn' if locale == 'en' else 'en' }}" href="{{ alternate_path }}">{% endif %}
+  {% include "partials/seo_meta.html" %}
   <title>{{ title }} · ISI</title>
   <link rel="stylesheet" href="/static/css/site.css">
   <link rel="stylesheet" href="/static/css/domain.css">
   <link rel="stylesheet" href="/static/css/experience.css">
   <link rel="stylesheet" href="/static/css/approved-design.css">
   <link rel="stylesheet" href="/static/css/semantic-polish.css">
+  <link rel="stylesheet" href="/static/css/public-readiness.css">
   <script src="/static/js/site.js" defer></script>
   <script src="/static/js/approved-design.js" defer></script>
+  <script src="/static/js/public-readiness.js" defer></script>
 </head>
-<body class="site-body page-type-{{ page.page_type }} approved-design-body semantic-polish-body">
+<body class="site-body page-type-{{ page.page_type }} approved-design-body semantic-polish-body readiness-body">
   <a class="skip-link" href="#main-content">{{ 'Skip to content' if locale == 'en' else 'Preskoči na sadržaj' }}</a>
-  {% if preview_mode %}<div class="preview-ribbon">LOCAL PREVIEW · DRAFT CONTENT</div>{% endif %}
+  {% if preview_mode %}<div class="preview-ribbon" role="status">LOCAL PREVIEW · DRAFT CONTENT</div>{% endif %}
   {% include "partials/header.html" %}
-  <main id="main-content">{% block content %}{% endblock %}</main>
+  <main id="main-content" tabindex="-1">{% block content %}{% endblock %}</main>
   {% include "partials/footer.html" %}
 </body>
 </html>

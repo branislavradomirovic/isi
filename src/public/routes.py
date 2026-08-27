@@ -18,6 +18,7 @@ from src.public.content_service import (
     list_navigation,
     list_platforms,
 )
+from src.public.readiness_routes import router as readiness_router
 from src.public.section_service import list_page_sections
 from src.public.semantic_icons import activity_icon, document_icon, semantic_icon
 
@@ -71,6 +72,15 @@ def _common_context(
     )
     navigation = [item for item in list_navigation(db, locale=locale, include_drafts=include_drafts) if _not_retired(item)]
     platforms = list_platforms(db, locale=locale, include_drafts=include_drafts)
+    base_url = settings.public_base_url.rstrip("/")
+    canonical = base_url + canonical_route(page)
+    alternate_url = (base_url + canonical_route(alternate)) if alternate else None
+    if locale == "sr-Latn":
+        x_default_path = canonical
+    elif alternate is not None:
+        x_default_path = base_url + canonical_route(alternate)
+    else:
+        x_default_path = base_url + "/"
     return {
         "request": request,
         "page": page,
@@ -80,9 +90,14 @@ def _common_context(
         "lang_code": "en" if locale == "en" else "sr-Latn",
         "navigation": navigation,
         "platforms": platforms,
-        "canonical_path": settings.public_base_url.rstrip("/") + canonical_route(page),
-        "alternate_path": (settings.public_base_url.rstrip("/") + canonical_route(alternate)) if alternate else None,
+        "canonical_path": canonical,
+        "alternate_path": alternate_url,
         "alternate_label": "SR" if locale == "en" else "EN",
+        "x_default_path": x_default_path,
+        "og_locale": "en_US" if locale == "en" else "sr_RS",
+        "og_locale_alternate": "sr_RS" if locale == "en" and alternate else ("en_US" if alternate else None),
+        "robots_directive": "noindex,nofollow" if settings.isi_env.casefold() != "production" or include_drafts else "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
+        "share_image_url": base_url + "/static/img/brand/isi-logo-transparent.svg",
         "app_url": settings.app_base_url,
         "preview_mode": include_drafts,
         "sections": list_page_sections(db, page_id=page.page_id, locale=locale, include_drafts=include_drafts),
@@ -192,3 +207,6 @@ def public_page_sr(slug: str, request: Request, db: Session = Depends(get_db), s
     if slug in {"api", "static", "media", "app"}:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return _render_route(request, db, settings, locale="sr-Latn", route_path=f"/{slug}/")
+
+
+router.include_router(readiness_router)
