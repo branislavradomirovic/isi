@@ -1,0 +1,15 @@
+legacy_path,locale,action,target_path,http_status_code,db_status,notes
+/,sr-Latn,preserve,/,,disabled,Legacy path is preserved as the canonical migrated route; redirect not required.
+/aktivnosti/,sr-Latn,preserve,/aktivnosti/,,disabled,Legacy path is preserved as the canonical migrated route; redirect not required.
+/biblioteka,sr-Latn,redirect,/biblioteka/,301,approved,Canonical legacy alias redirect approved by ISI-03C; activation occurs only in public routing/cutover.
+/biblioteka/,sr-Latn,preserve,/biblioteka/,,disabled,Legacy path is preserved as the canonical migrated route; redirect not required.
+/biblioteka/page/2/,sr-Latn,preserve,/biblioteka/page/2/,,disabled,Legacy path is preserved as the canonical migrated route; redirect not required.
+/biblioteka/page/3/,sr-Latn,preserve,/biblioteka/page/3/,,disabled,Legacy path is preserved as the canonical migrated route; redirect not required.
+/dokumenti/,sr-Latn,preserve,/dokumenti/,,disabled,Legacy path is preserved as the canonical migrated route; redirect not required.
+/en/homepage-english/,en,preserve,/en/homepage-english/,,disabled,Legacy path is preserved as the canonical migrated route; redirect not required.
+/inkluzivni-razvoj/,sr-Latn,preserve,/inkluzivni-razvoj/,,disabled,Legacy path is preserved as the canonical migrated route; redirect not required.
+/medjunarodna-konferencija-inkluzivna-revolucija-novi-horizonti-drustvene-pravde-beograd-23-25-april-2026-godine/,sr-Latn,preserve,/medjunarodna-konferencija-inkluzivna-revolucija-novi-horizonti-drustvene-pravde-beograd-23-25-april-2026-godine/,,disabled,Legacy path is preserved as the canonical migrated route; redirect not required.
+/nasledje/,sr-Latn,preserve,/nasledje/,,disabled,Legacy path is preserved as the canonical migrated route; redirect not required.
+/saopstenje-instituta-za-socijalnu-inkluziju-o-stanju-socijalne-inkluzije-u-srbiji/,sr-Latn,preserve,/saopstenje-instituta-za-socijalnu-inkluziju-o-stanju-socijalne-inkluzije-u-srbiji/,,disabled,Legacy path is preserved as the canonical migrated route; redirect not required.
+/tim/,sr-Latn,preserve,/tim/,,disabled,Legacy path is preserved as the canonical migrated route; redirect not required.
+/western-balkan-social-inclusion-barometer-wbsib/,sr-Latn,preserve,/western-balkan-social-inclusion-barometer-wbsib/,,disabled,Legacy path is preserved as the canonical migrated route; redirect not required.

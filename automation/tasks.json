@@ -40,9 +40,16 @@
     {
       "id": "ISI-03B-PUBLIC-CONTENT-MODEL-IMPORT",
       "title": "Public Content Model and Legacy Content Import",
-      "status": "ready",
+      "status": "done",
       "spec": "automation/specs/ISI-03B-PUBLIC-CONTENT-MODEL-IMPORT.md",
       "next": "ISI-03C-MEDIA-REDIRECT-VALIDATION"
+    },
+    {
+      "id": "ISI-03C-MEDIA-REDIRECT-VALIDATION",
+      "title": "Media, Redirect and Migration Validation",
+      "status": "ready",
+      "spec": "automation/specs/ISI-03C-MEDIA-REDIRECT-VALIDATION.md",
+      "next": "ISI-04-NEW-PUBLIC-WEBSITE"
     }
   ]
 }

@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "translations": 13,
+  "links_seen": 76,
+  "media_rewritten": 27,
+  "pages_rewritten": 20,
+  "canonical_internal": 0,
+  "external_links": 29,
+  "unsafe_removed": 0,
+  "unresolved_internal": 0,
+  "translations_changed": 8,
+  "unresolved": [],
+  "policy": "all same-site page/media links must resolve before migration acceptance",
+  "external_policy": "external links are preserved and do not block migration acceptance"
+}

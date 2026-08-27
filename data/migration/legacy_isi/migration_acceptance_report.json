@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "acceptance_passed": true,
+  "media": {
+    "assets_total": 27,
+    "verified_assets": 27,
+    "unique_blobs": 27,
+    "error_count": 0,
+    "errors": []
+  },
+  "links": {
+    "translations": 13,
+    "internal_links_checked": 47,
+    "external_links_seen": 29,
+    "unresolved_count": 0,
+    "unresolved": []
+  },
+  "publication": {
+    "non_draft_pages": 0,
+    "policy": "legacy import remains draft-only"
+  },
+  "redirects": {
+    "approved_alias_redirects": 1,
+    "preserved_routes": 13,
+    "pending_redirects": 0,
+    "activation_policy": "approved mappings are data only; no redirect middleware/cutover activation in ISI-03C"
+  },
+  "missing_artifacts": [],
+  "external_link_policy": "external links are preserved and reported but are not migration-blocking dependencies"
+}
