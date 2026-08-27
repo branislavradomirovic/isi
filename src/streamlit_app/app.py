@@ -10,6 +10,7 @@ from src.streamlit_app import api_client
 from src.streamlit_app.api_client import AccessDenied, ApiUnavailable, AuthenticationRequired
 from src.streamlit_app.selection import Selection, default_selection, organization_by_id, product_by_code
 from src.streamlit_app.style import apply_shell_css
+from src.streamlit_app.data_workspace import render_data_workspace
 
 
 TOKEN_KEY = "isi_access_token"
@@ -331,6 +332,10 @@ def _render_future_section(shell: dict[str, Any], nav_code: str) -> None:
 def _render_shell(shell: dict[str, Any], nav_code: str) -> None:
     if nav_code == "overview":
         _render_overview(shell)
+    elif nav_code == "data":
+        token = _token()
+        if token:
+            render_data_workspace(token=token, shell=shell)
     else:
         _render_future_section(shell, nav_code)
 

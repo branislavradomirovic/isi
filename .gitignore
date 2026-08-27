@@ -11,3 +11,4 @@ artifacts/
 
 *.egg-info/
 var/media/
+.isi-data/

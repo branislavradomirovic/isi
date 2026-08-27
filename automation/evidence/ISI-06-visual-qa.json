@@ -1,0 +1,13 @@
+{
+  "task_id": "ISI-06-SHARED-DATA-PLATFORM",
+  "status": "PASS",
+  "manual_ack": "ISI-06 VISUAL QA PASS",
+  "recorded_at": "2026-08-27T22:41:59.161359+00:00",
+  "scope": [
+    "SIMPA data workspace",
+    "ORDO data workspace",
+    "upload",
+    "catalog",
+    "product isolation"
+  ]
+}

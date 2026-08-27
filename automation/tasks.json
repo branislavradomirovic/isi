@@ -78,6 +78,13 @@
       "status": "done",
       "spec": "automation/specs/ISI-05-AUTHENTICATED-APP-SHELL.md",
       "next": "ISI-06-SHARED-DATA-PLATFORM"
+    },
+    {
+      "id": "ISI-06-SHARED-DATA-PLATFORM",
+      "title": "Shared Data Platform",
+      "status": "done",
+      "spec": "automation/specs/ISI-06-SHARED-DATA-PLATFORM.md",
+      "next": "ISI-07-SHARED-AI-FOUNDATION"
     }
   ]
 }

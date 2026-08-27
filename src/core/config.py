@@ -10,6 +10,13 @@ class Settings(BaseSettings):
     isi_log_level: str = "INFO"
     database_url: str = "postgresql+psycopg://isi_app:change-me@localhost:5432/isi"
     redis_url: str = "redis://localhost:6379/0"
+    data_storage_backend: str = "local"
+    data_storage_root: str = ".isi-data"
+    data_job_backend: str = "inline"
+    data_max_upload_bytes: int = 16777216
+    data_max_xlsx_uncompressed_bytes: int = 67108864
+    data_s3_bucket: str = ""
+    data_s3_endpoint_url: str = ""
     api_host: str = "0.0.0.0"
     api_port: int = 8000
     streamlit_port: int = 8501
