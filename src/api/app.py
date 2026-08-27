@@ -5,6 +5,7 @@ from fastapi.staticfiles import StaticFiles
 
 from src.api.auth_routes import router as auth_router
 from src.api.app_context_routes import router as app_context_router
+from src.api.app_shell_routes import router as app_shell_router
 from src.core.logging import configure_logging
 from src.public.routes import router as public_router
 from src.public.error_handlers import register_public_error_handlers
@@ -19,6 +20,7 @@ app.include_router(public_router)
 register_public_error_handlers(app)
 app.include_router(auth_router)
 app.include_router(app_context_router)
+app.include_router(app_shell_router)
 
 
 @app.get("/api/v1/health")

@@ -71,6 +71,13 @@
       "status": "done",
       "spec": "automation/specs/ISI-04C-PUBLIC-WEBSITE-POLISH-PRODUCTION-READINESS.md",
       "next": "ISI-05-AUTHENTICATED-APP-SHELL"
+    },
+    {
+      "id": "ISI-05-AUTHENTICATED-APP-SHELL",
+      "title": "Authenticated App Shell",
+      "status": "done",
+      "spec": "automation/specs/ISI-05-AUTHENTICATED-APP-SHELL.md",
+      "next": "ISI-06-SHARED-DATA-PLATFORM"
     }
   ]
 }

@@ -1,0 +1,7 @@
+{
+  "task_id": "ISI-05-AUTHENTICATED-APP-SHELL",
+  "status": "pass",
+  "manual_ack": "ISI-05 VISUAL QA PASS",
+  "matrix": "docs/qa/ISI-05-BROWSER-QA-MATRIX.md",
+  "recorded_at_utc": "2026-08-27T21:58:51.697577+00:00"
+}
