@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 from src.api.auth_routes import router as auth_router
+from src.api.app_context_routes import router as app_context_router
 from src.core.logging import configure_logging
 from src.public.routes import router as public_router
 
@@ -14,6 +15,7 @@ PUBLIC_DIR = Path(__file__).resolve().parents[1] / "public"
 app.mount("/static", StaticFiles(directory=str(PUBLIC_DIR / "static")), name="static")
 app.include_router(public_router)
 app.include_router(auth_router)
+app.include_router(app_context_router)
 
 
 @app.get("/api/v1/health")

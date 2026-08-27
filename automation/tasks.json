@@ -19,9 +19,16 @@
     {
       "id": "ISI-02B-AUTHENTICATION-LIFECYCLE",
       "title": "Authentication Lifecycle",
-      "status": "ready",
+      "status": "done",
       "spec": "automation/specs/ISI-02B-AUTHENTICATION-LIFECYCLE.md",
       "next": "ISI-02C-AUTHENTICATED-APP-CONTEXT"
+    },
+    {
+      "id": "ISI-02C-AUTHENTICATED-APP-CONTEXT",
+      "title": "Authenticated App Context",
+      "status": "ready",
+      "spec": "automation/specs/ISI-02C-AUTHENTICATED-APP-CONTEXT.md",
+      "next": "ISI-03-LEGACY-CONTENT-MIGRATION"
     }
   ]
 }
