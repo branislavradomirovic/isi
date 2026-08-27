@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="ordoTitle">
+<title id="ordoTitle">ORDO</title>
+<defs><linearGradient id="ordoGold" x1="10" y1="8" x2="86" y2="88" gradientUnits="userSpaceOnUse"><stop stop-color="#d3a548"/><stop offset="1" stop-color="#9d6815"/></linearGradient></defs>
+<g fill="none" stroke="url(#ordoGold)" stroke-linejoin="round">
+  <path d="M48 9 81 28v40L48 87 15 68V28L48 9Z" stroke-width="8"/>
+  <path d="M48 9v23L28 43v23l20 12 20-12V43L48 32 28 43 15 28M68 43l13-15" stroke-width="5"/>
+</g>
+<circle cx="48" cy="48" r="5" fill="#a56f18"/>
+</svg>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="simpaTitle">
+<title id="simpaTitle">SIMPA</title>
+<g fill="none" stroke="#0b5f62" stroke-width="4" stroke-linecap="round">
+  <path d="M23 24 46 39 70 24M46 39 29 63M46 39 67 62M29 63h38"/>
+  <path d="M23 24h47" opacity=".5"/>
+</g>
+<g fill="#0b5f62"><circle cx="23" cy="24" r="8"/><circle cx="70" cy="24" r="8"/><circle cx="46" cy="39" r="10"/><circle cx="29" cy="63" r="8"/><circle cx="67" cy="62" r="8"/></g>
+<g fill="#82a99d"><circle cx="16" cy="48" r="5"/><circle cx="80" cy="48" r="5"/><circle cx="46" cy="78" r="5"/></g>
+<g fill="none" stroke="#82a99d" stroke-width="3"><path d="M16 48 29 63m51-15L67 62M46 78V49"/></g>
+</svg>

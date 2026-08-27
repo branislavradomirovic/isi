@@ -1,0 +1,341 @@
+{
+  "schema_version": 1,
+  "domains": [
+    {
+      "code": "isi.social_inclusion",
+      "product_scope": "ISI",
+      "title_sr": "Socijalna inkluzija",
+      "title_en": "Social inclusion",
+      "parent_code": null,
+      "sort_order": 10
+    },
+    {
+      "code": "isi.public_policy",
+      "product_scope": "ISI",
+      "title_sr": "Javne politike",
+      "title_en": "Public policy",
+      "parent_code": null,
+      "sort_order": 20
+    },
+    {
+      "code": "isi.human_rights",
+      "product_scope": "ISI",
+      "title_sr": "Ljudska prava",
+      "title_en": "Human rights",
+      "parent_code": null,
+      "sort_order": 30
+    },
+    {
+      "code": "isi.research_methodology",
+      "product_scope": "ISI",
+      "title_sr": "Istraživanja i metodologija",
+      "title_en": "Research and methodology",
+      "parent_code": null,
+      "sort_order": 40
+    },
+    {
+      "code": "isi.institutional_legacy",
+      "product_scope": "ISI",
+      "title_sr": "Institucionalno nasleđe",
+      "title_en": "Institutional legacy",
+      "parent_code": null,
+      "sort_order": 50
+    },
+    {
+      "code": "isi.regional_cooperation",
+      "product_scope": "ISI",
+      "title_sr": "Regionalna saradnja",
+      "title_en": "Regional cooperation",
+      "parent_code": null,
+      "sort_order": 60
+    },
+    {
+      "code": "shared.statistics",
+      "product_scope": "SHARED",
+      "title_sr": "Statistika i indikatori",
+      "title_en": "Statistics and indicators",
+      "parent_code": null,
+      "sort_order": 10
+    },
+    {
+      "code": "shared.methodology",
+      "product_scope": "SHARED",
+      "title_sr": "Metodologija",
+      "title_en": "Methodology",
+      "parent_code": null,
+      "sort_order": 20
+    },
+    {
+      "code": "shared.gis",
+      "product_scope": "SHARED",
+      "title_sr": "GIS i teritorijalna analiza",
+      "title_en": "GIS and territorial analysis",
+      "parent_code": null,
+      "sort_order": 30
+    },
+    {
+      "code": "shared.data_governance",
+      "product_scope": "SHARED",
+      "title_sr": "Upravljanje podacima",
+      "title_en": "Data governance",
+      "parent_code": null,
+      "sort_order": 40
+    },
+    {
+      "code": "shared.analytics",
+      "product_scope": "SHARED",
+      "title_sr": "Analitika i modelovanje",
+      "title_en": "Analytics and modelling",
+      "parent_code": null,
+      "sort_order": 50
+    },
+    {
+      "code": "shared.ai_governance",
+      "product_scope": "SHARED",
+      "title_sr": "Odgovorna primena AI",
+      "title_en": "Responsible AI",
+      "parent_code": null,
+      "sort_order": 60
+    },
+    {
+      "code": "shared.reporting",
+      "product_scope": "SHARED",
+      "title_sr": "Izveštavanje i praćenje",
+      "title_en": "Reporting and monitoring",
+      "parent_code": null,
+      "sort_order": 70
+    },
+    {
+      "code": "simpa.social_protection",
+      "product_scope": "SIMPA",
+      "title_sr": "Sistem socijalne zaštite",
+      "title_en": "Social protection system",
+      "parent_code": null,
+      "sort_order": 10
+    },
+    {
+      "code": "simpa.social_needs",
+      "product_scope": "SIMPA",
+      "title_sr": "Socijalne potrebe stanovništva",
+      "title_en": "Population social needs",
+      "parent_code": "simpa.social_protection",
+      "sort_order": 20
+    },
+    {
+      "code": "simpa.social_risks",
+      "product_scope": "SIMPA",
+      "title_sr": "Socijalni rizici",
+      "title_en": "Social risks",
+      "parent_code": "simpa.social_protection",
+      "sort_order": 30
+    },
+    {
+      "code": "simpa.family_children_youth",
+      "product_scope": "SIMPA",
+      "title_sr": "Porodica, deca i mladi",
+      "title_en": "Family, children and youth",
+      "parent_code": "simpa.social_protection",
+      "sort_order": 40
+    },
+    {
+      "code": "simpa.violence_crisis",
+      "product_scope": "SIMPA",
+      "title_sr": "Nasilje i krizne situacije",
+      "title_en": "Violence and crisis situations",
+      "parent_code": "simpa.social_protection",
+      "sort_order": 50
+    },
+    {
+      "code": "simpa.older_disability",
+      "product_scope": "SIMPA",
+      "title_sr": "Starije osobe i osobe sa invaliditetom",
+      "title_en": "Older persons and persons with disabilities",
+      "parent_code": "simpa.social_protection",
+      "sort_order": 60
+    },
+    {
+      "code": "simpa.service_availability",
+      "product_scope": "SIMPA",
+      "title_sr": "Dostupnost socijalnih usluga",
+      "title_en": "Social service accessibility",
+      "parent_code": "simpa.social_protection",
+      "sort_order": 70
+    },
+    {
+      "code": "simpa.system_capacity",
+      "product_scope": "SIMPA",
+      "title_sr": "Kapaciteti lokalnog sistema",
+      "title_en": "Local system capacity",
+      "parent_code": "simpa.social_protection",
+      "sort_order": 80
+    },
+    {
+      "code": "simpa.intersectoral",
+      "product_scope": "SIMPA",
+      "title_sr": "Međusektorska saradnja",
+      "title_en": "Intersectoral cooperation",
+      "parent_code": "simpa.social_protection",
+      "sort_order": 90
+    },
+    {
+      "code": "simpa.outcomes_effects",
+      "product_scope": "SIMPA",
+      "title_sr": "Rezultati i efekti usluga",
+      "title_en": "Service outcomes and effects",
+      "parent_code": "simpa.social_protection",
+      "sort_order": 100
+    },
+    {
+      "code": "simpa.social_inclusion",
+      "product_scope": "SIMPA",
+      "title_sr": "Socijalna inkluzija",
+      "title_en": "Social inclusion",
+      "parent_code": null,
+      "sort_order": 110
+    },
+    {
+      "code": "simpa.indicators",
+      "product_scope": "SIMPA",
+      "title_sr": "Indikatori socijalne zaštite i inkluzije",
+      "title_en": "Social protection and inclusion indicators",
+      "parent_code": null,
+      "sort_order": 120
+    },
+    {
+      "code": "simpa.local_government",
+      "product_scope": "SIMPA",
+      "title_sr": "Upravljanje lokalnim sistemom",
+      "title_en": "Local system governance",
+      "parent_code": null,
+      "sort_order": 130
+    },
+    {
+      "code": "simpa.data_governance",
+      "product_scope": "SIMPA",
+      "title_sr": "Zaštita i upravljanje podacima",
+      "title_en": "Data protection and governance",
+      "parent_code": null,
+      "sort_order": 140
+    },
+    {
+      "code": "simpa.scenarios_prevention",
+      "product_scope": "SIMPA",
+      "title_sr": "Scenariji i preventivno delovanje",
+      "title_en": "Scenarios and prevention",
+      "parent_code": null,
+      "sort_order": 150
+    },
+    {
+      "code": "ordo.destination_development",
+      "product_scope": "ORDO",
+      "title_sr": "Razvoj destinacije",
+      "title_en": "Destination development",
+      "parent_code": null,
+      "sort_order": 10
+    },
+    {
+      "code": "ordo.tourism",
+      "product_scope": "ORDO",
+      "title_sr": "Turizam i turistička ponuda",
+      "title_en": "Tourism and visitor offer",
+      "parent_code": "ordo.destination_development",
+      "sort_order": 20
+    },
+    {
+      "code": "ordo.natural_resources",
+      "product_scope": "ORDO",
+      "title_sr": "Prirodni resursi",
+      "title_en": "Natural resources",
+      "parent_code": "ordo.destination_development",
+      "sort_order": 30
+    },
+    {
+      "code": "ordo.cultural_heritage",
+      "product_scope": "ORDO",
+      "title_sr": "Kulturno nasleđe",
+      "title_en": "Cultural heritage",
+      "parent_code": "ordo.destination_development",
+      "sort_order": 40
+    },
+    {
+      "code": "ordo.local_economy",
+      "product_scope": "ORDO",
+      "title_sr": "Lokalna privreda i preduzetništvo",
+      "title_en": "Local economy and entrepreneurship",
+      "parent_code": "ordo.destination_development",
+      "sort_order": 50
+    },
+    {
+      "code": "ordo.labour_market",
+      "product_scope": "ORDO",
+      "title_sr": "Tržište rada i kompetencije",
+      "title_en": "Labour market and skills",
+      "parent_code": "ordo.destination_development",
+      "sort_order": 60
+    },
+    {
+      "code": "ordo.infrastructure_space",
+      "product_scope": "ORDO",
+      "title_sr": "Infrastruktura i prostor",
+      "title_en": "Infrastructure and spatial development",
+      "parent_code": "ordo.destination_development",
+      "sort_order": 70
+    },
+    {
+      "code": "ordo.sustainability",
+      "product_scope": "ORDO",
+      "title_sr": "Održivost i životna sredina",
+      "title_en": "Sustainability and environment",
+      "parent_code": "ordo.destination_development",
+      "sort_order": 80
+    },
+    {
+      "code": "ordo.community_inclusion",
+      "product_scope": "ORDO",
+      "title_sr": "Lokalna zajednica i razvojna inkluzija",
+      "title_en": "Community and development inclusion",
+      "parent_code": "ordo.destination_development",
+      "sort_order": 90
+    },
+    {
+      "code": "ordo.development_potentials",
+      "product_scope": "ORDO",
+      "title_sr": "Razvojni potencijali",
+      "title_en": "Development potentials",
+      "parent_code": "ordo.destination_development",
+      "sort_order": 100
+    },
+    {
+      "code": "ordo.indicators",
+      "product_scope": "ORDO",
+      "title_sr": "Razvojni indikatori",
+      "title_en": "Development indicators",
+      "parent_code": "ordo.destination_development",
+      "sort_order": 110
+    },
+    {
+      "code": "ordo.scenarios_strategy",
+      "product_scope": "ORDO",
+      "title_sr": "Scenariji i strategija",
+      "title_en": "Scenarios and strategy",
+      "parent_code": "ordo.destination_development",
+      "sort_order": 120
+    },
+    {
+      "code": "ordo.investment_planning",
+      "product_scope": "ORDO",
+      "title_sr": "Investiciono i razvojno planiranje",
+      "title_en": "Investment and development planning",
+      "parent_code": "ordo.destination_development",
+      "sort_order": 130
+    },
+    {
+      "code": "ordo.monitoring_learning",
+      "product_scope": "ORDO",
+      "title_sr": "Monitoring i kontinuirano učenje",
+      "title_en": "Monitoring and continuous learning",
+      "parent_code": "ordo.destination_development",
+      "sort_order": 140
+    }
+  ]
+}

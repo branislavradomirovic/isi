@@ -1,12 +1,26 @@
 <!doctype html>
-<html lang="sr-Latn">
+<html lang="{{ lang_code }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ title }}</title>
+  <meta name="description" content="{{ meta_description }}">
+  <meta name="theme-color" content="#103d34">
+  <link rel="canonical" href="{{ canonical_path }}">
+  {% if alternate_path %}<link rel="alternate" hreflang="{{ 'sr-Latn' if locale == 'en' else 'en' }}" href="{{ alternate_path }}">{% endif %}
+  <title>{{ title }} · ISI</title>
   <link rel="stylesheet" href="/static/css/site.css">
+  <link rel="stylesheet" href="/static/css/domain.css">
+  <link rel="stylesheet" href="/static/css/experience.css">
+  <link rel="stylesheet" href="/static/css/approved-design.css">
+  <link rel="stylesheet" href="/static/css/semantic-polish.css">
+  <script src="/static/js/site.js" defer></script>
+  <script src="/static/js/approved-design.js" defer></script>
 </head>
-<body>
-  <main>{% block content %}{% endblock %}</main>
+<body class="site-body page-type-{{ page.page_type }} approved-design-body semantic-polish-body">
+  <a class="skip-link" href="#main-content">{{ 'Skip to content' if locale == 'en' else 'Preskoči na sadržaj' }}</a>
+  {% if preview_mode %}<div class="preview-ribbon">LOCAL PREVIEW · DRAFT CONTENT</div>{% endif %}
+  {% include "partials/header.html" %}
+  <main id="main-content">{% block content %}{% endblock %}</main>
+  {% include "partials/footer.html" %}
 </body>
 </html>

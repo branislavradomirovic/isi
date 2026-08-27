@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="semantic-activities-hero">
+  <div class="shell semantic-activities-hero-grid">
+    <div><p class="eyebrow">ISI – {{ 'PROGRAMMES, EVENTS AND PUBLIC ACTION' if locale == 'en' else 'PROGRAMI, DOGAĐAJI I JAVNO DELOVANJE' }}</p><h1>{{ page.title }}</h1><p class="semantic-activities-lead">{{ page.excerpt or ('Organizujemo konferencije, istraživačke događaje, obuke, konsultacije i javne dijaloge koji povezuju znanje, partnerstva i delovanje.' if locale != 'en' else 'We organise conferences, research events, training, consultations and public dialogue that connect knowledge, partnerships and action.') }}</p></div>
+    <div class="semantic-activities-hero-art"><img src="/static/img/activities/hero.svg" alt=""></div>
+  </div>
+</section>
+
+<section class="semantic-activities-toolbar">
+  <div class="shell" data-catalog-controls>
+    <div class="semantic-activity-filters">
+      <button class="catalog-chip is-active" data-catalog-filter="all" type="button"><svg><use href="/static/img/icons.svg#domain"/></svg>{{ 'All' if locale == 'en' else 'Sve' }}</button>
+      <button class="catalog-chip" data-catalog-filter="konferencija" type="button"><svg><use href="/static/img/icons.svg#conference"/></svg>{{ 'Conferences' if locale == 'en' else 'Konferencije' }}</button>
+      <button class="catalog-chip" data-catalog-filter="radionica" type="button"><svg><use href="/static/img/icons.svg#workshop"/></svg>{{ 'Workshops' if locale == 'en' else 'Radionice' }}</button>
+      <button class="catalog-chip" data-catalog-filter="javni-dijalog" type="button"><svg><use href="/static/img/icons.svg#dialogue"/></svg>{{ 'Public dialogue' if locale == 'en' else 'Javni dijalozi' }}</button>
+      <button class="catalog-chip" data-catalog-filter="obuka" type="button"><svg><use href="/static/img/icons.svg#training"/></svg>{{ 'Training' if locale == 'en' else 'Obuke' }}</button>
+      <button class="catalog-chip" data-catalog-filter="publikacija" type="button"><svg><use href="/static/img/icons.svg#publication"/></svg>{{ 'Publications' if locale == 'en' else 'Publikacije' }}</button>
+    </div>
+    <label class="approved-search semantic-activity-search"><svg><use href="/static/img/icons.svg#search"/></svg><input type="search" placeholder="{{ 'Search activities…' if locale == 'en' else 'Pretražite aktivnosti…' }}" data-catalog-search></label>
+  </div>
+</section>
+
+<section class="semantic-activities-list">
+  <div class="shell" data-catalog-list>
+    {% if featured_activity %}
+      {% set entry = featured_activity %}
+      {% set group = entry.kind|lower|replace(' ', '-') %}
+      <article class="semantic-featured-activity" data-catalog-item data-catalog-group="{{ group }}" data-search="{{ entry.search_text }}">
+        <a class="semantic-featured-activity-image" href="{{ entry.href }}">{% if entry.image_src %}<img src="{{ entry.image_src }}" alt="">{% else %}<img src="{{ '/static/img/activities/conference.svg' if entry.kind == 'Konferencija' else '/static/img/activities/hero.svg' }}" alt="">{% endif %}</a>
+        <div class="semantic-featured-activity-copy"><span class="semantic-activity-badge"><svg><use href="/static/img/icons.svg#{{ activity_icon(entry.kind) }}"/></svg>{{ entry.kind }}</span><h2><a href="{{ entry.href }}">{{ entry.title }}</a></h2>{% if entry.excerpt %}<p>{{ entry.excerpt }}</p>{% endif %}<div class="semantic-activity-meta">{% if entry.date_text or entry.year %}<span><svg><use href="/static/img/icons.svg#calendar"/></svg><b>{{ 'Date' if locale == 'en' else 'Datum' }}</b><small>{{ entry.date_text or entry.year }}</small></span>{% endif %}{% if entry.location %}<span><svg><use href="/static/img/icons.svg#location"/></svg><b>{{ 'Location' if locale == 'en' else 'Lokacija' }}</b><small>{{ entry.location }}</small></span>{% endif %}<span><svg><use href="/static/img/icons.svg#partners"/></svg><b>{{ 'Participation' if locale == 'en' else 'Učešće' }}</b><small>{{ 'institutions · researchers · communities' if locale == 'en' else 'institucije · istraživači · zajednice' }}</small></span><span><svg><use href="/static/img/icons.svg#report"/></svg><b>{{ 'More information' if locale == 'en' else 'Više informacija' }}</b><small>{{ 'open activity' if locale == 'en' else 'otvori aktivnost' }}</small></span></div><a class="semantic-circle-link" href="{{ entry.href }}" aria-label="{{ entry.title }}">→</a></div>
+      </article>
+    {% endif %}
+
+    {% if activity_cards %}<div class="semantic-activity-card-grid">
+      {% for entry in activity_cards %}
+        {% set group = entry.kind|lower|replace(' ', '-') %}
+        {% if entry.kind == 'Radionica' %}{% set fallback='/static/img/activities/workshop.svg' %}{% elif entry.kind == 'Javni dijalog' %}{% set fallback='/static/img/activities/dialogue.svg' %}{% elif entry.kind == 'Obuka' %}{% set fallback='/static/img/activities/training.svg' %}{% elif entry.kind == 'Konferencija' %}{% set fallback='/static/img/activities/conference.svg' %}{% else %}{% set fallback='/static/img/activities/hero.svg' %}{% endif %}
+        <article class="semantic-activity-card" data-catalog-item data-catalog-group="{{ group }}" data-search="{{ entry.search_text }}"><a href="{{ entry.href }}" class="semantic-activity-card-image"><img src="{{ entry.image_src or fallback }}" alt=""></a><div><span class="semantic-activity-badge"><svg><use href="/static/img/icons.svg#{{ activity_icon(entry.kind) }}"/></svg>{{ entry.kind }}</span><h3><a href="{{ entry.href }}">{{ entry.title }}</a></h3>{% if entry.excerpt %}<p>{{ entry.excerpt }}</p>{% endif %}<div class="semantic-activity-card-meta">{% if entry.date_text or entry.year %}<span><svg><use href="/static/img/icons.svg#calendar"/></svg>{{ entry.date_text or entry.year }}</span>{% endif %}{% if entry.location %}<span><svg><use href="/static/img/icons.svg#location"/></svg>{{ entry.location }}</span>{% endif %}</div><a class="semantic-read-more" href="{{ entry.href }}">{{ 'Read more' if locale == 'en' else 'Pročitaj više' }} →</a></div></article>
+      {% endfor %}
+    </div>{% endif %}
+
+    {% if not featured_activity and not activity_cards %}<div class="semantic-activities-fallback"><img src="/static/img/activities/hero.svg" alt=""><div><h2>{{ 'Migrated activities are ready for editorial enrichment.' if locale == 'en' else 'Migrirane aktivnosti su spremne za uredničko obogaćivanje.' }}</h2><div class="prose">{{ page.body_html|safe }}</div></div></div>{% endif %}
+    <div class="catalog-no-results" hidden data-catalog-empty>{{ 'No activities match the current search.' if locale == 'en' else 'Nema aktivnosti koje odgovaraju pretrazi.' }}</div>
+  </div>
+</section>
+
+{% if activity_results %}<section class="semantic-activity-results"><div class="shell"><div class="semantic-section-heading"><h2>{{ 'Selected outputs' if locale == 'en' else 'Izdvojeni rezultati' }}</h2></div><div class="semantic-result-grid">{% for entry in activity_results[:3] %}{% set art=['/static/img/activities/result-publication.svg','/static/img/activities/result-policy.svg','/static/img/activities/result-toolkit.svg'][loop.index0] %}<a href="{{ entry.href }}"><img src="{{ entry.image_src or art }}" alt=""><div><span><svg><use href="/static/img/icons.svg#publication"/></svg>{{ entry.kind }}</span><h3>{{ entry.title }}</h3>{% if entry.excerpt %}<p>{{ entry.excerpt }}</p>{% endif %}</div></a>{% endfor %}</div></div></section>{% endif %}
+
+<section class="approved-trust-strip semantic-trust-strip"><div class="shell approved-trust-grid"><article><span><svg><use href="/static/img/icons.svg#quality"/></svg></span><div><strong>{{ 'Evidence-based' if locale == 'en' else 'Zasnovano na dokazima' }}</strong><p>{{ 'Transparent methods and traceable sources.' if locale == 'en' else 'Transparentne metode i proverljivi izvori.' }}</p></div></article><article><span><svg><use href="/static/img/icons.svg#professional"/></svg></span><div><strong>{{ 'Independent and expert' if locale == 'en' else 'Nezavisno i stručno' }}</strong><p>{{ 'Research integrity and professional standards.' if locale == 'en' else 'Istraživački integritet i stručni standardi.' }}</p></div></article><article><span><svg><use href="/static/img/icons.svg#cooperation"/></svg></span><div><strong>{{ 'Open and collaborative' if locale == 'en' else 'Otvoreno i partnerski' }}</strong><p>{{ 'Knowledge grows through institutions and communities.' if locale == 'en' else 'Znanje raste kroz institucije i zajednice.' }}</p></div></article><article><span><svg><use href="/static/img/icons.svg#human-responsibility"/></svg></span><div><strong>{{ 'Human-centred' if locale == 'en' else 'Usmereno na ljude' }}</strong><p>{{ 'Participation and public value remain central.' if locale == 'en' else 'Učešće i javna vrednost ostaju u centru.' }}</p></div></article></div></section>
+{% endblock %}

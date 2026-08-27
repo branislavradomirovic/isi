@@ -47,9 +47,23 @@
     {
       "id": "ISI-03C-MEDIA-REDIRECT-VALIDATION",
       "title": "Media, Redirect and Migration Validation",
-      "status": "ready",
+      "status": "done",
       "spec": "automation/specs/ISI-03C-MEDIA-REDIRECT-VALIDATION.md",
       "next": "ISI-04-NEW-PUBLIC-WEBSITE"
+    },
+    {
+      "id": "ISI-04-NEW-PUBLIC-WEBSITE",
+      "title": "New Public Website",
+      "status": "done",
+      "spec": "automation/specs/ISI-04-NEW-PUBLIC-WEBSITE.md",
+      "next": "ISI-04B-DOMAIN-KNOWLEDGE-CONTENT-ENRICHMENT"
+    },
+    {
+      "id": "ISI-04B-DOMAIN-KNOWLEDGE-CONTENT-ENRICHMENT",
+      "title": "Domain Knowledge Registry and Public Content Enrichment",
+      "status": "done",
+      "spec": "automation/specs/ISI-04B-DOMAIN-KNOWLEDGE-CONTENT-ENRICHMENT.md",
+      "next": "ISI-04C-INSTITUTIONAL-POLISH-SEO-ACCESSIBILITY"
     }
   ]
 }

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 410">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#073d36"/><stop offset="1" stop-color="#0e6259"/></linearGradient></defs>
+<rect width="720" height="410" rx="22" fill="#111b19"/>
+<rect x="60" y="42" width="600" height="178" rx="14" fill="url(#bg)"/>
+<g opacity=".24" fill="#61a28d"><path d="M60 42h170L135 220H60zM250 42h120l-94 178H156zM390 42h150l-100 178H310z"/></g>
+<text x="92" y="104" fill="#fff" font-family="Arial, sans-serif" font-weight="700" font-size="31">INKLUZIVNA</text>
+<text x="92" y="140" fill="#fff" font-family="Arial, sans-serif" font-weight="700" font-size="31">REVOLUCIJA</text>
+<text x="92" y="169" fill="#d5e6df" font-family="Arial, sans-serif" font-size="17">Novi horizonti društvene pravde</text>
+<g fill="#f1e7d6"><circle cx="232" cy="245" r="19"/><circle cx="306" cy="242" r="19"/><circle cx="382" cy="243" r="19"/><circle cx="458" cy="242" r="19"/><circle cx="532" cy="245" r="19"/></g>
+<g fill="#2b3f39"><path d="M203 319c5-40 15-58 29-58s24 18 29 58M277 319c5-40 15-58 29-58s24 18 29 58M353 319c5-40 15-58 29-58s24 18 29 58M429 319c5-40 15-58 29-58s24 18 29 58M503 319c5-40 15-58 29-58s24 18 29 58"/></g>
+<rect x="197" y="318" width="370" height="18" rx="9" fill="#c49337"/>
+<g fill="#0c1514"><circle cx="70" cy="360" r="42"/><circle cx="150" cy="360" r="42"/><circle cx="235" cy="360" r="42"/><circle cx="320" cy="360" r="42"/><circle cx="405" cy="360" r="42"/><circle cx="490" cy="360" r="42"/><circle cx="575" cy="360" r="42"/><circle cx="650" cy="360" r="42"/></g>
+</svg>

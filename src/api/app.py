@@ -13,6 +13,7 @@ app = FastAPI(title="ISI Platform API", version="0.1.0")
 
 PUBLIC_DIR = Path(__file__).resolve().parents[1] / "public"
 app.mount("/static", StaticFiles(directory=str(PUBLIC_DIR / "static")), name="static")
+app.mount("/media", StaticFiles(directory="var/media/public", check_dir=False), name="media")
 app.include_router(public_router)
 app.include_router(auth_router)
 app.include_router(app_context_router)

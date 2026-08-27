@@ -1,0 +1,2000 @@
+{
+  "schema_version": 1,
+  "sections": [
+    {
+      "page_key": "home",
+      "section_key": "institutional_method",
+      "product_scope": "ISI",
+      "domain_code": "isi.research_methodology",
+      "visual_kind": "process",
+      "theme": "neutral",
+      "sort_order": 100,
+      "translations": {
+        "sr-Latn": {
+          "eyebrow": "KAKO RADIMO",
+          "title": "Od pitanja do odgovorne odluke",
+          "lead": "ISI povezuje istraživanje, metodologiju, podatke i primenu. Tehnologija je deo procesa, ali stručna i institucionalna odgovornost ostaje kod ljudi.",
+          "body_html": ""
+        },
+        "en": {
+          "eyebrow": "HOW WE WORK",
+          "title": "From questions to responsible decisions",
+          "lead": "ISI connects research, methodology, data and application. Technology supports the process while professional and institutional responsibility remains human.",
+          "body_html": ""
+        }
+      },
+      "items": [
+        {
+          "item_key": "research",
+          "item_kind": "step",
+          "domain_code": "isi.research_methodology",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Istražujemo",
+              "value": "",
+              "description": "Polazimo od problema, iskustva građana i proverljivih izvora."
+            },
+            "en": {
+              "label": "Research",
+              "value": "",
+              "description": "We start from real problems, lived experience and verifiable sources."
+            }
+          }
+        },
+        {
+          "item_key": "develop",
+          "item_kind": "step",
+          "domain_code": "shared.methodology",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Razvijamo",
+              "value": "",
+              "description": "Pretvaramo nalaze u metodologije, indikatore i alate za razumevanje složenih sistema."
+            },
+            "en": {
+              "label": "Develop",
+              "value": "",
+              "description": "We turn findings into methodologies, indicators and tools for understanding complex systems."
+            }
+          }
+        },
+        {
+          "item_key": "apply",
+          "item_kind": "step",
+          "domain_code": "isi.public_policy",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Primenjujemo",
+              "value": "",
+              "description": "Znanje prevodimo u podršku javnim politikama, institucijama i lokalnim zajednicama."
+            },
+            "en": {
+              "label": "Apply",
+              "value": "",
+              "description": "We translate knowledge into support for public policy, institutions and local communities."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "page_key": "home",
+      "section_key": "knowledge_architecture",
+      "product_scope": "ISI",
+      "domain_code": "shared.data_governance",
+      "visual_kind": "knowledge-map",
+      "theme": "dark",
+      "sort_order": 200,
+      "translations": {
+        "sr-Latn": {
+          "eyebrow": "ARHITEKTURA ZNANJA",
+          "title": "Jedna platforma znanja. Jasno odvojeni domeni.",
+          "lead": "Zajednički standardi podataka i metodologije povezuju ISI, SIMPA i ORDO, dok svaka flagship platforma zadržava sopstvenu domensku logiku i izvore.",
+          "body_html": ""
+        },
+        "en": {
+          "eyebrow": "KNOWLEDGE ARCHITECTURE",
+          "title": "One knowledge platform. Clearly separated domains.",
+          "lead": "Shared data and methodology standards connect ISI, SIMPA and ORDO while each flagship platform retains its own domain logic and sources.",
+          "body_html": ""
+        }
+      },
+      "items": [
+        {
+          "item_key": "isi",
+          "item_kind": "domain",
+          "domain_code": "isi.social_inclusion",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "ISI",
+              "value": "",
+              "description": "Institucionalno znanje o socijalnoj inkluziji, javnim politikama, ljudskim pravima i istraživanjima."
+            },
+            "en": {
+              "label": "ISI",
+              "value": "",
+              "description": "Institutional knowledge on social inclusion, public policy, human rights and research."
+            }
+          }
+        },
+        {
+          "item_key": "simpa",
+          "item_kind": "domain",
+          "domain_code": "simpa.social_protection",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "SIMPA",
+              "value": "",
+              "description": "Domenski korpus socijalne zaštite, socijalnih rizika, usluga, indikatora i lokalnih politika."
+            },
+            "en": {
+              "label": "SIMPA",
+              "value": "",
+              "description": "Domain corpus for social protection, risks, services, indicators and local policy."
+            }
+          }
+        },
+        {
+          "item_key": "ordo",
+          "item_kind": "domain",
+          "domain_code": "ordo.destination_development",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "ORDO",
+              "value": "",
+              "description": "Domenski korpus razvoja destinacija, resursa, privrede, tržišta rada, održivosti i scenarija."
+            },
+            "en": {
+              "label": "ORDO",
+              "value": "",
+              "description": "Domain corpus for destination development, resources, economy, labour market, sustainability and scenarios."
+            }
+          }
+        },
+        {
+          "item_key": "shared",
+          "item_kind": "domain",
+          "domain_code": "shared.methodology",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Zajednički sloj",
+              "value": "",
+              "description": "Metodologija, statistika, GIS, upravljanje podacima, analitika, AI governance i izveštavanje."
+            },
+            "en": {
+              "label": "Shared layer",
+              "value": "",
+              "description": "Methodology, statistics, GIS, data governance, analytics, AI governance and reporting."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "page_key": "home",
+      "section_key": "evidence_chain",
+      "product_scope": "ISI",
+      "domain_code": "shared.methodology",
+      "visual_kind": "evidence-chain",
+      "theme": "neutral",
+      "sort_order": 300,
+      "translations": {
+        "sr-Latn": {
+          "eyebrow": "POUZDANOST",
+          "title": "Od izvora do znanja koje može da se proveri",
+          "lead": "Svaka javna tvrdnja, indikator i budući AI uvid treba da zadrže poreklo, domensku oznaku i jasnu vezu sa izvorom.",
+          "body_html": ""
+        },
+        "en": {
+          "eyebrow": "TRUST",
+          "title": "From sources to verifiable knowledge",
+          "lead": "Every public claim, indicator and future AI insight should preserve provenance, domain classification and a clear source link.",
+          "body_html": ""
+        }
+      },
+      "items": [
+        {
+          "item_key": "source",
+          "item_kind": "step",
+          "domain_code": "shared.data_governance",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Izvor",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Source",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "method",
+          "item_kind": "step",
+          "domain_code": "shared.methodology",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Metodologija",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Methodology",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "indicator",
+          "item_kind": "step",
+          "domain_code": "shared.statistics",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Indikator",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Indicator",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "analysis",
+          "item_kind": "step",
+          "domain_code": "shared.analytics",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Analiza",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Analysis",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "responsibility",
+          "item_kind": "step",
+          "domain_code": "shared.ai_governance",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Ljudska odgovornost",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Human responsibility",
+              "value": "",
+              "description": ""
+            }
+          }
+        }
+      ]
+    },
+    {
+      "page_key": "platform.simpa",
+      "section_key": "ecosystem",
+      "product_scope": "SIMPA",
+      "domain_code": "simpa.intersectoral",
+      "visual_kind": "network",
+      "theme": "simpa",
+      "sort_order": 100,
+      "translations": {
+        "sr-Latn": {
+          "eyebrow": "EKOSISTEM PODATAKA",
+          "title": "Lokalni sistem je mreža, ne jedna baza",
+          "lead": "SIMPA povezuje znanje koje nastaje u svakodnevnom radu socijalne zaštite sa podacima drugih sektora, kako bi lokalna samouprava dobila celovitu sliku potreba i dostupnosti podrške.",
+          "body_html": ""
+        },
+        "en": {
+          "eyebrow": "DATA ECOSYSTEM",
+          "title": "A local system is a network, not a single database",
+          "lead": "SIMPA connects knowledge generated in social protection with data from other sectors so local government can understand needs and the availability of support.",
+          "body_html": ""
+        }
+      },
+      "items": [
+        {
+          "item_key": "csr",
+          "item_kind": "source",
+          "domain_code": "simpa.social_protection",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Centri za socijalni rad",
+              "value": "",
+              "description": "Ključni stručni partner i najvažniji izvor administrativnih podataka."
+            },
+            "en": {
+              "label": "Social work centres",
+              "value": "",
+              "description": "Key professional partner and primary administrative-data source."
+            }
+          }
+        },
+        {
+          "item_key": "jls",
+          "item_kind": "source",
+          "domain_code": "simpa.local_government",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Jedinice lokalne samouprave",
+              "value": "",
+              "description": "Planiranje usluga, budžeta, razvojnih prioriteta i javnih politika."
+            },
+            "en": {
+              "label": "Local governments",
+              "value": "",
+              "description": "Service, budget, development-priority and public-policy planning."
+            }
+          }
+        },
+        {
+          "item_key": "providers",
+          "item_kind": "source",
+          "domain_code": "simpa.service_availability",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Pružaoci usluga",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Service providers",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "education",
+          "item_kind": "source",
+          "domain_code": "simpa.intersectoral",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Obrazovanje",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Education",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "health",
+          "item_kind": "source",
+          "domain_code": "simpa.intersectoral",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Zdravstvo",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Health",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "employment",
+          "item_kind": "source",
+          "domain_code": "simpa.intersectoral",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Zapošljavanje",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Employment",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "civil",
+          "item_kind": "source",
+          "domain_code": "simpa.intersectoral",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Civilno društvo",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Civil society",
+              "value": "",
+              "description": ""
+            }
+          }
+        }
+      ]
+    },
+    {
+      "page_key": "platform.simpa",
+      "section_key": "data_domains",
+      "product_scope": "SIMPA",
+      "domain_code": "simpa.social_needs",
+      "visual_kind": "taxonomy",
+      "theme": "neutral",
+      "sort_order": 200,
+      "translations": {
+        "sr-Latn": {
+          "eyebrow": "DOMENI PODATAKA",
+          "title": "Šta se posmatra",
+          "lead": "Podaci se organizuju prema potrebama, rizicima, uslugama, kapacitetima i rezultatima — ne samo prema tome iz kog sistema dolaze.",
+          "body_html": ""
+        },
+        "en": {
+          "eyebrow": "DATA DOMAINS",
+          "title": "What is observed",
+          "lead": "Data is organised around needs, risks, services, capacity and outcomes — not only by source system.",
+          "body_html": ""
+        }
+      },
+      "items": [
+        {
+          "item_key": "needs",
+          "item_kind": "domain",
+          "domain_code": "simpa.social_needs",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Socijalne potrebe",
+              "value": "",
+              "description": "Struktura korisnika, domaćinstava, teritorijalna raspodela i položaj osetljivih grupa."
+            },
+            "en": {
+              "label": "Social needs",
+              "value": "",
+              "description": "User and household structure, territorial distribution and vulnerable groups."
+            }
+          }
+        },
+        {
+          "item_key": "poverty",
+          "item_kind": "domain",
+          "domain_code": "simpa.social_risks",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Siromaštvo i materijalna ugroženost",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Poverty and material deprivation",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "family",
+          "item_kind": "domain",
+          "domain_code": "simpa.family_children_youth",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Porodica, deca i mladi",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Family, children and youth",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "crisis",
+          "item_kind": "domain",
+          "domain_code": "simpa.violence_crisis",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Nasilje i krizne situacije",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Violence and crisis",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "older",
+          "item_kind": "domain",
+          "domain_code": "simpa.older_disability",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Starije osobe i invaliditet",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Older persons and disability",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "services",
+          "item_kind": "domain",
+          "domain_code": "simpa.service_availability",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Dostupnost usluga",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Service accessibility",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "capacity",
+          "item_kind": "domain",
+          "domain_code": "simpa.system_capacity",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Kapacitet sistema",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "System capacity",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "cooperation",
+          "item_kind": "domain",
+          "domain_code": "simpa.intersectoral",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Međusektorska saradnja",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Intersectoral cooperation",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "outcomes",
+          "item_kind": "domain",
+          "domain_code": "simpa.outcomes_effects",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Rezultati i efekti",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Outcomes and effects",
+              "value": "",
+              "description": ""
+            }
+          }
+        }
+      ]
+    },
+    {
+      "page_key": "platform.simpa",
+      "section_key": "indicators",
+      "product_scope": "SIMPA",
+      "domain_code": "simpa.indicators",
+      "visual_kind": "indicator-grid",
+      "theme": "simpa",
+      "sort_order": 300,
+      "translations": {
+        "sr-Latn": {
+          "eyebrow": "INDIKATORI",
+          "title": "Administrativni podaci postaju razvojni pokazatelji",
+          "lead": "Indikatori pomažu da se prati promena, prepozna nedovoljna pokrivenost i proceni gde je najveći prostor za preventivno delovanje.",
+          "body_html": ""
+        },
+        "en": {
+          "eyebrow": "INDICATORS",
+          "title": "Administrative data becomes development intelligence",
+          "lead": "Indicators help track change, identify gaps in coverage and assess where prevention can have the greatest effect.",
+          "body_html": ""
+        }
+      },
+      "items": [
+        {
+          "item_key": "entry_rate",
+          "item_kind": "indicator",
+          "domain_code": "simpa.indicators",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Stopa ulaska novih korisnika",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "New-user entry rate",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "duration",
+          "item_kind": "indicator",
+          "domain_code": "simpa.indicators",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Trajanje korišćenja prava i usluga",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Duration of benefit and service use",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "repeat",
+          "item_kind": "indicator",
+          "domain_code": "simpa.indicators",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Učestalost ponovljenih intervencija",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Repeated intervention frequency",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "territorial",
+          "item_kind": "indicator",
+          "domain_code": "simpa.social_risks",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Teritorijalna koncentracija rizika",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Territorial concentration of risk",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "family_vulnerability",
+          "item_kind": "indicator",
+          "domain_code": "simpa.family_children_youth",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Indeks porodične ranjivosti",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Family vulnerability index",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "child",
+          "item_kind": "indicator",
+          "domain_code": "simpa.family_children_youth",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Indeks dečje dobrobiti i ugroženosti",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Child wellbeing and vulnerability index",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "access",
+          "item_kind": "indicator",
+          "domain_code": "simpa.service_availability",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Indeks dostupnosti socijalnih usluga",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Social service accessibility index",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "intersector",
+          "item_kind": "indicator",
+          "domain_code": "simpa.intersectoral",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Indeks međusektorske saradnje",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Intersectoral cooperation index",
+              "value": "",
+              "description": ""
+            }
+          }
+        }
+      ]
+    },
+    {
+      "page_key": "platform.simpa",
+      "section_key": "decision_questions",
+      "product_scope": "SIMPA",
+      "domain_code": "simpa.local_government",
+      "visual_kind": "questions",
+      "theme": "dark",
+      "sort_order": 400,
+      "translations": {
+        "sr-Latn": {
+          "eyebrow": "OD PODATAKA DO ODLUKE",
+          "title": "Pitanja na koja sistem treba da pomogne da se odgovori",
+          "lead": "Vrednost SIMPA nije u broju grafikona, već u tome da institucije dobiju proverljivu osnovu za razvoj i evaluaciju politika.",
+          "body_html": ""
+        },
+        "en": {
+          "eyebrow": "FROM DATA TO DECISION",
+          "title": "Questions the system should help answer",
+          "lead": "SIMPA is valuable not because of the number of charts, but because institutions gain a verifiable basis for developing and evaluating policy.",
+          "body_html": ""
+        }
+      },
+      "items": [
+        {
+          "item_key": "q1",
+          "item_kind": "question",
+          "domain_code": "simpa.social_risks",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Koje grupe građana imaju najveći rizik od socijalne isključenosti?",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Which groups face the highest risk of social exclusion?",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "q2",
+          "item_kind": "question",
+          "domain_code": "simpa.service_availability",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Koje usluge nedostaju i gde ih treba razvijati?",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Which services are missing and where should they be developed?",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "q3",
+          "item_kind": "question",
+          "domain_code": "simpa.outcomes_effects",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Da li postojeće mere ostvaruju očekivane rezultate?",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Are current measures producing the expected results?",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "q4",
+          "item_kind": "question",
+          "domain_code": "simpa.local_government",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Kako usmeriti budžet ka najvećem društvenom efektu?",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "How should budgets be directed toward the greatest social effect?",
+              "value": "",
+              "description": ""
+            }
+          }
+        }
+      ]
+    },
+    {
+      "page_key": "platform.simpa",
+      "section_key": "implementation",
+      "product_scope": "SIMPA",
+      "domain_code": "shared.methodology",
+      "visual_kind": "timeline",
+      "theme": "neutral",
+      "sort_order": 500,
+      "translations": {
+        "sr-Latn": {
+          "eyebrow": "METODOLOGIJA",
+          "title": "Standardni ciklus implementacije",
+          "lead": "SIMPA uvodi metodologiju pre tehnologije: od ciljeva i kvaliteta podataka do indikatora, modelovanja, primene i kontinuiranog unapređenja.",
+          "body_html": ""
+        },
+        "en": {
+          "eyebrow": "METHODOLOGY",
+          "title": "A standard implementation cycle",
+          "lead": "SIMPA puts methodology before technology: from objectives and data quality through indicators, modelling, deployment and continuous improvement.",
+          "body_html": ""
+        }
+      },
+      "items": [
+        {
+          "item_key": "p0",
+          "item_kind": "step",
+          "domain_code": "simpa.local_government",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "01 Razvojni prioriteti",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "01 Development priorities",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "p1",
+          "item_kind": "step",
+          "domain_code": "simpa.social_protection",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "02 Analiza lokalnog sistema",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "02 Local-system analysis",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "p2",
+          "item_kind": "step",
+          "domain_code": "shared.data_governance",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "03 Model podataka i integracija",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "03 Data model and integration",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "p3",
+          "item_kind": "step",
+          "domain_code": "shared.data_governance",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "04 Kontrola kvaliteta",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "04 Data quality",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "p4",
+          "item_kind": "step",
+          "domain_code": "simpa.indicators",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "05 Razvoj indikatora",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "05 Indicator development",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "p5",
+          "item_kind": "step",
+          "domain_code": "shared.analytics",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "06 Analitičko i prediktivno modelovanje",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "06 Analytical and predictive modelling",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "p6",
+          "item_kind": "step",
+          "domain_code": "shared.reporting",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "07 Inteligencija odlučivanja",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "07 Decision intelligence",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "p7",
+          "item_kind": "step",
+          "domain_code": "simpa.local_government",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "08 Implementacija i jačanje kapaciteta",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "08 Deployment and capacity building",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "p8",
+          "item_kind": "step",
+          "domain_code": "shared.methodology",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "09 Kontinuirano unapređenje",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "09 Continuous improvement",
+              "value": "",
+              "description": ""
+            }
+          }
+        }
+      ]
+    },
+    {
+      "page_key": "platform.simpa",
+      "section_key": "responsible_data",
+      "product_scope": "SIMPA",
+      "domain_code": "simpa.data_governance",
+      "visual_kind": "trust",
+      "theme": "dark",
+      "sort_order": 600,
+      "translations": {
+        "sr-Latn": {
+          "eyebrow": "ODGOVORNA UPOTREBA PODATAKA",
+          "title": "Podaci ostaju pod institucionalnom kontrolom",
+          "lead": "SIMPA je projektovan tako da analitika ne ukida odgovornost institucije niti profesionalni sud. Zaštita podataka je deo metodologije, a ne dodatak.",
+          "body_html": ""
+        },
+        "en": {
+          "eyebrow": "RESPONSIBLE DATA USE",
+          "title": "Data remains under institutional control",
+          "lead": "SIMPA is designed so analytics does not displace institutional responsibility or professional judgement. Data protection is part of the methodology, not an add-on.",
+          "body_html": ""
+        }
+      },
+      "items": [
+        {
+          "item_key": "control",
+          "item_kind": "principle",
+          "domain_code": "simpa.data_governance",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Kontrola institucije",
+              "value": "",
+              "description": "Nadležna institucija zadržava kontrolu nad administrativnim podacima."
+            },
+            "en": {
+              "label": "Institutional control",
+              "value": "",
+              "description": "The responsible institution retains control of administrative data."
+            }
+          }
+        },
+        {
+          "item_key": "min",
+          "item_kind": "principle",
+          "domain_code": "simpa.data_governance",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Najmanji potreban obim",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Data minimisation",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "access",
+          "item_kind": "principle",
+          "domain_code": "simpa.data_governance",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Kontrolisan pristup",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Controlled access",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "pseudo",
+          "item_kind": "principle",
+          "domain_code": "simpa.data_governance",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Pseudonimizacija i agregacija",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Pseudonymisation and aggregation",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "audit",
+          "item_kind": "principle",
+          "domain_code": "shared.data_governance",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Sledljivost i revizijski trag",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Traceability and audit trail",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "human",
+          "item_kind": "principle",
+          "domain_code": "shared.ai_governance",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Stručna procena ostaje centralna",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Professional judgement remains central",
+              "value": "",
+              "description": ""
+            }
+          }
+        }
+      ]
+    },
+    {
+      "page_key": "platform.ordo",
+      "section_key": "destination_system",
+      "product_scope": "ORDO",
+      "domain_code": "ordo.destination_development",
+      "visual_kind": "system-map",
+      "theme": "ordo",
+      "sort_order": 100,
+      "translations": {
+        "sr-Latn": {
+          "eyebrow": "RAZVOJ DESTINACIJE",
+          "title": "Destinacija je povezan razvojni sistem",
+          "lead": "Priroda, prostor, ljudi, kultura, privreda i institucije stvaraju vrednost kroz međusobne odnose. ORDO zato ne posmatra turizam izolovano od lokalnog razvoja.",
+          "body_html": ""
+        },
+        "en": {
+          "eyebrow": "DESTINATION DEVELOPMENT",
+          "title": "A destination is an interconnected development system",
+          "lead": "Nature, space, people, culture, economy and institutions create value through their relationships. ORDO therefore does not isolate tourism from local development.",
+          "body_html": ""
+        }
+      },
+      "items": [
+        {
+          "item_key": "nature",
+          "item_kind": "domain",
+          "domain_code": "ordo.natural_resources",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Prirodni resursi",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Natural resources",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "heritage",
+          "item_kind": "domain",
+          "domain_code": "ordo.cultural_heritage",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Kulturno nasleđe",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Cultural heritage",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "offer",
+          "item_kind": "domain",
+          "domain_code": "ordo.tourism",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Turistička ponuda",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Tourism offer",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "economy",
+          "item_kind": "domain",
+          "domain_code": "ordo.local_economy",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Lokalna privreda",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Local economy",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "labour",
+          "item_kind": "domain",
+          "domain_code": "ordo.labour_market",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Tržište rada",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Labour market",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "space",
+          "item_kind": "domain",
+          "domain_code": "ordo.infrastructure_space",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Infrastruktura i prostor",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Infrastructure and space",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "environment",
+          "item_kind": "domain",
+          "domain_code": "ordo.sustainability",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Životna sredina i održivost",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Environment and sustainability",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "community",
+          "item_kind": "domain",
+          "domain_code": "ordo.community_inclusion",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Lokalna zajednica",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Local community",
+              "value": "",
+              "description": ""
+            }
+          }
+        }
+      ]
+    },
+    {
+      "page_key": "platform.ordo",
+      "section_key": "five_pillars",
+      "product_scope": "ORDO",
+      "domain_code": "shared.analytics",
+      "visual_kind": "pillars",
+      "theme": "dark",
+      "sort_order": 200,
+      "translations": {
+        "sr-Latn": {
+          "eyebrow": "KAKO ORDO GRADI ZNANJE",
+          "title": "Pet stubova inteligencije odlučivanja",
+          "lead": "Tehnologija dobija smisao tek kada se podaci i analitika spoje sa znanjem o mestu i odgovornošću ljudi koji odlučuju.",
+          "body_html": ""
+        },
+        "en": {
+          "eyebrow": "HOW ORDO BUILDS KNOWLEDGE",
+          "title": "Five pillars of decision intelligence",
+          "lead": "Technology becomes meaningful when data and analytics are connected with local knowledge and the responsibility of people who make decisions.",
+          "body_html": ""
+        }
+      },
+      "items": [
+        {
+          "item_key": "data",
+          "item_kind": "principle",
+          "domain_code": "shared.data_governance",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Podaci",
+              "value": "",
+              "description": "Polazna osnova za razumevanje destinacije."
+            },
+            "en": {
+              "label": "Data",
+              "value": "",
+              "description": "The starting point for understanding the destination."
+            }
+          }
+        },
+        {
+          "item_key": "knowledge",
+          "item_kind": "principle",
+          "domain_code": "shared.methodology",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Znanje",
+              "value": "",
+              "description": "Daje podacima kontekst i povezuje ih sa razvojnim ciljevima."
+            },
+            "en": {
+              "label": "Knowledge",
+              "value": "",
+              "description": "Gives data context and connects it with development goals."
+            }
+          }
+        },
+        {
+          "item_key": "analytics",
+          "item_kind": "principle",
+          "domain_code": "shared.analytics",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Analitika",
+              "value": "",
+              "description": "Pretvara informacije u pokazatelje, modele i razvojne obrasce."
+            },
+            "en": {
+              "label": "Analytics",
+              "value": "",
+              "description": "Turns information into indicators, models and development patterns."
+            }
+          }
+        },
+        {
+          "item_key": "ai",
+          "item_kind": "principle",
+          "domain_code": "shared.ai_governance",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Veštačka inteligencija",
+              "value": "",
+              "description": "Proširuje mogućnosti analize i poređenja scenarija."
+            },
+            "en": {
+              "label": "Artificial intelligence",
+              "value": "",
+              "description": "Extends analytical and scenario-comparison capacity."
+            }
+          }
+        },
+        {
+          "item_key": "human",
+          "item_kind": "principle",
+          "domain_code": "shared.ai_governance",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Ljudsko iskustvo",
+              "value": "",
+              "description": "Lokalni kontekst i odgovornost ostaju nezamenljivi."
+            },
+            "en": {
+              "label": "Human experience",
+              "value": "",
+              "description": "Local context and human responsibility remain indispensable."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "page_key": "platform.ordo",
+      "section_key": "architecture",
+      "product_scope": "ORDO",
+      "domain_code": "ordo.scenarios_strategy",
+      "visual_kind": "timeline",
+      "theme": "ordo",
+      "sort_order": 300,
+      "translations": {
+        "sr-Latn": {
+          "eyebrow": "ARHITEKTURA ORDO",
+          "title": "Od razvojnog cilja do odluke",
+          "lead": "ORDO organizuje proces inteligencije odlučivanja kao jasan sled, tako da svaki podatak i model imaju značenje u odnosu na razvojni cilj.",
+          "body_html": ""
+        },
+        "en": {
+          "eyebrow": "ORDO ARCHITECTURE",
+          "title": "From development goal to decision",
+          "lead": "ORDO organises decision intelligence as a clear sequence so every data point and model has meaning in relation to the development goal.",
+          "body_html": ""
+        }
+      },
+      "items": [
+        {
+          "item_key": "goal",
+          "item_kind": "step",
+          "domain_code": "ordo.destination_development",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "01 Razvojni / poslovni cilj",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "01 Development / business goal",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "sources",
+          "item_kind": "step",
+          "domain_code": "shared.data_governance",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "02 Integracija izvora",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "02 Source integration",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "indicators",
+          "item_kind": "step",
+          "domain_code": "ordo.indicators",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "03 Razvojni indikatori",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "03 Development indicators",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "model",
+          "item_kind": "step",
+          "domain_code": "shared.analytics",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "04 Analitičko modelovanje",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "04 Analytical modelling",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "predict",
+          "item_kind": "step",
+          "domain_code": "ordo.scenarios_strategy",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "05 Prediktivna logika",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "05 Predictive logic",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "synthesis",
+          "item_kind": "step",
+          "domain_code": "shared.methodology",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "06 Sinteza znanja",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "06 Knowledge synthesis",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "decision",
+          "item_kind": "step",
+          "domain_code": "ordo.investment_planning",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "07 Podrška odlučivanju",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "07 Decision support",
+              "value": "",
+              "description": ""
+            }
+          }
+        }
+      ]
+    },
+    {
+      "page_key": "platform.ordo",
+      "section_key": "potentials",
+      "product_scope": "ORDO",
+      "domain_code": "ordo.development_potentials",
+      "visual_kind": "taxonomy",
+      "theme": "neutral",
+      "sort_order": 400,
+      "translations": {
+        "sr-Latn": {
+          "eyebrow": "AKTIVIRANJE POTENCIJALA",
+          "title": "Razvojni potencijali koji često ostaju izvan klasičnih analiza",
+          "lead": "ORDO uključuje resurse i aktere koji mogu stvoriti novu razvojnu vrednost kada postanu deo zajedničke vizije destinacije.",
+          "body_html": ""
+        },
+        "en": {
+          "eyebrow": "ACTIVATING POTENTIAL",
+          "title": "Development potential often missed by conventional analysis",
+          "lead": "ORDO includes resources and actors that can create new value when they become part of a shared destination vision.",
+          "body_html": ""
+        }
+      },
+      "items": [
+        {
+          "item_key": "producers",
+          "item_kind": "domain",
+          "domain_code": "ordo.local_economy",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Lokalni proizvođači i porodična gazdinstva",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Local producers and family farms",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "crafts",
+          "item_kind": "domain",
+          "domain_code": "ordo.local_economy",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Zanatlije i mala preduzeća",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Crafts and small businesses",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "creative",
+          "item_kind": "domain",
+          "domain_code": "ordo.cultural_heritage",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Kreativne industrije i kulturne ustanove",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Creative industries and cultural institutions",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "entrepreneurship",
+          "item_kind": "domain",
+          "domain_code": "ordo.local_economy",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Preduzetničke inicijative",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Entrepreneurial initiatives",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "youth",
+          "item_kind": "domain",
+          "domain_code": "ordo.community_inclusion",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Mladi i nedovoljno uključene grupe",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Youth and underrepresented groups",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "education",
+          "item_kind": "domain",
+          "domain_code": "ordo.labour_market",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Obrazovanje, znanje i kompetencije",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Education, knowledge and skills",
+              "value": "",
+              "description": ""
+            }
+          }
+        }
+      ]
+    },
+    {
+      "page_key": "platform.ordo",
+      "section_key": "scenario_outcomes",
+      "product_scope": "ORDO",
+      "domain_code": "ordo.scenarios_strategy",
+      "visual_kind": "outcomes",
+      "theme": "dark",
+      "sort_order": 500,
+      "translations": {
+        "sr-Latn": {
+          "eyebrow": "SCENARIJI",
+          "title": "Scenariji se vrednuju kroz više povezanih ciljeva",
+          "lead": "Razvojni pravac nije dobar samo zato što povećava turistički promet. ORDO posmatra ukupnu vrednost za destinaciju i lokalnu zajednicu.",
+          "body_html": ""
+        },
+        "en": {
+          "eyebrow": "SCENARIOS",
+          "title": "Scenarios are assessed across connected goals",
+          "lead": "A development path is not successful merely because it increases visitor volume. ORDO considers total value for the destination and local community.",
+          "body_html": ""
+        }
+      },
+      "items": [
+        {
+          "item_key": "competitiveness",
+          "item_kind": "outcome",
+          "domain_code": "ordo.destination_development",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Konkurentnost",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Competitiveness",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "sustainability",
+          "item_kind": "outcome",
+          "domain_code": "ordo.sustainability",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Održivost",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Sustainability",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "inclusion",
+          "item_kind": "outcome",
+          "domain_code": "ordo.community_inclusion",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Razvojna inkluzija",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Development inclusion",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "employment",
+          "item_kind": "outcome",
+          "domain_code": "ordo.labour_market",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Zapošljavanje",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Employment",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "quality",
+          "item_kind": "outcome",
+          "domain_code": "ordo.community_inclusion",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Kvalitet života",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Quality of life",
+              "value": "",
+              "description": ""
+            }
+          }
+        }
+      ]
+    },
+    {
+      "page_key": "platform.ordo",
+      "section_key": "human_ai_learning",
+      "product_scope": "ORDO",
+      "domain_code": "ordo.monitoring_learning",
+      "visual_kind": "cycle",
+      "theme": "ordo",
+      "sort_order": 600,
+      "translations": {
+        "sr-Latn": {
+          "eyebrow": "LJUDI + AI + KONTINUIRANO UČENJE",
+          "title": "AI proširuje analizu. Ljudi određuju pravac. Sistem uči iz rezultata.",
+          "lead": "Svaka realizovana odluka stvara nove podatke i iskustvo. Oni se vraćaju u sledeći ciklus analize, unapređuju pokazatelje i pomažu preciznijem planiranju.",
+          "body_html": ""
+        },
+        "en": {
+          "eyebrow": "PEOPLE + AI + CONTINUOUS LEARNING",
+          "title": "AI extends analysis. People set direction. The system learns from outcomes.",
+          "lead": "Every implemented decision creates new data and experience. These feed the next analytical cycle, improve indicators and support more precise planning.",
+          "body_html": ""
+        }
+      },
+      "items": [
+        {
+          "item_key": "observe",
+          "item_kind": "step",
+          "domain_code": "shared.reporting",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Posmatraj rezultate",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Observe outcomes",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "learn",
+          "item_kind": "step",
+          "domain_code": "ordo.monitoring_learning",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Pretvori iskustvo u novo znanje",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Turn experience into new knowledge",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "refine",
+          "item_kind": "step",
+          "domain_code": "ordo.indicators",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Unapredi indikatore i modele",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Refine indicators and models",
+              "value": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "item_key": "decide",
+          "item_kind": "step",
+          "domain_code": "ordo.investment_planning",
+          "is_featured": false,
+          "translations": {
+            "sr-Latn": {
+              "label": "Planiraj naredni razvojni ciklus",
+              "value": "",
+              "description": ""
+            },
+            "en": {
+              "label": "Plan the next development cycle",
+              "value": "",
+              "description": ""
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{% if sections %}
+<div class="semantic-domain-stack">
+  {% for section in sections %}
+  <section class="semantic-domain-section theme-{{ section.theme }} visual-{{ section.visual_kind }}" id="{{ section.key }}">
+    <div class="shell">
+      <header class="semantic-domain-heading">
+        <div>{% if section.eyebrow %}<p class="eyebrow">{{ section.eyebrow }}</p>{% endif %}<h2>{{ section.title }}</h2></div>
+        {% if section.lead %}<p>{{ section.lead }}</p>{% endif %}
+      </header>
+      {% if section.body_html %}<div class="prose semantic-domain-body">{{ section.body_html|safe }}</div>{% endif %}
+      {% if section.items %}
+      <div class="semantic-domain-items kind-{{ section.visual_kind }}">
+        {% for item in section.items %}
+          {% set icon = semantic_icon(section.key, item.key, item.domain_code, item.label, item.kind) %}
+          <article class="approved-domain-item semantic-domain-item{% if item.featured %} is-featured{% endif %}" data-semantic-icon="{{ icon }}">
+            <div class="semantic-domain-item-top"><span><svg><use href="/static/img/icons.svg#{{ icon }}"/></svg></span><i>{{ '%02d'|format(loop.index) }}</i></div>
+            <h3>{{ item.label }}</h3>
+            {% if item.value %}<strong class="semantic-domain-value">{{ item.value }}</strong>{% endif %}
+            {% if item.description %}<p>{{ item.description }}</p>{% endif %}
+            {% if section.visual_kind in ['indicator-grid','outcomes'] %}<div class="semantic-mini-data"><span></span><span></span><span></span><span></span></div>{% endif %}
+          </article>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </section>
+  {% endfor %}
+</div>
+{% endif %}

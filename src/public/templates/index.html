@@ -1,13 +1,105 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="foundation-shell">
-  <p class="eyebrow">ISI PLATFORM — FOUNDATION</p>
-  <h1>Institut za socijalnu inkluziju</h1>
-  <p>Čist tehnički skeleton za novi institucionalni web i zajedničku platformu.</p>
-  <div class="domain-grid">
-    <article><h2>SIMPA</h2><p>Flagship domain application — foundation boundary only.</p></article>
-    <article><h2>ORDO</h2><p>Flagship domain application — foundation boundary only.</p></article>
+<section class="semantic-home-hero" data-content-source="database" data-page-excerpt="{{ page.excerpt }}">
+  <div class="shell semantic-home-hero-grid">
+    <div class="semantic-hero-copy">
+      <p class="eyebrow">ISI – {{ 'INSTITUTE FOR SOCIAL INCLUSION' if locale == 'en' else 'INSTITUT ZA SOCIJALNU INKLUZIJU' }}</p>
+      <h1>{{ 'Research that connects values, evidence and public action.' if locale == 'en' else 'Istraživanje koje povezuje vrednosti, dokaze i javno delovanje.' }}</h1>
+      <p class="semantic-hero-lead">{{ 'ISI produces knowledge, connects data and strengthens capacities so public policies can be inclusive, fair and evidence-based.' if locale == 'en' else 'ISI proizvodi znanje, povezuje podatke i jača kapacitete kako bi javne politike bile inkluzivne, pravične i zasnovane na dokazima.' }}</p>
+      <a class="button button-primary" href="#flagship">{{ 'Explore our work' if locale == 'en' else 'Upoznajte naš rad' }} →</a>
+      <div class="semantic-proof-row">
+        <span><svg><use href="/static/img/icons.svg#institution"/></svg><b>{{ 'Institutional knowledge' if locale == 'en' else 'Institucionalno znanje' }}</b><small>{{ 'research, policy and public value' if locale == 'en' else 'istraživanje, politike i javna vrednost' }}</small></span>
+        <span><svg><use href="/static/img/icons.svg#shared-layer"/></svg><b>{{ 'Domain architecture' if locale == 'en' else 'Domenska arhitektura' }}</b><small>SIMPA · ORDO · ISI</small></span>
+        <span><svg><use href="/static/img/icons.svg#source"/></svg><b>{{ 'Traceable sources' if locale == 'en' else 'Sledljivi izvori' }}</b><small>{{ 'evidence with provenance' if locale == 'en' else 'dokazi sa poreklom' }}</small></span>
+        <span><svg><use href="/static/img/icons.svg#human-responsibility"/></svg><b>{{ 'Human responsibility' if locale == 'en' else 'Ljudska odgovornost' }}</b><small>{{ 'technology supports judgment' if locale == 'en' else 'tehnologija podržava prosuđivanje' }}</small></span>
+      </div>
+    </div>
+
+    <div class="semantic-system-diagram" aria-label="{{ 'ISI evidence and public action model' if locale == 'en' else 'ISI model dokaza i javnog delovanja' }}">
+      <div class="semantic-system-center"><svg><use href="/static/img/icons.svg#people"/></svg><strong>ISI</strong></div>
+      <div class="semantic-system-axis axis-x"></div><div class="semantic-system-axis axis-y"></div>
+      <div class="semantic-system-ring ring-a"></div><div class="semantic-system-ring ring-b"></div>
+      <div class="semantic-system-node node-research"><span><svg><use href="/static/img/icons.svg#research"/></svg></span><b>{{ 'Research' if locale == 'en' else 'Istraživanje' }}</b></div>
+      <div class="semantic-system-node node-data"><span><svg><use href="/static/img/icons.svg#analytics"/></svg></span><b>{{ 'Data' if locale == 'en' else 'Podaci' }}</b></div>
+      <div class="semantic-system-node node-values"><span><svg><use href="/static/img/icons.svg#rights"/></svg></span><b>{{ 'Values' if locale == 'en' else 'Vrednosti' }}</b></div>
+      <div class="semantic-system-node node-inclusion"><span><svg><use href="/static/img/icons.svg#inclusion"/></svg></span><b>{{ 'Inclusion' if locale == 'en' else 'Uključivanje' }}</b></div>
+      <div class="semantic-system-node node-decisions"><span><svg><use href="/static/img/icons.svg#decision"/></svg></span><b>{{ 'Decisions' if locale == 'en' else 'Odlučivanje' }}</b></div>
+      <div class="semantic-botanical" aria-hidden="true"></div>
+    </div>
   </div>
-  <p class="note">Finalni dizajn i migracija sadržaja sa isi.rs pripadaju narednim fazama.</p>
 </section>
+
+<section id="flagship" class="semantic-flagship-section">
+  <div class="shell semantic-flagship-grid">
+    {% for platform in platforms %}
+      {% set is_simpa = platform.page_key == 'platform.simpa' %}
+      <article class="semantic-flagship-card {{ 'simpa' if is_simpa else 'ordo' }}">
+        <div class="semantic-flagship-lockup">
+          <img src="{{ '/static/img/simpa-mark.svg' if is_simpa else '/static/img/ordo-mark.svg' }}" alt="{{ platform.title }}">
+          <div><h2>{{ platform.title }}</h2><p>{{ 'Platforma za socijalnu politiku temeljenu na dokazima' if is_simpa and locale != 'en' else ('Evidence-based social policy platform' if is_simpa else ('Arhitektura odluka zasnovanih na podacima i modelima' if locale != 'en' else 'Decision architecture based on data and models')) }}</p></div>
+        </div>
+        <div class="semantic-flagship-features">
+          {% if is_simpa %}
+            <span><svg><use href="/static/img/icons.svg#indicator"/></svg>{{ 'Indicators and social-inclusion trends' if locale == 'en' else 'Indikatori i trendovi socijalne inkluzije' }}</span>
+            <span><svg><use href="/static/img/icons.svg#analytics"/></svg>{{ 'Comparative analysis and visualisation' if locale == 'en' else 'Uporedne analize i vizuelizacije podataka' }}</span>
+            <span><svg><use href="/static/img/icons.svg#public-policy"/></svg>{{ 'Evidence for policy design' if locale == 'en' else 'Podrška izradi politika zasnovanih na dokazima' }}</span>
+          {% else %}
+            <span><svg><use href="/static/img/icons.svg#model"/></svg>{{ 'Models and scenarios for decisions' if locale == 'en' else 'Modeli i scenariji za donošenje odluka' }}</span>
+            <span><svg><use href="/static/img/icons.svg#goal"/></svg>{{ 'Intelligence for prioritisation' if locale == 'en' else 'Inteligencija za prioritetizaciju ciljeva' }}</span>
+            <span><svg><use href="/static/img/icons.svg#outcomes"/></svg>{{ 'Traceable results and recommendations' if locale == 'en' else 'Praćenje rezultata i preporuke' }}</span>
+          {% endif %}
+        </div>
+        <a class="semantic-flagship-cta" href="{{ ('/en/simpa/' if locale == 'en' else '/simpa/') if is_simpa else ('/en/ordo/' if locale == 'en' else '/ordo/') }}">{{ 'Visit' if locale == 'en' else 'Posetite' }} {{ platform.title }} →</a>
+      </article>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="semantic-values-strip">
+  <div class="shell semantic-values-grid">
+    <article><span><svg><use href="/static/img/icons.svg#outcome-check"/></svg></span><div><h3>{{ 'Evidence' if locale == 'en' else 'Dokazi' }}</h3><p>{{ 'Verified sources and transparent methods.' if locale == 'en' else 'Provereni izvori i transparentne metode.' }}</p></div></article>
+    <article><span><svg><use href="/static/img/icons.svg#book"/></svg></span><div><h3>{{ 'Knowledge' if locale == 'en' else 'Znanje' }}</h3><p>{{ 'Research translated into applicable guidance.' if locale == 'en' else 'Istraživanje prevedeno u primenljive smernice.' }}</p></div></article>
+    <article><span><svg><use href="/static/img/icons.svg#analytics"/></svg></span><div><h3>{{ 'Analytics' if locale == 'en' else 'Analitika' }}</h3><p>{{ 'Indicators and models for complex systems.' if locale == 'en' else 'Indikatori i modeli za složene sisteme.' }}</p></div></article>
+    <article><span><svg><use href="/static/img/icons.svg#human-responsibility"/></svg></span><div><h3>{{ 'Human responsibility' if locale == 'en' else 'Ljudska odgovornost' }}</h3><p>{{ 'People remain accountable for institutional decisions.' if locale == 'en' else 'Ljudi ostaju odgovorni za institucionalne odluke.' }}</p></div></article>
+  </div>
+</section>
+
+<section class="semantic-resource-preview">
+  <div class="shell semantic-resource-preview-grid">
+    <article class="semantic-preview-panel documents-preview">
+      <header><div><span><svg><use href="/static/img/icons.svg#report"/></svg></span><div><h2>{{ 'Documents' if locale == 'en' else 'Dokumenti' }}</h2><p>{{ 'Organised by source institution.' if locale == 'en' else 'Organizovani prema instituciji izvora.' }}</p></div></div><a href="{{ '/en/dokumenti/' if locale == 'en' else '/dokumenti/' }}">{{ 'Browse all' if locale == 'en' else 'Pregledajte sve' }} →</a></header>
+      <div class="semantic-document-preview-grid">
+        {% if home_document_groups %}
+          {% for group in home_document_groups[:4] %}
+            <div class="semantic-institution-preview"><span class="semantic-institution-mark semantic-institution-{{ group.key }}">{{ group.mark }}</span><strong>{{ group.label }}</strong>{% for item in group.items[:2] %}<a href="{{ item.href }}"><svg><use href="/static/img/icons.svg#{{ document_icon(item.document_type) }}"/></svg><span>{{ item.title }}</span></a>{% endfor %}</div>
+          {% endfor %}
+        {% else %}<p class="semantic-empty">{{ 'The migrated document index is available on the Documents page.' if locale == 'en' else 'Migrirani indeks dokumenata dostupan je na stranici Dokumenti.' }}</p>{% endif %}
+      </div>
+    </article>
+
+    <article class="semantic-preview-panel library-preview">
+      <header><div><span><svg><use href="/static/img/icons.svg#publication"/></svg></span><div><h2>{{ 'Library' if locale == 'en' else 'Biblioteka' }}</h2><p>{{ 'Publications, studies and practical resources.' if locale == 'en' else 'Publikacije, studije i praktični resursi.' }}</p></div></div><a href="{{ '/en/biblioteka/' if locale == 'en' else '/biblioteka/' }}">{{ 'Explore' if locale == 'en' else 'Istražite' }} →</a></header>
+      <div class="semantic-mini-search"><svg><use href="/static/img/icons.svg#search"/></svg><span>{{ 'Search the library' if locale == 'en' else 'Pretražite biblioteku' }}</span></div>
+      <div class="semantic-library-preview-grid">
+        {% if home_library_entries %}
+          {% for entry in home_library_entries[:4] %}
+            <a href="{{ entry.href }}" class="semantic-library-preview-card"><div class="semantic-cover">{% if entry.image_src %}<img src="{{ entry.image_src }}" alt="">{% else %}<svg><use href="/static/img/icons.svg#{{ semantic_icon('', '', '', entry.collection, 'domain') }}"/></svg><b>ISI</b>{% endif %}</div><strong>{{ entry.title }}</strong><small>{{ entry.collection }}{% if entry.year %} · {{ entry.year }}{% endif %}</small></a>
+          {% endfor %}
+        {% else %}<p class="semantic-empty">{{ 'The migrated library is ready for enrichment.' if locale == 'en' else 'Migrirana biblioteka je spremna za obogaćivanje.' }}</p>{% endif %}
+      </div>
+    </article>
+
+    <article class="semantic-preview-panel inclusion-preview">
+      <header><div><span><svg><use href="/static/img/icons.svg#inclusion"/></svg></span><div><h2>{{ 'Inclusive development' if locale == 'en' else 'Inkluzivni razvoj' }}</h2><p>{{ 'Partnerships, tools and practice.' if locale == 'en' else 'Partnerstva, alati i primeri prakse.' }}</p></div></div><a href="{{ '/en/inkluzivni-razvoj/' if locale == 'en' else '/inkluzivni-razvoj/' }}">{{ 'Learn more' if locale == 'en' else 'Saznajte više' }} →</a></header>
+      <div class="semantic-inclusion-preview-grid">
+        <div><span><svg><use href="/static/img/icons.svg#cooperation"/></svg></span><strong>{{ 'Partnerships' if locale == 'en' else 'Partnerstva' }}</strong><p>{{ 'Institutions, researchers and communities.' if locale == 'en' else 'Institucije, istraživači i zajednice.' }}</p></div>
+        <div><span><svg><use href="/static/img/icons.svg#toolkit"/></svg></span><strong>{{ 'ISI tools' if locale == 'en' else 'ISI alati' }}</strong><p>SIMPA · ORDO · {{ 'domain knowledge' if locale == 'en' else 'domensko znanje' }}</p></div>
+        <div><span><svg><use href="/static/img/icons.svg#outcomes"/></svg></span><strong>{{ 'Practice' if locale == 'en' else 'Primeri dobre prakse' }}</strong><p>{{ 'Methods and cases from which institutions can learn.' if locale == 'en' else 'Metode i primeri iz kojih institucije mogu učiti.' }}</p></div>
+      </div>
+      <div class="semantic-topic-chips"><span><svg><use href="/static/img/icons.svg#social-policy"/></svg>{{ 'Socijalna zaštita' if locale != 'en' else 'Social protection' }}</span><span><svg><use href="/static/img/icons.svg#employment"/></svg>{{ 'Zapošljavanje' if locale != 'en' else 'Employment' }}</span><span><svg><use href="/static/img/icons.svg#education"/></svg>{{ 'Obrazovanje' if locale != 'en' else 'Education' }}</span><span><svg><use href="/static/img/icons.svg#health"/></svg>{{ 'Zdravstvo' if locale != 'en' else 'Health' }}</span><span><svg><use href="/static/img/icons.svg#municipality"/></svg>{{ 'Lokalni razvoj' if locale != 'en' else 'Local development' }}</span></div>
+    </article>
+  </div>
+</section>
+
+<section class="approved-trust-strip semantic-trust-strip"><div class="shell approved-trust-grid"><article><span><svg><use href="/static/img/icons.svg#quality"/></svg></span><div><strong>{{ 'Evidence-based' if locale == 'en' else 'Zasnovano na dokazima' }}</strong><p>{{ 'Transparent methods and traceable sources.' if locale == 'en' else 'Transparentne metode i proverljivi izvori.' }}</p></div></article><article><span><svg><use href="/static/img/icons.svg#professional"/></svg></span><div><strong>{{ 'Independent and expert' if locale == 'en' else 'Nezavisno i stručno' }}</strong><p>{{ 'Research integrity and professional standards.' if locale == 'en' else 'Istraživački integritet i stručni standardi.' }}</p></div></article><article><span><svg><use href="/static/img/icons.svg#source-integration"/></svg></span><div><strong>{{ 'Open and accessible' if locale == 'en' else 'Otvoreno i dostupno' }}</strong><p>{{ 'Knowledge designed for public value and participation.' if locale == 'en' else 'Znanje usmereno ka javnoj vrednosti i učešću.' }}</p></div></article><article><span><svg><use href="/static/img/icons.svg#access-control"/></svg></span><div><strong>{{ 'Responsible data use' if locale == 'en' else 'Odgovorno korišćenje podataka' }}</strong><p>{{ 'Privacy, governance and human responsibility.' if locale == 'en' else 'Privatnost, upravljanje i ljudska odgovornost.' }}</p></div></article></div></section>
 {% endblock %}

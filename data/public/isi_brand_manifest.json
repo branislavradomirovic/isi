@@ -1,0 +1,16 @@
+{
+  "source_path": "assets/ISILogo",
+  "source_sha256": "18d1fba666156880cf2f8168afd20083524d2fd8347e5968c813fb534694a2f9",
+  "served_path": "src/public/static/img/brand/isi-logo.svg",
+  "served_sha256": "18d1fba666156880cf2f8168afd20083524d2fd8347e5968c813fb534694a2f9",
+  "served_url": "/static/img/brand/isi-logo.svg",
+  "source_type": "svg",
+  "served_type": "svg",
+  "variant": "lockup",
+  "policy": "copied from user-owned assets/ISILogo; source asset is never modified",
+  "transparent_served_path": "src/public/static/img/brand/isi-logo-transparent.svg",
+  "transparent_served_sha256": "18d1fba666156880cf2f8168afd20083524d2fd8347e5968c813fb534694a2f9",
+  "transparent_served_url": "/static/img/brand/isi-logo-transparent.svg",
+  "background_rects_removed": 0,
+  "render_policy": "source untouched; transparent web derivative + CSS multiply fallback"
+}
