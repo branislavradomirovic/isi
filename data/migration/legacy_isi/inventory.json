@@ -1,0 +1,450 @@
+{
+  "schema_version": 1,
+  "base_url": "https://isi.rs/",
+  "generated_at": "2026-08-27T15:11:24+00:00",
+  "pages": [
+    {
+      "source_url": "https://isi.rs/",
+      "legacy_path": "/",
+      "title": "ISI - Institut za socijalnu inkluziju | Istraživanja",
+      "language": "sr-Latn",
+      "http_status": 200,
+      "final_url": "https://isi.rs/",
+      "canonical_url": "https://isi.rs/",
+      "meta_description": "Institut za socijalnu inkluziju nastaje iz više od 25 godina rada Centra za istraživanje etniciteta. Inkluzija, pravda, solidarnost, ravnopravnost",
+      "content_type": "page",
+      "content_chars": 1060,
+      "content_sha256": "e8990fd031aece97763f2c44733dcedfda71e33122101401fc88ab27a6e49e46",
+      "discovered_from": "seed",
+      "fetched_at": "2026-08-27T15:11:11+00:00",
+      "error": ""
+    },
+    {
+      "source_url": "https://isi.rs/aktivnosti/",
+      "legacy_path": "/aktivnosti/",
+      "title": "Aktivnosti - ISI",
+      "language": "sr-Latn",
+      "http_status": 200,
+      "final_url": "https://isi.rs/aktivnosti/",
+      "canonical_url": "https://isi.rs/aktivnosti/",
+      "meta_description": "",
+      "content_type": "page",
+      "content_chars": 1102,
+      "content_sha256": "3b051812e5e58abb5b370762faafe7b2faaef0cbbdb835c039e5b3ea97fbb64a",
+      "discovered_from": "seed",
+      "fetched_at": "2026-08-27T15:11:13+00:00",
+      "error": ""
+    },
+    {
+      "source_url": "https://isi.rs/biblioteka",
+      "legacy_path": "/biblioteka",
+      "title": "Biblioteka - ISI",
+      "language": "sr-Latn",
+      "http_status": 200,
+      "final_url": "https://isi.rs/biblioteka/",
+      "canonical_url": "https://isi.rs/biblioteka/",
+      "meta_description": "Biblioteka Archive - ISI",
+      "content_type": "page",
+      "content_chars": 1147,
+      "content_sha256": "c493ae09018f05083b26118dfd7fe2b097645fc39ec97def585ebcc347fe4611",
+      "discovered_from": "seed",
+      "fetched_at": "2026-08-27T15:11:16+00:00",
+      "error": ""
+    },
+    {
+      "source_url": "https://isi.rs/biblioteka/",
+      "legacy_path": "/biblioteka/",
+      "title": "Biblioteka - ISI",
+      "language": "sr-Latn",
+      "http_status": 200,
+      "final_url": "https://isi.rs/biblioteka/",
+      "canonical_url": "https://isi.rs/biblioteka/",
+      "meta_description": "Biblioteka Archive - ISI",
+      "content_type": "page",
+      "content_chars": 1147,
+      "content_sha256": "c493ae09018f05083b26118dfd7fe2b097645fc39ec97def585ebcc347fe4611",
+      "discovered_from": "https://isi.rs/biblioteka/page/2/",
+      "fetched_at": "2026-08-27T15:11:24+00:00",
+      "error": ""
+    },
+    {
+      "source_url": "https://isi.rs/biblioteka/page/2/",
+      "legacy_path": "/biblioteka/page/2/",
+      "title": "Biblioteka - Page 2 of 3 - ISI",
+      "language": "sr-Latn",
+      "http_status": 200,
+      "final_url": "https://isi.rs/biblioteka/page/2/",
+      "canonical_url": "https://isi.rs/biblioteka/page/2/",
+      "meta_description": "Biblioteka Archive - Page 2 of 3 - ISI",
+      "content_type": "page",
+      "content_chars": 1166,
+      "content_sha256": "81d96de382bac65ed013c57290952a035bd296514f833795085ae8537fb311c1",
+      "discovered_from": "https://isi.rs/biblioteka",
+      "fetched_at": "2026-08-27T15:11:22+00:00",
+      "error": ""
+    },
+    {
+      "source_url": "https://isi.rs/biblioteka/page/3/",
+      "legacy_path": "/biblioteka/page/3/",
+      "title": "Biblioteka - Page 3 of 3 - ISI",
+      "language": "sr-Latn",
+      "http_status": 200,
+      "final_url": "https://isi.rs/biblioteka/page/3/",
+      "canonical_url": "https://isi.rs/biblioteka/page/3/",
+      "meta_description": "Biblioteka Archive - Page 3 of 3 - ISI",
+      "content_type": "page",
+      "content_chars": 463,
+      "content_sha256": "24837a8353a6a3714136fdd065efc4a26945d7b30334b2cb1493c6fa7a8e1db4",
+      "discovered_from": "https://isi.rs/biblioteka",
+      "fetched_at": "2026-08-27T15:11:23+00:00",
+      "error": ""
+    },
+    {
+      "source_url": "https://isi.rs/dokumenti/",
+      "legacy_path": "/dokumenti/",
+      "title": "Dokumenti - ISI",
+      "language": "sr-Latn",
+      "http_status": 200,
+      "final_url": "https://isi.rs/dokumenti/",
+      "canonical_url": "https://isi.rs/dokumenti/",
+      "meta_description": "",
+      "content_type": "page",
+      "content_chars": 1690,
+      "content_sha256": "713ec27cab1da33efc99caead77268451082757b7938b3328b4145d8556f4a8d",
+      "discovered_from": "seed",
+      "fetched_at": "2026-08-27T15:11:14+00:00",
+      "error": ""
+    },
+    {
+      "source_url": "https://isi.rs/en/homepage-english/",
+      "legacy_path": "/en/homepage-english/",
+      "title": "Homepage - English - ISI",
+      "language": "en",
+      "http_status": 200,
+      "final_url": "https://isi.rs/en/homepage-english/",
+      "canonical_url": "https://isi.rs/en/homepage-english/",
+      "meta_description": "",
+      "content_type": "page",
+      "content_chars": 64,
+      "content_sha256": "12edd811f5221363a6cb34d2bff396c1a1596060949c43ecb038b579e3bc7e76",
+      "discovered_from": "seed",
+      "fetched_at": "2026-08-27T15:11:18+00:00",
+      "error": ""
+    },
+    {
+      "source_url": "https://isi.rs/inkluzivni-razvoj/",
+      "legacy_path": "/inkluzivni-razvoj/",
+      "title": "Inkluzivni razvoj - ISI",
+      "language": "sr-Latn",
+      "http_status": 200,
+      "final_url": "https://isi.rs/inkluzivni-razvoj/",
+      "canonical_url": "https://isi.rs/inkluzivni-razvoj/",
+      "meta_description": "",
+      "content_type": "page",
+      "content_chars": 1339,
+      "content_sha256": "437d1750b165d7ffa0d33399b785ce852f8daed7633f606dbca45cd2fd9bfe66",
+      "discovered_from": "seed",
+      "fetched_at": "2026-08-27T15:11:17+00:00",
+      "error": ""
+    },
+    {
+      "source_url": "https://isi.rs/medjunarodna-konferencija-inkluzivna-revolucija-novi-horizonti-drustvene-pravde-beograd-23-25-april-2026-godine/",
+      "legacy_path": "/medjunarodna-konferencija-inkluzivna-revolucija-novi-horizonti-drustvene-pravde-beograd-23-25-april-2026-godine/",
+      "title": "Međunarodna konferencija Inkluzivna revolucija: Novi horizonti društvene pravde Beograd, 23–25. april 2026. godine - ISI",
+      "language": "sr-Latn",
+      "http_status": 200,
+      "final_url": "https://isi.rs/medjunarodna-konferencija-inkluzivna-revolucija-novi-horizonti-drustvene-pravde-beograd-23-25-april-2026-godine/",
+      "canonical_url": "https://isi.rs/medjunarodna-konferencija-inkluzivna-revolucija-novi-horizonti-drustvene-pravde-beograd-23-25-april-2026-godine/",
+      "meta_description": "Institut za socijalnu inkluziju, u partnerstvu sa Institutom društvenih nauka i Akademskom mrežom za saradnju u Jugoistočnoj Evropi, organizuje međunarodnu",
+      "content_type": "page",
+      "content_chars": 2024,
+      "content_sha256": "0fdc0f7d2060af1090bc7f26560da37e1b312d1b585dfd711945e359c2d0f0a2",
+      "discovered_from": "https://isi.rs/aktivnosti/",
+      "fetched_at": "2026-08-27T15:11:20+00:00",
+      "error": ""
+    },
+    {
+      "source_url": "https://isi.rs/nasledje/",
+      "legacy_path": "/nasledje/",
+      "title": "Nasleđe - ISI",
+      "language": "sr-Latn",
+      "http_status": 200,
+      "final_url": "https://isi.rs/nasledje/",
+      "canonical_url": "https://isi.rs/nasledje/",
+      "meta_description": "",
+      "content_type": "page",
+      "content_chars": 2872,
+      "content_sha256": "324356d87caf26dc2999263db16b3547ab4fc1a7406c9be54c2aa364fac2868e",
+      "discovered_from": "seed",
+      "fetched_at": "2026-08-27T15:11:18+00:00",
+      "error": ""
+    },
+    {
+      "source_url": "https://isi.rs/saopstenje-instituta-za-socijalnu-inkluziju-o-stanju-socijalne-inkluzije-u-srbiji/",
+      "legacy_path": "/saopstenje-instituta-za-socijalnu-inkluziju-o-stanju-socijalne-inkluzije-u-srbiji/",
+      "title": "Saopštenje Instituta za socijalnu inkluziju o stanju socijalne inkluzije u Srbiji - ISI",
+      "language": "sr-Latn",
+      "http_status": 200,
+      "final_url": "https://isi.rs/saopstenje-instituta-za-socijalnu-inkluziju-o-stanju-socijalne-inkluzije-u-srbiji/",
+      "canonical_url": "https://isi.rs/saopstenje-instituta-za-socijalnu-inkluziju-o-stanju-socijalne-inkluzije-u-srbiji/",
+      "meta_description": "Stanje socijalne inkluzije u Srbiji pokazuje dubok raskorak između normativnih obaveza i društvene stvarnosti. Iako Srbija poseduje strategije, zakone i",
+      "content_type": "page",
+      "content_chars": 1931,
+      "content_sha256": "6d7b3874c754f8c9f9a131a60aafad2f533d0bff1c106762fd7a8dfa1541537c",
+      "discovered_from": "https://isi.rs/aktivnosti/",
+      "fetched_at": "2026-08-27T15:11:21+00:00",
+      "error": ""
+    },
+    {
+      "source_url": "https://isi.rs/tim/",
+      "legacy_path": "/tim/",
+      "title": "Tim - ISI",
+      "language": "sr-Latn",
+      "http_status": 200,
+      "final_url": "https://isi.rs/tim/",
+      "canonical_url": "https://isi.rs/tim/",
+      "meta_description": "",
+      "content_type": "page",
+      "content_chars": 3266,
+      "content_sha256": "5dc0f77fb392ad7b215fcb02cc2be95e43915144ae00dd5bd36e764837cfeb99",
+      "discovered_from": "seed",
+      "fetched_at": "2026-08-27T15:11:12+00:00",
+      "error": ""
+    },
+    {
+      "source_url": "https://isi.rs/western-balkan-social-inclusion-barometer-wbsib/",
+      "legacy_path": "/western-balkan-social-inclusion-barometer-wbsib/",
+      "title": "Western Balkan Social Inclusion Barometer WBSIB - ISI",
+      "language": "sr-Latn",
+      "http_status": 200,
+      "final_url": "https://isi.rs/western-balkan-social-inclusion-barometer-wbsib/",
+      "canonical_url": "https://isi.rs/western-balkan-social-inclusion-barometer-wbsib/",
+      "meta_description": "",
+      "content_type": "page",
+      "content_chars": 3075,
+      "content_sha256": "3582c07b3faadf977b991c4e768a6997f71b388aaf850f45b9e79433a00f949c",
+      "discovered_from": "https://isi.rs/",
+      "fetched_at": "2026-08-27T15:11:19+00:00",
+      "error": ""
+    }
+  ],
+  "assets": [
+    {
+      "source_url": "https://isi.rs/wp-content/uploads/2025/12/Demokratija-i-multikulturalnost-u-jugoisticnoj-Evropi.pdf",
+      "legacy_path": "/wp-content/uploads/2025/12/Demokratija-i-multikulturalnost-u-jugoisticnoj-Evropi.pdf",
+      "asset_type": "document",
+      "extension": ".pdf",
+      "language": "sr-Latn",
+      "discovered_from": "https://isi.rs/biblioteka/page/2/"
+    },
+    {
+      "source_url": "https://isi.rs/wp-content/uploads/2025/12/Demokratija-i-nacionalne-manjine.pdf",
+      "legacy_path": "/wp-content/uploads/2025/12/Demokratija-i-nacionalne-manjine.pdf",
+      "asset_type": "document",
+      "extension": ".pdf",
+      "language": "sr-Latn",
+      "discovered_from": "https://isi.rs/biblioteka/page/3/"
+    },
+    {
+      "source_url": "https://isi.rs/wp-content/uploads/2025/12/Demokratija-i-religija.pdf",
+      "legacy_path": "/wp-content/uploads/2025/12/Demokratija-i-religija.pdf",
+      "asset_type": "document",
+      "extension": ".pdf",
+      "language": "sr-Latn",
+      "discovered_from": "https://isi.rs/biblioteka/page/2/"
+    },
+    {
+      "source_url": "https://isi.rs/wp-content/uploads/2025/12/Iskusenja-demokratije-u-multietnickom-drustvu.pdf",
+      "legacy_path": "/wp-content/uploads/2025/12/Iskusenja-demokratije-u-multietnickom-drustvu.pdf",
+      "asset_type": "document",
+      "extension": ".pdf",
+      "language": "sr-Latn",
+      "discovered_from": "https://isi.rs/biblioteka/page/2/"
+    },
+    {
+      "source_url": "https://isi.rs/wp-content/uploads/2025/12/izvestaj.pdf",
+      "legacy_path": "/wp-content/uploads/2025/12/izvestaj.pdf",
+      "asset_type": "document",
+      "extension": ".pdf",
+      "language": "sr-Latn",
+      "discovered_from": "https://isi.rs/biblioteka"
+    },
+    {
+      "source_url": "https://isi.rs/wp-content/uploads/2025/12/Komunikaciona-strategija.pdf",
+      "legacy_path": "/wp-content/uploads/2025/12/Komunikaciona-strategija.pdf",
+      "asset_type": "document",
+      "extension": ".pdf",
+      "language": "sr-Latn",
+      "discovered_from": "https://isi.rs/biblioteka/page/2/"
+    },
+    {
+      "source_url": "https://isi.rs/wp-content/uploads/2025/12/kultura-i-ekonomski-razvoj.pdf",
+      "legacy_path": "/wp-content/uploads/2025/12/kultura-i-ekonomski-razvoj.pdf",
+      "asset_type": "document",
+      "extension": ".pdf",
+      "language": "sr-Latn",
+      "discovered_from": "https://isi.rs/biblioteka"
+    },
+    {
+      "source_url": "https://isi.rs/wp-content/uploads/2025/12/ljudi-bez-krova.pdf",
+      "legacy_path": "/wp-content/uploads/2025/12/ljudi-bez-krova.pdf",
+      "asset_type": "document",
+      "extension": ".pdf",
+      "language": "sr-Latn",
+      "discovered_from": "https://isi.rs/biblioteka/page/3/"
+    },
+    {
+      "source_url": "https://isi.rs/wp-content/uploads/2025/12/Lokalna-demokratija-i-multikulturalnost.pdf",
+      "legacy_path": "/wp-content/uploads/2025/12/Lokalna-demokratija-i-multikulturalnost.pdf",
+      "asset_type": "document",
+      "extension": ".pdf",
+      "language": "sr-Latn",
+      "discovered_from": "https://isi.rs/biblioteka/page/2/"
+    },
+    {
+      "source_url": "https://isi.rs/wp-content/uploads/2025/12/mediji-i-osobe-sa-invaliditetom.pdf",
+      "legacy_path": "/wp-content/uploads/2025/12/mediji-i-osobe-sa-invaliditetom.pdf",
+      "asset_type": "document",
+      "extension": ".pdf",
+      "language": "sr-Latn",
+      "discovered_from": "https://isi.rs/biblioteka"
+    },
+    {
+      "source_url": "https://isi.rs/wp-content/uploads/2025/12/mediji-i-prisilne-migracije.pdf",
+      "legacy_path": "/wp-content/uploads/2025/12/mediji-i-prisilne-migracije.pdf",
+      "asset_type": "document",
+      "extension": ".pdf",
+      "language": "sr-Latn",
+      "discovered_from": "https://isi.rs/biblioteka"
+    },
+    {
+      "source_url": "https://isi.rs/wp-content/uploads/2025/12/od-segregativne-ka-integrativnoj-politici-multikulturalnosti.pdf",
+      "legacy_path": "/wp-content/uploads/2025/12/od-segregativne-ka-integrativnoj-politici-multikulturalnosti.pdf",
+      "asset_type": "document",
+      "extension": ".pdf",
+      "language": "sr-Latn",
+      "discovered_from": "https://isi.rs/biblioteka"
+    },
+    {
+      "source_url": "https://isi.rs/wp-content/uploads/2025/12/Odrzivi-model-osnivanja-i-rada-Saveta-za-medjunacionalne-odnose.pdf",
+      "legacy_path": "/wp-content/uploads/2025/12/Odrzivi-model-osnivanja-i-rada-Saveta-za-medjunacionalne-odnose.pdf",
+      "asset_type": "document",
+      "extension": ".pdf",
+      "language": "sr-Latn",
+      "discovered_from": "https://isi.rs/biblioteka/page/2/"
+    },
+    {
+      "source_url": "https://isi.rs/wp-content/uploads/2025/12/perspektive-multikulturalizma-u-drzavama-Zapadnog-Balkana.pdf",
+      "legacy_path": "/wp-content/uploads/2025/12/perspektive-multikulturalizma-u-drzavama-Zapadnog-Balkana.pdf",
+      "asset_type": "document",
+      "extension": ".pdf",
+      "language": "sr-Latn",
+      "discovered_from": "https://isi.rs/biblioteka/page/2/"
+    },
+    {
+      "source_url": "https://isi.rs/wp-content/uploads/2025/12/politicka-akcija.pdf",
+      "legacy_path": "/wp-content/uploads/2025/12/politicka-akcija.pdf",
+      "asset_type": "document",
+      "extension": ".pdf",
+      "language": "sr-Latn",
+      "discovered_from": "https://isi.rs/biblioteka/page/2/"
+    },
+    {
+      "source_url": "https://isi.rs/wp-content/uploads/2025/12/Politicka-participacija-i-kulturna-autonomija.pdf",
+      "legacy_path": "/wp-content/uploads/2025/12/Politicka-participacija-i-kulturna-autonomija.pdf",
+      "asset_type": "document",
+      "extension": ".pdf",
+      "language": "sr-Latn",
+      "discovered_from": "https://isi.rs/biblioteka/page/2/"
+    },
+    {
+      "source_url": "https://isi.rs/wp-content/uploads/2025/12/Polozaj-Bosnjaka-u-Sandzaku.pdf",
+      "legacy_path": "/wp-content/uploads/2025/12/Polozaj-Bosnjaka-u-Sandzaku.pdf",
+      "asset_type": "document",
+      "extension": ".pdf",
+      "language": "sr-Latn",
+      "discovered_from": "https://isi.rs/biblioteka/page/3/"
+    },
+    {
+      "source_url": "https://isi.rs/wp-content/uploads/2025/12/prepreke-interkulturalizmu.pdf",
+      "legacy_path": "/wp-content/uploads/2025/12/prepreke-interkulturalizmu.pdf",
+      "asset_type": "document",
+      "extension": ".pdf",
+      "language": "sr-Latn",
+      "discovered_from": "https://isi.rs/biblioteka"
+    },
+    {
+      "source_url": "https://isi.rs/wp-content/uploads/2025/12/SMO-i-lokalni-zastitnik-gradjana-u-multietnickim-sredinama.pdf",
+      "legacy_path": "/wp-content/uploads/2025/12/SMO-i-lokalni-zastitnik-gradjana-u-multietnickim-sredinama.pdf",
+      "asset_type": "document",
+      "extension": ".pdf",
+      "language": "sr-Latn",
+      "discovered_from": "https://isi.rs/biblioteka/page/2/"
+    },
+    {
+      "source_url": "https://isi.rs/wp-content/uploads/2025/12/socijalna-distanca-etnickih-zajednica.pdf",
+      "legacy_path": "/wp-content/uploads/2025/12/socijalna-distanca-etnickih-zajednica.pdf",
+      "asset_type": "document",
+      "extension": ".pdf",
+      "language": "sr-Latn",
+      "discovered_from": "https://isi.rs/biblioteka"
+    },
+    {
+      "source_url": "https://isi.rs/wp-content/uploads/2025/12/ucesce-nacionalnih-manjina.pdf",
+      "legacy_path": "/wp-content/uploads/2025/12/ucesce-nacionalnih-manjina.pdf",
+      "asset_type": "document",
+      "extension": ".pdf",
+      "language": "sr-Latn",
+      "discovered_from": "https://isi.rs/biblioteka"
+    },
+    {
+      "source_url": "https://isi.rs/wp-content/uploads/2025/12/Umetost-prezivljavanja.pdf",
+      "legacy_path": "/wp-content/uploads/2025/12/Umetost-prezivljavanja.pdf",
+      "asset_type": "document",
+      "extension": ".pdf",
+      "language": "sr-Latn",
+      "discovered_from": "https://isi.rs/biblioteka/page/2/"
+    },
+    {
+      "source_url": "https://isi.rs/wp-content/uploads/2025/12/Vodic-kroz-rad-opstinskih-saveta-za-medjunacionalne-odnose.pdf",
+      "legacy_path": "/wp-content/uploads/2025/12/Vodic-kroz-rad-opstinskih-saveta-za-medjunacionalne-odnose.pdf",
+      "asset_type": "document",
+      "extension": ".pdf",
+      "language": "sr-Latn",
+      "discovered_from": "https://isi.rs/biblioteka/page/2/"
+    },
+    {
+      "source_url": "https://isi.rs/wp-content/uploads/2025/12/Vodic-za-kreiranje-inkluzivnih-kulturnih-politika.pdf",
+      "legacy_path": "/wp-content/uploads/2025/12/Vodic-za-kreiranje-inkluzivnih-kulturnih-politika.pdf",
+      "asset_type": "document",
+      "extension": ".pdf",
+      "language": "sr-Latn",
+      "discovered_from": "https://isi.rs/biblioteka"
+    },
+    {
+      "source_url": "https://isi.rs/wp-content/uploads/2025/12/VODIC_za_prevenciju_eliminisanje_diskriminacije_Roma.pdf",
+      "legacy_path": "/wp-content/uploads/2025/12/VODIC_za_prevenciju_eliminisanje_diskriminacije_Roma.pdf",
+      "asset_type": "document",
+      "extension": ".pdf",
+      "language": "sr-Latn",
+      "discovered_from": "https://isi.rs/biblioteka"
+    },
+    {
+      "source_url": "https://isi.rs/wp-content/uploads/2026/01/Put-ka-ravnopravnosti-ei.pdf",
+      "legacy_path": "/wp-content/uploads/2026/01/Put-ka-ravnopravnosti-ei.pdf",
+      "asset_type": "document",
+      "extension": ".pdf",
+      "language": "sr-Latn",
+      "discovered_from": "https://isi.rs/biblioteka"
+    },
+    {
+      "source_url": "https://isi.rs/wp-content/uploads/2026/01/TRAGOVI_PRAVEDNOSTI_G_Basic_ei.pdf",
+      "legacy_path": "/wp-content/uploads/2026/01/TRAGOVI_PRAVEDNOSTI_G_Basic_ei.pdf",
+      "asset_type": "document",
+      "extension": ".pdf",
+      "language": "sr-Latn",
+      "discovered_from": "https://isi.rs/biblioteka"
+    }
+  ],
+  "failures": []
+}

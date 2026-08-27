@@ -26,9 +26,16 @@
     {
       "id": "ISI-02C-AUTHENTICATED-APP-CONTEXT",
       "title": "Authenticated App Context",
-      "status": "ready",
+      "status": "done",
       "spec": "automation/specs/ISI-02C-AUTHENTICATED-APP-CONTEXT.md",
-      "next": "ISI-03-LEGACY-CONTENT-MIGRATION"
+      "next": "ISI-03A-LEGACY-CONTENT-INVENTORY"
+    },
+    {
+      "id": "ISI-03A-LEGACY-CONTENT-INVENTORY",
+      "title": "Legacy isi.rs Content Inventory",
+      "status": "ready",
+      "spec": "automation/specs/ISI-03A-LEGACY-CONTENT-INVENTORY.md",
+      "next": "ISI-03B-PUBLIC-CONTENT-MODEL-IMPORT"
     }
   ]
 }

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "base_url": "https://isi.rs/",
+  "generated_at": "2026-08-27T15:11:24+00:00",
+  "page_records": 14,
+  "successful_html_pages": 14,
+  "asset_records": 27,
+  "failure_records": 0,
+  "languages": [
+    "en",
+    "sr-Latn"
+  ],
+  "redirect_candidates": 14
+}
