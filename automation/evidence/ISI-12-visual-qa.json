@@ -1,0 +1,17 @@
+{
+  "task_id": "ISI-12-REPORTING",
+  "status": "PASS",
+  "manual_ack": "ISI-12 VISUAL QA PASS",
+  "recorded_at": "2026-08-28T10:39:33.450136+00:00",
+  "scope": [
+    "SIMPA reporting workflow",
+    "ORDO reporting workflow",
+    "provenance and immutable checksums",
+    "draft-review-approve-publish lifecycle",
+    "product isolation negative control",
+    "ORDO no-forecast invariant",
+    "SIMPA evidence-quality semantics",
+    "JSON/Markdown/HTML download artefacts",
+    "single-tab launch"
+  ]
+}

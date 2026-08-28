@@ -120,6 +120,13 @@
       "status": "done",
       "spec": "automation/specs/ISI-11-ORDO-ANALYTICS-AI.md",
       "next": "ISI-12-REPORTING"
+    },
+    {
+      "id": "ISI-12-REPORTING",
+      "title": "Shared Reporting",
+      "status": "done",
+      "spec": "automation/specs/ISI-12-REPORTING.md",
+      "next": "ISI-13-ADMINISTRATION"
     }
   ]
 }

@@ -75,3 +75,10 @@ from src.domains.ordo.analytics_models import (  # noqa: F401
     OrdoScenario,
     OrdoScenarioAssessment,
 )
+
+from src.platform.reporting.models import (  # noqa: F401
+    Report,
+    ReportExport,
+    ReportReview,
+    ReportVersion,
+)

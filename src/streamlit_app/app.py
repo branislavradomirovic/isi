@@ -15,6 +15,7 @@ from src.streamlit_app.ai_workspace import render_ai_workspace
 from src.streamlit_app.simpa_workspace import render_ordo_indicator_placeholder, render_simpa_indicators, render_simpa_overview
 from src.streamlit_app.simpa_analytics_workspace import render_simpa_analytics
 from src.streamlit_app.ordo_analytics_workspace import render_ordo_analytics
+from src.streamlit_app.reporting_workspace import render_reporting
 from src.streamlit_app.ordo_workspace import render_ordo_indicators, render_ordo_overview
 
 
@@ -353,6 +354,12 @@ def _render_future_section(shell: dict[str, Any], nav_code: str) -> None:
 
 
 def _render_shell(shell: dict[str, Any], nav_code: str) -> None:
+    # ISI-12 shared reporting routing
+    if nav_code == "reports":
+        token = _token()
+        if token:
+            render_reporting(token=token, shell=shell)
+        return
     # ISI-09 SIMPA analytics routing
     product_code = shell.get("product", {}).get("code")
     if nav_code == "analysis":
