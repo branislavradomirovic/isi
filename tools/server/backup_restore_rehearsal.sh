@@ -75,12 +75,25 @@ RDC=(env
 )
 echo "=== Start isolated restore target ==="
 "${RDC[@]}" up -d postgres minio
-for _ in $(seq 1 60); do
+for _ in $(seq 1 180); do
   if "${RDC[@]}" exec -T postgres pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" >/dev/null 2>&1; then break; fi
   sleep 1
 done
-"${RDC[@]}" exec -T postgres pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" >/dev/null
-"${RDC[@]}" run --rm minio-init >/dev/null
+if ! "${RDC[@]}" exec -T postgres pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" >/dev/null; then
+  echo "ERROR isolated restore PostgreSQL did not become ready"
+  "${RDC[@]}" ps -a || true
+  "${RDC[@]}" logs --tail=120 postgres || true
+  exit 1
+fi
+echo "PASS isolated restore PostgreSQL ready"
+
+if ! "${RDC[@]}" run --rm minio-init >/dev/null; then
+  echo "ERROR isolated restore MinIO initialization failed"
+  "${RDC[@]}" ps -a || true
+  "${RDC[@]}" logs --tail=120 minio || true
+  exit 1
+fi
+echo "PASS isolated restore MinIO ready"
 
 echo "=== Restore PostgreSQL ==="
 cat "$BACKUP_DIR/postgres.dump" | "${RDC[@]}" exec -T postgres sh -ec 'export PGPASSWORD="$POSTGRES_PASSWORD"; pg_restore -h 127.0.0.1 -U "$POSTGRES_USER" -d "$POSTGRES_DB" --no-owner --no-privileges'

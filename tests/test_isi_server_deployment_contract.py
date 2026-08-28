@@ -83,6 +83,17 @@ def test_central_ingress_fragment_is_dormant_isi16_template():
     assert "/etc/nginx/isi-certs/fullchain.pem" in text
 
 
+def test_backup_restore_rehearsal_has_bounded_readiness_and_diagnostics():
+    text = (ROOT / "tools/server/backup_restore_rehearsal.sh").read_text()
+    assert "for _ in $(seq 1 180); do" in text
+    assert "ERROR isolated restore PostgreSQL did not become ready" in text
+    assert "logs --tail=120 postgres" in text
+    assert "PASS isolated restore PostgreSQL ready" in text
+    assert "ERROR isolated restore MinIO initialization failed" in text
+    assert "logs --tail=120 minio" in text
+    assert "PASS isolated restore MinIO ready" in text
+
+
 def test_release_workflow_is_git_archive_and_locked_target():
     build = (ROOT / "tools/release/build_server_release.sh").read_text()
     deploy = (ROOT / "tools/release/deploy_server_release.sh").read_text()
