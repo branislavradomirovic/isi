@@ -12,3 +12,6 @@ artifacts/
 *.egg-info/
 var/media/
 .isi-data/
+
+runtime/
+evidence/
