@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from src.platform.auth.delivery import auth_delivery_configured, get_auth_delivery
+
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -126,7 +128,7 @@ def post_invitation(
     db: Session = Depends(get_db),
 ):
     _scope(db, context, organization_id=payload.organization_id, product_code=payload.product_code, permission_code="members.manage")
-    if get_settings().isi_env.casefold() == "production":
+    if get_settings().isi_env.casefold() == "production" and not auth_delivery_configured():
         raise HTTPException(status_code=503, detail="invitation_delivery_not_configured")
     try:
         invitation, token = create_admin_invitation(
@@ -137,17 +139,24 @@ def post_invitation(
             role_code=payload.role_code,
             actor_user_id=context.user.id,
         )
+        if get_settings().isi_env.strip().casefold() == "production":
+            get_auth_delivery().send_invitation(email=invitation.email, token=token)
         db.commit(); db.refresh(invitation)
-        return {
+        response = {
             "id": str(invitation.id),
             "email": invitation.email,
             "status": invitation.status,
             "product_code": payload.product_code,
             "role_code": payload.role_code,
             "expires_at": invitation.expires_at,
-            "delivery_status": "development_token",
-            "development_token": token,
+            "delivery_status": "smtp",
         }
+        if get_settings().isi_env.strip().casefold() != "production":
+            response.update({
+                "delivery_status": "development_token",
+                "development_token": token,
+            })
+        return response
     except AdministrationError as exc:
         db.rollback(); raise _error(exc) from None
 

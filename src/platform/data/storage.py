@@ -4,7 +4,7 @@ import hashlib
 import os
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Protocol
+from typing import Any, Protocol
 
 from src.core.config import get_settings
 
@@ -19,15 +19,22 @@ class StorageBackend(Protocol):
     def exists(self, key: str) -> bool: ...
 
 
+def _safe_key(key: str) -> str:
+    relative = Path(str(key))
+    if relative.is_absolute() or ".." in relative.parts or not relative.parts:
+        raise StorageError("unsafe storage key")
+    normalized = relative.as_posix().lstrip("/")
+    if not normalized:
+        raise StorageError("unsafe storage key")
+    return normalized
+
+
 @dataclass(frozen=True)
 class LocalFilesystemStorage:
     root: Path
 
     def _path(self, key: str) -> Path:
-        relative = Path(key)
-        if relative.is_absolute() or ".." in relative.parts:
-            raise StorageError("unsafe storage key")
-        return self.root / relative
+        return self.root / _safe_key(key)
 
     def put_bytes(self, key: str, payload: bytes) -> bool:
         path = self._path(key)
@@ -54,22 +61,78 @@ class LocalFilesystemStorage:
 @dataclass(frozen=True)
 class S3CompatibleStorage:
     bucket: str
-    endpoint_url: str
+    endpoint_url: str = ""
+    access_key_id: str = ""
+    secret_access_key: str = ""
+    region: str = "us-east-1"
 
-    def _unavailable(self) -> None:
-        raise StorageError("S3-compatible runtime adapter is not enabled until deployment hardening")
+    def _client(self) -> Any:
+        if not self.bucket.strip():
+            raise StorageError("S3 bucket is not configured")
+        try:
+            import boto3
+            from botocore.config import Config
+        except ImportError as exc:
+            raise StorageError("boto3 is required for S3-compatible storage") from exc
+        kwargs: dict[str, Any] = {
+            "service_name": "s3",
+            "region_name": self.region or "us-east-1",
+            "config": Config(s3={"addressing_style": "path"}, retries={"max_attempts": 3, "mode": "standard"}),
+        }
+        if self.endpoint_url:
+            kwargs["endpoint_url"] = self.endpoint_url
+        if self.access_key_id:
+            kwargs["aws_access_key_id"] = self.access_key_id
+        if self.secret_access_key:
+            kwargs["aws_secret_access_key"] = self.secret_access_key
+        return boto3.client(**kwargs)
+
+    @staticmethod
+    def _missing(exc: Exception) -> bool:
+        response = getattr(exc, "response", {}) or {}
+        error = response.get("Error", {}) if isinstance(response, dict) else {}
+        code = str(error.get("Code", ""))
+        status_code = (response.get("ResponseMetadata", {}) or {}).get("HTTPStatusCode") if isinstance(response, dict) else None
+        return code in {"404", "NoSuchKey", "NotFound"} or status_code == 404
 
     def put_bytes(self, key: str, payload: bytes) -> bool:
-        self._unavailable()
-        return False
+        normalized = _safe_key(key)
+        client = self._client()
+        try:
+            response = client.get_object(Bucket=self.bucket, Key=normalized)
+        except Exception as exc:
+            if not self._missing(exc):
+                raise StorageError("S3 object read failed") from exc
+        else:
+            existing = response["Body"].read()
+            if existing != payload:
+                raise StorageError("content-addressed storage collision")
+            return False
+        try:
+            client.put_object(Bucket=self.bucket, Key=normalized, Body=payload)
+        except Exception as exc:
+            raise StorageError("S3 object write failed") from exc
+        return True
 
     def get_bytes(self, key: str) -> bytes:
-        self._unavailable()
-        return b""
+        normalized = _safe_key(key)
+        try:
+            response = self._client().get_object(Bucket=self.bucket, Key=normalized)
+            return response["Body"].read()
+        except Exception as exc:
+            if self._missing(exc):
+                raise StorageError("storage object missing") from exc
+            raise StorageError("S3 object read failed") from exc
 
     def exists(self, key: str) -> bool:
-        self._unavailable()
-        return False
+        normalized = _safe_key(key)
+        try:
+            self._client().head_object(Bucket=self.bucket, Key=normalized)
+            return True
+        except Exception as exc:
+            if self._missing(exc):
+                return False
+            raise StorageError("S3 object metadata check failed") from exc
 
 
 def scoped_storage_key(*, organization_id: str, product_code: str, workspace_id: str, sha256: str, extension: str) -> str:
@@ -90,5 +153,8 @@ def build_storage() -> StorageBackend:
         return S3CompatibleStorage(
             bucket=getattr(settings, "data_s3_bucket", ""),
             endpoint_url=getattr(settings, "data_s3_endpoint_url", ""),
+            access_key_id=getattr(settings, "data_s3_access_key_id", ""),
+            secret_access_key=getattr(settings, "data_s3_secret_access_key", ""),
+            region=getattr(settings, "data_s3_region", "us-east-1"),
         )
     raise StorageError(f"unsupported storage backend: {backend}")

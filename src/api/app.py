@@ -1,3 +1,5 @@
+from src.platform.deployment.runtime import validate_deployment_runtime_settings
+from src.api.deployment_routes import router as deployment_router
 from pathlib import Path
 
 from fastapi import FastAPI
@@ -26,6 +28,7 @@ configure_logging()
 # ISI-14 application security baseline
 _security_settings = get_settings()
 validate_production_security_settings(_security_settings)
+validate_deployment_runtime_settings(_security_settings)
 app = FastAPI(title="ISI Platform API", version="0.1.0")
 app.add_middleware(TrustedHostMiddleware, allowed_hosts=parse_allowed_hosts(_security_settings.security_allowed_hosts))
 app.add_middleware(SecurityHeadersMiddleware, environment=_security_settings.isi_env)
@@ -46,6 +49,7 @@ app.include_router(ordo_router)
 app.include_router(ordo_analytics_router)
 app.include_router(reporting_router)
 app.include_router(administration_router)
+app.include_router(deployment_router)
 
 
 @app.get("/api/v1/health")

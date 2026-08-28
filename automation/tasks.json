@@ -141,6 +141,24 @@
       "status": "done",
       "spec": "automation/specs/ISI-14-SECURITY-HARDENING.md",
       "next": "ISI-15-PRODUCTION-STAGING"
+    },
+    {
+      "id": "ISI-15-PRODUCTION-STAGING",
+      "title": "Production Staging",
+      "status": "ready",
+      "spec": "automation/specs/ISI-15-PRODUCTION-STAGING.md",
+      "depends_on": [
+        "ISI-14-SECURITY-HARDENING"
+      ],
+      "next": "ISI-16-ISI-RS-PRODUCTION-CUTOVER"
+    },
+    {
+      "id": "ISI-16-ISI-RS-PRODUCTION-CUTOVER",
+      "title": "isi.rs Production Cutover",
+      "status": "planned",
+      "depends_on": [
+        "ISI-15-PRODUCTION-STAGING"
+      ]
     }
   ]
 }

@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     isi_env: str = "development"
+    isi_deployment_profile: str = "development"
     isi_log_level: str = "INFO"
     database_url: str = "postgresql+psycopg://isi_app:change-me@localhost:5432/isi"
     redis_url: str = "redis://localhost:6379/0"
@@ -17,6 +18,9 @@ class Settings(BaseSettings):
     data_max_xlsx_uncompressed_bytes: int = 67108864
     data_s3_bucket: str = ""
     data_s3_endpoint_url: str = ""
+    data_s3_access_key_id: str = ""
+    data_s3_secret_access_key: str = ""
+    data_s3_region: str = "us-east-1"
     ai_job_backend: str = "inline"
     ai_provider_default: str = "ollama"
     ai_ollama_base_url: str = "http://127.0.0.1:11434"
@@ -45,6 +49,14 @@ class Settings(BaseSettings):
     security_allowed_hosts: str = "localhost,127.0.0.1,testserver"
     security_trust_proxy_headers: bool = False
     auth_delivery_mode: str = "null"
+    smtp_host: str = ""
+    smtp_port: int = 25
+    smtp_from_email: str = ""
+    smtp_username: str = ""
+    smtp_password: str = ""
+    smtp_use_tls: bool = False
+    smtp_starttls: bool = False
+    smtp_timeout_seconds: int = 10
 
 
 @lru_cache
