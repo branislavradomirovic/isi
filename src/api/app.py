@@ -11,6 +11,7 @@ from src.api.ai_routes import router as ai_router
 from src.api.simpa_routes import router as simpa_router
 from src.api.simpa_analytics_routes import router as simpa_analytics_router
 from src.api.ordo_routes import router as ordo_router
+from src.api.ordo_analytics_routes import router as ordo_analytics_router
 from src.core.logging import configure_logging
 from src.public.routes import router as public_router
 from src.public.error_handlers import register_public_error_handlers
@@ -31,6 +32,7 @@ app.include_router(ai_router)
 app.include_router(simpa_router)
 app.include_router(simpa_analytics_router)
 app.include_router(ordo_router)
+app.include_router(ordo_analytics_router)
 
 
 @app.get("/api/v1/health")

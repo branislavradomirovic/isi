@@ -65,3 +65,13 @@ from src.domains.ordo.models import (  # noqa: F401
     OrdoSourceType,
     OrdoStakeholder,
 )
+
+from src.domains.ordo.analytics_models import (  # noqa: F401
+    OrdoAISynthesis,
+    OrdoAnalyticsRun,
+    OrdoDevelopmentGoal,
+    OrdoIndicatorMethodology,
+    OrdoIndicatorResult,
+    OrdoScenario,
+    OrdoScenarioAssessment,
+)

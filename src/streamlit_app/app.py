@@ -13,7 +13,8 @@ from src.streamlit_app.style import apply_shell_css
 from src.streamlit_app.data_workspace import render_data_workspace
 from src.streamlit_app.ai_workspace import render_ai_workspace
 from src.streamlit_app.simpa_workspace import render_ordo_indicator_placeholder, render_simpa_indicators, render_simpa_overview
-from src.streamlit_app.simpa_analytics_workspace import render_ordo_analytics_placeholder, render_simpa_analytics
+from src.streamlit_app.simpa_analytics_workspace import render_simpa_analytics
+from src.streamlit_app.ordo_analytics_workspace import render_ordo_analytics
 from src.streamlit_app.ordo_workspace import render_ordo_indicators, render_ordo_overview
 
 
@@ -360,7 +361,9 @@ def _render_shell(shell: dict[str, Any], nav_code: str) -> None:
             if token:
                 render_simpa_analytics(token=token, shell=shell)
         else:
-            render_ordo_analytics_placeholder()
+            token = _token()
+            if token:
+                render_ordo_analytics(token=token, shell=shell)
         return
     # ISI-08 SIMPA domain routing
     product_code = shell.get("product", {}).get("code")

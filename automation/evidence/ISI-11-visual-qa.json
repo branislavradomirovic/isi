@@ -1,0 +1,17 @@
+{
+  "task_id": "ISI-11-ORDO-ANALYTICS-AI",
+  "status": "PASS",
+  "manual_ack": "ISI-11 VISUAL QA PASS",
+  "recorded_at": "2026-08-28T10:11:42.841809+00:00",
+  "scope": [
+    "ORDO evidence-quality analytics",
+    "methodology guard",
+    "development goals",
+    "user-authored scenarios",
+    "evidence-only assessment / no forecast",
+    "local Ollama ORDO synthesis",
+    "mandatory human review",
+    "SIMPA negative control",
+    "single-tab launch"
+  ]
+}

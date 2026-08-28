@@ -113,6 +113,13 @@
       "status": "done",
       "spec": "automation/specs/ISI-10-ORDO-DOMAIN-FOUNDATION.md",
       "next": "ISI-11-ORDO-ANALYTICS-AI"
+    },
+    {
+      "id": "ISI-11-ORDO-ANALYTICS-AI",
+      "title": "ORDO Analytics + AI",
+      "status": "done",
+      "spec": "automation/specs/ISI-11-ORDO-ANALYTICS-AI.md",
+      "next": "ISI-12-REPORTING"
     }
   ]
 }
