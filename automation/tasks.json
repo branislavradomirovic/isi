@@ -127,6 +127,13 @@
       "status": "done",
       "spec": "automation/specs/ISI-12-REPORTING.md",
       "next": "ISI-13-ADMINISTRATION"
+    },
+    {
+      "id": "ISI-13-ADMINISTRATION",
+      "title": "Administration",
+      "status": "done",
+      "spec": "automation/specs/ISI-13-ADMINISTRATION.md",
+      "next": "ISI-14-SECURITY-HARDENING"
     }
   ]
 }

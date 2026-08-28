@@ -1,0 +1,18 @@
+{
+  "task_id": "ISI-13-ADMINISTRATION",
+  "status": "PASS",
+  "manual_ack": "ISI-13 VISUAL QA PASS",
+  "recorded_at": "2026-08-28T11:08:06.457042+00:00",
+  "scope": [
+    "real administration workspace",
+    "role vs product-access separation",
+    "read-only organization entitlement boundary",
+    "member/product/role controls",
+    "invitation escalation guard and development-token disclosure",
+    "workspace create/archive/reactivate controls",
+    "organization-wide rename boundary",
+    "append-only administration audit visibility",
+    "SIMPA/ORDO isolation negative control",
+    "single-tab launch"
+  ]
+}

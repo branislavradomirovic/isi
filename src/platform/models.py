@@ -82,3 +82,9 @@ from src.platform.reporting.models import (  # noqa: F401
     ReportReview,
     ReportVersion,
 )
+
+from src.platform.administration.models import (  # noqa: F401
+    AdminAuditEvent,
+    InvitationProductGrant,
+    InvitationRoleGrant,
+)

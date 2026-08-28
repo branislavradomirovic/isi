@@ -354,6 +354,13 @@ def accept_invitation(
     elif membership.status != "active":
         raise AuthError("membership_not_active")
 
+    # ISI-13 invitation access grants
+    try:
+        from src.platform.administration.service import AdministrationError, apply_invitation_grants
+        apply_invitation_grants(session, invitation=invitation, membership=membership)
+    except AdministrationError as exc:
+        raise AuthError("invalid_invitation_access_grants", exc.code) from exc
+
     invitation.status = "accepted"
     invitation.accepted_at = now
     session.flush()
