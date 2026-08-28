@@ -13,6 +13,7 @@ from src.streamlit_app.style import apply_shell_css
 from src.streamlit_app.data_workspace import render_data_workspace
 from src.streamlit_app.ai_workspace import render_ai_workspace
 from src.streamlit_app.simpa_workspace import render_ordo_indicator_placeholder, render_simpa_indicators, render_simpa_overview
+from src.streamlit_app.simpa_analytics_workspace import render_ordo_analytics_placeholder, render_simpa_analytics
 
 
 TOKEN_KEY = "isi_access_token"
@@ -350,6 +351,16 @@ def _render_future_section(shell: dict[str, Any], nav_code: str) -> None:
 
 
 def _render_shell(shell: dict[str, Any], nav_code: str) -> None:
+    # ISI-09 SIMPA analytics routing
+    product_code = shell.get("product", {}).get("code")
+    if nav_code == "analysis":
+        if product_code == "SIMPA":
+            token = _token()
+            if token:
+                render_simpa_analytics(token=token, shell=shell)
+        else:
+            render_ordo_analytics_placeholder()
+        return
     # ISI-08 SIMPA domain routing
     product_code = shell.get("product", {}).get("code")
     if product_code == "SIMPA" and nav_code == "overview":

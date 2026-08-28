@@ -99,6 +99,13 @@
       "status": "done",
       "spec": "automation/specs/ISI-08-SIMPA-DOMAIN-FOUNDATION.md",
       "next": "ISI-09-SIMPA-ANALYTICS-AI"
+    },
+    {
+      "id": "ISI-09-SIMPA-ANALYTICS-AI",
+      "title": "SIMPA Analytics + AI",
+      "status": "done",
+      "spec": "automation/specs/ISI-09-SIMPA-ANALYTICS-AI.md",
+      "next": "ISI-10-ORDO-DOMAIN-FOUNDATION"
     }
   ]
 }

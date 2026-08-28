@@ -45,3 +45,10 @@ from src.domains.simpa.models import (  # noqa: F401
     SimpaMonitoringCycle,
     SimpaSourceType,
 )
+
+from src.domains.simpa.analytics_models import (  # noqa: F401
+    SimpaAISynthesis,
+    SimpaAnalyticsRun,
+    SimpaIndicatorMethodology,
+    SimpaIndicatorResult,
+)
