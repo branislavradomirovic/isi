@@ -43,7 +43,7 @@ def main() -> int:
     env["PUBLIC_BASE_URL"] = "http://localhost"
     env["APP_BASE_URL"] = "http://localhost/app"
     print(f"Using existing development-only demo provisioner: {helper.relative_to(repo)}")
-    completed = subprocess.run([sys.executable, str(helper), "--password", args.password], cwd=repo, env=env)
+    completed = subprocess.run([sys.executable, str(helper), "--all", "--password", args.password], cwd=repo, env=env)
     return completed.returncode
 
 
