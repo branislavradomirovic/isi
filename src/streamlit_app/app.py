@@ -14,6 +14,7 @@ from src.streamlit_app.data_workspace import render_data_workspace
 from src.streamlit_app.ai_workspace import render_ai_workspace
 from src.streamlit_app.simpa_workspace import render_ordo_indicator_placeholder, render_simpa_indicators, render_simpa_overview
 from src.streamlit_app.simpa_analytics_workspace import render_ordo_analytics_placeholder, render_simpa_analytics
+from src.streamlit_app.ordo_workspace import render_ordo_indicators, render_ordo_overview
 
 
 TOKEN_KEY = "isi_access_token"
@@ -363,6 +364,12 @@ def _render_shell(shell: dict[str, Any], nav_code: str) -> None:
         return
     # ISI-08 SIMPA domain routing
     product_code = shell.get("product", {}).get("code")
+    # ISI-10 ORDO domain routing
+    if product_code == "ORDO" and nav_code == "overview":
+        token = _token()
+        if token:
+            render_ordo_overview(token=token, shell=shell)
+        return
     if product_code == "SIMPA" and nav_code == "overview":
         token = _token()
         if token:
@@ -374,7 +381,9 @@ def _render_shell(shell: dict[str, Any], nav_code: str) -> None:
             if token:
                 render_simpa_indicators(token=token, shell=shell)
         else:
-            render_ordo_indicator_placeholder(shell)
+            token = _token()
+            if token:
+                render_ordo_indicators(token=token, shell=shell)
         return
     if nav_code == "overview":
         _render_overview(shell)

@@ -1,0 +1,17 @@
+{
+  "task_id": "ISI-10-ORDO-DOMAIN-FOUNDATION",
+  "status": "PASS",
+  "manual_ack": "ISI-10 VISUAL QA PASS",
+  "recorded_at": "2026-08-28T09:53:44.579361+00:00",
+  "scope": [
+    "ORDO destination overview",
+    "five pillars",
+    "conceptual indicator registry",
+    "destination profile",
+    "asset registry",
+    "stakeholder registry",
+    "monitoring cycles",
+    "SIMPA negative control",
+    "single-tab launch"
+  ]
+}

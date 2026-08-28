@@ -52,3 +52,16 @@ from src.domains.simpa.analytics_models import (  # noqa: F401
     SimpaIndicatorMethodology,
     SimpaIndicatorResult,
 )
+
+from src.domains.ordo.models import (  # noqa: F401
+    OrdoAsset,
+    OrdoDataMapping,
+    OrdoDestinationProfile,
+    OrdoDimension,
+    OrdoIndicatorDefinition,
+    OrdoIndicatorObservation,
+    OrdoMonitoringCycle,
+    OrdoPillar,
+    OrdoSourceType,
+    OrdoStakeholder,
+)

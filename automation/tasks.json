@@ -106,6 +106,13 @@
       "status": "done",
       "spec": "automation/specs/ISI-09-SIMPA-ANALYTICS-AI.md",
       "next": "ISI-10-ORDO-DOMAIN-FOUNDATION"
+    },
+    {
+      "id": "ISI-10-ORDO-DOMAIN-FOUNDATION",
+      "title": "ORDO Domain Foundation",
+      "status": "done",
+      "spec": "automation/specs/ISI-10-ORDO-DOMAIN-FOUNDATION.md",
+      "next": "ISI-11-ORDO-ANALYTICS-AI"
     }
   ]
 }
