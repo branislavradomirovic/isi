@@ -88,3 +88,5 @@ from src.platform.administration.models import (  # noqa: F401
     InvitationProductGrant,
     InvitationRoleGrant,
 )
+
+from src.platform.security.models import SecurityEvent, SecurityRateLimit  # noqa: F401

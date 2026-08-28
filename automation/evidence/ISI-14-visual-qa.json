@@ -1,0 +1,17 @@
+{
+  "task_id": "ISI-14-SECURITY-HARDENING",
+  "status": "PASS",
+  "manual_ack": "ISI-14 VISUAL QA PASS",
+  "recorded_at": "2026-08-28T11:40:15.924511+00:00",
+  "scope": [
+    "application-wide security headers and request id smoke",
+    "authentication no-store response contract",
+    "database-backed login throttling smoke",
+    "privacy-preserving session fingerprint storage",
+    "idle-session revocation contract",
+    "production fail-closed configuration contract",
+    "SIMPA/ORDO authenticated browser regression",
+    "tenant/product isolation full-regression gate",
+    "single-tab local QA launch"
+  ]
+}

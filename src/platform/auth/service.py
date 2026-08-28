@@ -12,6 +12,7 @@ from src.core.config import get_settings
 from src.platform.auth.models import AuthSession, AuthToken, Invitation
 from src.platform.auth.security import hash_password, hash_token, needs_rehash, new_opaque_token, verify_password
 from src.platform.identity.models import Membership, Organization, User
+from src.platform.security.service import session_fingerprint_hashes, session_idle_expired
 
 
 class AuthError(ValueError):
@@ -122,13 +123,16 @@ def create_session(
     now = utcnow()
     expires_at = now + timedelta(seconds=settings.auth_session_ttl_seconds)
     raw = new_opaque_token("isi_sess")
+    remote_ip_hash, user_agent_hash = session_fingerprint_hashes(remote_ip, user_agent)
     model = AuthSession(
         user_id=user.id,
         token_hash=hash_token(raw),
         expires_at=expires_at,
         last_seen_at=now,
-        remote_ip=(remote_ip or "")[:64] or None,
-        user_agent=(user_agent or "")[:500] or None,
+        remote_ip=None,
+        user_agent=None,
+        remote_ip_hash=remote_ip_hash,
+        user_agent_hash=user_agent_hash,
     )
     session.add(model)
     session.flush()
@@ -139,12 +143,18 @@ def validate_session(session: Session, raw_token: str) -> tuple[AuthSession, Use
     if not raw_token:
         return None
     model = session.scalar(select(AuthSession).where(AuthSession.token_hash == hash_token(raw_token)))
-    if model is None or model.revoked_at is not None or _aware(model.expires_at) <= utcnow():
+    now = utcnow()
+    if model is None or model.revoked_at is not None or _aware(model.expires_at) <= now:
         return None
     user = session.get(User, model.user_id)
     if user is None or not user.is_active:
         return None
-    model.last_seen_at = utcnow()
+    if session_idle_expired(model.last_seen_at, now=now):
+        model.revoked_at = now
+        model.revoked_reason = "idle_timeout"
+        session.flush()
+        return None
+    model.last_seen_at = now
     session.flush()
     return model, user
 
@@ -155,6 +165,7 @@ def revoke_session(session: Session, raw_token: str) -> bool:
         return False
     if model.revoked_at is None:
         model.revoked_at = utcnow()
+        model.revoked_reason = "logout"
         session.flush()
     return True
 
@@ -163,7 +174,7 @@ def revoke_all_user_sessions(session: Session, user_id: uuid.UUID) -> None:
     session.execute(
         update(AuthSession)
         .where(AuthSession.user_id == user_id, AuthSession.revoked_at.is_(None))
-        .values(revoked_at=utcnow())
+        .values(revoked_at=utcnow(), revoked_reason="user_session_reset")
     )
     session.flush()
 

@@ -20,6 +20,9 @@ class AuthSession(Base):
     revoked_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
     remote_ip: Mapped[str | None] = mapped_column(String(64), nullable=True)
     user_agent: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    remote_ip_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    user_agent_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    revoked_reason: Mapped[str | None] = mapped_column(String(80), nullable=True)
 
 
 class AuthToken(Base):

@@ -37,6 +37,15 @@ class Settings(BaseSettings):
     auth_password_reset_ttl_seconds: int = 1800
     auth_invitation_ttl_seconds: int = 604800
 
+    auth_session_idle_ttl_seconds: int = 3600
+    security_login_window_seconds: int = 900
+    security_login_max_failures: int = 5
+    security_login_block_seconds: int = 900
+    security_identifier_pepper: str = ""
+    security_allowed_hosts: str = "localhost,127.0.0.1,testserver"
+    security_trust_proxy_headers: bool = False
+    auth_delivery_mode: str = "null"
+
 
 @lru_cache
 def get_settings() -> Settings:

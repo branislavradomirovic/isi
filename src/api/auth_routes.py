@@ -28,6 +28,13 @@ from src.platform.auth.service import (
     reset_password_with_token,
     revoke_session,
 )
+from src.platform.security.service import (
+    check_login_allowed,
+    clear_login_failures,
+    record_security_event,
+    register_login_failure,
+    resolve_client_ip,
+)
 
 router = APIRouter(prefix="/api/v1/auth", tags=["auth"])
 
@@ -44,15 +51,55 @@ def _me(user) -> MeResponse:
 
 @router.post("/login", response_model=LoginResponse)
 def login(payload: LoginRequest, request: Request, db: Session = Depends(get_db)) -> LoginResponse:
+    remote_ip = resolve_client_ip(request)
+    user_agent = request.headers.get("user-agent")
+    decision = check_login_allowed(db, email=str(payload.email), remote_ip=remote_ip)
+    if not decision.allowed:
+        record_security_event(
+            db,
+            event_type="auth.login",
+            outcome="throttled",
+            subject=str(payload.email),
+            remote_ip=remote_ip,
+            user_agent=user_agent,
+            metadata={"retry_after_seconds": decision.retry_after_seconds},
+        )
+        db.commit()
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="authentication temporarily unavailable",
+            headers={"Retry-After": str(decision.retry_after_seconds)},
+        )
+
     user = authenticate_user(db, str(payload.email), payload.password)
     if user is None:
-        db.rollback()
+        register_login_failure(db, email=str(payload.email), remote_ip=remote_ip)
+        record_security_event(
+            db,
+            event_type="auth.login",
+            outcome="failure",
+            subject=str(payload.email),
+            remote_ip=remote_ip,
+            user_agent=user_agent,
+        )
+        db.commit()
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="invalid credentials")
+
+    clear_login_failures(db, email=str(payload.email), remote_ip=remote_ip)
     issued = create_session(
         db,
         user,
-        remote_ip=request.client.host if request.client else None,
-        user_agent=request.headers.get("user-agent"),
+        remote_ip=remote_ip,
+        user_agent=user_agent,
+    )
+    record_security_event(
+        db,
+        event_type="auth.login",
+        outcome="success",
+        user_id=user.id,
+        subject=str(payload.email),
+        remote_ip=remote_ip,
+        user_agent=user_agent,
     )
     db.commit()
     return LoginResponse(access_token=issued.token, expires_at=issued.expires_at)

@@ -134,6 +134,13 @@
       "status": "done",
       "spec": "automation/specs/ISI-13-ADMINISTRATION.md",
       "next": "ISI-14-SECURITY-HARDENING"
+    },
+    {
+      "id": "ISI-14-SECURITY-HARDENING",
+      "title": "Security & Hardening",
+      "status": "done",
+      "spec": "automation/specs/ISI-14-SECURITY-HARDENING.md",
+      "next": "ISI-15-PRODUCTION-STAGING"
     }
   ]
 }
