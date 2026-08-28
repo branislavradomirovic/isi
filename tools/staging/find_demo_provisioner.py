@@ -16,7 +16,10 @@ def main() -> int:
     args = parser.parse_args()
     repo = Path(args.repo).resolve()
     candidates: list[Path] = []
+    this_file = Path(__file__).resolve()
     for path in (repo / "tools").rglob("*.py"):
+        if path.resolve() == this_file:
+            continue
         try:
             text = path.read_text()
         except UnicodeDecodeError:
