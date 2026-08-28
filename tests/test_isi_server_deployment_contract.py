@@ -16,6 +16,7 @@ def service_block(text: str, name: str) -> str:
 def test_server_compose_isolated_from_existing_host_ports_and_ollama():
     text = (ROOT / "docker-compose.server.yml").read_text()
     assert "  ollama:\n" not in text
+    assert "pg_isready -h 127.0.0.1 -U $${POSTGRES_USER} -d $${POSTGRES_DB}" in service_block(text, "postgres")
     for name in ("postgres", "redis", "minio", "api", "streamlit", "data-worker", "ai-worker"):
         assert "\n    ports:" not in service_block(text, name)
     edge = service_block(text, "edge")
@@ -86,6 +87,7 @@ def test_central_ingress_fragment_is_dormant_isi16_template():
 def test_backup_restore_rehearsal_has_bounded_readiness_and_diagnostics():
     text = (ROOT / "tools/server/backup_restore_rehearsal.sh").read_text()
     assert "for _ in $(seq 1 180); do" in text
+    assert text.count("pg_isready -h 127.0.0.1 -U") == 2
     assert "ERROR isolated restore PostgreSQL did not become ready" in text
     assert "logs --tail=120 postgres" in text
     assert "PASS isolated restore PostgreSQL ready" in text

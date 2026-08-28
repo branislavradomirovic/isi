@@ -76,10 +76,10 @@ RDC=(env
 echo "=== Start isolated restore target ==="
 "${RDC[@]}" up -d postgres minio
 for _ in $(seq 1 180); do
-  if "${RDC[@]}" exec -T postgres pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" >/dev/null 2>&1; then break; fi
+  if "${RDC[@]}" exec -T postgres pg_isready -h 127.0.0.1 -U "$POSTGRES_USER" -d "$POSTGRES_DB" >/dev/null 2>&1; then break; fi
   sleep 1
 done
-if ! "${RDC[@]}" exec -T postgres pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" >/dev/null; then
+if ! "${RDC[@]}" exec -T postgres pg_isready -h 127.0.0.1 -U "$POSTGRES_USER" -d "$POSTGRES_DB" >/dev/null; then
   echo "ERROR isolated restore PostgreSQL did not become ready"
   "${RDC[@]}" ps -a || true
   "${RDC[@]}" logs --tail=120 postgres || true
