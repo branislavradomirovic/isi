@@ -26,6 +26,14 @@ def test_server_compose_isolated_from_existing_host_ports_and_ollama():
     assert 'add_header X-Robots-Tag "noindex, nofollow, noarchive" always;' in edge_conf
     assert r'return 200 "User-agent: *\nDisallow: /\n";' in edge_conf
     assert 'proxy_set_header Host localhost;' in edge_conf
+    assert "resolver 127.0.0.11 valid=5s ipv6=off;" in edge_conf
+    assert "resolver_timeout 2s;" in edge_conf
+    assert "set $api_upstream api:8000;" in edge_conf
+    assert "set $streamlit_upstream streamlit:8501;" in edge_conf
+    assert "proxy_pass http://$api_upstream;" in edge_conf
+    assert "proxy_pass http://$streamlit_upstream;" in edge_conf
+    assert "proxy_pass http://api:8000;" not in edge_conf
+    assert "proxy_pass http://streamlit:8501;" not in edge_conf
 
 
 def test_precutover_edge_canonicalizes_overlapping_security_headers():
@@ -64,8 +72,14 @@ def test_central_ingress_fragment_is_dormant_isi16_template():
     assert "ISI-16 template" in text
     assert "listen 8443 ssl;" in text
     assert "server_name isi.rs www.isi.rs;" in text
-    assert "proxy_pass http://isi-api:8000;" in text
-    assert "proxy_pass http://isi-streamlit:8501;" in text
+    assert "resolver 127.0.0.11 valid=5s ipv6=off;" in text
+    assert "resolver_timeout 2s;" in text
+    assert "set $isi_api_upstream isi-api:8000;" in text
+    assert "set $isi_streamlit_upstream isi-streamlit:8501;" in text
+    assert "proxy_pass http://$isi_api_upstream;" in text
+    assert "proxy_pass http://$isi_streamlit_upstream;" in text
+    assert "proxy_pass http://isi-api:8000;" not in text
+    assert "proxy_pass http://isi-streamlit:8501;" not in text
     assert "/etc/nginx/isi-certs/fullchain.pem" in text
 
 
