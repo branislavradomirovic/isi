@@ -21,6 +21,7 @@ class NavigationRule:
 NAVIGATION_RULES = (
     NavigationRule("overview", "Pregled", "Overview", None, "ISI-05"),
     NavigationRule("data", "Podaci", "Data", "data.read", "ISI-06"),
+    NavigationRule("ai", "AI", "AI", "ai.run", "ISI-07"),
     NavigationRule("indicators", "Indikatori", "Indicators", "indicator.read", "ISI-08/10"),
     NavigationRule("analysis", "Analitika", "Analytics", "analysis.read", "ISI-09/11"),
     NavigationRule("scenarios", "Scenariji", "Scenarios", "scenario.read", "ISI-09/11"),

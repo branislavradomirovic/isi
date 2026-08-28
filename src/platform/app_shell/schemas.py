@@ -10,6 +10,7 @@ from src.platform.app_context.schemas import OrganizationOption, ProductOption, 
 ShellNavCode = Literal[
     "overview",
     "data",
+    "ai",
     "indicators",
     "analysis",
     "scenarios",

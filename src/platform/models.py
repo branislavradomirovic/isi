@@ -23,3 +23,14 @@ from src.platform.data.models import (  # noqa: F401
     DataSourceVersion,
     IngestionJob,
 )
+
+from src.platform.ai.models import (  # noqa: F401
+    AIAuditEvent,
+    AIEmbedding,
+    AIJob,
+    AIJobAttempt,
+    AIModel,
+    AIPolicyProfile,
+    AIPrompt,
+    AIPromptVersion,
+)

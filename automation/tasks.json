@@ -85,6 +85,13 @@
       "status": "done",
       "spec": "automation/specs/ISI-06-SHARED-DATA-PLATFORM.md",
       "next": "ISI-07-SHARED-AI-FOUNDATION"
+    },
+    {
+      "id": "ISI-07-SHARED-AI-FOUNDATION",
+      "title": "Shared AI Foundation",
+      "status": "done",
+      "spec": "automation/specs/ISI-07-SHARED-AI-FOUNDATION.md",
+      "next": "ISI-08-SIMPA-DOMAIN-FOUNDATION"
     }
   ]
 }

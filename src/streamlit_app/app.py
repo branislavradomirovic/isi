@@ -11,6 +11,7 @@ from src.streamlit_app.api_client import AccessDenied, ApiUnavailable, Authentic
 from src.streamlit_app.selection import Selection, default_selection, organization_by_id, product_by_code
 from src.streamlit_app.style import apply_shell_css
 from src.streamlit_app.data_workspace import render_data_workspace
+from src.streamlit_app.ai_workspace import render_ai_workspace
 
 
 TOKEN_KEY = "isi_access_token"
@@ -177,12 +178,23 @@ def _choose_selection(context: dict[str, Any]) -> Selection | None:
     product_code = remembered_product if remembered_product in product_codes else product_codes[0]
 
     if len(products) > 1:
-        product_code = st.sidebar.radio(
-            "Platforma",
-            product_codes,
-            index=product_codes.index(product_code),
-            horizontal=True,
-        )
+        st.sidebar.caption("Platforma")
+        product_columns = st.sidebar.columns(len(product_codes))
+        selected_product = product_code
+        for column, code in zip(product_columns, product_codes):
+            if column.button(
+                code,
+                key=f"isi_product_button_{code}",
+                type="primary" if code == product_code else "secondary",
+                use_container_width=True,
+            ):
+                selected_product = code
+        if selected_product != product_code:
+            st.session_state[PRODUCT_KEY] = selected_product
+            st.session_state.pop(WORKSPACE_KEY, None)
+            st.session_state.pop(NAV_KEY, None)
+            st.rerun()
+        product_code = selected_product
     else:
         st.sidebar.caption("Platforma")
         st.sidebar.markdown(f"**{product_code}**")
@@ -253,17 +265,24 @@ def _sidebar_identity(context: dict[str, Any]) -> None:
 
 def _navigation(shell: dict[str, Any]) -> str:
     enabled = [item for item in shell.get("navigation", []) if item.get("enabled")]
-    labels = [item["label_sr"] for item in enabled]
     codes = [item["code"] for item in enabled]
     current = st.session_state.get(NAV_KEY)
     if current not in codes:
         current = codes[0] if codes else "overview"
-    selected_label = st.sidebar.radio(
-        "Navigacija",
-        labels,
-        index=codes.index(current) if current in codes else 0,
-    )
-    selected_code = codes[labels.index(selected_label)]
+    st.sidebar.caption("Navigacija")
+    selected_code = current
+    for item in enabled:
+        code = item["code"]
+        if st.sidebar.button(
+            item["label_sr"],
+            key=f"isi_nav_button_{code}",
+            type="primary" if code == current else "secondary",
+            use_container_width=True,
+        ):
+            selected_code = code
+    if selected_code != current:
+        st.session_state[NAV_KEY] = selected_code
+        st.rerun()
     st.session_state[NAV_KEY] = selected_code
     return selected_code
 
@@ -336,6 +355,10 @@ def _render_shell(shell: dict[str, Any], nav_code: str) -> None:
         token = _token()
         if token:
             render_data_workspace(token=token, shell=shell)
+    elif nav_code == "ai":
+        token = _token()
+        if token:
+            render_ai_workspace(token=token, shell=shell)
     else:
         _render_future_section(shell, nav_code)
 

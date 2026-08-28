@@ -163,3 +163,19 @@ div[role="radiogroup"] label {
   .isi-brand-lockup img { width: min(220px, 78vw); }
   .isi-brand-lockup.compact img { width: min(165px, 70vw); }
 }
+
+/* ISI-07-HOTFIX-1: button-based sidebar navigation */
+[data-testid="stSidebar"] .stButton > button {
+  width: 100%;
+  min-height: 2.55rem;
+  border-radius: 12px;
+  font-weight: 650;
+}
+[data-testid="stSidebar"] .stButton > button[kind="secondary"] {
+  background: rgba(255,255,255,.38);
+  border-color: var(--isi-line);
+  color: var(--isi-ink);
+}
+[data-testid="stSidebar"] .stButton > button[kind="primary"] {
+  box-shadow: 0 5px 18px rgba(23,59,49,.10);
+}

@@ -17,6 +17,15 @@ class Settings(BaseSettings):
     data_max_xlsx_uncompressed_bytes: int = 67108864
     data_s3_bucket: str = ""
     data_s3_endpoint_url: str = ""
+    ai_job_backend: str = "inline"
+    ai_provider_default: str = "ollama"
+    ai_ollama_base_url: str = "http://127.0.0.1:11434"
+    ai_ollama_chat_model: str = "qwen2.5:7b-instruct"
+    ai_ollama_embedding_model: str = "nomic-embed-text"
+    ai_request_timeout_seconds: int = 120
+    ai_default_policy: str = "shared-local-only"
+    ai_allow_dev_stub: bool = False
+    ai_store_request_text: bool = True
     api_host: str = "0.0.0.0"
     api_port: int = 8000
     streamlit_port: int = 8501
