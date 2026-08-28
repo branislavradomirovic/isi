@@ -28,6 +28,18 @@ def test_server_compose_isolated_from_existing_host_ports_and_ollama():
     assert 'proxy_set_header Host localhost;' in edge_conf
 
 
+def test_precutover_edge_canonicalizes_overlapping_security_headers():
+    text = (ROOT / "docker/nginx/isi-server-precutover.conf").read_text()
+    for header in (
+        "Strict-Transport-Security",
+        "X-Content-Type-Options",
+        "Referrer-Policy",
+        "X-Frame-Options",
+    ):
+        assert f"add_header {header} " in text
+        assert f"proxy_hide_header {header};" in text
+
+
 def test_server_compose_uses_dedicated_ingress_network_and_stable_aliases():
     text = (ROOT / "docker-compose.server.yml").read_text()
     assert "name: ${ISI_INGRESS_NETWORK:-isi_ingress}" in text
