@@ -92,6 +92,13 @@
       "status": "done",
       "spec": "automation/specs/ISI-07-SHARED-AI-FOUNDATION.md",
       "next": "ISI-08-SIMPA-DOMAIN-FOUNDATION"
+    },
+    {
+      "id": "ISI-08-SIMPA-DOMAIN-FOUNDATION",
+      "title": "SIMPA Domain Foundation",
+      "status": "done",
+      "spec": "automation/specs/ISI-08-SIMPA-DOMAIN-FOUNDATION.md",
+      "next": "ISI-09-SIMPA-ANALYTICS-AI"
     }
   ]
 }

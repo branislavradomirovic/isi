@@ -34,3 +34,14 @@ from src.platform.ai.models import (  # noqa: F401
     AIPrompt,
     AIPromptVersion,
 )
+
+from src.domains.simpa.models import (  # noqa: F401
+    SimpaDataMapping,
+    SimpaDimension,
+    SimpaIndicatorDefinition,
+    SimpaIndicatorObservation,
+    SimpaLocalActor,
+    SimpaLocalSystemProfile,
+    SimpaMonitoringCycle,
+    SimpaSourceType,
+)

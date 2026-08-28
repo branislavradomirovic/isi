@@ -12,6 +12,7 @@ from src.streamlit_app.selection import Selection, default_selection, organizati
 from src.streamlit_app.style import apply_shell_css
 from src.streamlit_app.data_workspace import render_data_workspace
 from src.streamlit_app.ai_workspace import render_ai_workspace
+from src.streamlit_app.simpa_workspace import render_ordo_indicator_placeholder, render_simpa_indicators, render_simpa_overview
 
 
 TOKEN_KEY = "isi_access_token"
@@ -349,6 +350,21 @@ def _render_future_section(shell: dict[str, Any], nav_code: str) -> None:
 
 
 def _render_shell(shell: dict[str, Any], nav_code: str) -> None:
+    # ISI-08 SIMPA domain routing
+    product_code = shell.get("product", {}).get("code")
+    if product_code == "SIMPA" and nav_code == "overview":
+        token = _token()
+        if token:
+            render_simpa_overview(token=token, shell=shell)
+        return
+    if nav_code == "indicators":
+        if product_code == "SIMPA":
+            token = _token()
+            if token:
+                render_simpa_indicators(token=token, shell=shell)
+        else:
+            render_ordo_indicator_placeholder(shell)
+        return
     if nav_code == "overview":
         _render_overview(shell)
     elif nav_code == "data":

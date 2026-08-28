@@ -8,6 +8,7 @@ from src.api.app_context_routes import router as app_context_router
 from src.api.app_shell_routes import router as app_shell_router
 from src.api.data_routes import router as data_router
 from src.api.ai_routes import router as ai_router
+from src.api.simpa_routes import router as simpa_router
 from src.core.logging import configure_logging
 from src.public.routes import router as public_router
 from src.public.error_handlers import register_public_error_handlers
@@ -25,6 +26,7 @@ app.include_router(app_context_router)
 app.include_router(app_shell_router)
 app.include_router(data_router)
 app.include_router(ai_router)
+app.include_router(simpa_router)
 
 
 @app.get("/api/v1/health")

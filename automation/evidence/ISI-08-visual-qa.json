@@ -1,0 +1,14 @@
+{
+  "task_id": "ISI-08-SIMPA-DOMAIN-FOUNDATION",
+  "status": "PASS",
+  "manual_ack": "ISI-08 VISUAL QA PASS",
+  "recorded_at": "2026-08-28T08:53:30.302756+00:00",
+  "scope": [
+    "SIMPA overview",
+    "conceptual indicator registry",
+    "empty-state truthfulness",
+    "SIMPA workspace isolation",
+    "ORDO negative control",
+    "single-tab local QA launch"
+  ]
+}
