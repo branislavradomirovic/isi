@@ -144,21 +144,131 @@
     },
     {
       "id": "ISI-15-PRODUCTION-STAGING",
-      "title": "Production Staging",
+      "title": "Production Staging / Server Readiness Baseline",
       "status": "ready",
       "spec": "automation/specs/ISI-15-PRODUCTION-STAGING.md",
       "depends_on": [
         "ISI-14-SECURITY-HARDENING"
       ],
-      "next": "ISI-16-ISI-RS-PRODUCTION-CUTOVER"
+      "next": "ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS"
     },
     {
       "id": "ISI-16-ISI-RS-PRODUCTION-CUTOVER",
-      "title": "isi.rs Production Cutover",
-      "status": "planned",
+      "title": "isi.rs Production Cutover (legacy planned sequence)",
+      "status": "on_hold",
       "depends_on": [
         "ISI-15-PRODUCTION-STAGING"
-      ]
+      ],
+      "note": "Superseded as immediate next work by autonomous industrialization. No cutover until explicit owner approval after ISI-27."
+    },
+    {
+      "id": "ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS",
+      "title": "Autonomous Development Harness + CI",
+      "status": "planned",
+      "spec": "automation/specs/ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS.md",
+      "depends_on": [
+        "ISI-15-PRODUCTION-STAGING"
+      ],
+      "next": "ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS"
+    },
+    {
+      "id": "ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS",
+      "title": "Observability & Operational Diagnostics",
+      "status": "planned",
+      "depends_on": [
+        "ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS"
+      ],
+      "next": "ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY"
+    },
+    {
+      "id": "ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY",
+      "title": "Backup, Restore & Disaster Recovery Automation",
+      "status": "planned",
+      "depends_on": [
+        "ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS"
+      ],
+      "next": "ISI-20-ENTERPRISE-SECURITY-COMPLETION"
+    },
+    {
+      "id": "ISI-20-ENTERPRISE-SECURITY-COMPLETION",
+      "title": "Enterprise Security Completion",
+      "status": "planned",
+      "depends_on": [
+        "ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY"
+      ],
+      "next": "ISI-21-DATA-GOVERNANCE-PRIVACY"
+    },
+    {
+      "id": "ISI-21-DATA-GOVERNANCE-PRIVACY",
+      "title": "Data Governance & Privacy Controls",
+      "status": "planned",
+      "depends_on": [
+        "ISI-20-ENTERPRISE-SECURITY-COMPLETION"
+      ],
+      "next": "ISI-22-INDUSTRIAL-DATA-PLATFORM"
+    },
+    {
+      "id": "ISI-22-INDUSTRIAL-DATA-PLATFORM",
+      "title": "Industrial Data Platform",
+      "status": "planned",
+      "depends_on": [
+        "ISI-21-DATA-GOVERNANCE-PRIVACY"
+      ],
+      "next": "ISI-23-SIMPA-PRODUCTION-METHODOLOGY"
+    },
+    {
+      "id": "ISI-23-SIMPA-PRODUCTION-METHODOLOGY",
+      "title": "SIMPA Production Methodology",
+      "status": "planned",
+      "depends_on": [
+        "ISI-22-INDUSTRIAL-DATA-PLATFORM"
+      ],
+      "next": "ISI-24-ORDO-PRODUCTION-METHODOLOGY"
+    },
+    {
+      "id": "ISI-24-ORDO-PRODUCTION-METHODOLOGY",
+      "title": "ORDO Production Methodology",
+      "status": "planned",
+      "depends_on": [
+        "ISI-23-SIMPA-PRODUCTION-METHODOLOGY"
+      ],
+      "next": "ISI-25-INDUSTRIAL-AI-MLOPS"
+    },
+    {
+      "id": "ISI-25-INDUSTRIAL-AI-MLOPS",
+      "title": "Industrial AI / MLOps",
+      "status": "planned",
+      "depends_on": [
+        "ISI-24-ORDO-PRODUCTION-METHODOLOGY"
+      ],
+      "next": "ISI-26-PERFORMANCE-LOAD-RESILIENCE"
+    },
+    {
+      "id": "ISI-26-PERFORMANCE-LOAD-RESILIENCE",
+      "title": "Performance, Load & Resilience Engineering",
+      "status": "planned",
+      "depends_on": [
+        "ISI-25-INDUSTRIAL-AI-MLOPS"
+      ],
+      "next": "ISI-27-INDUSTRIAL-RELEASE-CANDIDATE"
+    },
+    {
+      "id": "ISI-27-INDUSTRIAL-RELEASE-CANDIDATE",
+      "title": "Industrial Release Candidate & Acceptance Pack",
+      "status": "planned",
+      "depends_on": [
+        "ISI-26-PERFORMANCE-LOAD-RESILIENCE"
+      ],
+      "next": "ISI-28-CURRENT-SERVER-CONTROLLED-UPGRADE"
+    },
+    {
+      "id": "ISI-28-CURRENT-SERVER-CONTROLLED-UPGRADE",
+      "title": "Current Server Controlled Upgrade",
+      "status": "deferred",
+      "depends_on": [
+        "ISI-27-INDUSTRIAL-RELEASE-CANDIDATE"
+      ],
+      "note": "Only task allowed to touch the current server, DNS, ingress, production SMTP, production secrets or production data, and only after explicit owner approval."
     }
   ]
 }
