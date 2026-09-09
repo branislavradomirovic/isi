@@ -164,11 +164,12 @@
     {
       "id": "ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS",
       "title": "Autonomous Development Harness + CI",
-      "status": "planned",
+      "status": "spec_ready",
       "spec": "automation/specs/ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS.md",
       "depends_on": [
         "ISI-15-PRODUCTION-STAGING"
       ],
+      "note": "Owner-approved on 2026-09-09. Implementation may begin from merged planning baseline on a dedicated branch; no server action is authorized.",
       "next": "ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS"
     },
     {
