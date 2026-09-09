@@ -10,13 +10,23 @@ Current task: `ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS`
 
 Current state: `IMPLEMENTING`
 
-Codex environment blocker: `CLEARED_BY_OWNER`
+Codex environment setup: `OWNER_CONFIG_CORRECTED`
 
-Current wait state: `AWAITING_CODEX_IMPLEMENTATION_RESPONSE_OR_COMMIT`
+Current blocker: `CODEX_CLOUD_RUN_FAILED_GENERIC_AFTER_AUTH_SETUP`
+
+Last observed Codex result: `Codex couldn't complete this request. Try again later.` at 2026-09-09T16:36:25Z.
+
+Current wait state: `AWAITING_CODEX_TASK_DIAGNOSTIC_OR_RECOVERY`
+
+GitHub handoff: `NOT_COMPLETED`
+
+GitHub Actions: `NOT_STARTED`
 
 Baseline: `dce074a744bc3055e1f4a827e0ca8d2073ebe44f`
 
 Implementation branch: `codex/isi-17-autonomous-development-harness`
+
+Current GitHub head: `6b4843789cd435f6aa578d85e5f034457e79497f`
 
 Implementation PR: `#3`
 
@@ -36,7 +46,7 @@ A failed required gate returns the current task to `IMPLEMENTING`. Required gate
 
 | Order | Task | Scope | Live status |
 |---:|---|---|---|
-| 17 | `ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS` | Autonomous development harness, GitHub Actions CI, deterministic dependencies, lint/type/test/migration/compose/security/supply-chain gates, evidence/status contracts and server-access policy guards | **IMPLEMENTING** |
+| 17 | `ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS` | Autonomous development harness, GitHub Actions CI, deterministic dependencies, lint/type/test/migration/compose/security/supply-chain gates, evidence/status contracts and server-access policy guards | **IMPLEMENTING — Codex cloud run blocked before GitHub handoff** |
 | 18 | `ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS` | Correlation IDs, structured logs, API/worker/AI/data metrics, health/readiness diagnostics and privacy-safe observability | PLANNED |
 | 19 | `ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY` | Deterministic PostgreSQL/object-storage backup and restore tooling, checksums, recovery rehearsal, RPO/RTO and rollback-safe recovery | PLANNED |
 | 20 | `ISI-20-ENTERPRISE-SECURITY-COMPLETION` | MFA-ready controls, session/device administration, privileged-action controls, broader security events, RBAC/entitlement matrix, SAST/dependency/container/secret scanning and pen-test readiness | PLANNED |
