@@ -1,6 +1,8 @@
 # ISI Autonomous Industrialization Master Plan
 
-Status: proposed planning baseline for owner review.
+Status: **OWNER_APPROVED planning baseline — 2026-09-09**.
+
+This plan is binding for the autonomous industrialization track unless the owner explicitly approves a later change.
 
 ## 1. Purpose
 
@@ -32,6 +34,14 @@ No task is complete merely because an agent claims completion. Status is evidenc
 - `SERVER_VERIFIED`: explicitly approved server acceptance has passed.
 - `DEFERRED_SERVER_VERIFICATION`: implementation is ready but the current task intentionally did not touch the server.
 
+### Owner-facing task states
+
+Use the following operational sequence for human tracking:
+
+`SPEC_READY -> IMPLEMENTING -> IMPLEMENTED -> CI_VERIFIED -> REVIEW_VERIFIED -> MERGE_READY -> MERGED`
+
+A failed required gate returns the task to `IMPLEMENTING`; the gate must not be weakened simply to obtain green status.
+
 ## 4. Server freeze during industrialization
 
 Until the owner explicitly authorizes deployment:
@@ -60,11 +70,16 @@ Deliverables:
 - autonomous-development lock and release policy;
 - standard task-spec template;
 - evidence format;
+- owner-facing task status/dashboard convention;
 - GitHub Actions CI baseline;
+- deterministic dependency resolution/lock or constraints mechanism;
 - formatting/lint/type/dependency/test gates;
-- database/Alembic validation;
-- Docker Compose validation;
-- secret/security scanning;
+- database/Alembic validation including isolated PostgreSQL migration acceptance;
+- Docker Compose validation without using production/server runtime;
+- `.dockerignore` and container-build hygiene;
+- secret, dependency-vulnerability and Python SAST scanning;
+- static policy guard proving autonomous workflows cannot execute server deployment/SSH/SCP/DNS mutation paths;
+- fail-closed local acceptance runner;
 - branch/PR completion contract;
 - explicit server-verification deferral mechanism.
 
@@ -286,7 +301,9 @@ For each task Codex must receive:
 - forbidden changes;
 - completion definition.
 
-Codex must implement on a branch and open/update a PR. A reviewer agent may inspect the diff against the specification, but CI and deterministic acceptance remain authoritative.
+Codex must implement on a dedicated branch and open/update a PR. A reviewer agent may inspect the diff against the specification, but CI and deterministic acceptance remain authoritative.
+
+Every implementation PR must expose a concise owner-facing status block with task ID, baseline/head SHAs, current state, required CI jobs, evidence path, known warnings and deferred server-verification status.
 
 ## 8. Human gates
 
@@ -320,13 +337,16 @@ Expected deployment sequence:
 11. record deployed version and evidence;
 12. rollback automatically or procedurally if a hard acceptance gate fails.
 
-## 10. Planning acceptance
+## 10. Owner approval record
 
-This master plan is ready to become binding when the owner confirms:
+Owner approval was explicitly given on 2026-09-09 for:
 
-- product architecture is correct;
-- server freeze is correct;
-- task sequence is correct;
-- no industrialization area is materially missing;
-- human approval boundaries are acceptable;
-- Codex may begin only with ISI-17 after its detailed task specification is reviewed and accepted.
+- the locked ISI -> {SIMPA, ORDO} product architecture;
+- exclusion of COSMOS from the current runtime/application architecture;
+- server freeze through ISI-27;
+- the serial ISI-17 through ISI-28 industrialization sequence;
+- the human approval boundaries above;
+- use of ISI-17 as the first Codex implementation task;
+- the repository-audit findings as binding ISI-17 implementation input.
+
+Planning changes that materially alter these points require a new explicit owner approval.
