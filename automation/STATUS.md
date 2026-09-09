@@ -26,7 +26,7 @@ Baseline: `dce074a744bc3055e1f4a827e0ca8d2073ebe44f`
 
 Implementation branch: `codex/isi-17-autonomous-development-harness`
 
-Current GitHub head: `6b4843789cd435f6aa578d85e5f034457e79497f`
+Last confirmed non-status implementation head: `6b4843789cd435f6aa578d85e5f034457e79497f`
 
 Implementation PR: `#3`
 
