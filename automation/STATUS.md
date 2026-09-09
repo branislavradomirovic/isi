@@ -10,17 +10,17 @@ Current task: `ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS`
 
 Current state: `IMPLEMENTING`
 
-Codex environment setup: `OWNER_CONFIG_CORRECTED`
+Codex environment setup: `ACTIVE`
 
-Current blocker: `CODEX_CLOUD_RUN_FAILED_GENERIC_AFTER_AUTH_SETUP`
+Current blocker: `NONE — LOCAL ACCEPTANCE IN PROGRESS`
 
-Last observed Codex result: `Codex couldn't complete this request. Try again later.` at 2026-09-09T16:36:25Z.
+Last observed Codex result: ISI-17 implementation harness created.
 
-Current wait state: `AWAITING_CODEX_TASK_DIAGNOSTIC_OR_RECOVERY`
+Current wait state: `AWAITING_LOCAL_ACCEPTANCE_AND_GITHUB_CI`
 
-GitHub handoff: `NOT_COMPLETED`
+GitHub handoff: `PR METADATA PENDING FINAL COMMIT`
 
-GitHub Actions: `NOT_STARTED`
+GitHub Actions: `CONFIGURED — NOT YET CI_VERIFIED`
 
 Baseline: `dce074a744bc3055e1f4a827e0ca8d2073ebe44f`
 
@@ -46,7 +46,7 @@ A failed required gate returns the current task to `IMPLEMENTING`. Required gate
 
 | Order | Task | Scope | Live status |
 |---:|---|---|---|
-| 17 | `ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS` | Autonomous development harness, GitHub Actions CI, deterministic dependencies, lint/type/test/migration/compose/security/supply-chain gates, evidence/status contracts and server-access policy guards | **IMPLEMENTING — Codex cloud run blocked before GitHub handoff** |
+| 17 | `ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS` | Autonomous development harness, GitHub Actions CI, deterministic dependencies, lint/type/test/migration/compose/security/supply-chain gates, evidence/status contracts and server-access policy guards | **IMPLEMENTING — LOCAL ACCEPTANCE IN PROGRESS** |
 | 18 | `ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS` | Correlation IDs, structured logs, API/worker/AI/data metrics, health/readiness diagnostics and privacy-safe observability | PLANNED |
 | 19 | `ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY` | Deterministic PostgreSQL/object-storage backup and restore tooling, checksums, recovery rehearsal, RPO/RTO and rollback-safe recovery | PLANNED |
 | 20 | `ISI-20-ENTERPRISE-SECURITY-COMPLETION` | MFA-ready controls, session/device administration, privileged-action controls, broader security events, RBAC/entitlement matrix, SAST/dependency/container/secret scanning and pen-test readiness | PLANNED |
