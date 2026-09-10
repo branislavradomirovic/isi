@@ -23,6 +23,10 @@ def test_native_postgres_public_content_import_matches_inventory():
     }
     logical_pages = {page_key for page_key, _locale in logical_translations}
     report = json.loads(Path("data/migration/legacy_isi/import_report.json").read_text())
+    fixture_root = Path(os.environ.get("ISI_NATIVE_FIXTURE_REPORT_ROOT", "test-results/native-postgres/legacy"))
+    fixture_summary = json.loads((fixture_root / "fixture-summary.json").read_text())
+    redirect_summary = fixture_summary["redirects"]
+
     factory = build_session_factory(build_engine())
     with factory() as session:
         assert session.scalar(select(func.count()).select_from(PublicLegacySource)) == len(successful)
@@ -51,7 +55,20 @@ def test_native_postgres_public_content_import_matches_inventory():
         assert report["logical_pages"] == len(logical_pages)
         assert report["legacy_alias_pages"] == len(successful) - len(logical_translations)
         assert session.scalar(select(func.count()).select_from(PublicPage).where(PublicPage.status != "draft")) == 0
-        assert session.scalar(select(func.count()).select_from(PublicRedirect).where(PublicRedirect.status != "pending")) == 0
+
+        # The native CI fixture intentionally runs the ISI-03C redirect-finalization
+        # stage before this regression suite. Assert the finalized redirect plan
+        # exactly rather than the earlier post-import "all pending" intermediate state.
+        assert session.scalar(
+            select(func.count()).select_from(PublicRedirect).where(PublicRedirect.status == "approved")
+        ) == redirect_summary["redirect_count"]
+        assert session.scalar(
+            select(func.count()).select_from(PublicRedirect).where(PublicRedirect.status == "disabled")
+        ) == redirect_summary["preserve_count"]
+        assert session.scalar(
+            select(func.count()).select_from(PublicRedirect).where(PublicRedirect.status == "pending")
+        ) == redirect_summary["pending_count"]
+
         translations = session.scalars(select(PublicPageTranslation)).all()
         assert translations
         assert all("<script" not in item.body_html.lower() for item in translations)
