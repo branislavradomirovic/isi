@@ -37,6 +37,7 @@ export ISI_NATIVE_POSTGRES_TEST=1
 export ISI_RUN_NATIVE_DB_TESTS=1
 export ISI_NATIVE_FIXTURE_REPORT_ROOT="$root/test-results/native-postgres/legacy"
 export ISI_NATIVE_MEDIA_ROOT="$root/test-results/native-postgres/media"
+mkdir -p "$ISI_NATIVE_FIXTURE_REPORT_ROOT" "$ISI_NATIVE_MEDIA_ROOT"
 
 # A fresh native database must prove the full migration chain independently.
 tools/ci/migration_check.sh live
