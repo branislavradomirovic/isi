@@ -164,12 +164,12 @@
     {
       "id": "ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS",
       "title": "Autonomous Development Harness + CI",
-      "status": "implementing",
+      "status": "merged",
       "spec": "automation/specs/ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS.md",
       "depends_on": [
         "ISI-15-PRODUCTION-STAGING"
       ],
-      "note": "Remediated implementation head 058911544e9f262b790087f4aa0d134da3d9dbaf passed all blocking gates in CI run #18 (34462606259), including 18/18 native PostgreSQL tests, and passed independent technical re-review. Final evidence/status synchronization must itself pass full CI before integration. No server action is authorized.",
+      "note": "Merged to main at 1e4d23543520c7c69ac96e1e79a83ad750b82fae after PR #4 run #31, PR #3 run #33, independent REVIEW_VERIFIED, and main post-merge run #34 all passed. Blocking native PostgreSQL coverage is 18/18 passed against PostgreSQL 17. Server verification remains DEFERRED_SERVER_VERIFICATION and no server action was performed.",
       "next": "ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS"
     },
     {
