@@ -1,20 +1,17 @@
 # ISI-19 Acceptance Summary
 
-State: **IMPLEMENTING**
+State: **IMPLEMENTED**
 
 Baseline: `b0487d8e9187c6b06efe5fab463875f8d989042c`
 
-Implementation is being published directly through the authenticated GitHub control plane after the Codex execution workspace completed the recovery work but could not push its local commit because that workspace had no authenticated Git remote. The repository-visible implementation includes deterministic recovery manifests, SHA-256 integrity validation, PostgreSQL 17 logical recovery boundaries, scoped local/S3-compatible object recovery, encryption-state hooks, retention safeguards, synthetic recovery rehearsal, tests and the proposed/not-server-validated recovery runbook.
+Repository-visible implementation code head: `dd0cf78a48afcb984aadd74a4808e48d4d739a65`.
 
-The synthetic PostgreSQL 17 + object-storage rehearsal is wired into the existing blocking native PostgreSQL gate. It creates only isolated synthetic Docker resources and removes only resources it created itself. It does not contact the current ISI server.
+GitHub Actions run #49 / `34500748759` completed successfully on that implementation head. All inherited blocking gates passed: policy, quality, complete tests, architecture/security, offline/live migrations, native PostgreSQL, Compose, supply-chain, non-deploying image build and aggregate acceptance.
 
-Authoritative completion remains pending until GitHub Actions passes on the exact published PR head and an independent exact-head review reports no unresolved technical blocker. Codex-local checks are advisory evidence only and are not substituted for GitHub CI.
+The native PostgreSQL job executed the ISI-19 synthetic recovery rehearsal and explicitly reported: `ISI-19 RECOVERY PASS: PostgreSQL 17 and scoped object storage restored and verified`. The same job completed its full native PostgreSQL suite and uploaded evidence artifact ID `10161771050`; GitHub reported ZIP SHA-256 `6d23ae92c3767e77651e5f84d36b55797985602e6b7ab2d9868d760b5cc39f2d`.
 
-Required final evidence still to be filled after exact-head verification:
-- final GitHub-visible implementation SHA;
-- exact GitHub Actions run number/id;
-- PostgreSQL 17 recovery rehearsal result and generated artifact digest;
-- independent review state;
-- post-merge main acceptance.
+The implementation provides deterministic/versioned recovery manifests, SHA-256 and byte-size verification, PostgreSQL 17 logical recovery boundaries, scoped local and S3-compatible object-storage recovery contracts, explicit encryption-state hooks, non-destructive retention planning and explicitly gated deletion, synthetic fresh-target recovery verification, and proposed/not-server-validated recovery documentation.
 
-Server state: `DEFERRED_SERVER_VERIFICATION`. No production/server backup, restore, retention mutation or deployment is authorized in ISI-19.
+The final bookkeeping synchronization intentionally creates a new PR head. That exact synchronized head must pass the complete blocking workflow before independent exact-head review and merge. Run #49 remains the implementation-code evidence and avoids a self-referential evidence-commit loop.
+
+Server state: `DEFERRED_SERVER_VERIFICATION`. No production/server backup, restore, retention mutation or deployment was performed or authorized.

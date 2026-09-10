@@ -1,7 +1,7 @@
 # ISI-19 — Backup, Restore & Disaster Recovery Automation
 
 ## Status
-`SPEC_READY`
+`IMPLEMENTED`
 
 ## Baseline
 `b0487d8e9187c6b06efe5fab463875f8d989042c` (`main`, ISI-18 merged; post-merge CI run #47 / `34485496540` successful).

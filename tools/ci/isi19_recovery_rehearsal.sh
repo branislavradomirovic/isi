@@ -4,7 +4,9 @@ set -Eeuo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$root"
 
-report_root="$root/test-results/isi19-recovery"
+# Keep ISI-19 rehearsal evidence inside the native-postgres artifact tree so the
+# existing blocking GitHub Actions artifact upload retains the full recovery summary.
+report_root="$root/test-results/native-postgres/isi19-recovery"
 rm -rf "$report_root"
 mkdir -p "$report_root"
 
@@ -85,6 +87,7 @@ PY
 docker exec "$source_name" pg_dump -U ci_user -d isi_ci --format=custom --no-owner --no-privileges > "$report_root/postgresql.dump"
 test -s "$report_root/postgresql.dump"
 dump_sha="$(sha256sum "$report_root/postgresql.dump" | awk '{print $1}')"
+echo "ISI-19 RECOVERY DUMP SHA256: $dump_sha"
 docker cp "$report_root/postgresql.dump" "$target_name:/tmp/isi19.dump" >/dev/null
 docker exec "$target_name" pg_restore -U ci_user -d isi_ci --no-owner --no-privileges --exit-on-error /tmp/isi19.dump >/dev/null
 

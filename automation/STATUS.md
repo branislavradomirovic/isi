@@ -10,7 +10,7 @@ Last completed task: `ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS` — `MERGED`
 
 ISI-18 final PR: #6 -> `main`, merged as `b0487d8e9187c6b06efe5fab463875f8d989042c`.
 
-ISI-18 exact-head PR acceptance: run #46 / `34485179622` — `success` across policy, quality, tests, architecture/security, migration, native-postgres, compose, supply-chain, build and aggregate acceptance.
+ISI-18 exact-head PR acceptance: run #46 / `34485179622` — `success`.
 
 ISI-18 independent review: `REVIEW_VERIFIED — no unresolved technical blocker`.
 
@@ -18,7 +18,7 @@ ISI-18 post-merge `main` acceptance: run #47 / `34485496540` — `success`.
 
 Current task: `ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY`.
 
-Current state: `IMPLEMENTING — repository publication repaired through authenticated GitHub control plane; exact-head CI pending`.
+Current state: `IMPLEMENTED — implementation-code CI run #49 green; synchronized-head CI and independent review pending`.
 
 Implementation branch: `automation/isi-19-backup-restore-dr`.
 
@@ -26,11 +26,13 @@ Tracking issue: #7. Pull request: #8.
 
 Baseline `main` SHA: `b0487d8e9187c6b06efe5fab463875f8d989042c`.
 
-Specification: `automation/specs/ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY.md`.
+Repository-visible implementation code head: `dd0cf78a48afcb984aadd74a4808e48d4d739a65`.
 
-Implementation scope: deterministic recovery manifests and SHA-256 verification, PostgreSQL 17 logical recovery, scoped local/S3-compatible object recovery, encryption/retention hooks, synthetic recovery rehearsal, proposed RPO/RTO runbook and committed evidence.
+Implementation-code acceptance: run #49 / `34500748759` — `success` across policy, quality, tests, architecture/security, migrations, native PostgreSQL, Compose, supply-chain, build and aggregate acceptance.
 
-The Codex execution workspace completed an implementation candidate but could not publish its local commit because that checkout had no authenticated Git remote. The implementation is therefore being published through the authenticated GitHub control plane. Codex-local checks are not accepted as a replacement for exact-head GitHub CI.
+ISI-19 native PostgreSQL gate explicitly reported `ISI-19 RECOVERY PASS: PostgreSQL 17 and scoped object storage restored and verified`. The uploaded native-postgres evidence artifact was ID `10161771050`, ZIP SHA-256 `6d23ae92c3767e77651e5f84d36b55797985602e6b7ab2d9868d760b5cc39f2d`.
+
+The implementation is now synchronized in GitHub after the Codex execution checkout proved unable to push its local commit. Codex-local checks remain advisory; exact GitHub CI is authoritative.
 
 Server verification: `DEFERRED_SERVER_VERIFICATION`. No current-server action is authorized before ISI-28.
 
@@ -46,7 +48,7 @@ A failed required gate returns the active task to `IMPLEMENTING`. Required gates
 |---:|---|---|---|
 | 17 | `ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS` | Autonomous development harness, blocking CI, deterministic dependencies and evidence/server-access guards | **MERGED** |
 | 18 | `ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS` | Correlation IDs, structured logs, API/worker/AI/data metrics, health/readiness diagnostics and privacy-safe observability | **MERGED — post-merge CI green** |
-| 19 | `ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY` | Deterministic PostgreSQL/object-storage backup and restore tooling, checksums, recovery rehearsal, proposed RPO/RTO and rollback-safe recovery | **IMPLEMENTING — ACTIVE** |
+| 19 | `ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY` | Deterministic PostgreSQL/object-storage backup and restore tooling, checksums, recovery rehearsal, proposed RPO/RTO and rollback-safe recovery | **IMPLEMENTED — FINAL CI/REVIEW PENDING** |
 | 20 | `ISI-20-ENTERPRISE-SECURITY-COMPLETION` | MFA-ready controls, session/device administration, privileged-action controls, broader security events, RBAC/entitlement matrix and pen-test readiness | PLANNED |
 | 21 | `ISI-21-DATA-GOVERNANCE-PRIVACY` | Data classification, ownership, lineage/provenance, retention/purge/anonymization hooks, sensitive-access auditability, export controls and privacy documentation | PLANNED |
 | 22 | `ISI-22-INDUSTRIAL-DATA-PLATFORM` | Versioned connectors, schema mapping/versioning, incremental/idempotent ingestion, dedup/reconciliation, quarantine/error handling, freshness/quality, backfill and lineage | PLANNED |
