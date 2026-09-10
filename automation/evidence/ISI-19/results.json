@@ -1,0 +1,38 @@
+{
+  "task": "ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY",
+  "baseline": "b0487d8e9187c6b06efe5fab463875f8d989042c",
+  "state": "IMPLEMENTED",
+  "implementation_code_head": "dd0cf78a48afcb984aadd74a4808e48d4d739a65",
+  "github_actions": {
+    "implementation_run_id": 34500748759,
+    "implementation_run_number": 49,
+    "status": "success",
+    "blocking_gates": [
+      "policy",
+      "quality",
+      "tests",
+      "architecture-security",
+      "migration",
+      "native-postgres",
+      "compose",
+      "supply-chain",
+      "build",
+      "acceptance"
+    ]
+  },
+  "recovery_rehearsal": {
+    "postgresql17": "success",
+    "object_storage": "success",
+    "log_evidence": "ISI-19 RECOVERY PASS: PostgreSQL 17 and scoped object storage restored and verified",
+    "native_postgres_artifact_id": 10161771050,
+    "native_postgres_artifact_zip_sha256": "6d23ae92c3767e77651e5f84d36b55797985602e6b7ab2d9868d760b5cc39f2d"
+  },
+  "final_synchronized_head_ci": "pending_after_bookkeeping_commit",
+  "review": "pending_exact_head_review",
+  "rpo_rto": "PROPOSED_NOT_SERVER_VALIDATED",
+  "server_verification": "DEFERRED_SERVER_VERIFICATION",
+  "warnings": [
+    "Codex workspace implementation could not publish because its checkout had no authenticated Git remote; repository publication was completed through the authenticated GitHub control plane.",
+    "Run #49 records the implementation-code acceptance. The subsequent synchronized bookkeeping head must pass fresh CI before review/merge."
+  ]
+}

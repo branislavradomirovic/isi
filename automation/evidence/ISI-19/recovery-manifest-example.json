@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "tool_version": "isi-recovery/1",
+  "backup_id": "isi19-synthetic-example",
+  "created_at": "2026-09-10T00:00:00Z",
+  "source_descriptor": "synthetic-ci",
+  "database_schema_revision": "synthetic-head",
+  "verification_state": "UNVERIFIED",
+  "artifacts": [
+    {
+      "logical_name": "postgresql-main",
+      "kind": "postgresql-custom-dump",
+      "relative_path": "database/isi.dump",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "content_size_bytes": 0,
+      "content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "encryption": "none"
+    }
+  ]
+}

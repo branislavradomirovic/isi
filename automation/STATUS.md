@@ -6,25 +6,33 @@ Last status update: 2026-09-10.
 
 ## Current execution
 
-Last completed task: `ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS` — `MERGED`.
+Last completed task: `ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS` — `MERGED`.
 
-Current task: `ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS`.
+ISI-18 final PR: #6 -> `main`, merged as `b0487d8e9187c6b06efe5fab463875f8d989042c`.
 
-Current state: `IMPLEMENTED — final synchronized-head CI and independent re-review pending`.
+ISI-18 exact-head PR acceptance: run #46 / `34485179622` — `success`.
 
-Implementation branch: `automation/isi-18-observability-diagnostics`.
+ISI-18 independent review: `REVIEW_VERIFIED — no unresolved technical blocker`.
 
-Tracking issue: #5. Draft PR: #6 -> `main`.
+ISI-18 post-merge `main` acceptance: run #47 / `34485496540` — `success`.
 
-Baseline `main` SHA: `e839880eb256ad4c804e91dc778c6b9bb8d4a595`.
+Current task: `ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY`.
 
-Verified implementation code head: `d414d0c7b7230dce570fe8b01869a674d8dd70e6`.
+Current state: `IMPLEMENTED — implementation-code CI run #49 green; synchronized-head CI and independent review pending`.
 
-Implementation-head acceptance: run #45 / `34484850224` — `success` across policy, quality, tests, architecture/security, migration, native-postgres, compose, supply-chain, build and aggregate acceptance.
+Implementation branch: `automation/isi-19-backup-restore-dr`.
 
-Independent review found and closed two implementation gaps before final tracking synchronization: deterministic JSON configuration for the `isi` logger when host/root handlers already exist, and `X-Request-ID` preservation on safe unhandled 500 responses. Dynamic/unmatched route data had already been removed from metric/log labels before that review.
+Tracking issue: #7. Pull request: #8.
 
-Evidence: `automation/evidence/ISI-18/`.
+Baseline `main` SHA: `b0487d8e9187c6b06efe5fab463875f8d989042c`.
+
+Repository-visible implementation code head: `dd0cf78a48afcb984aadd74a4808e48d4d739a65`.
+
+Implementation-code acceptance: run #49 / `34500748759` — `success` across policy, quality, tests, architecture/security, migrations, native PostgreSQL, Compose, supply-chain, build and aggregate acceptance.
+
+ISI-19 native PostgreSQL gate explicitly reported `ISI-19 RECOVERY PASS: PostgreSQL 17 and scoped object storage restored and verified`. The uploaded native-postgres evidence artifact was ID `10161771050`, ZIP SHA-256 `6d23ae92c3767e77651e5f84d36b55797985602e6b7ab2d9868d760b5cc39f2d`.
+
+The implementation is now synchronized in GitHub after the Codex execution checkout proved unable to push its local commit. Codex-local checks remain advisory; exact GitHub CI is authoritative.
 
 Server verification: `DEFERRED_SERVER_VERIFICATION`. No current-server action is authorized before ISI-28.
 
@@ -39,8 +47,8 @@ A failed required gate returns the active task to `IMPLEMENTING`. Required gates
 | Order | Task | Scope | Live status |
 |---:|---|---|---|
 | 17 | `ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS` | Autonomous development harness, blocking CI, deterministic dependencies and evidence/server-access guards | **MERGED** |
-| 18 | `ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS` | Correlation IDs, structured logs, API/worker/AI/data metrics, health/readiness diagnostics and privacy-safe observability | **IMPLEMENTED — final CI/re-review pending** |
-| 19 | `ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY` | Deterministic PostgreSQL/object-storage backup and restore tooling, checksums, recovery rehearsal, RPO/RTO and rollback-safe recovery | PLANNED |
+| 18 | `ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS` | Correlation IDs, structured logs, API/worker/AI/data metrics, health/readiness diagnostics and privacy-safe observability | **MERGED — post-merge CI green** |
+| 19 | `ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY` | Deterministic PostgreSQL/object-storage backup and restore tooling, checksums, recovery rehearsal, proposed RPO/RTO and rollback-safe recovery | **IMPLEMENTED — FINAL CI/REVIEW PENDING** |
 | 20 | `ISI-20-ENTERPRISE-SECURITY-COMPLETION` | MFA-ready controls, session/device administration, privileged-action controls, broader security events, RBAC/entitlement matrix and pen-test readiness | PLANNED |
 | 21 | `ISI-21-DATA-GOVERNANCE-PRIVACY` | Data classification, ownership, lineage/provenance, retention/purge/anonymization hooks, sensitive-access auditability, export controls and privacy documentation | PLANNED |
 | 22 | `ISI-22-INDUSTRIAL-DATA-PLATFORM` | Versioned connectors, schema mapping/versioning, incremental/idempotent ingestion, dedup/reconciliation, quarantine/error handling, freshness/quality, backfill and lineage | PLANNED |

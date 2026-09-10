@@ -175,21 +175,23 @@
     {
       "id": "ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS",
       "title": "Observability & Operational Diagnostics",
-      "status": "implemented",
+      "status": "merged",
       "spec": "automation/specs/ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS.md",
       "depends_on": [
         "ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS"
       ],
-      "note": "Implementation code head d414d0c7b7230dce570fe8b01869a674d8dd70e6 passed full PR CI run #45 (34484850224). Independent review findings on deterministic ISI JSON logging and unhandled-500 request-ID propagation were remediated at that head. Final synchronized tracking head still requires fresh blocking CI and final independent re-review before merge. Server verification remains deferred.",
+      "note": "Merged via PR #6 to main as b0487d8e9187c6b06efe5fab463875f8d989042c. Exact-head PR acceptance run #46 (34485179622), independent review, and post-merge main acceptance run #47 (34485496540) all passed. Server verification remains deferred.",
       "next": "ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY"
     },
     {
       "id": "ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY",
       "title": "Backup, Restore & Disaster Recovery Automation",
-      "status": "planned",
+      "status": "implemented",
+      "spec": "automation/specs/ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY.md",
       "depends_on": [
         "ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS"
       ],
+      "note": "Repository-visible implementation code head dd0cf78a48afcb984aadd74a4808e48d4d739a65 passed authoritative PR CI run #49 (34500748759), including PostgreSQL 17 and scoped object-storage recovery rehearsal. Final synchronized bookkeeping head still requires fresh exact-head CI and independent review before merge. Server verification remains deferred.",
       "next": "ISI-20-ENTERPRISE-SECURITY-COMPLETION"
     },
     {

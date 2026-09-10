@@ -59,4 +59,7 @@ fi
 python -m pytest -q "${native_tests[@]}" \
   --junitxml=test-results/native-postgres/pytest-native-postgres.xml
 
-echo "NATIVE POSTGRES PASS: ${#native_tests[@]} native PostgreSQL test file(s), offline fixtures only"
+# ISI-19 adds a destructive-only-to-synthetic PostgreSQL 17 and object-storage recovery rehearsal.
+tools/ci/isi19_recovery_rehearsal.sh
+
+echo "NATIVE POSTGRES PASS: ${#native_tests[@]} native PostgreSQL test file(s), offline fixtures plus ISI-19 recovery rehearsal"
