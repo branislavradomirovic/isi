@@ -15,6 +15,7 @@ phase architecture-security
 python -m pytest -q tests/test_architecture_contract.py tests/test_isi_07_policy.py tests/test_isi_14_session_contract.py tests/test_isi_14_production_config_contract.py
 phase migration-offline; tools/ci/migration_check.sh offline
 phase migration-live; tools/ci/migration_live_docker.sh
+phase native-postgres; tools/ci/native_postgres_tests.sh
 phase compose; tools/ci/compose_config.sh
 phase secret-scan
 docker run --rm -v "$root:/repo" zricethezav/gitleaks:v8.28.0 detect --source=/repo --no-banner

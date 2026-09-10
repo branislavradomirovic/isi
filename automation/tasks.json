@@ -169,7 +169,7 @@
       "depends_on": [
         "ISI-15-PRODUCTION-STAGING"
       ],
-      "note": "Implementation completed locally from baseline dce074a744bc3055e1f4a827e0ca8d2073ebe44f; CI verification remains pending and no server action is authorized.",
+      "note": "Implementation is present on stacked PR #4. Previous head 47c552f565d2bb9116b2969f5bb97ba820d37f7e passed CI run #6 (34405737408); independent review requires remediation and a fresh full CI run before re-review/merge. No server action is authorized.",
       "next": "ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS"
     },
     {
@@ -224,6 +224,7 @@
       "depends_on": [
         "ISI-22-INDUSTRIAL-DATA-PLATFORM"
       ],
+      "note": "Deliver a DRAFT/PROPOSED working methodology for user testing plus detailed in-app Help and a SIMPA User Guide. Do not mark methodology/formulas/weights/thresholds as validated before human approval.",
       "next": "ISI-24-ORDO-PRODUCTION-METHODOLOGY"
     },
     {
@@ -233,6 +234,7 @@
       "depends_on": [
         "ISI-23-SIMPA-PRODUCTION-METHODOLOGY"
       ],
+      "note": "Deliver a DRAFT/PROPOSED working methodology for user testing plus detailed in-app Help and an ORDO User Guide. Do not mark methodology/forecasting claims as validated before human approval and supporting evidence.",
       "next": "ISI-25-INDUSTRIAL-AI-MLOPS"
     },
     {
@@ -260,6 +262,7 @@
       "depends_on": [
         "ISI-26-PERFORMANCE-LOAD-RESILIENCE"
       ],
+      "note": "Release candidate acceptance must include completeness checks for the SIMPA and ORDO Help/User Guides and explicit DRAFT/PROPOSED versus human-validated methodology state.",
       "next": "ISI-28-CURRENT-SERVER-CONTROLLED-UPGRADE"
     },
     {

@@ -2,16 +2,24 @@
   "task": "ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS",
   "baseline": "dce074a744bc3055e1f4a827e0ca8d2073ebe44f",
   "state": "IMPLEMENTING",
-  "python": "3.11.15",
-  "pytest": {"tests": 318, "passed": 302, "failed": 0, "skipped": 16},
-  "policy": "passed",
-  "compile": "passed",
-  "lint": "passed",
-  "type_baseline": "passed",
-  "alembic_offline_single_head": "passed",
-  "pip_audit": "passed_no_known_vulnerabilities",
-  "bandit_high_severity_medium_confidence": "passed",
-  "docker_dependent_gates": "pending_github_ci_environment",
+  "previous_verified_head_sha": "47c552f565d2bb9116b2969f5bb97ba820d37f7e",
+  "previous_verified_ci_run_id": 34405737408,
+  "previous_verified_ci_conclusion": "success",
+  "previous_pytest": {
+    "tests": 318,
+    "passed": 302,
+    "failed": 0,
+    "skipped": 16
+  },
+  "review_status": "CHANGES_REQUIRED",
+  "fresh_ci_required": true,
+  "remediation_required": [
+    "status_and_evidence_synchronization",
+    "fail_closed_agents_and_server_lock_policy_regression",
+    "blocking_native_postgresql_regression_suite",
+    "deterministic_pep517_and_pip_tools_bootstrap"
+  ],
+  "native_postgres_fixture_policy": "committed_source_snapshots_plus_in_process_mock_media_zero_production_io",
   "server_action": false,
   "server_verification": "DEFERRED_SERVER_VERIFICATION"
 }

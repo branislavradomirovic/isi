@@ -1,30 +1,35 @@
 # ISI-17 Acceptance Summary
 
 - Task: `ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS`
-- State: `IMPLEMENTING` (local non-container gates passed; GitHub acceptance pending)
+- State: `IMPLEMENTING` — independent review remediation is being verified.
 - Baseline: `dce074a744bc3055e1f4a827e0ca8d2073ebe44f`
-- Final task commit: recorded by the pull-request head after commit
-- Branch: `work` (execution environment mapping for the dedicated ISI-17 implementation branch)
-- PR: metadata prepared for PR #3; remote CI/review state pending
-- Server verification: `DEFERRED_SERVER_VERIFICATION`
+- Implementation PR: #4 (`codex/implement-isi-17-ci-for-autonomous-development` -> `codex/isi-17-autonomous-development-harness`)
+- Parent integration PR: #3 (`codex/isi-17-autonomous-development-harness` -> `main`)
+- Previous CI-verified head: `47c552f565d2bb9116b2969f5bb97ba820d37f7e`
+- Previous GitHub Actions result: `ISI required acceptance` run #6 / `34405737408` — `success`.
+- Independent review: `CHANGES_REQUIRED` on the previous head.
+- Server verification: `DEFERRED_SERVER_VERIFICATION`.
 
-## Passing local evidence
+## Previous passing CI evidence
 
-- deterministic Python 3.11 lock installation and `pip check`;
-- governance/workflow policy validation;
-- compile, incremental Ruff baseline and strict harness mypy baseline;
-- full pytest: 318 tests, 302 passed and 16 environment-gated native PostgreSQL tests skipped; zero failures;
-- Alembic offline rendering with exactly one head;
-- dependency vulnerability audit: no known vulnerabilities;
-- Bandit high-severity/medium-confidence policy: no findings;
-- whitespace validation.
+The previous implementation head passed every configured GitHub gate: policy, quality, full pytest, architecture/security, Alembic migration, Compose validation, supply-chain checks, Docker build, and aggregate acceptance. The ordinary pytest job reported 302 passed and 16 environment-gated native PostgreSQL tests skipped.
 
-## Environment limitations and CI-pending gates
+## Review remediation in this change
 
-The execution image has no Docker CLI/daemon. Static Compose rendering, secret scanning through the pinned Gitleaks container, isolated PostgreSQL 17 live migration, and non-deploying application image build could not run locally. They are blocking GitHub CI jobs, not waived checks. No server or production system was contacted.
+The remediation is intentionally fail-closed and adds no production/server access:
 
-Two deprecation warnings from Starlette/FastAPI test tooling are known and non-failing. Image SBOM/signing and deeper image CVE enforcement are explicitly deferred to ISI-20/ISI-27 under the release policy.
+- validate binding `AGENTS.md` architecture, server-lock, test-integrity, methodology and isolation invariants rather than file existence alone;
+- add negative regression tests proving automation that attempts remote shell/copy, deployment tooling, direct `isi.rs` contact or infrastructure mutation is rejected;
+- add a blocking `native-postgres` CI gate that runs the native PostgreSQL regression suite against a fresh PostgreSQL 17 service;
+- reconstruct the historical/public-data fixtures from committed snapshots and use an in-process HTTP mock for media fixtures, so native CI performs zero production/server network I/O;
+- pin the PEP-517 build backend and wheel versions and record the exact `pip-tools` regeneration version;
+- synchronize owner-facing status/evidence with the actual stacked PR and CI/review state;
+- add detailed SIMPA and ORDO Help/User Guide deliverables to the industrialization roadmap while keeping all methodology work DRAFT/PROPOSED until human/user-testing approval.
+
+## Fresh acceptance requirement
+
+This remediation must pass a new complete GitHub Actions run before `CI_VERIFIED` can be restored. It must then pass independent re-review before `REVIEW_VERIFIED` or merge. A failed required gate returns ISI-17 to `IMPLEMENTING`; no gate may be weakened to obtain green status.
 
 ## No-server confirmation
 
-No remote access, deployment, DNS/ingress mutation, production credential use, production data access, SMTP change, or server Ollama change occurred.
+No remote access, deployment, DNS/ingress mutation, production credential use, production data access, SMTP change, production backup/restore, or server Ollama change is authorized or performed. Current-server verification remains deferred to ISI-28 with separate explicit owner approval.

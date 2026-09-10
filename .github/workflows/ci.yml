@@ -80,6 +80,30 @@ jobs:
       - run: tools/ci/migration_check.sh offline
       - run: tools/ci/migration_check.sh live
 
+  native-postgres:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env: {POSTGRES_DB: isi_ci, POSTGRES_USER: ci_user, POSTGRES_PASSWORD: ci_password}
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U ci_user -d isi_ci" --health-interval 5s
+          --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgresql+psycopg://ci_user:ci_password@localhost:5432/isi_ci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11", cache: pip, cache-dependency-path: requirements.lock}
+      - run: python -m pip install -r requirements.lock && python -m pip install --no-deps -e .
+      - run: tools/ci/native_postgres_tests.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-postgres-results
+          path: test-results/native-postgres/
+
   compose:
     runs-on: ubuntu-latest
     steps:
@@ -113,7 +137,7 @@ jobs:
 
   acceptance:
     if: always()
-    needs: [policy, quality, tests, architecture-security, migration, compose, supply-chain, build]
+    needs: [policy, quality, tests, architecture-security, migration, native-postgres, compose, supply-chain, build]
     runs-on: ubuntu-latest
     steps:
       - name: Require every gate
