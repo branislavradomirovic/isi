@@ -6,48 +6,49 @@ Last status update: 2026-09-10.
 
 ## Current execution
 
-Current task: `ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS`
+Last completed task: `ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS`
 
-Formal current state: `IMPLEMENTING` while the final evidence/status synchronization head awaits its own complete CI run.
+Final state: `MERGED`.
 
-Implementation content state: `CI_VERIFIED + INDEPENDENT_RE-REVIEW_PASS`.
+Main merge commit: `1e4d23543520c7c69ac96e1e79a83ad750b82fae`.
 
-Current blocker: `FINAL EVIDENCE/STATUS SYNC MUST PASS FULL CI BEFORE INTEGRATION`.
+Final parent PR: #3 -> `main`, merged 2026-09-10.
 
-Baseline: `dce074a744bc3055e1f4a827e0ca8d2073ebe44f`
+Implementation PR: #4 -> PR #3 branch, merged before parent integration.
 
-Parent integration branch: `codex/isi-17-autonomous-development-harness` (PR #3 -> `main`)
+Verified CI:
 
-Implementation branch: `codex/implement-isi-17-ci-for-autonomous-development` (PR #4 -> PR #3 branch)
+- PR #4 current-head acceptance: run #31 / `34463553604` — `success`.
+- PR #3 parent-integration acceptance: run #33 / `34463767042` — `success`.
+- `main` post-merge acceptance: run #34 / `34463983460` — `success`.
+- Ordinary pytest evidence: 320 total / 304 passed / 16 native-gated skipped / 0 failed.
+- Dedicated native PostgreSQL evidence: 18 total / 18 passed / 0 skipped / 0 failed against PostgreSQL 17.
+- All blocking gates passed: policy, quality, tests, architecture/security, migration, native-postgres, compose, supply-chain, build, aggregate acceptance.
 
-Verified remediated implementation head: `058911544e9f262b790087f4aa0d134da3d9dbaf`
+Independent review: `REVIEW_VERIFIED — no unresolved technical blocker`.
 
-Verified CI run: `ISI required acceptance` run #18 / `34462606259` — `success`.
+Known warning: superseded intermediate workflow runs failed during remediation and may still appear in GitHub email history; they are not the final state. GitHub-hosted actions currently emit a Node 20 deprecation warning while being forced onto Node 24.
 
-CI evidence: ordinary pytest 320 total / 304 passed / 16 native-gated skipped / 0 failed; dedicated native PostgreSQL 18 total / 18 passed / 0 skipped / 0 failed; all policy, quality, architecture/security, migration, compose, supply-chain, build and aggregate acceptance gates passed.
+Evidence: `automation/evidence/ISI-17/`.
 
-Independent re-review: `PASS — no technical blocker on verified implementation content`.
-
-Final synchronization rule: the current evidence/status-only head must itself pass every blocking gate. GitHub checks remain authoritative; if any gate fails, ISI-17 returns to `IMPLEMENTING` and is not merged.
-
-Tracking issue: `#2`
-
-Server verification: `DEFERRED_SERVER_VERIFICATION`
+Server verification: `DEFERRED_SERVER_VERIFICATION`.
 
 No server action is authorized before ISI-28.
+
+Next serial task: `ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS` — `PLANNED`, not yet started.
 
 ## Owner-facing state model
 
 `SPEC_READY -> IMPLEMENTING -> IMPLEMENTED -> CI_VERIFIED -> REVIEW_VERIFIED -> MERGE_READY -> MERGED`
 
-A failed required gate returns the current task to `IMPLEMENTING`. Required gates must not be weakened merely to make the task green.
+A failed required gate returns the active task to `IMPLEMENTING`. Required gates must not be weakened merely to make a task green.
 
 ## Full industrialization roadmap
 
 | Order | Task | Scope | Live status |
 |---:|---|---|---|
-| 17 | `ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS` | Autonomous development harness, GitHub Actions CI, deterministic dependencies, lint/type/test/native-PostgreSQL/migration/compose/security/supply-chain gates, evidence/status contracts and server-access policy guards | **IMPLEMENTING — FINAL EVIDENCE SYNC CI** |
-| 18 | `ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS` | Correlation IDs, structured logs, API/worker/AI/data metrics, health/readiness diagnostics and privacy-safe observability | PLANNED |
+| 17 | `ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS` | Autonomous development harness, GitHub Actions CI, deterministic dependencies, lint/type/test/native-PostgreSQL/migration/compose/security/supply-chain gates, evidence/status contracts and server-access policy guards | **MERGED** |
+| 18 | `ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS` | Correlation IDs, structured logs, API/worker/AI/data metrics, health/readiness diagnostics and privacy-safe observability | **PLANNED — NEXT** |
 | 19 | `ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY` | Deterministic PostgreSQL/object-storage backup and restore tooling, checksums, recovery rehearsal, RPO/RTO and rollback-safe recovery | PLANNED |
 | 20 | `ISI-20-ENTERPRISE-SECURITY-COMPLETION` | MFA-ready controls, session/device administration, privileged-action controls, broader security events, RBAC/entitlement matrix, SAST/dependency/container/secret scanning and pen-test readiness | PLANNED |
 | 21 | `ISI-21-DATA-GOVERNANCE-PRIVACY` | Data classification, ownership, lineage/provenance, retention/purge/anonymization hooks, sensitive-access auditability, export controls and privacy documentation | PLANNED |
