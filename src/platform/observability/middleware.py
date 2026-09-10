@@ -18,6 +18,7 @@ _CallNext = Callable[[Request], Awaitable[Response]]
 class ObservabilityMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next: _CallNext) -> Response:
         request_id = normalize_request_id(request.headers.get("X-Request-ID"))
+        request.state.request_id = request_id
         token = set_request_id(request_id)
         started = time.perf_counter()
         response: Response | None = None

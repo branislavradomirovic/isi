@@ -20,6 +20,7 @@ from src.api.simpa_routes import router as simpa_router
 from src.core.config import get_settings
 from src.core.logging import configure_logging
 from src.platform.deployment.runtime import validate_deployment_runtime_settings
+from src.platform.observability.errors import unhandled_exception_response
 from src.platform.observability.middleware import ObservabilityMiddleware
 from src.platform.security.middleware import SecurityHeadersMiddleware
 from src.platform.security.service import parse_allowed_hosts, validate_production_security_settings
@@ -31,6 +32,7 @@ _security_settings = get_settings()
 validate_production_security_settings(_security_settings)
 validate_deployment_runtime_settings(_security_settings)
 app = FastAPI(title="ISI Platform API", version="0.1.0")
+app.add_exception_handler(Exception, unhandled_exception_response)
 app.add_middleware(TrustedHostMiddleware, allowed_hosts=parse_allowed_hosts(_security_settings.security_allowed_hosts))
 app.add_middleware(SecurityHeadersMiddleware, environment=_security_settings.isi_env)
 app.add_middleware(ObservabilityMiddleware)

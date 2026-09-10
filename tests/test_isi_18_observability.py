@@ -7,6 +7,8 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from src.core.config import Settings
+from src.core.logging import configure_logging
+from src.platform.observability.errors import unhandled_exception_response
 from src.platform.observability.logging import JsonFormatter
 from src.platform.observability.metrics import metrics_registry
 from src.platform.observability.middleware import ObservabilityMiddleware
@@ -20,11 +22,16 @@ from src.platform.observability.telemetry import (
 
 def _app() -> FastAPI:
     app = FastAPI()
+    app.add_exception_handler(Exception, unhandled_exception_response)
     app.add_middleware(ObservabilityMiddleware)
 
     @app.get("/items/{item_id}")
     def item(item_id: str) -> dict[str, str]:
         return {"item_id": item_id}
+
+    @app.get("/explode")
+    def explode() -> None:
+        raise RuntimeError("secret exception detail must not be returned")
 
     return app
 
@@ -58,6 +65,16 @@ def test_unmatched_routes_do_not_become_metric_labels() -> None:
     assert "/unmatched" in encoded
 
 
+def test_unhandled_500_preserves_request_id_without_exception_text() -> None:
+    metrics_registry.reset()
+    client = TestClient(_app(), raise_server_exceptions=False)
+    response = client.get("/explode", headers={"X-Request-ID": "req-error-123"})
+    assert response.status_code == 500
+    assert response.headers["X-Request-ID"] == "req-error-123"
+    assert response.text == "Internal Server Error"
+    assert "secret exception" not in response.text
+
+
 def test_structured_log_redacts_credentials() -> None:
     record = logging.LogRecord(
         name="isi.test",
@@ -74,6 +91,26 @@ def test_structured_log_redacts_credentials() -> None:
     assert "token-value" not in rendered
     assert "[REDACTED]" in rendered
     assert set(payload) >= {"timestamp", "level", "logger", "message", "request_id"}
+
+
+def test_isi_logger_is_json_even_when_root_is_preconfigured() -> None:
+    root = logging.getLogger()
+    sentinel = logging.StreamHandler()
+    root.addHandler(sentinel)
+    isi_logger = logging.getLogger("isi")
+    original_handlers = list(isi_logger.handlers)
+    original_level = isi_logger.level
+    original_propagate = isi_logger.propagate
+    try:
+        configure_logging()
+        assert len(isi_logger.handlers) == 1
+        assert isinstance(isi_logger.handlers[0].formatter, JsonFormatter)
+        assert isi_logger.propagate is False
+    finally:
+        isi_logger.handlers[:] = original_handlers
+        isi_logger.setLevel(original_level)
+        isi_logger.propagate = original_propagate
+        root.removeHandler(sentinel)
 
 
 def test_metrics_and_telemetry_are_bounded_and_exportable() -> None:
