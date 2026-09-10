@@ -30,6 +30,7 @@ class Settings(BaseSettings):
     ai_default_policy: str = "shared-local-only"
     ai_allow_dev_stub: bool = False
     ai_store_request_text: bool = True
+    observability_http_metrics_enabled: bool = False
     api_host: str = "0.0.0.0"
     api_port: int = 8000
     streamlit_port: int = 8501
