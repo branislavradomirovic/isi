@@ -8,9 +8,11 @@ Last status update: 2026-09-10.
 
 Current task: `ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS`
 
-Current state: `IMPLEMENTING`
+Formal current state: `IMPLEMENTING` while the final evidence/status synchronization head awaits its own complete CI run.
 
-Current blocker: `REVIEW_REMEDIATION — FRESH CI AND RE-REVIEW REQUIRED`
+Implementation content state: `CI_VERIFIED + INDEPENDENT_RE-REVIEW_PASS`.
+
+Current blocker: `FINAL EVIDENCE/STATUS SYNC MUST PASS FULL CI BEFORE INTEGRATION`.
 
 Baseline: `dce074a744bc3055e1f4a827e0ca8d2073ebe44f`
 
@@ -18,13 +20,15 @@ Parent integration branch: `codex/isi-17-autonomous-development-harness` (PR #3 
 
 Implementation branch: `codex/implement-isi-17-ci-for-autonomous-development` (PR #4 -> PR #3 branch)
 
-Previous CI-verified implementation head: `47c552f565d2bb9116b2969f5bb97ba820d37f7e`
+Verified remediated implementation head: `058911544e9f262b790087f4aa0d134da3d9dbaf`
 
-Previous CI run: `ISI required acceptance` run #6 / `34405737408` — `success`.
+Verified CI run: `ISI required acceptance` run #18 / `34462606259` — `success`.
 
-Independent review: `CHANGES_REQUIRED`; remediation covers status/evidence synchronization, fail-closed policy regression coverage, blocking native PostgreSQL tests, and deterministic build-tool bootstrap.
+CI evidence: ordinary pytest 320 total / 304 passed / 16 native-gated skipped / 0 failed; dedicated native PostgreSQL 18 total / 18 passed / 0 skipped / 0 failed; all policy, quality, architecture/security, migration, compose, supply-chain, build and aggregate acceptance gates passed.
 
-Fresh CI required: `YES — remediation changes must pass every blocking gate before re-review`.
+Independent re-review: `PASS — no technical blocker on verified implementation content`.
+
+Final synchronization rule: the current evidence/status-only head must itself pass every blocking gate. GitHub checks remain authoritative; if any gate fails, ISI-17 returns to `IMPLEMENTING` and is not merged.
 
 Tracking issue: `#2`
 
@@ -42,7 +46,7 @@ A failed required gate returns the current task to `IMPLEMENTING`. Required gate
 
 | Order | Task | Scope | Live status |
 |---:|---|---|---|
-| 17 | `ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS` | Autonomous development harness, GitHub Actions CI, deterministic dependencies, lint/type/test/native-PostgreSQL/migration/compose/security/supply-chain gates, evidence/status contracts and server-access policy guards | **IMPLEMENTING — REVIEW REMEDIATION** |
+| 17 | `ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS` | Autonomous development harness, GitHub Actions CI, deterministic dependencies, lint/type/test/native-PostgreSQL/migration/compose/security/supply-chain gates, evidence/status contracts and server-access policy guards | **IMPLEMENTING — FINAL EVIDENCE SYNC CI** |
 | 18 | `ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS` | Correlation IDs, structured logs, API/worker/AI/data metrics, health/readiness diagnostics and privacy-safe observability | PLANNED |
 | 19 | `ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY` | Deterministic PostgreSQL/object-storage backup and restore tooling, checksums, recovery rehearsal, RPO/RTO and rollback-safe recovery | PLANNED |
 | 20 | `ISI-20-ENTERPRISE-SECURITY-COMPLETION` | MFA-ready controls, session/device administration, privileged-action controls, broader security events, RBAC/entitlement matrix, SAST/dependency/container/secret scanning and pen-test readiness | PLANNED |
