@@ -28,7 +28,9 @@ class ObservabilityMiddleware(BaseHTTPMiddleware):
             return response
         finally:
             elapsed_ms = max((time.perf_counter() - started) * 1000.0, 0.0)
-            route = normalize_route(request.url.path)
+            route_definition = request.scope.get("route")
+            route_path = getattr(route_definition, "path", None)
+            route = normalize_route(route_path) if isinstance(route_path, str) else "/unmatched"
             outcome = "success" if status_code < 500 else "error"
             request_labels = {
                 "method": request.method,

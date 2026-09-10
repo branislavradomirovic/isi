@@ -29,10 +29,10 @@ def _app() -> FastAPI:
     return app
 
 
-def test_request_id_propagation_and_invalid_replacement() -> None:
+def test_request_id_propagation_and_route_privacy() -> None:
     metrics_registry.reset()
     client = TestClient(_app())
-    response = client.get("/items/12345?token=do-not-record", headers={"X-Request-ID": "req-12345678"})
+    response = client.get("/items/customer-alice@example.com?token=do-not-record", headers={"X-Request-ID": "req-12345678"})
     assert response.status_code == 200
     assert response.headers["X-Request-ID"] == "req-12345678"
 
@@ -43,9 +43,19 @@ def test_request_id_propagation_and_invalid_replacement() -> None:
 
     encoded = json.dumps(metrics_registry.as_dict())
     assert "do-not-record" not in encoded
-    assert "12345" not in encoded
+    assert "customer-alice" not in encoded
     assert "67890" not in encoded
     assert "/items/:id" in encoded
+
+
+def test_unmatched_routes_do_not_become_metric_labels() -> None:
+    metrics_registry.reset()
+    client = TestClient(_app())
+    response = client.get("/private-customer-name/not-a-real-route")
+    assert response.status_code == 404
+    encoded = json.dumps(metrics_registry.as_dict())
+    assert "private-customer-name" not in encoded
+    assert "/unmatched" in encoded
 
 
 def test_structured_log_redacts_credentials() -> None:

@@ -11,6 +11,7 @@ _LABEL_VALUE_RE = re.compile(r"[^A-Za-z0-9_.:/-]+")
 _LABEL_NAME_RE = re.compile(r"[^A-Za-z0-9_]+")
 _METRIC_NAME_RE = re.compile(r"[^A-Za-z0-9_:]+")
 _DYNAMIC_SEGMENT_RE = re.compile(r"^(?:[0-9]+|[0-9a-fA-F]{16,}|[0-9a-fA-F-]{32,})$")
+_ROUTE_PARAMETER_RE = re.compile(r"^\{[^{}]+\}$")
 
 
 def safe_label(value: object, *, max_length: int = 64) -> str:
@@ -39,7 +40,8 @@ def normalize_route(path: str) -> str:
     for segment in clean.split("/"):
         if not segment:
             continue
-        segments.append(":id" if _DYNAMIC_SEGMENT_RE.fullmatch(segment) else safe_label(segment))
+        dynamic = _DYNAMIC_SEGMENT_RE.fullmatch(segment) or _ROUTE_PARAMETER_RE.fullmatch(segment)
+        segments.append(":id" if dynamic else safe_label(segment))
     return "/" + "/".join(segments)
 
 
