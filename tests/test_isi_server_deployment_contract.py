@@ -20,7 +20,7 @@ def test_server_compose_isolated_from_existing_host_ports_and_ollama():
     for name in ("postgres", "redis", "minio", "api", "streamlit", "data-worker", "ai-worker"):
         assert "\n    ports:" not in service_block(text, name)
     edge = service_block(text, "edge")
-    assert '"127.0.0.1:${ISI_PRECUTOVER_HTTPS_PORT:-8445}:443"' in edge
+    assert '"${ISI_PRECUTOVER_BIND_ADDRESS:-127.0.0.1}:${ISI_PRECUTOVER_HTTPS_PORT:-8445}:443"' in edge
     assert 'profiles: ["precutover"]' in edge
     assert 'profiles: ["precutover"]' in service_block(text, "mailpit")
     edge_conf = (ROOT / "docker/nginx/isi-server-precutover.conf").read_text()

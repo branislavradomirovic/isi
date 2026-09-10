@@ -164,12 +164,12 @@
     {
       "id": "ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS",
       "title": "Autonomous Development Harness + CI",
-      "status": "spec_ready",
+      "status": "implementing",
       "spec": "automation/specs/ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS.md",
       "depends_on": [
         "ISI-15-PRODUCTION-STAGING"
       ],
-      "note": "Owner-approved on 2026-09-09. Implementation may begin from merged planning baseline on a dedicated branch; no server action is authorized.",
+      "note": "Remediated implementation head 058911544e9f262b790087f4aa0d134da3d9dbaf passed all blocking gates in CI run #18 (34462606259), including 18/18 native PostgreSQL tests, and passed independent technical re-review. Final evidence/status synchronization must itself pass full CI before integration. No server action is authorized.",
       "next": "ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS"
     },
     {
@@ -224,6 +224,7 @@
       "depends_on": [
         "ISI-22-INDUSTRIAL-DATA-PLATFORM"
       ],
+      "note": "Deliver a DRAFT/PROPOSED working methodology for user testing plus detailed in-app Help and a SIMPA User Guide. Do not mark methodology/formulas/weights/thresholds as validated before human approval.",
       "next": "ISI-24-ORDO-PRODUCTION-METHODOLOGY"
     },
     {
@@ -233,6 +234,7 @@
       "depends_on": [
         "ISI-23-SIMPA-PRODUCTION-METHODOLOGY"
       ],
+      "note": "Deliver a DRAFT/PROPOSED working methodology for user testing plus detailed in-app Help and an ORDO User Guide. Do not mark methodology/forecasting claims as validated before human approval and supporting evidence.",
       "next": "ISI-25-INDUSTRIAL-AI-MLOPS"
     },
     {
@@ -260,6 +262,7 @@
       "depends_on": [
         "ISI-26-PERFORMANCE-LOAD-RESILIENCE"
       ],
+      "note": "Release candidate acceptance must include completeness checks for the SIMPA and ORDO Help/User Guides and explicit DRAFT/PROPOSED versus human-validated methodology state.",
       "next": "ISI-28-CURRENT-SERVER-CONTROLLED-UPGRADE"
     },
     {

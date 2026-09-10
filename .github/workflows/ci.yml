@@ -1,0 +1,150 @@
+name: ISI required acceptance
+
+on:
+  pull_request:
+  push:
+    branches: [main, "codex/**"]
+
+concurrency:
+  group: isi-ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: read
+
+env:
+  PYTHON_VERSION: "3.11"
+
+jobs:
+  policy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - run: python -m tools.ci.policy_check
+
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11", cache: pip, cache-dependency-path: requirements.lock}
+      - run: python -m pip install -r requirements.lock
+      - run: python -m pip install --no-deps -e .
+      - run: python -m pip check
+      - run: python -m compileall -q src tests tools/ci
+      - run: python -m ruff check --select E9 src tests
+      - run: python -m ruff check tools/ci tests/test_isi_17_harness_contract.py
+      - run: python -m mypy
+      - run: git diff --check
+
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11", cache: pip, cache-dependency-path: requirements.lock}
+      - run: python -m pip install -r requirements.lock && python -m pip install --no-deps -e .
+      - run: mkdir -p test-results && python -m pytest -q --junitxml=test-results/pytest.xml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: pytest-results, path: test-results/pytest.xml}
+
+  architecture-security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11", cache: pip, cache-dependency-path: requirements.lock}
+      - run: python -m pip install -r requirements.lock && python -m pip install --no-deps -e .
+      - run: >-
+          python -m pytest -q tests/test_architecture_contract.py tests/test_isi_02a_access_matrix.py
+          tests/test_isi_07_policy.py tests/test_isi_08_hotfix1_domain_boundary_contract.py
+          tests/test_isi_14_session_contract.py tests/test_isi_14_production_config_contract.py
+
+  migration:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env: {POSTGRES_DB: isi_ci, POSTGRES_USER: ci_user, POSTGRES_PASSWORD: ci_password}
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U ci_user -d isi_ci" --health-interval 5s
+          --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgresql+psycopg://ci_user:ci_password@localhost:5432/isi_ci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11", cache: pip, cache-dependency-path: requirements.lock}
+      - run: python -m pip install -r requirements.lock && python -m pip install --no-deps -e .
+      - run: tools/ci/migration_check.sh offline
+      - run: tools/ci/migration_check.sh live
+
+  native-postgres:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env: {POSTGRES_DB: isi_ci, POSTGRES_USER: ci_user, POSTGRES_PASSWORD: ci_password}
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U ci_user -d isi_ci" --health-interval 5s
+          --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgresql+psycopg://ci_user:ci_password@localhost:5432/isi_ci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11", cache: pip, cache-dependency-path: requirements.lock}
+      - run: python -m pip install -r requirements.lock && python -m pip install --no-deps -e .
+      - run: tools/ci/native_postgres_tests.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-postgres-results
+          path: test-results/native-postgres/
+
+  compose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: tools/ci/compose_config.sh
+
+  supply-chain:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11", cache: pip, cache-dependency-path: requirements.lock}
+      - run: python -m pip install -r requirements.lock
+      - name: Dependency audit (all known vulnerabilities block)
+        run: python -m pip_audit -r requirements.lock
+      - name: Python SAST (medium confidence and high severity block)
+        run: python -m bandit -q -r src -lll -ii
+      - name: Secret scan (verified findings block)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with: {context: ., file: docker/Dockerfile, push: false, tags: "isi:ci"}
+
+  acceptance:
+    if: always()
+    needs: [policy, quality, tests, architecture-security, migration, native-postgres, compose, supply-chain, build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every gate
+        env:
+          RESULTS: ${{ toJSON(needs.*.result) }}
+        run: echo "$RESULTS" | jq -e 'all(. == "success")'

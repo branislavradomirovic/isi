@@ -1,11 +1,12 @@
 PYTHON ?= .venv/bin/python
 
-.PHONY: install test compile analyze api streamlit compose-config up down
+.PHONY: install test compile lint typecheck analyze acceptance api streamlit compose-config up down
 
 install:
 	python3 -m venv .venv
 	$(PYTHON) -m pip install --upgrade pip
-	$(PYTHON) -m pip install -e '.[dev]'
+	$(PYTHON) -m pip install -r requirements.lock
+	$(PYTHON) -m pip install --no-deps -e .
 
 test:
 	$(PYTHON) -m pytest -q
@@ -13,8 +14,18 @@ test:
 compile:
 	$(PYTHON) -m compileall -q src tests
 
-analyze: compile test
-	@git diff --check 2>/dev/null || true
+lint:
+	$(PYTHON) -m ruff check --select E9 src tests
+	$(PYTHON) -m ruff check tools/ci tests/test_isi_17_harness_contract.py
+
+typecheck:
+	$(PYTHON) -m mypy
+
+analyze: compile lint typecheck test
+	git diff --check
+
+acceptance:
+	./tools/ci/run_isi17_acceptance.sh
 
 api:
 	$(PYTHON) -m uvicorn src.api.app:app --reload --port 8000
