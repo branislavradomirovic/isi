@@ -21,6 +21,7 @@ Verified CI:
 - PR #4 current-head acceptance: run #31 / `34463553604` — `success`.
 - PR #3 parent-integration acceptance: run #33 / `34463767042` — `success`.
 - `main` post-merge acceptance: run #34 / `34463983460` — `success`.
+- final bookkeeping acceptance: run #38 / `34464399365` — `success`.
 - Ordinary pytest evidence: 320 total / 304 passed / 16 native-gated skipped / 0 failed.
 - Dedicated native PostgreSQL evidence: 18 total / 18 passed / 0 skipped / 0 failed against PostgreSQL 17.
 - All blocking gates passed: policy, quality, tests, architecture/security, migration, native-postgres, compose, supply-chain, build, aggregate acceptance.
@@ -35,7 +36,7 @@ Server verification: `DEFERRED_SERVER_VERIFICATION`.
 
 No server action is authorized before ISI-28.
 
-Next serial task: `ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS` — `PLANNED`, not yet started.
+Next serial task: `ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS` — `PLANNED`, kickoff next.
 
 ## Owner-facing state model
 
