@@ -1,0 +1,22 @@
+{
+  "task": "ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY",
+  "baseline": "b0487d8e9187c6b06efe5fab463875f8d989042c",
+  "state": "IMPLEMENTING",
+  "implementation_head": null,
+  "github_actions": {
+    "run_id": null,
+    "run_number": null,
+    "status": "pending_exact_head_ci"
+  },
+  "recovery_rehearsal": {
+    "postgresql17": "pending_github_ci",
+    "object_storage": "pending_github_ci",
+    "artifact_digest": null
+  },
+  "review": "pending_exact_head_review",
+  "rpo_rto": "PROPOSED_NOT_SERVER_VALIDATED",
+  "server_verification": "DEFERRED_SERVER_VERIFICATION",
+  "warnings": [
+    "Codex workspace could not publish its local commit because no authenticated Git remote was configured; repository publication is being completed through the authenticated GitHub control plane."
+  ]
+}
