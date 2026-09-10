@@ -7,23 +7,39 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import Mapping
 
-_LABEL_RE = re.compile(r"[^A-Za-z0-9_.:-]+")
+_LABEL_VALUE_RE = re.compile(r"[^A-Za-z0-9_.:/-]+")
+_LABEL_NAME_RE = re.compile(r"[^A-Za-z0-9_]+")
+_METRIC_NAME_RE = re.compile(r"[^A-Za-z0-9_:]+")
 _DYNAMIC_SEGMENT_RE = re.compile(r"^(?:[0-9]+|[0-9a-fA-F]{16,}|[0-9a-fA-F-]{32,})$")
 
 
 def safe_label(value: object, *, max_length: int = 64) -> str:
     text = str(value or "unknown").strip()
-    text = _LABEL_RE.sub("_", text)[:max_length]
+    text = _LABEL_VALUE_RE.sub("_", text)[:max_length]
     return text or "unknown"
+
+
+def safe_label_name(value: object) -> str:
+    text = _LABEL_NAME_RE.sub("_", str(value or "label").strip())[:64] or "label"
+    if not (text[0].isalpha() or text[0] == "_"):
+        text = "_" + text
+    return text
+
+
+def safe_metric_name(value: object) -> str:
+    text = _METRIC_NAME_RE.sub("_", str(value or "metric").strip())[:128] or "metric"
+    if not (text[0].isalpha() or text[0] in "_:"):
+        text = "_" + text
+    return text
 
 
 def normalize_route(path: str) -> str:
     clean = path.split("?", 1)[0]
-    segments = []
+    segments: list[str] = []
     for segment in clean.split("/"):
         if not segment:
             continue
-        segments.append(":id" if _DYNAMIC_SEGMENT_RE.match(segment) else safe_label(segment))
+        segments.append(":id" if _DYNAMIC_SEGMENT_RE.fullmatch(segment) else safe_label(segment))
     return "/" + "/".join(segments)
 
 
@@ -41,8 +57,8 @@ class MetricsRegistry:
 
     @staticmethod
     def _key(name: str, labels: Mapping[str, object] | None = None) -> MetricKey:
-        items = tuple(sorted((safe_label(k), safe_label(v)) for k, v in (labels or {}).items()))
-        return MetricKey(safe_label(name), items)
+        items = tuple(sorted((safe_label_name(k), safe_label(v)) for k, v in (labels or {}).items()))
+        return MetricKey(safe_metric_name(name), items)
 
     def increment(self, name: str, *, labels: Mapping[str, object] | None = None, value: float = 1.0) -> None:
         with self._lock:
@@ -52,7 +68,7 @@ class MetricsRegistry:
         with self._lock:
             key = self._key(name, labels)
             self._counters[MetricKey(key.name + "_count", key.labels)] += 1.0
-            self._sums[MetricKey(key.name + "_sum", key.labels)] += float(value)
+            self._sums[MetricKey(key.name + "_sum", key.labels)] += max(0.0, float(value))
 
     def reset(self) -> None:
         with self._lock:
@@ -62,7 +78,8 @@ class MetricsRegistry:
     def as_dict(self) -> dict[str, object]:
         with self._lock:
             rows = []
-            for key, value in sorted({**self._counters, **self._sums}.items(), key=lambda item: (item[0].name, item[0].labels)):
+            values = {**self._counters, **self._sums}
+            for key, value in sorted(values.items(), key=lambda item: (item[0].name, item[0].labels)):
                 rows.append({"name": key.name, "labels": dict(key.labels), "value": value})
         return {"metrics": rows}
 

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import time
 import uuid
 from datetime import datetime, timezone
 
@@ -11,6 +12,7 @@ from src.platform.data.ingestion import IngestionError, inspect_payload
 from src.platform.data.models import DataSourceVersion, IngestionJob
 from src.platform.data.service import replace_quality_results
 from src.platform.data.storage import StorageError, build_storage
+from src.platform.observability.telemetry import record_ingestion, record_worker_execution
 
 
 def _utcnow():
@@ -63,7 +65,33 @@ def process_ingestion_job(session: Session, *, job_id: uuid.UUID) -> None:
 
 
 def run_ingestion_job(job_id: str) -> None:
+    started = time.perf_counter()
     factory = build_session_factory()
-    with factory() as session:
-        process_ingestion_job(session, job_id=uuid.UUID(job_id))
-        session.commit()
+    try:
+        with factory() as session:
+            parsed_job_id = uuid.UUID(job_id)
+            process_ingestion_job(session, job_id=parsed_job_id)
+            job = session.get(IngestionJob, parsed_job_id)
+            version = session.get(DataSourceVersion, job.version_id) if job is not None else None
+            session.commit()
+            duration_ms = max((time.perf_counter() - started) * 1000.0, 0.0)
+            outcome = job.status if job is not None else "missing"
+            record_worker_execution(job_kind="ingestion", outcome=outcome, duration_ms=duration_ms)
+            record_ingestion(
+                detected_format=(version.detected_format if version is not None else "unknown") or "unknown",
+                outcome=outcome,
+                row_count=int(version.row_count or 0) if version is not None else 0,
+                column_count=int(version.column_count or 0) if version is not None else 0,
+                duration_ms=duration_ms,
+            )
+    except Exception:
+        duration_ms = max((time.perf_counter() - started) * 1000.0, 0.0)
+        record_worker_execution(job_kind="ingestion", outcome="exception", duration_ms=duration_ms)
+        record_ingestion(
+            detected_format="unknown",
+            outcome="exception",
+            row_count=0,
+            column_count=0,
+            duration_ms=duration_ms,
+        )
+        raise

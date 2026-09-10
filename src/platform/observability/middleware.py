@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 import time
+from collections.abc import Awaitable, Callable
 
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
@@ -11,10 +12,11 @@ from src.platform.observability.context import normalize_request_id, reset_reque
 from src.platform.observability.metrics import metrics_registry, normalize_route
 
 _LOG = logging.getLogger("isi.request")
+_CallNext = Callable[[Request], Awaitable[Response]]
 
 
 class ObservabilityMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next) -> Response:
+    async def dispatch(self, request: Request, call_next: _CallNext) -> Response:
         request_id = normalize_request_id(request.headers.get("X-Request-ID"))
         token = set_request_id(request_id)
         started = time.perf_counter()
@@ -27,14 +29,29 @@ class ObservabilityMiddleware(BaseHTTPMiddleware):
         finally:
             elapsed_ms = max((time.perf_counter() - started) * 1000.0, 0.0)
             route = normalize_route(request.url.path)
-            labels = {
+            outcome = "success" if status_code < 500 else "error"
+            request_labels = {
                 "method": request.method,
                 "route": route,
                 "status_class": f"{status_code // 100}xx",
+                "outcome": outcome,
             }
-            metrics_registry.increment("isi_http_requests_total", labels=labels)
-            metrics_registry.observe("isi_http_request_latency_ms", elapsed_ms, labels={"method": request.method, "route": route})
-            _LOG.info("request.completed", extra={"event": "request.completed", "method": request.method, "route": route, "status_class": labels["status_class"]})
+            metrics_registry.increment("isi_http_requests_total", labels=request_labels)
+            metrics_registry.observe(
+                "isi_http_request_latency_ms",
+                elapsed_ms,
+                labels={"method": request.method, "route": route, "outcome": outcome},
+            )
+            _LOG.info(
+                "request.completed",
+                extra={
+                    "event": "request.completed",
+                    "method": request.method,
+                    "route": route,
+                    "status_class": request_labels["status_class"],
+                    "outcome": outcome,
+                },
+            )
             if response is not None:
                 response.headers["X-Request-ID"] = request_id
             reset_request_id(token)

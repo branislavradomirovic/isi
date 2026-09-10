@@ -1,0 +1,9 @@
+{
+  "task": "ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS",
+  "state": "IMPLEMENTING",
+  "baseline_sha": "e839880eb256ad4c804e91dc778c6b9bb8d4a595",
+  "final_sha": null,
+  "ci": "pending",
+  "review": "pending",
+  "server_verification": "DEFERRED_SERVER_VERIFICATION"
+}
