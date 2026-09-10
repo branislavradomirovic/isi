@@ -9,12 +9,13 @@
 - PR #4 acceptance: run #31 / `34463553604` — `success`.
 - PR #3 acceptance: run #33 / `34463767042` — `success`.
 - Main post-merge acceptance: run #34 / `34463983460` — `success`.
+- Final bookkeeping acceptance: run #38 / `34464399365` — `success`.
 - Independent re-review: `REVIEW_VERIFIED / no unresolved technical blocker`.
 - Server verification: `DEFERRED_SERVER_VERIFICATION`.
 
 ## Final CI evidence
 
-Every blocking gate passed on the final implementation/integration path: `policy`, `quality`, `tests`, `architecture-security`, `migration`, `native-postgres`, `compose`, `supply-chain`, `build`, and aggregate `acceptance`.
+Every blocking gate passed on the final implementation/integration path and again on the final bookkeeping synchronization: `policy`, `quality`, `tests`, `architecture-security`, `migration`, `native-postgres`, `compose`, `supply-chain`, `build`, and aggregate `acceptance`.
 
 The ordinary pytest artifact records 320 tests: 304 passed, 16 environment-gated native PostgreSQL tests skipped, 0 failed, 0 errors. The dedicated native PostgreSQL artifact records 18 tests: 18 passed, 0 skipped, 0 failed, 0 errors against ephemeral PostgreSQL 17. The native database coverage is therefore blocking rather than accepted through skip-only behavior.
 
