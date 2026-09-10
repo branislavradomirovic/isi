@@ -26,8 +26,25 @@ def test_native_postgres_public_content_import_matches_inventory():
     factory = build_session_factory(build_engine())
     with factory() as session:
         assert session.scalar(select(func.count()).select_from(PublicLegacySource)) == len(successful)
-        assert session.scalar(select(func.count()).select_from(PublicPageTranslation)) == len(logical_translations)
-        assert session.scalar(select(func.count()).select_from(PublicPage)) == len(logical_pages)
+
+        legacy_page_ids = {
+            page_id
+            for page_id in session.scalars(
+                select(PublicLegacySource.mapped_page_id).where(PublicLegacySource.mapped_page_id.is_not(None))
+            ).all()
+            if page_id is not None
+        }
+        assert len(legacy_page_ids) == len(logical_pages)
+
+        imported_pairs = set(
+            session.execute(
+                select(PublicPage.page_key, PublicPageTranslation.locale)
+                .join(PublicPageTranslation, PublicPageTranslation.page_id == PublicPage.id)
+                .where(PublicPage.id.in_(legacy_page_ids))
+            ).all()
+        )
+        assert imported_pairs == logical_translations
+
         assert session.scalar(select(func.count()).select_from(PublicMediaAsset)) == len(inventory.get("assets", []))
         assert session.scalar(select(func.count()).select_from(PublicRedirect)) == report["redirect_candidates"]
         assert report["logical_page_translations"] == len(logical_translations)
