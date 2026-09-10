@@ -169,7 +169,7 @@
       "depends_on": [
         "ISI-15-PRODUCTION-STAGING"
       ],
-      "note": "Implementation is present on stacked PR #4. Previous head 47c552f565d2bb9116b2969f5bb97ba820d37f7e passed CI run #6 (34405737408); independent review requires remediation and a fresh full CI run before re-review/merge. No server action is authorized.",
+      "note": "Remediated implementation head 058911544e9f262b790087f4aa0d134da3d9dbaf passed all blocking gates in CI run #18 (34462606259), including 18/18 native PostgreSQL tests, and passed independent technical re-review. Final evidence/status synchronization must itself pass full CI before integration. No server action is authorized.",
       "next": "ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS"
     },
     {
