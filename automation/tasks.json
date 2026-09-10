@@ -169,16 +169,18 @@
       "depends_on": [
         "ISI-15-PRODUCTION-STAGING"
       ],
-      "note": "Merged to main as commit 1e4d23543520c7c69ac96e1e79a83ad750b82fae after PR #4 and PR #3 acceptance/review. Final bookkeeping CI run #38 (34464399365) also passed all gates. No server action was performed; server verification remains deferred.",
+      "note": "Merged to main as commit 1e4d23543520c7c69ac96e1e79a83ad750b82fae after PR #4 and PR #3 acceptance/review. Final registry/bookkeeping CI run #42 (34465409514) passed all gates. No server action was performed; server verification remains deferred.",
       "next": "ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS"
     },
     {
       "id": "ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS",
       "title": "Observability & Operational Diagnostics",
-      "status": "planned",
+      "status": "implemented",
+      "spec": "automation/specs/ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS.md",
       "depends_on": [
         "ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS"
       ],
+      "note": "Implementation code head d414d0c7b7230dce570fe8b01869a674d8dd70e6 passed full PR CI run #45 (34484850224). Independent review findings on deterministic ISI JSON logging and unhandled-500 request-ID propagation were remediated at that head. Final synchronized tracking head still requires fresh blocking CI and final independent re-review before merge. Server verification remains deferred.",
       "next": "ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY"
     },
     {

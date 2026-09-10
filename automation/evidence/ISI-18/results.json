@@ -1,9 +1,26 @@
 {
   "task": "ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS",
-  "state": "IMPLEMENTING",
+  "state": "IMPLEMENTED",
   "baseline_sha": "e839880eb256ad4c804e91dc778c6b9bb8d4a595",
-  "final_sha": null,
-  "ci": "pending",
-  "review": "pending",
+  "implementation_code_sha": "d414d0c7b7230dce570fe8b01869a674d8dd70e6",
+  "implementation_ci": {
+    "run_number": 45,
+    "run_id": 34484850224,
+    "conclusion": "success",
+    "gates": [
+      "policy",
+      "quality",
+      "tests",
+      "architecture-security",
+      "migration",
+      "native-postgres",
+      "compose",
+      "supply-chain",
+      "build",
+      "acceptance"
+    ]
+  },
+  "final_synchronized_head_ci": "pending",
+  "review": "pending final synchronized-head re-review",
   "server_verification": "DEFERRED_SERVER_VERIFICATION"
 }
