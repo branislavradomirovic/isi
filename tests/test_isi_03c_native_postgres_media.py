@@ -16,10 +16,11 @@ from src.public_migration.media_redirect_validation import validate_internal_lin
 
 @pytest.mark.skipif(os.getenv("ISI_RUN_NATIVE_DB_TESTS") != "1", reason="native PostgreSQL acceptance test")
 def test_native_postgres_media_redirect_and_link_contract():
-    import_report = json.loads(Path("data/migration/legacy_isi/import_report.json").read_text())
-    media_manifest = json.loads(Path("data/migration/legacy_isi/media_manifest.json").read_text())
-    acceptance = json.loads(Path("data/migration/legacy_isi/migration_acceptance_report.json").read_text())
-    storage_root = Path("var/media/public")
+    report_root = Path(os.getenv("ISI_NATIVE_FIXTURE_REPORT_ROOT", "data/migration/legacy_isi"))
+    storage_root = Path(os.getenv("ISI_NATIVE_MEDIA_ROOT", "var/media/public"))
+    import_report = json.loads((report_root / "import_report.json").read_text())
+    media_manifest = json.loads((report_root / "media_manifest.json").read_text())
+    acceptance = json.loads((report_root / "migration_acceptance_report.json").read_text())
     factory = build_session_factory(build_engine())
     with factory() as db:
         assets = db.scalars(select(PublicMediaAsset).order_by(PublicMediaAsset.source_url)).all()
@@ -43,7 +44,7 @@ def test_native_postgres_media_redirect_and_link_contract():
         translations = db.scalars(select(PublicPageTranslation)).all()
         assert all("https://isi.rs/wp-content/" not in (row.body_html or "") for row in translations)
 
-    with Path("data/migration/legacy_isi/final_redirect_map.csv").open(newline="", encoding="utf-8") as handle:
+    with (report_root / "final_redirect_map.csv").open(newline="", encoding="utf-8") as handle:
         redirect_rows = list(csv.DictReader(handle))
     assert sum(row["action"] == "redirect" for row in redirect_rows) == import_report["legacy_alias_pages"]
     assert sum(row["action"] == "preserve" for row in redirect_rows) == import_report["logical_page_translations"]
