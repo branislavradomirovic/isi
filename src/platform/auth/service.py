@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 import uuid
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
@@ -9,8 +10,16 @@ from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 
 from src.core.config import get_settings
-from src.platform.auth.models import AuthSession, AuthToken, Invitation
-from src.platform.auth.security import hash_password, hash_token, needs_rehash, new_opaque_token, verify_password
+from src.platform.auth.models import AuthSession, AuthToken, Invitation, MfaChallenge, MfaFactor
+from src.platform.auth.security import (
+    hash_mfa_challenge_verifier,
+    hash_password,
+    hash_token,
+    needs_rehash,
+    new_opaque_token,
+    verify_mfa_challenge_verifier,
+    verify_password,
+)
 from src.platform.identity.models import Membership, Organization, User
 from src.platform.security.service import session_fingerprint_hashes, session_idle_expired
 
@@ -32,6 +41,25 @@ class IssuedSession:
 class IssuedToken:
     token: str
     expires_at: datetime
+
+
+@dataclass(frozen=True)
+class IssuedMfaChallenge:
+    challenge_id: uuid.UUID
+    expires_at: datetime
+
+
+@dataclass(frozen=True)
+class MfaChallengeVerificationResult:
+    challenge_id: uuid.UUID
+    succeeded: bool
+    error_code: str | None = None
+
+
+MFA_CHALLENGE_TTL_SECONDS = 300
+MFA_CHALLENGE_MAX_TTL_SECONDS = 900
+MFA_CHALLENGE_MAX_ATTEMPTS = 5
+_MFA_METHOD_PATTERN = re.compile(r"^[a-z][a-z0-9_.-]{0,39}$")
 
 
 def utcnow() -> datetime:
@@ -177,6 +205,202 @@ def revoke_all_user_sessions(session: Session, user_id: uuid.UUID) -> None:
         .values(revoked_at=utcnow(), revoked_reason="user_session_reset")
     )
     session.flush()
+
+
+def create_mfa_factor(
+    session: Session,
+    user: User,
+    *,
+    method: str,
+    display_name: str | None = None,
+) -> MfaFactor:
+    if not user.is_active:
+        raise AuthError("inactive_user")
+    normalized_method = method.strip().casefold()
+    if not _MFA_METHOD_PATTERN.fullmatch(normalized_method):
+        raise AuthError("invalid_mfa_method")
+    normalized_display_name = display_name.strip() if display_name else None
+    if normalized_display_name and len(normalized_display_name) > 120:
+        raise AuthError("invalid_mfa_display_name")
+    factor = MfaFactor(
+        user_id=user.id,
+        method=normalized_method,
+        status="pending",
+        display_name=normalized_display_name,
+    )
+    session.add(factor)
+    session.flush()
+    return factor
+
+
+def revoke_mfa_factor(
+    session: Session,
+    *,
+    user_id: uuid.UUID,
+    factor_id: uuid.UUID,
+    now: datetime | None = None,
+) -> MfaFactor:
+    factor = session.scalar(select(MfaFactor).where(MfaFactor.id == factor_id, MfaFactor.user_id == user_id))
+    if factor is None:
+        raise AuthError("mfa_factor_not_found")
+    if factor.status != "revoked":
+        revoked_at = now or utcnow()
+        factor.status = "revoked"
+        factor.revoked_at = revoked_at
+        session.execute(
+            update(MfaChallenge)
+            .where(
+                MfaChallenge.factor_id == factor.id,
+                MfaChallenge.user_id == user_id,
+                MfaChallenge.consumed_at.is_(None),
+                MfaChallenge.revoked_at.is_(None),
+            )
+            .values(revoked_at=revoked_at)
+        )
+        session.flush()
+    return factor
+
+
+def issue_mfa_challenge(
+    session: Session,
+    *,
+    user_id: uuid.UUID,
+    factor_id: uuid.UUID,
+    purpose: str,
+    verifier: str,
+    now: datetime | None = None,
+    ttl_seconds: int = MFA_CHALLENGE_TTL_SECONDS,
+    max_attempts: int = MFA_CHALLENGE_MAX_ATTEMPTS,
+) -> IssuedMfaChallenge:
+    if purpose not in {"enrollment", "authentication"}:
+        raise AuthError("invalid_mfa_challenge_purpose")
+    if not verifier or len(verifier) > 256:
+        raise AuthError("invalid_mfa_verifier")
+    if not 1 <= ttl_seconds <= MFA_CHALLENGE_MAX_TTL_SECONDS:
+        raise AuthError("invalid_mfa_challenge_ttl")
+    if not 1 <= max_attempts <= 10:
+        raise AuthError("invalid_mfa_challenge_attempt_policy")
+    factor = session.scalar(select(MfaFactor).where(MfaFactor.id == factor_id, MfaFactor.user_id == user_id))
+    required_status = "pending" if purpose == "enrollment" else "active"
+    user = session.get(User, user_id)
+    if user is None or not user.is_active or factor is None or factor.status != required_status:
+        raise AuthError("mfa_factor_not_ready")
+
+    issued_at = now or utcnow()
+    session.execute(
+        update(MfaChallenge)
+        .where(
+            MfaChallenge.factor_id == factor.id,
+            MfaChallenge.user_id == user_id,
+            MfaChallenge.purpose == purpose,
+            MfaChallenge.consumed_at.is_(None),
+            MfaChallenge.revoked_at.is_(None),
+        )
+        .values(revoked_at=issued_at)
+    )
+    challenge_id = uuid.uuid4()
+    expires_at = issued_at + timedelta(seconds=ttl_seconds)
+    challenge = MfaChallenge(
+        id=challenge_id,
+        user_id=user_id,
+        factor_id=factor.id,
+        purpose=purpose,
+        verifier_digest=hash_mfa_challenge_verifier(challenge_id, verifier),
+        issued_at=issued_at,
+        expires_at=expires_at,
+        attempt_count=0,
+        max_attempts=max_attempts,
+    )
+    session.add(challenge)
+    session.flush()
+    return IssuedMfaChallenge(challenge_id=challenge_id, expires_at=expires_at)
+
+
+def revoke_mfa_challenge(
+    session: Session,
+    *,
+    user_id: uuid.UUID,
+    challenge_id: uuid.UUID,
+    now: datetime | None = None,
+) -> MfaChallenge:
+    challenge = session.scalar(
+        select(MfaChallenge).where(MfaChallenge.id == challenge_id, MfaChallenge.user_id == user_id)
+    )
+    if challenge is None:
+        raise AuthError("invalid_mfa_challenge")
+    if challenge.consumed_at is not None:
+        raise AuthError("mfa_challenge_already_consumed")
+    if challenge.revoked_at is None:
+        challenge.revoked_at = now or utcnow()
+        session.flush()
+    return challenge
+
+
+def verify_mfa_challenge(
+    session: Session,
+    *,
+    user_id: uuid.UUID,
+    challenge_id: uuid.UUID,
+    verifier: str,
+    now: datetime | None = None,
+) -> MfaChallengeVerificationResult:
+    """Consume one challenge while locking its row on databases that support FOR UPDATE."""
+    challenge = session.scalar(
+        select(MfaChallenge)
+        .where(MfaChallenge.id == challenge_id, MfaChallenge.user_id == user_id)
+        .with_for_update()
+    )
+    if challenge is None:
+        raise AuthError("invalid_mfa_challenge")
+    checked_at = now or utcnow()
+    if challenge.revoked_at is not None:
+        raise AuthError("mfa_challenge_revoked")
+    if challenge.consumed_at is not None:
+        raise AuthError("mfa_challenge_already_consumed")
+    if challenge.attempt_count >= challenge.max_attempts:
+        raise AuthError("mfa_challenge_attempts_exhausted")
+    if _aware(challenge.expires_at) <= checked_at:
+        raise AuthError("mfa_challenge_expired")
+
+    factor = session.scalar(
+        select(MfaFactor).where(MfaFactor.id == challenge.factor_id, MfaFactor.user_id == user_id)
+    )
+    user = session.get(User, user_id)
+    if user is None or not user.is_active or factor is None or factor.status == "revoked":
+        challenge.revoked_at = checked_at
+        session.flush()
+        return MfaChallengeVerificationResult(
+            challenge_id=challenge.id,
+            succeeded=False,
+            error_code="mfa_factor_not_ready",
+        )
+    if not verifier or len(verifier) > 256 or not verify_mfa_challenge_verifier(
+        challenge.id, verifier, challenge.verifier_digest
+    ):
+        challenge.attempt_count += 1
+        session.flush()
+        if challenge.attempt_count >= challenge.max_attempts:
+            return MfaChallengeVerificationResult(
+                challenge_id=challenge.id,
+                succeeded=False,
+                error_code="mfa_challenge_attempts_exhausted",
+            )
+        return MfaChallengeVerificationResult(
+            challenge_id=challenge.id,
+            succeeded=False,
+            error_code="invalid_mfa_verifier",
+        )
+
+    if challenge.purpose == "enrollment":
+        if factor.status != "pending":
+            raise AuthError("mfa_factor_not_ready")
+        factor.status = "active"
+        factor.verified_at = checked_at
+    elif factor.status != "active":
+        raise AuthError("mfa_factor_not_ready")
+    challenge.consumed_at = checked_at
+    session.flush()
+    return MfaChallengeVerificationResult(challenge_id=challenge.id, succeeded=True)
 
 
 def _issue_user_token(session: Session, user: User, purpose: str, ttl_seconds: int, prefix: str) -> IssuedToken:
