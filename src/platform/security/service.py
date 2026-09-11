@@ -3,6 +3,9 @@ from __future__ import annotations
 import hashlib
 import hmac
 import ipaddress
+import json
+import math
+import re
 import uuid
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
@@ -192,15 +195,73 @@ def clear_login_failures(
         session.flush()
 
 
-_FORBIDDEN_METADATA_FRAGMENTS = ("password", "token", "secret", "authorization", "cookie", "credential")
+_FORBIDDEN_METADATA_FRAGMENTS = (
+    "password",
+    "token",
+    "secret",
+    "authorization",
+    "cookie",
+    "credential",
+    "verifier",
+    "recovery_code",
+    "api_key",
+    "otp",
+)
+_METADATA_MAX_DEPTH = 5
+_METADATA_MAX_CONTAINER_ITEMS = 50
+_METADATA_MAX_KEY_LENGTH = 80
+_METADATA_MAX_STRING_LENGTH = 1000
+_METADATA_MAX_SERIALIZED_BYTES = 8192
+_SENSITIVE_METADATA_VALUE = re.compile(
+    r"(?i)(?:\b(?:authorization|cookie|set-cookie)\s*:|\b(?:bearer|basic)\s+[a-z0-9._~+/=-]+"
+    r"|\b(?:access_token|refresh_token|session_token|token|password|otp|credential)=[^\s&;,]+"
+    r"|\bisi_(?:sess|reset|invite|verify)_[a-z0-9_-]+|\beyJ[a-z0-9_-]+\.[a-z0-9_-]+\.[a-z0-9_-]+)"
+)
+
+
+def _validate_metadata_value(value: Any, *, depth: int) -> Any:
+    if depth > _METADATA_MAX_DEPTH:
+        raise ValueError("security event metadata exceeds maximum depth")
+    if value is None or isinstance(value, (bool, int)):
+        return value
+    if isinstance(value, float):
+        if not math.isfinite(value):
+            raise ValueError("security event metadata number must be finite")
+        return value
+    if isinstance(value, str):
+        if len(value) > _METADATA_MAX_STRING_LENGTH:
+            raise ValueError("security event metadata string is too long")
+        if _SENSITIVE_METADATA_VALUE.search(value):
+            raise ValueError("security event metadata contains a sensitive value")
+        return value
+    if isinstance(value, list):
+        if len(value) > _METADATA_MAX_CONTAINER_ITEMS:
+            raise ValueError("security event metadata container has too many items")
+        return [_validate_metadata_value(item, depth=depth + 1) for item in value]
+    if isinstance(value, dict):
+        if len(value) > _METADATA_MAX_CONTAINER_ITEMS:
+            raise ValueError("security event metadata container has too many items")
+        result: dict[str, Any] = {}
+        for key, item in value.items():
+            if not isinstance(key, str):
+                raise ValueError("security event metadata keys must be strings")
+            if not key or len(key) > _METADATA_MAX_KEY_LENGTH:
+                raise ValueError("security event metadata key length is invalid")
+            folded = key.casefold()
+            if any(fragment in folded for fragment in _FORBIDDEN_METADATA_FRAGMENTS):
+                raise ValueError("security event metadata contains a forbidden sensitive key")
+            result[key] = _validate_metadata_value(item, depth=depth + 1)
+        return result
+    raise ValueError("security event metadata contains an unsupported value type")
 
 
 def _safe_metadata(value: dict | None) -> dict:
-    data = dict(value or {})
-    for key in data:
-        folded = str(key).casefold()
-        if any(fragment in folded for fragment in _FORBIDDEN_METADATA_FRAGMENTS):
-            raise ValueError("security event metadata contains a forbidden sensitive key")
+    if value is not None and not isinstance(value, dict):
+        raise ValueError("security event metadata must be a dictionary")
+    data = _validate_metadata_value(value or {}, depth=0)
+    encoded = json.dumps(data, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    if len(encoded) > _METADATA_MAX_SERIALIZED_BYTES:
+        raise ValueError("security event metadata exceeds total size budget")
     return data
 
 

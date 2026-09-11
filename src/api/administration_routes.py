@@ -11,6 +11,7 @@ from src.api.dependencies import AuthContext, get_auth_context, get_db
 from src.core.config import get_settings
 from src.platform.access.service import has_permission
 from src.platform.administration.schemas import (
+    AdminSessionInventoryResponse,
     InvitationCreateRequest,
     MemberStatusRequest,
     OrganizationNameRequest,
@@ -26,14 +27,19 @@ from src.platform.administration.service import (
     create_admin_invitation,
     create_workspace,
     has_org_wide_permission,
+    list_member_sessions,
     remove_member_role,
     rename_organization,
+    revoke_member_session,
     revoke_admin_invitation,
+    role_assignment_requires_org_wide,
     set_member_product_access,
     set_membership_status,
     set_workspace_status,
 )
 from src.platform.app_context.service import AppContextError, resolve_selection
+from src.platform.security.assurance import PrivilegedOperation, evaluate_privileged_operation
+from src.platform.security.service import record_security_event, utcnow
 
 
 router = APIRouter(prefix="/api/v1/administration", tags=["administration"])
@@ -72,8 +78,37 @@ def _orgwide(db: Session, context: AuthContext, organization_id: uuid.UUID, perm
         raise HTTPException(status_code=403, detail="organization_wide_permission_required")
 
 
+def _step_up(
+    db: Session,
+    context: AuthContext,
+    *,
+    operation: PrivilegedOperation,
+    organization_id: uuid.UUID,
+    product_code: str,
+) -> None:
+    decision = evaluate_privileged_operation(context.auth_session, operation, now=utcnow())
+    record_security_event(
+        db,
+        event_type="administration.privileged_operation",
+        outcome="allow" if decision.allowed else "deny",
+        user_id=context.user.id,
+        metadata={
+            "operation_code": decision.operation_code,
+            "organization_id": str(organization_id),
+            "product_code": product_code,
+            "reason": decision.reason.value,
+            "required_assurance": decision.required_assurance.value,
+            "satisfied_by": decision.satisfied_by.value if decision.satisfied_by else None,
+        },
+    )
+    if not decision.allowed:
+        db.commit()
+        raise HTTPException(status_code=403, detail="step_up_authentication_required")
+
+
 def _error(exc: AdministrationError) -> HTTPException:
     conflict = {
+        "global_session_multi_organization_target_not_supported",
         "last_organization_admin_required",
         "last_organization_admin_product_access_required",
         "organization_entitlement_not_active",
@@ -128,6 +163,7 @@ def post_invitation(
     db: Session = Depends(get_db),
 ):
     _scope(db, context, organization_id=payload.organization_id, product_code=payload.product_code, permission_code="members.manage")
+    _step_up(db, context, operation=PrivilegedOperation.INVITATION_PRIVILEGE_GRANT, organization_id=payload.organization_id, product_code=payload.product_code)
     if get_settings().isi_env.casefold() == "production" and not auth_delivery_configured():
         raise HTTPException(status_code=503, detail="invitation_delivery_not_configured")
     try:
@@ -171,6 +207,7 @@ def post_revoke_invitation(
 ):
     product_code = product_code.upper()
     _scope(db, context, organization_id=organization_id, product_code=product_code, permission_code="members.manage")
+    _step_up(db, context, operation=PrivilegedOperation.INVITATION_REVOKE, organization_id=organization_id, product_code=product_code)
     try:
         invitation = revoke_admin_invitation(db, organization_id=organization_id, product_code=product_code, invitation_id=invitation_id, actor_user_id=context.user.id)
         db.commit(); db.refresh(invitation)
@@ -189,6 +226,7 @@ def post_member_status(
     _scope(db, context, organization_id=payload.organization_id, product_code=payload.product_code, permission_code="members.manage")
     # Membership status is organization-wide: suspending a membership affects every product.
     _orgwide(db, context, payload.organization_id, "members.manage")
+    _step_up(db, context, operation=PrivilegedOperation.ORGANIZATION_MEMBER_STATUS_CHANGE, organization_id=payload.organization_id, product_code=payload.product_code)
     try:
         membership = set_membership_status(db, organization_id=payload.organization_id, membership_id=membership_id, status=payload.status, actor_user_id=context.user.id, product_code=payload.product_code)
         db.commit(); db.refresh(membership)
@@ -205,6 +243,7 @@ def post_product_access(
     db: Session = Depends(get_db),
 ):
     _scope(db, context, organization_id=payload.organization_id, product_code=payload.product_code, permission_code="members.manage")
+    _step_up(db, context, operation=PrivilegedOperation.MEMBERSHIP_PRODUCT_ACCESS_CHANGE, organization_id=payload.organization_id, product_code=payload.product_code)
     try:
         access = set_member_product_access(db, organization_id=payload.organization_id, membership_id=membership_id, product_code=payload.product_code, active=payload.active, actor_user_id=context.user.id)
         db.commit(); db.refresh(access)
@@ -223,6 +262,7 @@ def post_role(
     _scope(db, context, organization_id=payload.organization_id, product_code=payload.product_code, permission_code="members.manage")
     if payload.scope == "organization":
         _orgwide(db, context, payload.organization_id, "members.manage")
+    _step_up(db, context, operation=PrivilegedOperation.ROLE_ASSIGNMENT_CHANGE, organization_id=payload.organization_id, product_code=payload.product_code)
     try:
         assignment = assign_member_role(db, organization_id=payload.organization_id, membership_id=membership_id, product_code=payload.product_code, role_code=payload.role_code, scope=payload.scope, actor_user_id=context.user.id)
         db.commit(); db.refresh(assignment)
@@ -242,9 +282,21 @@ def delete_role(
 ) -> None:
     product_code = product_code.upper()
     _scope(db, context, organization_id=organization_id, product_code=product_code, permission_code="members.manage")
+    try:
+        requires_org_wide = role_assignment_requires_org_wide(
+            db,
+            organization_id=organization_id,
+            membership_id=membership_id,
+            assignment_id=assignment_id,
+        )
+    except AdministrationError as exc:
+        raise _error(exc) from None
+    if requires_org_wide:
+        _orgwide(db, context, organization_id, "members.manage")
     allow_org_wide = has_org_wide_permission(
         db, user_id=context.user.id, organization_id=organization_id, permission_code="members.manage"
     )
+    _step_up(db, context, operation=PrivilegedOperation.ROLE_ASSIGNMENT_CHANGE, organization_id=organization_id, product_code=product_code)
     try:
         remove_member_role(
             db,
@@ -266,6 +318,7 @@ def post_workspace(
     db: Session = Depends(get_db),
 ):
     _scope(db, context, organization_id=payload.organization_id, product_code=payload.product_code, permission_code="workspace.manage")
+    _step_up(db, context, operation=PrivilegedOperation.WORKSPACE_ADMINISTRATION_CHANGE, organization_id=payload.organization_id, product_code=payload.product_code)
     try:
         workspace = create_workspace(db, organization_id=payload.organization_id, product_code=payload.product_code, name=payload.name, slug=payload.slug, actor_user_id=context.user.id)
         db.commit(); db.refresh(workspace)
@@ -282,6 +335,7 @@ def post_workspace_status(
     db: Session = Depends(get_db),
 ):
     _scope(db, context, organization_id=payload.organization_id, product_code=payload.product_code, permission_code="workspace.manage")
+    _step_up(db, context, operation=PrivilegedOperation.WORKSPACE_ADMINISTRATION_CHANGE, organization_id=payload.organization_id, product_code=payload.product_code)
     try:
         workspace = set_workspace_status(db, organization_id=payload.organization_id, product_code=payload.product_code, workspace_id=workspace_id, status=payload.status, actor_user_id=context.user.id)
         db.commit(); db.refresh(workspace)
@@ -298,9 +352,97 @@ def patch_organization(
 ):
     _scope(db, context, organization_id=payload.organization_id, product_code=payload.product_code, permission_code="organization.manage")
     _orgwide(db, context, payload.organization_id, "organization.manage")
+    _step_up(db, context, operation=PrivilegedOperation.ORGANIZATION_PROFILE_CHANGE, organization_id=payload.organization_id, product_code=payload.product_code)
     try:
         organization = rename_organization(db, organization_id=payload.organization_id, name=payload.name, actor_user_id=context.user.id)
         db.commit(); db.refresh(organization)
         return {"id": str(organization.id), "name": organization.name, "slug": organization.slug, "status": organization.status}
     except AdministrationError as exc:
         db.rollback(); raise _error(exc) from None
+
+
+@router.get("/members/{membership_id}/sessions", response_model=list[AdminSessionInventoryResponse])
+def get_member_sessions(
+    membership_id: uuid.UUID,
+    organization_id: uuid.UUID = Query(...),
+    product_code: str = Query(...),
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+) -> list[AdminSessionInventoryResponse]:
+    product_code = product_code.upper()
+    _scope(db, context, organization_id=organization_id, product_code=product_code, permission_code="members.manage")
+    _orgwide(db, context, organization_id, "members.manage")
+    try:
+        inventory = list_member_sessions(
+            db,
+            organization_id=organization_id,
+            membership_id=membership_id,
+            actor_user_id=context.user.id,
+            current_session_id=context.auth_session.id,
+        )
+        db.commit()
+        return [AdminSessionInventoryResponse(**vars(item)) for item in inventory]
+    except AdministrationError as exc:
+        db.rollback()
+        raise _error(exc) from None
+
+
+@router.delete("/members/{membership_id}/sessions/{session_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_member_session(
+    membership_id: uuid.UUID,
+    session_id: uuid.UUID,
+    organization_id: uuid.UUID = Query(...),
+    product_code: str = Query(...),
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+) -> None:
+    product_code = product_code.upper()
+    _scope(db, context, organization_id=organization_id, product_code=product_code, permission_code="members.manage")
+    _orgwide(db, context, organization_id, "members.manage")
+    try:
+        try:
+            _step_up(db, context, operation=PrivilegedOperation.OTHER_USER_SESSION_REVOCATION, organization_id=organization_id, product_code=product_code)
+        except HTTPException:
+            record_security_event(
+                db,
+                event_type="administration.target_session_revoke",
+                outcome="denied",
+                user_id=context.user.id,
+                metadata={"organization_id": str(organization_id), "reason": "step_up_required"},
+            )
+            db.commit()
+            raise
+        revoked = revoke_member_session(
+            db,
+            organization_id=organization_id,
+            membership_id=membership_id,
+            target_session_id=session_id,
+            actor_user_id=context.user.id,
+        )
+        record_security_event(
+            db,
+            event_type="administration.target_session_revoke",
+            outcome="success" if revoked else "not_found",
+            user_id=context.user.id,
+            metadata={
+                "organization_id": str(organization_id),
+                "membership_id": str(membership_id),
+                "session_id": str(session_id),
+            },
+        )
+        if not revoked:
+            db.commit()
+            raise HTTPException(status_code=404, detail="session not found")
+        db.commit()
+        return None
+    except AdministrationError as exc:
+        db.rollback()
+        record_security_event(
+            db,
+            event_type="administration.target_session_revoke",
+            outcome="denied",
+            user_id=context.user.id,
+            metadata={"organization_id": str(organization_id), "reason": exc.code},
+        )
+        db.commit()
+        raise _error(exc) from None

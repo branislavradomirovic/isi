@@ -197,10 +197,11 @@
     {
       "id": "ISI-20-ENTERPRISE-SECURITY-COMPLETION",
       "title": "Enterprise Security Completion",
-      "status": "planned",
+      "status": "implemented",
       "depends_on": [
         "ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY"
       ],
+      "note": "ISI-20D R3 is an unstaged/uncommitted REVIEW_VERIFIED candidate on canonical main at unchanged baseline HEAD 178d0000cc3119277c59c6ec19024c93d136b2f5. R3 closes the R2 human-review blocker: administrator target-session inventory and revocation fail closed before access to user-global AuthSession records when the target has an active membership in another organization; single-organization targets remain supported. Runner and independent analyzer pass, and final human review found no unresolved technical blocker. Direct-main state: main_commit PENDING, push PENDING, ci PENDING, review REVIEW_VERIFIED. Real-provider MFA, external penetration testing and server verification remain explicitly deferred/not performed.",
       "next": "ISI-21-DATA-GOVERNANCE-PRIVACY"
     },
     {

@@ -1,0 +1,225 @@
+{
+  "task": "ISI-20-ENTERPRISE-SECURITY-COMPLETION",
+  "baseline": "178d0000cc3119277c59c6ec19024c93d136b2f5",
+  "candidate_state": "unstaged_uncommitted_on_canonical_main",
+  "controls": [
+    {
+      "capability": "password assurance refresh",
+      "operation_code": null,
+      "surface": "POST /api/v1/auth/assurance/password",
+      "required_permission": "authenticated current session",
+      "organization_wide_requirement": false,
+      "scope": "current AuthSession only",
+      "required_assurance": "current password re-verification",
+      "security_event_types": [
+        "auth.assurance.password"
+      ],
+      "audit_event_relationship": "security event only",
+      "implementation_state": "implemented",
+      "ci_safe_tests": [
+        "tests/test_isi_20_enterprise_security.py"
+      ],
+      "deferred_external_manual_verification": null
+    },
+    {
+      "capability": "own session inventory and revocation",
+      "operation_code": null,
+      "surface": "GET/DELETE /api/v1/auth/sessions; POST /api/v1/auth/sessions/revoke-others",
+      "required_permission": "authenticated session owner",
+      "organization_wide_requirement": false,
+      "scope": "own global login sessions",
+      "required_assurance": "authenticated bearer session",
+      "security_event_types": [
+        "auth.session.revoke_self",
+        "auth.session.revoke_others",
+        "auth.logout"
+      ],
+      "audit_event_relationship": "security event only",
+      "implementation_state": "implemented",
+      "ci_safe_tests": [
+        "tests/test_isi_20_session_management.py",
+        "tests/test_isi_20_enterprise_security.py"
+      ],
+      "deferred_external_manual_verification": "browser/device diversity"
+    },
+    {
+      "capability": "administrator target-session inventory and revocation",
+      "operation_code": "security.other_user_session.revoke",
+      "surface": "GET /api/v1/administration/members/{membership_id}/sessions; DELETE /api/v1/administration/members/{membership_id}/sessions/{session_id}",
+      "required_permission": "members.manage",
+      "organization_wide_requirement": true,
+      "scope": "authorized organization and product; target membership must belong to organization; AuthSession remains user-global, so a target with another active organization membership is refused before session access",
+      "required_assurance": "password_or_mfa for revocation; authenticated authorization for inventory",
+      "security_event_types": [
+        "administration.privileged_operation",
+        "administration.target_session_revoke"
+      ],
+      "audit_event_relationship": "security events record the cross-account control; no mutable audit rows",
+      "implementation_state": "implemented with fail-closed global_session_multi_organization_target_not_supported guard mapped to HTTP 409; this does not claim tenant-scoped sessions",
+      "ci_safe_tests": [
+        "tests/test_isi_20_access_matrix.py"
+      ],
+      "deferred_external_manual_verification": "tenant-scoped session architecture is a separate future change"
+    },
+    {
+      "capability": "member status mutation",
+      "operation_code": "organization.member_status.change",
+      "surface": "POST /api/v1/administration/members/{membership_id}/status",
+      "required_permission": "members.manage",
+      "organization_wide_requirement": true,
+      "scope": "authorized organization and selected SIMPA or ORDO context",
+      "required_assurance": "password_or_mfa",
+      "security_event_types": [
+        "administration.privileged_operation"
+      ],
+      "audit_event_relationship": "membership.status_changed",
+      "implementation_state": "implemented",
+      "ci_safe_tests": [
+        "tests/test_isi_20_access_matrix.py",
+        "tests/test_isi_13_safety_contract.py"
+      ],
+      "deferred_external_manual_verification": null
+    },
+    {
+      "capability": "role assignment mutation",
+      "operation_code": "organization.role_assignment.change",
+      "surface": "POST/DELETE /api/v1/administration/members/{membership_id}/roles",
+      "required_permission": "members.manage",
+      "organization_wide_requirement": "required for organization-scoped assignment/removal",
+      "scope": "authorized organization and product; explicit role scope",
+      "required_assurance": "password_or_mfa",
+      "security_event_types": [
+        "administration.privileged_operation"
+      ],
+      "audit_event_relationship": "membership.role_assigned or membership.role_removed",
+      "implementation_state": "implemented",
+      "ci_safe_tests": [
+        "tests/test_isi_20_access_matrix.py",
+        "tests/test_isi_13_safety_contract.py"
+      ],
+      "deferred_external_manual_verification": null
+    },
+    {
+      "capability": "membership product-access mutation",
+      "operation_code": "organization.membership_product_access.change",
+      "surface": "POST /api/v1/administration/members/{membership_id}/product-access",
+      "required_permission": "members.manage",
+      "organization_wide_requirement": false,
+      "scope": "authorized organization and exact SIMPA or ORDO product",
+      "required_assurance": "password_or_mfa",
+      "security_event_types": [
+        "administration.privileged_operation"
+      ],
+      "audit_event_relationship": "membership.product_access_changed",
+      "implementation_state": "implemented",
+      "ci_safe_tests": [
+        "tests/test_isi_20_access_matrix.py",
+        "tests/test_isi_02a_access_matrix.py"
+      ],
+      "deferred_external_manual_verification": null
+    },
+    {
+      "capability": "invitation grant and revoke",
+      "operation_code": "organization.invitation_privilege.grant / organization.invitation.revoke",
+      "surface": "POST /api/v1/administration/invitations; POST /api/v1/administration/invitations/{invitation_id}/revoke",
+      "required_permission": "members.manage",
+      "organization_wide_requirement": false,
+      "scope": "authorized organization and exact product",
+      "required_assurance": "password_or_mfa",
+      "security_event_types": [
+        "administration.privileged_operation",
+        "auth.invitation.accept"
+      ],
+      "audit_event_relationship": "invitation.created or invitation.revoked",
+      "implementation_state": "implemented",
+      "ci_safe_tests": [
+        "tests/test_isi_20_enterprise_security.py",
+        "tests/test_isi_13_api_contract.py"
+      ],
+      "deferred_external_manual_verification": "production delivery provider"
+    },
+    {
+      "capability": "workspace creation and status mutation",
+      "operation_code": "organization.workspace.change",
+      "surface": "POST /api/v1/administration/workspaces; POST .../workspaces/{workspace_id}/status",
+      "required_permission": "workspace.manage",
+      "organization_wide_requirement": false,
+      "scope": "authorized organization and exact product/workspace",
+      "required_assurance": "password_or_mfa",
+      "security_event_types": [
+        "administration.privileged_operation"
+      ],
+      "audit_event_relationship": "workspace.created, workspace.status_changed",
+      "implementation_state": "implemented using a specific centrally catalogued operation",
+      "ci_safe_tests": [
+        "tests/test_isi_20_access_matrix.py",
+        "tests/test_isi_13_api_contract.py"
+      ],
+      "deferred_external_manual_verification": null
+    },
+    {
+      "capability": "organization-profile mutation",
+      "operation_code": "organization.profile.change",
+      "surface": "PATCH /api/v1/administration/organization",
+      "required_permission": "organization.manage",
+      "organization_wide_requirement": true,
+      "scope": "authorized organization and selected product context",
+      "required_assurance": "password_or_mfa",
+      "security_event_types": [
+        "administration.privileged_operation"
+      ],
+      "audit_event_relationship": "organization.renamed",
+      "implementation_state": "implemented using a specific centrally catalogued operation",
+      "ci_safe_tests": [
+        "tests/test_isi_20_access_matrix.py",
+        "tests/test_isi_13_api_contract.py"
+      ],
+      "deferred_external_manual_verification": null
+    },
+    {
+      "capability": "platform administrator grant/revoke/change",
+      "operation_code": "platform_admin.grant / platform_admin.revoke / platform_admin.change",
+      "surface": null,
+      "required_permission": "explicit platform-admin authority",
+      "organization_wide_requirement": false,
+      "scope": "platform",
+      "required_assurance": "mfa",
+      "security_event_types": [
+        "administration.privileged_operation when a surface is implemented"
+      ],
+      "audit_event_relationship": "future explicit platform audit",
+      "implementation_state": "policy implemented; no current mutation surface",
+      "ci_safe_tests": [
+        "tests/test_isi_20_auth_assurance.py",
+        "tests/test_isi_20_access_matrix.py"
+      ],
+      "deferred_external_manual_verification": "mutation API intentionally absent"
+    },
+    {
+      "capability": "organization entitlement, security control, sensitive export",
+      "operation_code": "organization.entitlement.change / security.control.change / administration.sensitive_export",
+      "surface": null,
+      "required_permission": "surface-specific authorization when implemented",
+      "organization_wide_requirement": "surface-specific",
+      "scope": "explicit catalog policy only",
+      "required_assurance": "mfa",
+      "security_event_types": [
+        "administration.privileged_operation when a surface is implemented"
+      ],
+      "audit_event_relationship": "future surface-specific audit",
+      "implementation_state": "policy implemented; no current mutation surface",
+      "ci_safe_tests": [
+        "tests/test_isi_20_auth_assurance.py"
+      ],
+      "deferred_external_manual_verification": "mutation APIs intentionally absent"
+    }
+  ],
+  "verification_state": {
+    "local": "REVIEW_VERIFIED_r3_no_unresolved_technical_blocker",
+    "main_commit": "PENDING",
+    "push": "PENDING",
+    "ci": "PENDING",
+    "review": "REVIEW_VERIFIED",
+    "server": "DEFERRED_SERVER_VERIFICATION"
+  }
+}

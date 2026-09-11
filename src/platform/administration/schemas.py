@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import datetime
 from typing import Literal
 from uuid import UUID
 
@@ -57,3 +58,15 @@ class OrganizationNameRequest(BaseModel):
     organization_id: UUID
     product_code: ProductCode
     name: str = Field(min_length=2, max_length=240)
+
+
+class AdminSessionInventoryResponse(BaseModel):
+    session_id: UUID
+    created_at: datetime
+    last_seen_at: datetime | None
+    expires_at: datetime
+    is_current: bool
+    is_revoked: bool
+    revoked_at: datetime | None
+    revocation_reason: str | None
+    device_label: str = Field(max_length=80)

@@ -472,6 +472,8 @@ def test_catalog_covers_required_families_and_contract_objects_are_verifier_free
         PrivilegedOperation.MEMBERSHIP_PRODUCT_ACCESS_CHANGE,
         PrivilegedOperation.INVITATION_PRIVILEGE_GRANT,
         PrivilegedOperation.INVITATION_REVOKE,
+        PrivilegedOperation.WORKSPACE_ADMINISTRATION_CHANGE,
+        PrivilegedOperation.ORGANIZATION_PROFILE_CHANGE,
         PrivilegedOperation.ORGANIZATION_ENTITLEMENT_CHANGE,
         PrivilegedOperation.OTHER_USER_SESSION_REVOCATION,
         PrivilegedOperation.SECURITY_CONTROL_CHANGE,

@@ -1,10 +1,10 @@
 # ISI-20 — Enterprise Security Completion
 
 ## Status
-`SPEC_READY`
+`REVIEW_VERIFIED — OWNER MAIN COMMIT / CI PENDING`
 
 ## Baseline
-`4713a1deb7ccec0b99b92985424693a50727a1f6` (`main`, ISI-19 merged; post-merge CI run #51 / `34502016805` successful).
+Canonical repository HEAD remains `178d0000cc3119277c59c6ec19024c93d136b2f5` on `main`; the ISI-20 reviewed candidate is unstaged and uncommitted in that canonical worktree.
 
 ## Dependencies
 - `ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY` is merged and post-merge CI verified.
@@ -37,7 +37,7 @@ Complete the repository-side enterprise security controls needed before data-gov
 3. Add an explicit authentication-assurance/step-up state for sensitive operations. Password re-verification and/or an active verified second factor may satisfy the step-up contract according to a centrally defined policy; expired or insufficient assurance must fail closed.
 4. Define the privileged-operation catalog centrally. At minimum, platform-admin changes, member/role/product-access administration, invitation privilege grants, organization entitlement changes, session revocation of another user, security-control changes and destructive/export-sensitive administration must be classifiable as privileged. Do not scatter ad-hoc string checks across domain modules.
 5. Add session inventory and revocation services that expose only safe device/session descriptors: session ID, creation/last-seen/expiry, current-session marker, revocation state/reason and privacy-safe/friendly device information derived without exposing raw IP addresses or full raw user-agent strings.
-6. Users must be able to revoke one of their own sessions and revoke all other sessions. Administrators may revoke another user’s sessions only through existing organization/access boundaries and the privileged-operation/step-up policy.
+6. Users must be able to revoke one of their own sessions and revoke all other sessions. Administrators may revoke another user’s sessions only through existing organization/access boundaries and the privileged-operation/step-up policy. Because `AuthSession` is user-global rather than organization-bound, administrator target-session inventory and revocation fail closed with `global_session_multi_organization_target_not_supported` whenever the target user has another active organization membership; tenant-scoped sessions remain a separate future architectural change.
 7. Session/token revocation after password reset and other existing invalidation behavior must remain intact. Security-sensitive account changes must have explicit deterministic session-invalidation rules.
 8. Expand `SecurityEvent` coverage for successful/failed login, rate-limit blocks, logout/session revocation, password reset/change, invitation security lifecycle, MFA/challenge lifecycle, privileged-operation allow/deny, access/role/entitlement administration and suspicious/replay rejection outcomes. Event metadata must remain bounded and privacy-safe.
 9. Strengthen security-event metadata validation recursively so sensitive nested keys/values cannot leak credentials/tokens/cookies/authorization material through structured metadata. Add deterministic bounded metadata/schema behavior.
@@ -50,7 +50,7 @@ Complete the repository-side enterprise security controls needed before data-gov
 16. Add baseline security-header/cookie/session configuration assertions and production fail-closed checks without contacting the current server.
 17. Add a deterministic repository-side penetration-test readiness pack containing: attack-surface inventory, authentication/session/access-control test matrix, OWASP-style test cases mapped to implemented controls, explicit deferred external/manual tests, and machine-readable results from CI-safe probes/tests. Do not claim a real external penetration test was performed.
 18. Add/modify Alembic migration(s) for any new persistent security/MFA/session metadata. Upgrade/downgrade or equivalent migration acceptance must remain single-head and pass PostgreSQL 17 CI.
-19. Add committed evidence under `automation/evidence/ISI-20/` and synchronize task registry/status/PR metadata as the state advances.
+19. Add evidence under `automation/evidence/ISI-20/` and synchronize task registry/status/direct-main metadata as the state advances. The candidate remains unstaged and uncommitted on canonical `main` until owner approval.
 20. Preserve compatibility with existing authentication and administration APIs unless a narrowly documented security fix requires an intentional contract change covered by tests.
 
 ## Impact
@@ -66,6 +66,7 @@ Complete the repository-side enterprise security controls needed before data-gov
 - Security/audit metadata must be recursively validated and bounded.
 - MFA/step-up must fail closed on expired, replayed, over-attempted, revoked or ambiguous state.
 - Cross-tenant, cross-organization and cross-product authorization must be explicitly tested.
+- Administrator target-session inventory and revocation must not expose or mutate a user-global session when the target has an active membership in another organization; the limitation is returned as a conflict without session data.
 - Sensitive SIMPA AI/data policy remains unchanged and local-only where already required.
 - Evidence must contain synthetic identifiers only and no secrets.
 
@@ -95,7 +96,7 @@ tools/ci/run_isi17_acceptance.sh
 git diff --check
 ```
 
-The authoritative GitHub Actions run on the exact final PR head must pass every blocking job inherited from the current main branch, including policy, quality, full tests, architecture/security, PostgreSQL 17 migration/native/recovery checks, Compose, supply-chain, non-deploying build and aggregate acceptance.
+After an owner-approved direct commit and push, the authoritative GitHub Actions run on the exact committed `main` SHA must pass every blocking job inherited from the current main branch, including policy, quality, full tests, architecture/security, PostgreSQL 17 migration/native/recovery checks, Compose, supply-chain, non-deploying build and aggregate acceptance.
 
 ## Evidence
 Required under `automation/evidence/ISI-20/`:
@@ -127,13 +128,13 @@ Required under `automation/evidence/ISI-20/`:
 - No claim that CI security tests constitute an external penetration test or server verification.
 
 ## Completion definition
-`IMPLEMENTED` requires code, migrations, tests, control matrix, penetration-test-readiness pack and evidence templates to exist with task-local acceptance passing where executable.
+`IMPLEMENTED` requires an uncommitted reviewed candidate on canonical `main`, with code, any required migrations, tests, control matrix, penetration-test-readiness pack and evidence templates present and local/task gates passing where executable.
 
-`CI_VERIFIED` requires the complete blocking GitHub Actions workflow to pass on the exact synchronized final PR head.
+`CI_VERIFIED` requires every blocking GitHub Actions job to pass on the exact owner-approved committed `main` SHA.
 
-`REVIEW_VERIFIED` requires independent review of that exact CI-verified head with no unresolved technical blocker, including privilege boundaries, token/secret handling and tenant/product isolation.
+`REVIEW_VERIFIED` requires review of the exact candidate or final `main` SHA with no unresolved technical blocker, including privilege boundaries, token/secret handling and tenant/product isolation.
 
-`MERGED` requires accepted PR merge to `main` and successful post-merge main CI before ISI-21 begins.
+Final task completion requires an owner-approved direct commit and push to `main`, followed by successful blocking CI on that exact `main` SHA before ISI-21 begins. ISI-20 does not require an implementation branch, pull request, or merge.
 
 ## Deferred server verification
 `DEFERRED_SERVER_VERIFICATION` — production MFA integration, live-host security scanning, external/manual penetration testing, real infrastructure/session behavior and deployment validation are intentionally deferred. Current-server work is owner-gated under ISI-28 and requires fresh explicit approval.

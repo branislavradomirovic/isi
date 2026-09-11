@@ -1,44 +1,28 @@
 # ISI Autonomous Industrialization Status
 
-This is the human-facing live roadmap for the owner. `automation/tasks.json`, task specifications, pull requests, required CI checks and committed evidence remain authoritative.
+This is the human-facing live roadmap for the owner. `automation/tasks.json`, task specifications, owner-approved direct-main commits, required CI checks and evidence remain authoritative.
 
-Last status update: 2026-09-10.
+Last status update: 2026-09-12.
 
 ## Current execution
 
-Last completed task: `ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS` — `MERGED`.
+Last completed task: `ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY` — merged in the canonical baseline preceding ISI-20D R0.
 
-ISI-18 final PR: #6 -> `main`, merged as `b0487d8e9187c6b06efe5fab463875f8d989042c`.
+Current task: `ISI-20-ENTERPRISE-SECURITY-COMPLETION`.
 
-ISI-18 exact-head PR acceptance: run #46 / `34485179622` — `success`.
+Current state: `REVIEW_VERIFIED — exact R3 candidate reviewed with no unresolved technical blocker; owner-approved main commit and CI pending`.
 
-ISI-18 independent review: `REVIEW_VERIFIED — no unresolved technical blocker`.
+Development branch: `main` only.
 
-ISI-18 post-merge `main` acceptance: run #47 / `34485496540` — `success`.
+Baseline `main` SHA: `178d0000cc3119277c59c6ec19024c93d136b2f5`.
 
-Current task: `ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY`.
-
-Current state: `IMPLEMENTED — implementation-code CI run #49 green; synchronized-head CI and independent review pending`.
-
-Implementation branch: `automation/isi-19-backup-restore-dr`.
-
-Tracking issue: #7. Pull request: #8.
-
-Baseline `main` SHA: `b0487d8e9187c6b06efe5fab463875f8d989042c`.
-
-Repository-visible implementation code head: `dd0cf78a48afcb984aadd74a4808e48d4d739a65`.
-
-Implementation-code acceptance: run #49 / `34500748759` — `success` across policy, quality, tests, architecture/security, migrations, native PostgreSQL, Compose, supply-chain, build and aggregate acceptance.
-
-ISI-19 native PostgreSQL gate explicitly reported `ISI-19 RECOVERY PASS: PostgreSQL 17 and scoped object storage restored and verified`. The uploaded native-postgres evidence artifact was ID `10161771050`, ZIP SHA-256 `6d23ae92c3767e77651e5f84d36b55797985602e6b7ab2d9868d760b5cc39f2d`.
-
-The implementation is now synchronized in GitHub after the Codex execution checkout proved unable to push its local commit. Codex-local checks remain advisory; exact GitHub CI is authoritative.
+ISI-20D R3 closes the R2 human-review blocker locally: because `AuthSession` is user-global, administrator target-session inventory and revocation now fail closed before session access when the target has an active membership in another organization. Single-organization targets remain supported, and the established membership, authorization, organization-wide permission, self-target, session-ownership, step-up, and idempotency controls remain intact. Required R3 local gates pass. Current direct-main state: `main_commit: PENDING`, `push: PENDING`, `ci: PENDING`, `review: REVIEW_VERIFIED`. Final human review found no unresolved technical blocker. No commit, push, CI run, deployment, external penetration test, or real-provider MFA validation is claimed.
 
 Server verification: `DEFERRED_SERVER_VERIFICATION`. No current-server action is authorized before ISI-28.
 
 ## Owner-facing state model
 
-`SPEC_READY -> IMPLEMENTING -> IMPLEMENTED -> CI_VERIFIED -> REVIEW_VERIFIED -> MERGE_READY -> MERGED`
+`SPEC_READY -> IMPLEMENTING -> IMPLEMENTED -> REVIEW_VERIFIED -> OWNER_APPROVED_MAIN_COMMIT -> CI_VERIFIED -> COMPLETE`
 
 A failed required gate returns the active task to `IMPLEMENTING`. Required gates must not be weakened merely to make a task green.
 
@@ -48,8 +32,8 @@ A failed required gate returns the active task to `IMPLEMENTING`. Required gates
 |---:|---|---|---|
 | 17 | `ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS` | Autonomous development harness, blocking CI, deterministic dependencies and evidence/server-access guards | **MERGED** |
 | 18 | `ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS` | Correlation IDs, structured logs, API/worker/AI/data metrics, health/readiness diagnostics and privacy-safe observability | **MERGED — post-merge CI green** |
-| 19 | `ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY` | Deterministic PostgreSQL/object-storage backup and restore tooling, checksums, recovery rehearsal, proposed RPO/RTO and rollback-safe recovery | **IMPLEMENTED — FINAL CI/REVIEW PENDING** |
-| 20 | `ISI-20-ENTERPRISE-SECURITY-COMPLETION` | MFA-ready controls, session/device administration, privileged-action controls, broader security events, RBAC/entitlement matrix and pen-test readiness | PLANNED |
+| 19 | `ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY` | Deterministic PostgreSQL/object-storage backup and restore tooling, checksums, recovery rehearsal, proposed RPO/RTO and rollback-safe recovery | **MERGED IN CANONICAL BASELINE** |
+| 20 | `ISI-20-ENTERPRISE-SECURITY-COMPLETION` | MFA-ready controls, session/device administration, privileged-action controls, broader security events, RBAC/entitlement matrix and pen-test readiness | **REVIEW_VERIFIED — OWNER MAIN COMMIT / CI PENDING** |
 | 21 | `ISI-21-DATA-GOVERNANCE-PRIVACY` | Data classification, ownership, lineage/provenance, retention/purge/anonymization hooks, sensitive-access auditability, export controls and privacy documentation | PLANNED |
 | 22 | `ISI-22-INDUSTRIAL-DATA-PLATFORM` | Versioned connectors, schema mapping/versioning, incremental/idempotent ingestion, dedup/reconciliation, quarantine/error handling, freshness/quality, backfill and lineage | PLANNED |
 | 23 | `ISI-23-SIMPA-PRODUCTION-METHODOLOGY` | DRAFT/PROPOSED SIMPA methodology, calculation/reference-data contracts, provenance/confidence, plus detailed in-app Help and SIMPA User Guide | PLANNED — draft methodology + help required |

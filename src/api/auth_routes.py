@@ -16,6 +16,8 @@ from src.platform.auth.schemas import (
     MessageResponse,
     PasswordResetConfirmRequest,
     PasswordResetRequest,
+    PasswordAssuranceRequest,
+    PasswordAssuranceResponse,
     RevokeOtherSessionsResponse,
     SessionInventoryResponse,
     TokenConfirmRequest,
@@ -30,6 +32,7 @@ from src.platform.auth.service import (
     create_password_reset_token,
     create_session,
     list_user_sessions,
+    refresh_password_assurance,
     reset_password_with_token,
     revoke_other_user_sessions,
     revoke_session,
@@ -116,6 +119,13 @@ def login(payload: LoginRequest, request: Request, db: Session = Depends(get_db)
 @router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
 def logout(context: AuthContext = Depends(get_auth_context), db: Session = Depends(get_db)) -> None:
     revoke_session(db, context.token)
+    record_security_event(
+        db,
+        event_type="auth.logout",
+        outcome="success",
+        user_id=context.user.id,
+        metadata={"session_id": str(context.auth_session.id)},
+    )
     db.commit()
     return None
 
@@ -148,7 +158,22 @@ def delete_session(
 ) -> None:
     if not revoke_user_session(db, user_id=context.user.id, session_id=session_id):
         db.rollback()
+        record_security_event(
+            db,
+            event_type="auth.session.revoke_self",
+            outcome="not_found",
+            user_id=context.user.id,
+            metadata={"session_id": str(session_id)},
+        )
+        db.commit()
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="session not found")
+    record_security_event(
+        db,
+        event_type="auth.session.revoke_self",
+        outcome="success",
+        user_id=context.user.id,
+        metadata={"session_id": str(session_id)},
+    )
     db.commit()
     return None
 
@@ -163,8 +188,50 @@ def revoke_other_sessions(
         user_id=context.user.id,
         current_session_id=context.auth_session.id,
     )
+    record_security_event(
+        db,
+        event_type="auth.session.revoke_others",
+        outcome="success",
+        user_id=context.user.id,
+        metadata={"revoked_count": revoked_count, "current_session_id": str(context.auth_session.id)},
+    )
     db.commit()
     return RevokeOtherSessionsResponse(revoked_count=revoked_count)
+
+
+@router.post("/assurance/password", response_model=PasswordAssuranceResponse)
+def refresh_password_step_up(
+    payload: PasswordAssuranceRequest,
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+) -> PasswordAssuranceResponse:
+    try:
+        refresh_password_assurance(
+            db,
+            user_id=context.user.id,
+            session_id=context.auth_session.id,
+            password=payload.password,
+        )
+    except AuthError as exc:
+        db.rollback()
+        record_security_event(
+            db,
+            event_type="auth.assurance.password",
+            outcome="failure",
+            user_id=context.user.id,
+            metadata={"reason": exc.code, "session_id": str(context.auth_session.id)},
+        )
+        db.commit()
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="password re-verification failed") from None
+    record_security_event(
+        db,
+        event_type="auth.assurance.password",
+        outcome="success",
+        user_id=context.user.id,
+        metadata={"session_id": str(context.auth_session.id), "method": "password"},
+    )
+    db.commit()
+    return PasswordAssuranceResponse()
 
 
 @router.post("/email-verification/request", response_model=MessageResponse, status_code=status.HTTP_202_ACCEPTED)
@@ -223,16 +290,26 @@ def request_password_reset(
 @router.post("/password-reset/confirm", response_model=MessageResponse)
 def confirm_password_reset(payload: PasswordResetConfirmRequest, db: Session = Depends(get_db)) -> MessageResponse:
     try:
-        reset_password_with_token(db, payload.token, payload.new_password)
+        user = reset_password_with_token(db, payload.token, payload.new_password)
+        record_security_event(
+            db,
+            event_type="auth.password_reset.confirm",
+            outcome="success",
+            user_id=user.id,
+        )
         db.commit()
         return MessageResponse(status="completed")
     except (AuthError, PasswordPolicyError):
         db.rollback()
+        record_security_event(db, event_type="auth.password_reset.confirm", outcome="failure")
+        db.commit()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="invalid reset request") from None
 
 
 @router.post("/invitations/accept", response_model=LoginResponse)
 def accept_invite(payload: InvitationAcceptRequest, request: Request, db: Session = Depends(get_db)) -> LoginResponse:
+    remote_ip = resolve_client_ip(request)
+    user_agent = request.headers.get("user-agent")
     try:
         user, _membership = accept_invitation(
             db,
@@ -243,11 +320,27 @@ def accept_invite(payload: InvitationAcceptRequest, request: Request, db: Sessio
         issued = create_session(
             db,
             user,
-            remote_ip=request.client.host if request.client else None,
-            user_agent=request.headers.get("user-agent"),
+            remote_ip=remote_ip,
+            user_agent=user_agent,
+        )
+        record_security_event(
+            db,
+            event_type="auth.invitation.accept",
+            outcome="success",
+            user_id=user.id,
+            remote_ip=remote_ip,
+            user_agent=user_agent,
         )
         db.commit()
         return LoginResponse(access_token=issued.token, expires_at=issued.expires_at)
     except (AuthError, PasswordPolicyError):
         db.rollback()
+        record_security_event(
+            db,
+            event_type="auth.invitation.accept",
+            outcome="failure",
+            remote_ip=remote_ip,
+            user_agent=user_agent,
+        )
+        db.commit()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="invalid invitation") from None

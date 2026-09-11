@@ -17,8 +17,9 @@ from src.platform.access.models import (
 )
 from src.platform.access.service import AccessInvariantError, grant_product_access
 from src.platform.administration.models import AdminAuditEvent, InvitationProductGrant, InvitationRoleGrant
-from src.platform.auth.models import Invitation
+from src.platform.auth.models import AuthSession, Invitation
 from src.platform.auth.security import hash_token
+from src.platform.auth.service import SessionInventoryItem, list_user_sessions
 from src.platform.identity.models import Membership, Organization, User
 from src.platform.workspaces.models import Workspace
 
@@ -27,6 +28,9 @@ class AdministrationError(ValueError):
     def __init__(self, code: str) -> None:
         super().__init__(code)
         self.code = code
+
+
+ADMIN_SESSION_REVOCATION_REASON = "organization_administrator_revocation"
 
 
 def utcnow() -> datetime:
@@ -65,6 +69,25 @@ def _membership(session: Session, organization_id: uuid.UUID, membership_id: uui
     if membership is None:
         raise AdministrationError("membership_not_accessible")
     return membership
+
+
+def _require_single_organization_session_target(
+    session: Session,
+    *,
+    membership: Membership,
+    organization_id: uuid.UUID,
+) -> None:
+    other_active_membership = session.scalar(
+        select(Membership.id)
+        .where(
+            Membership.user_id == membership.user_id,
+            Membership.organization_id != organization_id,
+            Membership.status == "active",
+        )
+        .limit(1)
+    )
+    if other_active_membership is not None:
+        raise AdministrationError("global_session_multi_organization_target_not_supported")
 
 
 def _role(session: Session, role_code: str) -> Role:
@@ -148,6 +171,80 @@ def has_org_wide_permission(
         )
         .limit(1)
     ) is not None
+
+
+def role_assignment_requires_org_wide(
+    session: Session,
+    *,
+    organization_id: uuid.UUID,
+    membership_id: uuid.UUID,
+    assignment_id: uuid.UUID,
+) -> bool:
+    membership = _membership(session, organization_id, membership_id)
+    assignment = session.scalar(
+        select(RoleAssignment).where(
+            RoleAssignment.id == assignment_id,
+            RoleAssignment.membership_id == membership.id,
+        )
+    )
+    if assignment is None:
+        raise AdministrationError("role_assignment_not_accessible")
+    return assignment.product_code == "*"
+
+
+def list_member_sessions(
+    session: Session,
+    *,
+    organization_id: uuid.UUID,
+    membership_id: uuid.UUID,
+    actor_user_id: uuid.UUID,
+    current_session_id: uuid.UUID,
+) -> list[SessionInventoryItem]:
+    """Return global login sessions only after resolving an organization-owned target membership."""
+    membership = _membership(session, organization_id, membership_id)
+    if membership.user_id == actor_user_id:
+        raise AdministrationError("other_user_session_target_required")
+    _require_single_organization_session_target(
+        session,
+        membership=membership,
+        organization_id=organization_id,
+    )
+    return list_user_sessions(
+        session,
+        user_id=membership.user_id,
+        current_session_id=current_session_id,
+    )
+
+
+def revoke_member_session(
+    session: Session,
+    *,
+    organization_id: uuid.UUID,
+    membership_id: uuid.UUID,
+    target_session_id: uuid.UUID,
+    actor_user_id: uuid.UUID,
+) -> bool:
+    """Idempotently revoke a target member's global login session."""
+    membership = _membership(session, organization_id, membership_id)
+    if membership.user_id == actor_user_id:
+        raise AdministrationError("other_user_session_target_required")
+    _require_single_organization_session_target(
+        session,
+        membership=membership,
+        organization_id=organization_id,
+    )
+    auth_session = session.scalar(
+        select(AuthSession)
+        .where(AuthSession.id == target_session_id, AuthSession.user_id == membership.user_id)
+        .with_for_update()
+    )
+    if auth_session is None:
+        return False
+    if auth_session.revoked_at is None:
+        auth_session.revoked_at = utcnow()
+        auth_session.revoked_reason = ADMIN_SESSION_REVOCATION_REASON
+        session.flush()
+    return True
 
 
 def _active_admin_ids_for_product(

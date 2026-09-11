@@ -1,0 +1,67 @@
+{
+  "task": "ISI-20-ENTERPRISE-SECURITY-COMPLETION",
+  "baseline": "178d0000cc3119277c59c6ec19024c93d136b2f5",
+  "candidate_state": "unstaged_uncommitted_on_canonical_main",
+  "local_state": "REVIEW_VERIFIED",
+  "commands": [
+    {
+      "command": "python -m tools.ci.policy_check",
+      "result": "pass"
+    },
+    {
+      "command": "python -m pytest -q tests/test_isi_20_access_matrix.py",
+      "result": "pass",
+      "tests": 7
+    },
+    {
+      "command": "python -m pytest -q tests/test_isi_20_auth_assurance.py tests/test_isi_20_enterprise_security.py tests/test_isi_20_access_matrix.py tests/test_isi_20_security_events.py",
+      "result": "pass",
+      "tests": 34
+    },
+    {
+      "command": "python -m pytest -q tests/test_isi_20_mfa_challenge_foundation.py tests/test_isi_20_auth_assurance.py tests/test_isi_20_session_management.py tests/test_isi_14_session_contract.py tests/test_isi_14_production_config_contract.py tests/test_isi_02a_access_matrix.py",
+      "result": "pass",
+      "tests": 45
+    },
+    {
+      "command": "tools/ci/migration_check.sh offline",
+      "result": "pass"
+    },
+    {
+      "command": "env -u DATABASE_URL python -m pytest -q",
+      "result": "pass",
+      "collected": 389,
+      "passed": 371,
+      "skipped": 18
+    },
+    {
+      "command": "python -m json.tool automation/tasks.json",
+      "result": "pass"
+    },
+    {
+      "command": "python -m json.tool automation/evidence/ISI-20/results.json",
+      "result": "pass"
+    },
+    {
+      "command": "python -m json.tool automation/evidence/ISI-20/security-control-matrix.json",
+      "result": "pass"
+    },
+    {
+      "command": "git diff --check",
+      "result": "pass"
+    }
+  ],
+  "warnings": [
+    "Native PostgreSQL verification remains pending authoritative Linux GitHub Actions after a future owner-approved commit.",
+    "Repository tests are not an external penetration test.",
+    "Real-provider MFA and deployed browser/origin behavior remain unvalidated.",
+    "AuthSession remains user-global; administrator target-session operations are deliberately unavailable when the target has an active membership in another organization."
+  ],
+  "main_commit": "PENDING",
+  "push": "PENDING",
+  "ci": "PENDING",
+  "review": "REVIEW_VERIFIED",
+  "external_penetration_test": "NOT_PERFORMED",
+  "mfa_provider_validation": "NOT_PERFORMED",
+  "server_verification": "DEFERRED_SERVER_VERIFICATION"
+}

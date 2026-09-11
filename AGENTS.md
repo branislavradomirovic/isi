@@ -24,7 +24,7 @@ For every task:
 
 1. Read this file, the task specification, relevant ADRs, and the current task registry.
 2. Verify the required baseline and dependencies before editing.
-3. Work on a dedicated branch unless the owner explicitly instructs otherwise.
+3. Perform normal owner-driven development only on the canonical local `main` branch. Do not create, switch to, rename, or use feature, implementation, review, temporary, or automation branches unless the owner explicitly authorizes an exception.
 4. Preserve backward compatibility unless the specification explicitly authorizes a breaking change.
 5. Add or update tests for every behavior change.
 6. Never delete, weaken, skip, xfail, or bypass a failing test merely to make acceptance green.
@@ -35,8 +35,10 @@ For every task:
 11. Keep AI human-in-the-loop for institutional decision support. AI output must remain evidence-bounded, reviewable, attributable, and auditable.
 12. Run the full task acceptance gate before declaring implementation complete.
 13. Record required evidence under `automation/evidence/<TASK-ID>/` or the location defined by the task.
-14. Open/update the pull request with an exact implementation summary, tests executed, known limitations, and deferred server-verification items.
-15. A task is not complete because the agent says it is complete; the deterministic acceptance gates must pass.
+14. Do not create additional worktrees, clones, repositories, or checkout workspaces for task isolation unless the owner explicitly authorizes an exception.
+15. Keep task changes unstaged and uncommitted on `main` until deterministic validation succeeds and the owner approves the exact candidate. Codex must never stage, commit, or push unless the owner explicitly authorizes that action.
+16. After owner approval, the repository workflow is a direct commit and push to `main`, followed by GitHub Actions verification of that exact `main` commit. A pull request or merge is not part of the normal owner-driven workflow.
+17. A task is not complete because the agent says it is complete; the deterministic acceptance gates must pass.
 
 ## Security and privacy invariants
 
@@ -60,8 +62,9 @@ For every task:
 
 Use only evidence-backed status labels:
 
-- `IMPLEMENTED` - code exists and local/task tests pass.
-- `CI_VERIFIED` - repository CI acceptance passes.
+- `IMPLEMENTED` - an unstaged/uncommitted reviewed candidate exists on canonical `main` and local/task gates pass as available.
+- `CI_VERIFIED` - all blocking GitHub Actions jobs pass on the exact committed `main` SHA.
+- `REVIEW_VERIFIED` - review of the exact candidate or final `main` SHA has no unresolved technical blocker.
 - `SERVER_VERIFIED` - the explicitly approved server acceptance was executed successfully.
 - `DEFERRED_SERVER_VERIFICATION` - implementation is complete but the current task intentionally does not touch the server.
 

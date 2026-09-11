@@ -7,6 +7,7 @@ from types import MappingProxyType
 from typing import Mapping
 
 from src.platform.auth.models import AuthSession
+from src.platform.security.service import session_idle_expired
 
 
 ASSURANCE_FRESHNESS_SECONDS = 600
@@ -32,6 +33,8 @@ class PrivilegedOperation(str, Enum):
     INVITATION_PRIVILEGE_GRANT = "organization.invitation_privilege.grant"
     INVITATION_REVOKE = "organization.invitation.revoke"
     ORGANIZATION_ENTITLEMENT_CHANGE = "organization.entitlement.change"
+    WORKSPACE_ADMINISTRATION_CHANGE = "organization.workspace.change"
+    ORGANIZATION_PROFILE_CHANGE = "organization.profile.change"
     OTHER_USER_SESSION_REVOCATION = "security.other_user_session.revoke"
     SECURITY_CONTROL_CHANGE = "security.control.change"
     DESTRUCTIVE_ADMINISTRATION = "administration.destructive"
@@ -43,6 +46,7 @@ class AssuranceDecisionReason(str, Enum):
     UNKNOWN_OPERATION = "unknown_operation"
     SESSION_REVOKED = "session_revoked"
     SESSION_EXPIRED = "session_expired"
+    SESSION_IDLE_EXPIRED = "session_idle_expired"
     ASSURANCE_MISSING = "assurance_missing"
     ASSURANCE_STALE = "assurance_stale"
     ASSURANCE_INVALID = "assurance_invalid"
@@ -85,6 +89,8 @@ PRIVILEGED_OPERATION_CATALOG: Mapping[PrivilegedOperation, PrivilegedOperationPo
             PrivilegedOperation.INVITATION_PRIVILEGE_GRANT: AssuranceRequirement.PASSWORD_OR_MFA,
             PrivilegedOperation.INVITATION_REVOKE: AssuranceRequirement.PASSWORD_OR_MFA,
             PrivilegedOperation.ORGANIZATION_ENTITLEMENT_CHANGE: AssuranceRequirement.MFA,
+            PrivilegedOperation.WORKSPACE_ADMINISTRATION_CHANGE: AssuranceRequirement.PASSWORD_OR_MFA,
+            PrivilegedOperation.ORGANIZATION_PROFILE_CHANGE: AssuranceRequirement.PASSWORD_OR_MFA,
             PrivilegedOperation.OTHER_USER_SESSION_REVOCATION: AssuranceRequirement.PASSWORD_OR_MFA,
             PrivilegedOperation.SECURITY_CONTROL_CHANGE: AssuranceRequirement.MFA,
             PrivilegedOperation.DESTRUCTIVE_ADMINISTRATION: AssuranceRequirement.MFA,
@@ -144,6 +150,12 @@ def evaluate_privileged_operation(
             **decision_kwargs,
             allowed=False,
             reason=AssuranceDecisionReason.SESSION_EXPIRED,
+        )
+    if session_idle_expired(auth_session.last_seen_at, now=evaluated_at):
+        return AssuranceDecision(
+            **decision_kwargs,
+            allowed=False,
+            reason=AssuranceDecisionReason.SESSION_IDLE_EXPIRED,
         )
 
     mfa_state = _freshness(

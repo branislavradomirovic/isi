@@ -21,7 +21,7 @@ from src.platform.auth.security import (
     verify_password,
 )
 from src.platform.identity.models import Membership, Organization, User
-from src.platform.security.service import session_fingerprint_hashes, session_idle_expired
+from src.platform.security.service import record_security_event, session_fingerprint_hashes, session_idle_expired
 
 
 class AuthError(ValueError):
@@ -282,8 +282,22 @@ def verify_mfa_challenge_for_session(
         .with_for_update()
     )
     if challenge is None:
+        record_security_event(
+            session,
+            event_type="auth.mfa.challenge",
+            outcome="invalid",
+            user_id=user_id,
+            metadata={"challenge_id": str(challenge_id), "purpose": "authentication"},
+        )
         raise AuthError("invalid_mfa_challenge")
     if challenge.purpose != "authentication":
+        record_security_event(
+            session,
+            event_type="auth.mfa.challenge",
+            outcome="failure",
+            user_id=user_id,
+            metadata={"challenge_id": str(challenge.id), "purpose": challenge.purpose, "reason": "wrong_purpose"},
+        )
         raise AuthError("mfa_challenge_not_authentication")
 
     result = verify_mfa_challenge(
@@ -547,6 +561,13 @@ def revoke_mfa_challenge(
         raise AuthError("mfa_challenge_already_consumed")
     if challenge.revoked_at is None:
         challenge.revoked_at = now or utcnow()
+        record_security_event(
+            session,
+            event_type="auth.mfa.challenge",
+            outcome="revoked",
+            user_id=user_id,
+            metadata={"challenge_id": str(challenge.id), "purpose": challenge.purpose},
+        )
         session.flush()
     return challenge
 
@@ -569,12 +590,40 @@ def verify_mfa_challenge(
         raise AuthError("invalid_mfa_challenge")
     checked_at = now or utcnow()
     if challenge.revoked_at is not None:
+        record_security_event(
+            session,
+            event_type="auth.mfa.challenge",
+            outcome="revoked",
+            user_id=user_id,
+            metadata={"challenge_id": str(challenge.id), "purpose": challenge.purpose},
+        )
         raise AuthError("mfa_challenge_revoked")
     if challenge.consumed_at is not None:
+        record_security_event(
+            session,
+            event_type="auth.mfa.challenge",
+            outcome="replay",
+            user_id=user_id,
+            metadata={"challenge_id": str(challenge.id), "purpose": challenge.purpose},
+        )
         raise AuthError("mfa_challenge_already_consumed")
     if challenge.attempt_count >= challenge.max_attempts:
+        record_security_event(
+            session,
+            event_type="auth.mfa.challenge",
+            outcome="exhausted",
+            user_id=user_id,
+            metadata={"challenge_id": str(challenge.id), "purpose": challenge.purpose},
+        )
         raise AuthError("mfa_challenge_attempts_exhausted")
     if _aware(challenge.expires_at) <= checked_at:
+        record_security_event(
+            session,
+            event_type="auth.mfa.challenge",
+            outcome="expired",
+            user_id=user_id,
+            metadata={"challenge_id": str(challenge.id), "purpose": challenge.purpose},
+        )
         raise AuthError("mfa_challenge_expired")
 
     factor = session.scalar(
@@ -583,6 +632,13 @@ def verify_mfa_challenge(
     user = session.get(User, user_id)
     if user is None or not user.is_active or factor is None or factor.status == "revoked":
         challenge.revoked_at = checked_at
+        record_security_event(
+            session,
+            event_type="auth.mfa.challenge",
+            outcome="failure",
+            user_id=user_id,
+            metadata={"challenge_id": str(challenge.id), "purpose": challenge.purpose, "reason": "factor_not_ready"},
+        )
         session.flush()
         return MfaChallengeVerificationResult(
             challenge_id=challenge.id,
@@ -595,11 +651,25 @@ def verify_mfa_challenge(
         challenge.attempt_count += 1
         session.flush()
         if challenge.attempt_count >= challenge.max_attempts:
+            record_security_event(
+                session,
+                event_type="auth.mfa.challenge",
+                outcome="exhausted",
+                user_id=user_id,
+                metadata={"challenge_id": str(challenge.id), "purpose": challenge.purpose},
+            )
             return MfaChallengeVerificationResult(
                 challenge_id=challenge.id,
                 succeeded=False,
                 error_code="mfa_challenge_attempts_exhausted",
             )
+        record_security_event(
+            session,
+            event_type="auth.mfa.challenge",
+            outcome="failure",
+            user_id=user_id,
+            metadata={"challenge_id": str(challenge.id), "purpose": challenge.purpose, "reason": "invalid_verifier"},
+        )
         return MfaChallengeVerificationResult(
             challenge_id=challenge.id,
             succeeded=False,
@@ -614,6 +684,13 @@ def verify_mfa_challenge(
     elif factor.status != "active":
         raise AuthError("mfa_factor_not_ready")
     challenge.consumed_at = checked_at
+    record_security_event(
+        session,
+        event_type="auth.mfa.challenge",
+        outcome="success",
+        user_id=user_id,
+        metadata={"challenge_id": str(challenge.id), "purpose": challenge.purpose},
+    )
     session.flush()
     return MfaChallengeVerificationResult(challenge_id=challenge.id, succeeded=True)
 

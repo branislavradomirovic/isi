@@ -41,6 +41,15 @@ class RevokeOtherSessionsResponse(BaseModel):
     revoked_count: int = Field(ge=0)
 
 
+class PasswordAssuranceRequest(BaseModel):
+    password: str = Field(min_length=1, max_length=256)
+
+
+class PasswordAssuranceResponse(BaseModel):
+    status: str = "refreshed"
+    method: str = "password"
+
+
 class MessageResponse(BaseModel):
     status: str = "accepted"
 

@@ -18,6 +18,7 @@ from src.streamlit_app.ordo_analytics_workspace import render_ordo_analytics
 from src.streamlit_app.reporting_workspace import render_reporting
 from src.streamlit_app.administration_workspace import render_administration
 from src.streamlit_app.ordo_workspace import render_ordo_indicators, render_ordo_overview
+from src.streamlit_app.security_workspace import render_account_security
 
 
 TOKEN_KEY = "isi_access_token"
@@ -150,6 +151,10 @@ def _render_no_access(context: dict[str, Any]) -> None:
     st.caption(f"{context.get('display_name', '')} · {context.get('email', '')}")
     if st.button("Odjavi se"):
         _logout()
+    token = _token()
+    if token:
+        with st.expander("Bezbednost naloga"):
+            render_account_security(token=token)
 
 
 def _choose_selection(context: dict[str, Any]) -> Selection | None:
@@ -271,6 +276,7 @@ def _sidebar_identity(context: dict[str, Any]) -> None:
 
 def _navigation(shell: dict[str, Any]) -> str:
     enabled = [item for item in shell.get("navigation", []) if item.get("enabled")]
+    enabled.append({"code": "account_security", "label_sr": "Bezbednost naloga", "enabled": True})
     codes = [item["code"] for item in enabled]
     current = st.session_state.get(NAV_KEY)
     if current not in codes:
@@ -355,6 +361,11 @@ def _render_future_section(shell: dict[str, Any], nav_code: str) -> None:
 
 
 def _render_shell(shell: dict[str, Any], nav_code: str) -> None:
+    if nav_code == "account_security":
+        token = _token()
+        if token:
+            render_account_security(token=token)
+        return
     # ISI-13 administration routing
     if nav_code == "administration":
         token = _token()
