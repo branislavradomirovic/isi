@@ -38,6 +38,19 @@ class IssuedSession:
 
 
 @dataclass(frozen=True)
+class SessionInventoryItem:
+    session_id: uuid.UUID
+    created_at: datetime
+    last_seen_at: datetime | None
+    expires_at: datetime
+    is_current: bool
+    is_revoked: bool
+    revoked_at: datetime | None
+    revocation_reason: str | None
+    device_label: str
+
+
+@dataclass(frozen=True)
 class IssuedToken:
     token: str
     expires_at: datetime
@@ -60,6 +73,9 @@ MFA_CHALLENGE_TTL_SECONDS = 300
 MFA_CHALLENGE_MAX_TTL_SECONDS = 900
 MFA_CHALLENGE_MAX_ATTEMPTS = 5
 _MFA_METHOD_PATTERN = re.compile(r"^[a-z][a-z0-9_.-]{0,39}$")
+SESSION_INVENTORY_LIMIT = 100
+SELF_REVOCATION_REASON = "user_self_revocation"
+OTHER_SESSIONS_REVOCATION_REASON = "user_revoked_other_sessions"
 
 
 def utcnow() -> datetime:
@@ -75,6 +91,26 @@ def normalize_email(email: str) -> str:
     if not normalized or "@" not in normalized:
         raise AuthError("invalid_email", "invalid email address")
     return normalized
+
+
+def derive_device_label(user_agent: str | None) -> str:
+    """Return a bounded label from a fixed vocabulary without copying client input."""
+    normalized = (user_agent or "").casefold()
+    if not normalized:
+        return "Unknown device"
+    if any(marker in normalized for marker in ("bot", "crawler", "spider", "curl/", "wget/")):
+        return "Automated client"
+    if any(marker in normalized for marker in ("ipad", "tablet", "kindle", "silk/")):
+        return "Tablet device"
+    if any(marker in normalized for marker in ("iphone", "ipod", "android", "mobile")):
+        return "Mobile device"
+    if "windows" in normalized:
+        return "Windows computer"
+    if any(marker in normalized for marker in ("macintosh", "mac os x")):
+        return "Mac computer"
+    if any(marker in normalized for marker in ("linux", "x11", "cros")):
+        return "Linux computer"
+    return "Unknown device"
 
 
 @lru_cache(maxsize=1)
@@ -163,6 +199,7 @@ def create_session(
         user_agent=None,
         remote_ip_hash=remote_ip_hash,
         user_agent_hash=user_agent_hash,
+        device_label=derive_device_label(user_agent),
     )
     session.add(model)
     session.flush()
@@ -291,6 +328,89 @@ def revoke_session(session: Session, raw_token: str) -> bool:
         model.revoked_reason = "logout"
         session.flush()
     return True
+
+
+def list_user_sessions(
+    session: Session,
+    *,
+    user_id: uuid.UUID,
+    current_session_id: uuid.UUID,
+) -> list[SessionInventoryItem]:
+    """List only privacy-safe descriptors for one user's newest sessions."""
+    models = session.scalars(
+        select(AuthSession)
+        .where(AuthSession.user_id == user_id)
+        .order_by(AuthSession.created_at.desc(), AuthSession.id.desc())
+        .limit(SESSION_INVENTORY_LIMIT)
+    ).all()
+    if models and all(model.id != current_session_id for model in models):
+        current = session.scalar(
+            select(AuthSession).where(
+                AuthSession.id == current_session_id,
+                AuthSession.user_id == user_id,
+            )
+        )
+        if current is not None:
+            models[-1] = current
+            models.sort(
+                key=lambda model: (_aware(model.created_at), model.id.hex),
+                reverse=True,
+            )
+    return [
+        SessionInventoryItem(
+            session_id=model.id,
+            created_at=model.created_at,
+            last_seen_at=model.last_seen_at,
+            expires_at=model.expires_at,
+            is_current=model.id == current_session_id,
+            is_revoked=model.revoked_at is not None,
+            revoked_at=model.revoked_at,
+            revocation_reason=model.revoked_reason,
+            device_label=model.device_label or "Unknown device",
+        )
+        for model in models
+    ]
+
+
+def revoke_user_session(
+    session: Session,
+    *,
+    user_id: uuid.UUID,
+    session_id: uuid.UUID,
+) -> bool:
+    """Idempotently revoke one session owned by the requesting user."""
+    model = session.scalar(
+        select(AuthSession)
+        .where(AuthSession.id == session_id, AuthSession.user_id == user_id)
+        .with_for_update()
+    )
+    if model is None:
+        return False
+    if model.revoked_at is None:
+        model.revoked_at = utcnow()
+        model.revoked_reason = SELF_REVOCATION_REASON
+        session.flush()
+    return True
+
+
+def revoke_other_user_sessions(
+    session: Session,
+    *,
+    user_id: uuid.UUID,
+    current_session_id: uuid.UUID,
+) -> int:
+    """Revoke a user's active sessions except the authenticated current session."""
+    result = session.execute(
+        update(AuthSession)
+        .where(
+            AuthSession.user_id == user_id,
+            AuthSession.id != current_session_id,
+            AuthSession.revoked_at.is_(None),
+        )
+        .values(revoked_at=utcnow(), revoked_reason=OTHER_SESSIONS_REVOCATION_REASON)
+    )
+    session.flush()
+    return int(result.rowcount or 0)
 
 
 def revoke_all_user_sessions(session: Session, user_id: uuid.UUID) -> None:

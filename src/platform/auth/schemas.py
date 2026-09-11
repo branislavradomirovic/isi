@@ -25,6 +25,22 @@ class MeResponse(BaseModel):
     is_platform_admin: bool
 
 
+class SessionInventoryResponse(BaseModel):
+    session_id: UUID
+    created_at: datetime
+    last_seen_at: datetime | None
+    expires_at: datetime
+    is_current: bool
+    is_revoked: bool
+    revoked_at: datetime | None
+    revocation_reason: str | None
+    device_label: str = Field(max_length=80)
+
+
+class RevokeOtherSessionsResponse(BaseModel):
+    revoked_count: int = Field(ge=0)
+
+
 class MessageResponse(BaseModel):
     status: str = "accepted"
 

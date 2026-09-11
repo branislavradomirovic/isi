@@ -35,6 +35,7 @@ class AuthSession(Base):
     user_agent: Mapped[str | None] = mapped_column(String(500), nullable=True)
     remote_ip_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
     user_agent_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    device_label: Mapped[str | None] = mapped_column(String(80), nullable=True)
     revoked_reason: Mapped[str | None] = mapped_column(String(80), nullable=True)
 
 

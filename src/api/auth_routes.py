@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from uuid import UUID
+
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
@@ -14,6 +16,8 @@ from src.platform.auth.schemas import (
     MessageResponse,
     PasswordResetConfirmRequest,
     PasswordResetRequest,
+    RevokeOtherSessionsResponse,
+    SessionInventoryResponse,
     TokenConfirmRequest,
 )
 from src.platform.auth.security import PasswordPolicyError
@@ -25,8 +29,11 @@ from src.platform.auth.service import (
     create_email_verification_token,
     create_password_reset_token,
     create_session,
+    list_user_sessions,
     reset_password_with_token,
+    revoke_other_user_sessions,
     revoke_session,
+    revoke_user_session,
 )
 from src.platform.security.service import (
     check_login_allowed,
@@ -117,6 +124,47 @@ def logout(context: AuthContext = Depends(get_auth_context), db: Session = Depen
 def me(context: AuthContext = Depends(get_auth_context), db: Session = Depends(get_db)) -> MeResponse:
     db.commit()  # persist last_seen_at update
     return _me(context.user)
+
+
+@router.get("/sessions", response_model=list[SessionInventoryResponse])
+def sessions(
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+) -> list[SessionInventoryResponse]:
+    inventory = list_user_sessions(
+        db,
+        user_id=context.user.id,
+        current_session_id=context.auth_session.id,
+    )
+    db.commit()  # persist the authenticated session's last_seen_at update
+    return [SessionInventoryResponse(**vars(item)) for item in inventory]
+
+
+@router.delete("/sessions/{session_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_session(
+    session_id: UUID,
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+) -> None:
+    if not revoke_user_session(db, user_id=context.user.id, session_id=session_id):
+        db.rollback()
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="session not found")
+    db.commit()
+    return None
+
+
+@router.post("/sessions/revoke-others", response_model=RevokeOtherSessionsResponse)
+def revoke_other_sessions(
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+) -> RevokeOtherSessionsResponse:
+    revoked_count = revoke_other_user_sessions(
+        db,
+        user_id=context.user.id,
+        current_session_id=context.auth_session.id,
+    )
+    db.commit()
+    return RevokeOtherSessionsResponse(revoked_count=revoked_count)
 
 
 @router.post("/email-verification/request", response_model=MessageResponse, status_code=status.HTTP_202_ACCEPTED)
