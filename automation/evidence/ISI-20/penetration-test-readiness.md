@@ -31,7 +31,7 @@ This is a repository-side readiness pack, not an external penetration test. Base
 ## OWASP-style cases mapped to controls
 
 - Broken access control / IDOR: explicit organization selection, membership ownership, permissions, organization-wide permission, product entitlement/access, and workspace/product predicates; negative target-session tests include the fail-closed multi-organization target guard for user-global sessions.
-- Authentication failures: opaque distinct login session tokens, absolute/idle/revocation validation, current-session-only password refresh, bounded MFA attempts/expiry/revocation/consume semantics.
+- Authentication failures: each login establishes a distinct opaque session value; validation enforces absolute expiry, idle expiry, and revocation; password refresh is restricted to the current session; MFA challenge handling enforces bounded attempts, expiry, revocation, and one-time consumption.
 - Cryptographic and secret exposure: password and challenge verifier inputs never enter response/event metadata; session/reset/invitation tokens are hashed at rest; IP/user-agent persistence uses the existing privacy-hash strategy.
 - Security logging failures: stable login, logout, own-session, password assurance/reset, invitation acceptance, MFA outcome, privileged-operation, and target-session event types.
 - Injection/resource exhaustion through audit metadata: recursive key/value validation, supported scalar types only, depth/cardinality/key/string/serialized-size bounds, deterministic rejection before persistence.
