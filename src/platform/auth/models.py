@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import uuid
+from datetime import datetime
 
 from sqlalchemy import (
     CheckConstraint,
@@ -28,6 +29,8 @@ class AuthSession(Base):
     expires_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, index=True)
     last_seen_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
     revoked_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    password_verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    mfa_verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     remote_ip: Mapped[str | None] = mapped_column(String(64), nullable=True)
     user_agent: Mapped[str | None] = mapped_column(String(500), nullable=True)
     remote_ip_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)

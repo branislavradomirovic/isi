@@ -89,6 +89,7 @@ def login(payload: LoginRequest, request: Request, db: Session = Depends(get_db)
     issued = create_session(
         db,
         user,
+        password_verified=True,
         remote_ip=remote_ip,
         user_agent=user_agent,
     )

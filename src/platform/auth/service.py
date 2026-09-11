@@ -142,6 +142,7 @@ def create_session(
     session: Session,
     user: User,
     *,
+    password_verified: bool = False,
     remote_ip: str | None = None,
     user_agent: str | None = None,
 ) -> IssuedSession:
@@ -157,6 +158,7 @@ def create_session(
         token_hash=hash_token(raw),
         expires_at=expires_at,
         last_seen_at=now,
+        password_verified_at=now if password_verified else None,
         remote_ip=None,
         user_agent=None,
         remote_ip_hash=remote_ip_hash,
@@ -165,6 +167,99 @@ def create_session(
     session.add(model)
     session.flush()
     return IssuedSession(token=raw, session_id=model.id, expires_at=expires_at)
+
+
+def _active_bound_session(
+    session: Session,
+    *,
+    user_id: uuid.UUID,
+    session_id: uuid.UUID,
+    now: datetime,
+) -> tuple[AuthSession, User]:
+    model = session.scalar(
+        select(AuthSession)
+        .where(AuthSession.id == session_id, AuthSession.user_id == user_id)
+        .with_for_update()
+    )
+    if model is None:
+        raise AuthError("invalid_auth_session")
+    user = session.get(User, user_id)
+    if user is None or not user.is_active:
+        raise AuthError("inactive_user")
+    if model.revoked_at is not None:
+        raise AuthError("auth_session_revoked")
+    if _aware(model.expires_at) <= now:
+        raise AuthError("auth_session_expired")
+    if session_idle_expired(model.last_seen_at, now=now):
+        raise AuthError("auth_session_idle_expired")
+    return model, user
+
+
+def refresh_password_assurance(
+    session: Session,
+    *,
+    user_id: uuid.UUID,
+    session_id: uuid.UUID,
+    password: str,
+    now: datetime | None = None,
+) -> AuthSession:
+    """Re-verify a password and refresh assurance for exactly one active session."""
+    checked_at = _aware(now or utcnow())
+    model, user = _active_bound_session(
+        session,
+        user_id=user_id,
+        session_id=session_id,
+        now=checked_at,
+    )
+    password_hash = user.password_hash
+    if not password_hash:
+        verify_password(password, _dummy_password_hash())
+        raise AuthError("invalid_password")
+    if not verify_password(password, password_hash):
+        raise AuthError("invalid_password")
+    model.password_verified_at = checked_at
+    session.flush()
+    return model
+
+
+def verify_mfa_challenge_for_session(
+    session: Session,
+    *,
+    user_id: uuid.UUID,
+    session_id: uuid.UUID,
+    challenge_id: uuid.UUID,
+    verifier: str,
+    now: datetime | None = None,
+) -> MfaChallengeVerificationResult:
+    """Consume an authentication challenge and bind its assurance to one active session."""
+    checked_at = _aware(now or utcnow())
+    model, _user = _active_bound_session(
+        session,
+        user_id=user_id,
+        session_id=session_id,
+        now=checked_at,
+    )
+    challenge = session.scalar(
+        select(MfaChallenge)
+        .where(MfaChallenge.id == challenge_id, MfaChallenge.user_id == user_id)
+        .with_for_update()
+    )
+    if challenge is None:
+        raise AuthError("invalid_mfa_challenge")
+    if challenge.purpose != "authentication":
+        raise AuthError("mfa_challenge_not_authentication")
+
+    result = verify_mfa_challenge(
+        session,
+        user_id=user_id,
+        challenge_id=challenge_id,
+        verifier=verifier,
+        now=checked_at,
+    )
+    if result.succeeded:
+        model.mfa_verified_at = checked_at
+        session.flush()
+    return result
 
 
 def validate_session(session: Session, raw_token: str) -> tuple[AuthSession, User] | None:
