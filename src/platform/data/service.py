@@ -3,6 +3,7 @@ from __future__ import annotations
 import base64
 import binascii
 import uuid
+from datetime import timedelta
 from pathlib import Path
 
 from sqlalchemy import delete, func, select, update as sql_update
@@ -15,13 +16,17 @@ from src.platform.data.governance import (
     DEFAULT_EXPORT_POLICY,
     DEFAULT_GOVERNANCE_STATE,
     DEFAULT_PRIVACY_CATEGORY,
-    EXPORT_POLICY_PROHIBITED,
+    ContentState,
     DataClassification,
+    ExportPolicy,
     GovernanceState,
     PrivacyCategory,
+    classification_is_downgrade,
+    privacy_is_downgrade,
 )
 from src.platform.data.models import (
     DataAuditEvent,
+    DataAnonymizationRecord,
     DataQualityResult,
     DataRetentionPolicy,
     DataRetentionState,
@@ -153,6 +158,7 @@ def _version_response(session: Session, version: DataSourceVersion) -> VersionRe
         size_bytes=version.size_bytes,
         sha256=version.sha256,
         ingest_status=version.ingest_status,
+        content_state=version.content_state,
         detected_format=version.detected_format,
         row_count=version.row_count,
         column_count=version.column_count,
@@ -334,11 +340,10 @@ def _validated_governance_values(values: dict[str, object]) -> None:
         DataClassification(str(values["classification"]))
         PrivacyCategory(str(values["privacy_category"]))
         AIUsePolicy(str(values["ai_use_policy"]))
+        ExportPolicy(str(values["export_policy"]))
         GovernanceState(str(values["governance_state"]))
     except ValueError as exc:
         raise DataPlatformError("invalid_governance_value") from exc
-    if values["export_policy"] != EXPORT_POLICY_PROHIBITED:
-        raise DataPlatformError("invalid_export_policy")
     if values["governance_state"] in {GovernanceState.GOVERNED, GovernanceState.FROZEN} and (
         values["classification"] == DataClassification.UNCLASSIFIED
         or values["privacy_category"] == PrivacyCategory.UNKNOWN
@@ -427,6 +432,32 @@ def update_source_governance(
         changed_fields.append(field)
 
     _validated_governance_values(candidate)
+    is_downgrade = classification_is_downgrade(profile.classification, candidate["classification"]) or privacy_is_downgrade(
+        profile.privacy_category, candidate["privacy_category"]
+    )
+    if is_downgrade:
+        proof_id = update.verified_anonymization_record_id
+        proof = session.scalar(
+            select(DataAnonymizationRecord).where(
+                DataAnonymizationRecord.id == proof_id,
+                DataAnonymizationRecord.organization_id == source.organization_id,
+                DataAnonymizationRecord.workspace_id == source.workspace_id,
+                DataAnonymizationRecord.product_code == source.product_code,
+                DataAnonymizationRecord.status == "VERIFIED",
+                DataAnonymizationRecord.classification_after == str(candidate["classification"]),
+                DataAnonymizationRecord.privacy_category_after == str(candidate["privacy_category"]),
+            )
+        ) if proof_id is not None else None
+        output = session.get(DataSourceVersion, proof.output_version_id) if proof is not None else None
+        input_version = session.get(DataSourceVersion, proof.input_version_id) if proof is not None else None
+        if (
+            output is None
+            or input_version is None
+            or output.source_id != source.id
+            or input_version.source_id == source.id
+            or output.content_state != ContentState.AVAILABLE
+        ):
+            raise DataPlatformError("anonymization_proof_invalid_not_verified")
     result = session.execute(
         sql_update(DataSourceGovernanceProfile)
         .where(
@@ -445,6 +476,8 @@ def update_source_governance(
         session.expire(profile)
         raise DataPlatformError("governance_revision_conflict")
     session.refresh(profile)
+    if "retention_policy_id" in changed_fields:
+        _recompute_source_retention(session, source=source, policy_id=profile.retention_policy_id)
     _audit(
         session,
         organization_id=source.organization_id,
@@ -564,6 +597,12 @@ def retention_state_response(state: DataRetentionState) -> RetentionStateRespons
         retention_due_at=state.retention_due_at,
         hold_active=state.hold_active,
         hold_reason_ref=state.hold_reason_ref,
+        hold_placed_at=state.hold_placed_at,
+        hold_placed_by_membership_id=state.hold_placed_by_membership_id,
+        hold_released_at=state.hold_released_at,
+        hold_released_by_membership_id=state.hold_released_by_membership_id,
+        purge_status=state.purge_status,
+        revision=state.revision,
         purge_requested_at=state.purge_requested_at,
         purge_requested_by_membership_id=state.purge_requested_by_membership_id,
         purge_approved_at=state.purge_approved_at,
@@ -575,6 +614,42 @@ def retention_state_response(state: DataRetentionState) -> RetentionStateRespons
         created_at=state.created_at,
         updated_at=state.updated_at,
     )
+
+
+def retention_due_at(*, retention_start_at, policy: DataRetentionPolicy | None):
+    if policy is None or policy.status != "active" or policy.no_auto_delete or policy.retention_days is None:
+        return None
+    return retention_start_at + timedelta(days=policy.retention_days)
+
+
+def _recompute_source_retention(
+    session: Session, *, source: DataSource, policy_id: uuid.UUID | None
+) -> None:
+    policy = session.get(DataRetentionPolicy, policy_id) if policy_id is not None else None
+    states = session.scalars(
+        select(DataRetentionState)
+        .join(DataSourceVersion, DataSourceVersion.id == DataRetentionState.version_id)
+        .where(
+            DataRetentionState.source_id == source.id,
+            DataSourceVersion.content_state == ContentState.AVAILABLE,
+        )
+    ).all()
+    for state in states:
+        expected_revision = state.revision
+        result = session.execute(
+            sql_update(DataRetentionState)
+            .where(DataRetentionState.id == state.id, DataRetentionState.revision == expected_revision)
+            .values(
+                retention_due_at=retention_due_at(retention_start_at=state.retention_start_at, policy=policy),
+                revision=expected_revision + 1,
+                updated_at=func.now(),
+            )
+            .execution_options(synchronize_session=False)
+        )
+        if result.rowcount != 1:
+            session.expire(state)
+            raise DataPlatformError("retention_revision_conflict")
+        session.refresh(state)
 
 
 def _create_version(
@@ -612,10 +687,14 @@ def _create_version(
         sha256=sha256,
         storage_key=storage_key,
         ingest_status="queued",
+        content_state=ContentState.AVAILABLE.value,
         created_by_membership_id=actor_id,
     )
     session.add(version)
     session.flush()
+    profile = session.scalar(select(DataSourceGovernanceProfile).where(DataSourceGovernanceProfile.source_id == source.id))
+    policy = session.get(DataRetentionPolicy, profile.retention_policy_id) if profile and profile.retention_policy_id else None
+    retention_start = version.created_at if version.created_at is not None else func.now()
     session.add(
         DataRetentionState(
             version_id=version.id,
@@ -623,9 +702,11 @@ def _create_version(
             organization_id=source.organization_id,
             workspace_id=source.workspace_id,
             product_code=source.product_code,
-            retention_start_at=version.created_at if version.created_at is not None else func.now(),
-            retention_due_at=None,
+            retention_start_at=retention_start,
+            retention_due_at=retention_due_at(retention_start_at=retention_start, policy=policy),
             hold_active=False,
+            purge_status="NONE",
+            revision=1,
         )
     )
     session.flush()
@@ -651,7 +732,7 @@ def _create_version(
         event_type="data.version.uploaded",
         entity_type="data_source_version",
         entity_id=version.id,
-        detail=f"filename={safe_name}; sha256={sha256}; storage_reused={str(not stored_new).lower()}",
+        detail=f"extension={extension}; sha256={sha256}; storage_reused={str(not stored_new).lower()}",
     )
     return version, job, not stored_new
 
@@ -698,7 +779,7 @@ def create_source_upload(
             classification=DEFAULT_CLASSIFICATION.value,
             privacy_category=DEFAULT_PRIVACY_CATEGORY.value,
             ai_use_policy=DEFAULT_AI_USE_POLICY.value,
-            export_policy=DEFAULT_EXPORT_POLICY,
+            export_policy=DEFAULT_EXPORT_POLICY.value,
             governance_state=DEFAULT_GOVERNANCE_STATE.value,
             created_by_membership_id=actor_id,
             updated_by_membership_id=actor_id,
@@ -714,7 +795,7 @@ def create_source_upload(
         event_type="data.source.created",
         entity_type="data_source",
         entity_id=source.id,
-        detail=f"name={source.name}; kind={source.source_kind}",
+        detail=f"kind={source.source_kind}",
     )
     version, job, reused = _create_version(
         session,
@@ -759,6 +840,8 @@ def create_validation_job(
     actor_id: uuid.UUID | None,
     backend: str,
 ) -> IngestionJob:
+    if version.content_state != ContentState.AVAILABLE:
+        raise DataPlatformError("content_purged_unavailable")
     job = IngestionJob(
         version_id=version.id,
         organization_id=version.organization_id,

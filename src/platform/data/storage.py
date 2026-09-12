@@ -17,6 +17,7 @@ class StorageBackend(Protocol):
     def put_bytes(self, key: str, payload: bytes) -> bool: ...
     def get_bytes(self, key: str) -> bytes: ...
     def exists(self, key: str) -> bool: ...
+    def delete_bytes(self, key: str) -> bool: ...
 
 
 def _safe_key(key: str) -> str:
@@ -34,7 +35,11 @@ class LocalFilesystemStorage:
     root: Path
 
     def _path(self, key: str) -> Path:
-        return self.root / _safe_key(key)
+        root = self.root.resolve()
+        path = (root / _safe_key(key)).resolve(strict=False)
+        if path != root and root not in path.parents:
+            raise StorageError("unsafe storage key")
+        return path
 
     def put_bytes(self, key: str, payload: bytes) -> bool:
         path = self._path(key)
@@ -56,6 +61,16 @@ class LocalFilesystemStorage:
 
     def exists(self, key: str) -> bool:
         return self._path(key).exists()
+
+    def delete_bytes(self, key: str) -> bool:
+        path = self._path(key)
+        try:
+            path.unlink()
+        except FileNotFoundError:
+            return False
+        except OSError as exc:
+            raise StorageError("local storage object delete failed") from exc
+        return True
 
 
 @dataclass(frozen=True)
@@ -133,6 +148,21 @@ class S3CompatibleStorage:
             if self._missing(exc):
                 return False
             raise StorageError("S3 object metadata check failed") from exc
+
+    def delete_bytes(self, key: str) -> bool:
+        normalized = _safe_key(key)
+        client = self._client()
+        try:
+            client.head_object(Bucket=self.bucket, Key=normalized)
+        except Exception as exc:
+            if self._missing(exc):
+                return False
+            raise StorageError("S3 object metadata check failed") from exc
+        try:
+            client.delete_object(Bucket=self.bucket, Key=normalized)
+        except Exception as exc:
+            raise StorageError("S3 object delete failed") from exc
+        return True
 
 
 def scoped_storage_key(*, organization_id: str, product_code: str, workspace_id: str, sha256: str, extension: str) -> str:

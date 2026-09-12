@@ -27,6 +27,8 @@ class PermissionCode(StrEnum):
     DATA_READ = "data.read"
     DATA_UPLOAD = "data.upload"
     DATA_VALIDATE = "data.validate"
+    DATA_GOVERNANCE_MANAGE = "data.governance.manage"
+    DATA_EXPORT = "data.export"
     INDICATOR_READ = "indicator.read"
     INDICATOR_MANAGE = "indicator.manage"
     ANALYSIS_READ = "analysis.read"
@@ -50,6 +52,8 @@ ROLE_PERMISSION_MAP: dict[RoleCode, set[PermissionCode]] = {
         PermissionCode.DATA_READ,
         PermissionCode.DATA_UPLOAD,
         PermissionCode.DATA_VALIDATE,
+        PermissionCode.DATA_GOVERNANCE_MANAGE,
+        PermissionCode.DATA_EXPORT,
         PermissionCode.INDICATOR_READ,
         PermissionCode.INDICATOR_MANAGE,
         PermissionCode.ANALYSIS_READ,
@@ -66,6 +70,7 @@ ROLE_PERMISSION_MAP: dict[RoleCode, set[PermissionCode]] = {
         PermissionCode.WORKSPACE_READ,
         PermissionCode.DATA_READ,
         PermissionCode.DATA_UPLOAD,
+        PermissionCode.DATA_EXPORT,
         PermissionCode.INDICATOR_READ,
         PermissionCode.ANALYSIS_READ,
         PermissionCode.ANALYSIS_RUN,
@@ -81,6 +86,8 @@ ROLE_PERMISSION_MAP: dict[RoleCode, set[PermissionCode]] = {
         PermissionCode.DATA_READ,
         PermissionCode.DATA_UPLOAD,
         PermissionCode.DATA_VALIDATE,
+        PermissionCode.DATA_GOVERNANCE_MANAGE,
+        PermissionCode.DATA_EXPORT,
         PermissionCode.INDICATOR_READ,
         PermissionCode.INDICATOR_MANAGE,
     },

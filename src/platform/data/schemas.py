@@ -5,7 +5,16 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field
 
-from src.platform.data.governance import AIUsePolicy, DataClassification, GovernanceState, PrivacyCategory
+from src.platform.data.governance import (
+    AIUsePolicy,
+    AnonymizationStatus,
+    ContentState,
+    DataClassification,
+    ExportPolicy,
+    GovernanceState,
+    PrivacyCategory,
+    PurgeStatus,
+)
 
 
 class UploadCreateRequest(BaseModel):
@@ -50,6 +59,7 @@ class VersionResponse(BaseModel):
     size_bytes: int
     sha256: str
     ingest_status: str
+    content_state: ContentState
     detected_format: str
     row_count: int | None
     column_count: int | None
@@ -109,7 +119,7 @@ class SourceGovernanceResponse(BaseModel):
     data_steward_membership_id: uuid.UUID | None
     retention_policy_id: uuid.UUID | None
     ai_use_policy: AIUsePolicy
-    export_policy: str
+    export_policy: ExportPolicy
     governance_state: GovernanceState
     classification_rationale: str
     revision: int
@@ -128,9 +138,10 @@ class SourceGovernanceUpdate(BaseModel):
     data_steward_membership_id: uuid.UUID | None = None
     retention_policy_id: uuid.UUID | None = None
     ai_use_policy: AIUsePolicy | None = None
-    export_policy: str | None = Field(default=None, max_length=32)
+    export_policy: ExportPolicy | None = None
     governance_state: GovernanceState | None = None
     classification_rationale: str | None = Field(default=None, max_length=1000)
+    verified_anonymization_record_id: uuid.UUID | None = None
 
 
 class RetentionPolicyCreate(BaseModel):
@@ -176,6 +187,12 @@ class RetentionStateResponse(BaseModel):
     retention_due_at: datetime | None
     hold_active: bool
     hold_reason_ref: str
+    hold_placed_at: datetime | None
+    hold_placed_by_membership_id: uuid.UUID | None
+    hold_released_at: datetime | None
+    hold_released_by_membership_id: uuid.UUID | None
+    purge_status: PurgeStatus
+    revision: int
     purge_requested_at: datetime | None
     purge_requested_by_membership_id: uuid.UUID | None
     purge_approved_at: datetime | None
@@ -186,3 +203,72 @@ class RetentionStateResponse(BaseModel):
     tombstone_checksum: str
     created_at: datetime
     updated_at: datetime
+
+
+class RetentionMutationRequest(BaseModel):
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: str
+    expected_revision: int = Field(ge=1)
+
+
+class HoldPlaceRequest(RetentionMutationRequest):
+    reason_reference: str = Field(min_length=1, max_length=500)
+
+
+class AnonymizationProposalCreate(BaseModel):
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: str
+    input_version_id: uuid.UUID
+    output_version_id: uuid.UUID
+    method_code: str = Field(min_length=1, max_length=120, pattern=r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
+    method_version: str = Field(min_length=1, max_length=120)
+    method_reference: str = Field(min_length=1, max_length=500)
+    parameter_reference: str = Field(default="", max_length=1000)
+    evidence_checksum: str = Field(default="", max_length=64)
+    evidence_reference: str = Field(min_length=1, max_length=1000)
+    classification_after: DataClassification
+    privacy_category_after: PrivacyCategory
+
+
+class AnonymizationReviewRequest(BaseModel):
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: str
+    decision: AnonymizationStatus
+    review_reference: str = Field(min_length=1, max_length=1000)
+    review_reason: str = Field(default="", max_length=1000)
+
+
+class AnonymizationRecordResponse(BaseModel):
+    id: uuid.UUID
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: str
+    input_version_id: uuid.UUID
+    output_version_id: uuid.UUID
+    method_code: str
+    method_version: str
+    method_reference: str
+    parameter_reference: str
+    evidence_checksum: str
+    evidence_reference: str
+    classification_before: DataClassification
+    classification_after: DataClassification
+    privacy_category_before: PrivacyCategory
+    privacy_category_after: PrivacyCategory
+    status: AnonymizationStatus
+    proposed_by_membership_id: uuid.UUID | None
+    proposed_at: datetime
+    reviewed_by_membership_id: uuid.UUID | None
+    reviewed_at: datetime | None
+    review_reference: str
+    review_reason: str
+
+
+class ExportRequest(BaseModel):
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: str
+    purpose_reference: str = Field(min_length=1, max_length=1000)
