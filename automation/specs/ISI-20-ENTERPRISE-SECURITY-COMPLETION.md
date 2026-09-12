@@ -1,10 +1,16 @@
 # ISI-20 — Enterprise Security Completion
 
 ## Status
-`REVIEW_VERIFIED — OWNER MAIN COMMIT / CI PENDING`
+`COMPLETE / CI_VERIFIED`
 
 ## Baseline
-Canonical repository HEAD remains `178d0000cc3119277c59c6ec19024c93d136b2f5` on `main`; the ISI-20 reviewed candidate is unstaged and uncommitted in that canonical worktree.
+Original implementation baseline: `178d0000cc3119277c59c6ec19024c93d136b2f5`.
+
+Implementation commit: `f4b3a3c2486a2d3a051a70d582245e199d1b36ba`.
+
+Final canonical main SHA after the one-file evidence wording fix: `61df1aa7622cb59ee60e2781fee98f8885324d55`.
+
+Authoritative exact-main acceptance: `ISI required acceptance` run #58 (run ID `34655017377`), conclusion `success`.
 
 ## Dependencies
 - `ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY` is merged and post-merge CI verified.
@@ -135,6 +141,19 @@ Required under `automation/evidence/ISI-20/`:
 `REVIEW_VERIFIED` requires review of the exact candidate or final `main` SHA with no unresolved technical blocker, including privilege boundaries, token/secret handling and tenant/product isolation.
 
 Final task completion requires an owner-approved direct commit and push to `main`, followed by successful blocking CI on that exact `main` SHA before ISI-21 begins. ISI-20 does not require an implementation branch, pull request, or merge.
+
+## Final completion record
+
+- Implementation commit: `f4b3a3c2486a2d3a051a70d582245e199d1b36ba`.
+- Final canonical main SHA: `61df1aa7622cb59ee60e2781fee98f8885324d55`.
+- GitHub Actions run: `ISI required acceptance` #58, run ID `34655017377`.
+- Final workflow conclusion: `success`.
+- Blocking jobs green: policy, quality, tests, architecture-security, migration, native-postgres, compose, supply-chain, build, acceptance.
+- Review state: `REVIEW_VERIFIED`.
+- Task state: `COMPLETE / CI_VERIFIED`.
+- External penetration test: `NOT_PERFORMED`.
+- Real-provider MFA validation: `NOT_PERFORMED`.
+- Server verification: `DEFERRED_SERVER_VERIFICATION`.
 
 ## Deferred server verification
 `DEFERRED_SERVER_VERIFICATION` — production MFA integration, live-host security scanning, external/manual penetration testing, real infrastructure/session behavior and deployment validation are intentionally deferred. Current-server work is owner-gated under ISI-28 and requires fresh explicit approval.

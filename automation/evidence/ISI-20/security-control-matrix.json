@@ -216,10 +216,12 @@
   ],
   "verification_state": {
     "local": "REVIEW_VERIFIED_r3_no_unresolved_technical_blocker",
-    "main_commit": "PENDING",
-    "push": "PENDING",
-    "ci": "PENDING",
+    "main_commit": "61df1aa7622cb59ee60e2781fee98f8885324d55",
+    "push": "PASS",
+    "ci": "CI_VERIFIED_run_58",
     "review": "REVIEW_VERIFIED",
-    "server": "DEFERRED_SERVER_VERIFICATION"
+    "server": "DEFERRED_SERVER_VERIFICATION",
+    "implementation_commit": "f4b3a3c2486a2d3a051a70d582245e199d1b36ba",
+    "ci_run_id": 34655017377
   }
 }

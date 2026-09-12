@@ -1,8 +1,8 @@
 {
   "task": "ISI-20-ENTERPRISE-SECURITY-COMPLETION",
   "baseline": "178d0000cc3119277c59c6ec19024c93d136b2f5",
-  "candidate_state": "unstaged_uncommitted_on_canonical_main",
-  "local_state": "REVIEW_VERIFIED",
+  "candidate_state": "committed_ci_verified_on_canonical_main",
+  "local_state": "CI_VERIFIED",
   "commands": [
     {
       "command": "python -m tools.ci.policy_check",
@@ -52,16 +52,20 @@
     }
   ],
   "warnings": [
-    "Native PostgreSQL verification remains pending authoritative Linux GitHub Actions after a future owner-approved commit.",
-    "Repository tests are not an external penetration test.",
+    "Repository tests and GitHub Actions are not an external penetration test.",
     "Real-provider MFA and deployed browser/origin behavior remain unvalidated.",
-    "AuthSession remains user-global; administrator target-session operations are deliberately unavailable when the target has an active membership in another organization."
+    "AuthSession remains user-global; administrator target-session operations are deliberately unavailable when the target has an active membership in another organization.",
+    "Native PostgreSQL and migration verification passed in authoritative Linux GitHub Actions run #58."
   ],
-  "main_commit": "PENDING",
-  "push": "PENDING",
-  "ci": "PENDING",
+  "main_commit": "61df1aa7622cb59ee60e2781fee98f8885324d55",
+  "push": "PASS",
+  "ci": "CI_VERIFIED",
   "review": "REVIEW_VERIFIED",
   "external_penetration_test": "NOT_PERFORMED",
   "mfa_provider_validation": "NOT_PERFORMED",
-  "server_verification": "DEFERRED_SERVER_VERIFICATION"
+  "server_verification": "DEFERRED_SERVER_VERIFICATION",
+  "implementation_commit": "f4b3a3c2486a2d3a051a70d582245e199d1b36ba",
+  "ci_run_number": 58,
+  "ci_run_id": 34655017377,
+  "ci_conclusion": "success"
 }

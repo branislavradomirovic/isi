@@ -197,11 +197,11 @@
     {
       "id": "ISI-20-ENTERPRISE-SECURITY-COMPLETION",
       "title": "Enterprise Security Completion",
-      "status": "implemented",
+      "status": "done",
       "depends_on": [
         "ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY"
       ],
-      "note": "ISI-20D R3 is an unstaged/uncommitted REVIEW_VERIFIED candidate on canonical main at unchanged baseline HEAD 178d0000cc3119277c59c6ec19024c93d136b2f5. R3 closes the R2 human-review blocker: administrator target-session inventory and revocation fail closed before access to user-global AuthSession records when the target has an active membership in another organization; single-organization targets remain supported. Runner and independent analyzer pass, and final human review found no unresolved technical blocker. Direct-main state: main_commit PENDING, push PENDING, ci PENDING, review REVIEW_VERIFIED. Real-provider MFA, external penetration testing and server verification remain explicitly deferred/not performed.",
+      "note": "ISI-20 is COMPLETE / CI_VERIFIED. Implementation commit f4b3a3c2486a2d3a051a70d582245e199d1b36ba was owner-approved and pushed directly to main. Final canonical main SHA 61df1aa7622cb59ee60e2781fee98f8885324d55 includes the one-file evidence wording fix for a Gitleaks documentation false positive. Authoritative GitHub Actions ISI required acceptance run #58 (run ID 34655017377) completed successfully with policy, quality, tests, architecture-security, migration, native-postgres, compose, supply-chain, build and aggregate acceptance green. Review is REVIEW_VERIFIED. Real-provider MFA, external penetration testing and server verification remain explicitly not performed/deferred.",
       "next": "ISI-21-DATA-GOVERNANCE-PRIVACY"
     },
     {
@@ -211,7 +211,8 @@
       "depends_on": [
         "ISI-20-ENTERPRISE-SECURITY-COMPLETION"
       ],
-      "next": "ISI-22-INDUSTRIAL-DATA-PLATFORM"
+      "next": "ISI-22-INDUSTRIAL-DATA-PLATFORM",
+      "note": "Next implementation task after ISI-20. Before implementation, author a dedicated task specification that incorporates ADR-0025: analytical data classification, dataset/source ownership, lineage/provenance, retention, derived-data state, feature purpose/sensitivity governance, tenant/product isolation, export controls and reproducible dataset identity. Status remains planned until that spec is owner-reviewed."
     },
     {
       "id": "ISI-22-INDUSTRIAL-DATA-PLATFORM",
@@ -229,7 +230,7 @@
       "depends_on": [
         "ISI-22-INDUSTRIAL-DATA-PLATFORM"
       ],
-      "note": "Deliver a DRAFT/PROPOSED working methodology for user testing plus detailed in-app Help and a SIMPA User Guide. Do not mark methodology/formulas/weights/thresholds as validated before human approval.",
+      "note": "Canonical design baseline: docs/roadmap/ISI-SIMPA-METHODOLOGY-v1.md plus ADR-0025. Deliver DRAFT/PROPOSED working methodology for controlled testing, deterministic statistical/ML models selected by target semantics, uncertainty/explainability, evidence-first presentation, detailed in-app Help and SIMPA User Guide. Do not mark formulas, weights, thresholds, citizen risk/eligibility logic or causal claims as validated before explicit human approval and supporting evidence.",
       "next": "ISI-24-ORDO-PRODUCTION-METHODOLOGY"
     },
     {
@@ -239,7 +240,7 @@
       "depends_on": [
         "ISI-23-SIMPA-PRODUCTION-METHODOLOGY"
       ],
-      "note": "Deliver a DRAFT/PROPOSED working methodology for user testing plus detailed in-app Help and an ORDO User Guide. Do not mark methodology/forecasting claims as validated before human approval and supporting evidence.",
+      "note": "Canonical design baseline: docs/roadmap/ISI-ORDO-METHODOLOGY-v1.md plus ADR-0025. Deliver DRAFT/PROPOSED methodology, reference calculations, spatial/evidence contracts, temporal forecast backtesting, forecast/scenario separation, uncertainty, detailed in-app Help and ORDO User Guide. Unsupported scenario impact must remain NOT_ESTIMATED. Do not mark forecasting or causal claims validated before explicit human approval and supporting evidence.",
       "next": "ISI-25-INDUSTRIAL-AI-MLOPS"
     },
     {
@@ -249,7 +250,8 @@
       "depends_on": [
         "ISI-24-ORDO-PRODUCTION-METHODOLOGY"
       ],
-      "next": "ISI-26-PERFORMANCE-LOAD-RESILIENCE"
+      "next": "ISI-26-PERFORMANCE-LOAD-RESILIENCE",
+      "note": "Canonical evaluation baseline: docs/roadmap/ISI-AI-MODEL-EVALUATION-PROTOCOL-v1.md plus ADR-0025. Implement champion/challenger governance, SIMPA-EVAL-v1 and ORDO-EVAL-v1 contracts, dedicated embedding/RAG evaluation, LLM/VLM structured output/provenance/safety tests, model and prompt versioning, promotion/rollback and human-review traceability. No model name is a permanent production champion before internal evaluation."
     },
     {
       "id": "ISI-26-PERFORMANCE-LOAD-RESILIENCE",
