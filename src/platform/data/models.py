@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import uuid
 
-from sqlalchemy import Boolean, CheckConstraint, DateTime, ForeignKey, Index, Integer, String, Text, UniqueConstraint, func
+from sqlalchemy import Boolean, CheckConstraint, DateTime, ForeignKey, Index, Integer, String, Text, UniqueConstraint, func, text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.core.database import Base
@@ -81,6 +81,93 @@ class DataConnectorContractVersion(Base):
         ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True
     )
     created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    activated_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    retired_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class DataSourceSchemaMappingVersion(Base):
+    __tablename__ = "core_data_source_schema_mapping_versions"
+    __table_args__ = (
+        UniqueConstraint("source_id", "version_no", name="uq_schema_mapping_source_version"),
+        CheckConstraint("version_no >= 1", name="ck_schema_mapping_version_no"),
+        CheckConstraint("contract_format_version = 1", name="ck_schema_mapping_contract_format"),
+        CheckConstraint("product_code IN ('SIMPA', 'ORDO')", name="ck_schema_mapping_product"),
+        CheckConstraint("schema_kind IN ('TABULAR', 'RECORD')", name="ck_schema_mapping_schema_kind"),
+        CheckConstraint(
+            "missing_value_policy = 'PRESERVE_MISSING'",
+            name="ck_schema_mapping_missing_policy",
+        ),
+        CheckConstraint(
+            "unexpected_field_policy IN ('REJECT', 'IGNORE')",
+            name="ck_schema_mapping_unexpected_policy",
+        ),
+        CheckConstraint(
+            "lifecycle_state IN ('DRAFT', 'ACTIVE', 'RETIRED')",
+            name="ck_schema_mapping_lifecycle",
+        ),
+        Index(
+            "ix_schema_mapping_scope",
+            "organization_id",
+            "workspace_id",
+            "product_code",
+        ),
+        Index(
+            "ix_schema_mapping_source_state",
+            "source_id",
+            "lifecycle_state",
+        ),
+        Index("ix_schema_mapping_connector", "connector_contract_version_id"),
+        Index(
+            "uq_schema_mapping_active_source",
+            "source_id",
+            unique=True,
+            postgresql_where=text("lifecycle_state = 'ACTIVE'"),
+            sqlite_where=text("lifecycle_state = 'ACTIVE'"),
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    source_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_data_sources.id", ondelete="CASCADE"), nullable=False
+    )
+    connector_contract_version_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_data_connector_contract_versions.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    organization_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False
+    )
+    workspace_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False
+    )
+    product_code: Mapped[str] = mapped_column(ForeignKey("core_products.code"), nullable=False)
+    version_no: Mapped[int] = mapped_column(Integer, nullable=False)
+    contract_format_version: Mapped[int] = mapped_column(Integer, nullable=False, default=1, server_default="1")
+    schema_kind: Mapped[str] = mapped_column(String(16), nullable=False)
+    source_schema_json: Mapped[str] = mapped_column(Text, nullable=False)
+    field_mapping_json: Mapped[str] = mapped_column(Text, nullable=False)
+    missing_value_policy: Mapped[str] = mapped_column(
+        String(32), nullable=False, default="PRESERVE_MISSING", server_default="PRESERVE_MISSING"
+    )
+    unexpected_field_policy: Mapped[str] = mapped_column(
+        String(16), nullable=False, default="REJECT", server_default="REJECT"
+    )
+    fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    lifecycle_state: Mapped[str] = mapped_column(
+        String(16), nullable=False, default="DRAFT", server_default="DRAFT"
+    )
+    created_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True
+    )
+    activated_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True
+    )
+    retired_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True
+    )
+    created_at: Mapped[object] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
     activated_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
     retired_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
 

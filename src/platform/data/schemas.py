@@ -158,6 +158,75 @@ class ConnectorContractVersionResponse(BaseModel):
     retired_at: datetime | None
 
 
+SourceFieldName = Annotated[str, Field(min_length=1, max_length=500)]
+MissingValueToken = Annotated[str, Field(max_length=500)]
+
+
+class SourceSchemaField(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    ordinal: int = Field(ge=1)
+    source_field: SourceFieldName
+    logical_type: Literal["STRING", "INTEGER", "NUMBER", "BOOLEAN", "DATE", "DATETIME", "JSON"]
+    required: bool
+    nullable: bool
+    missing_values: list[MissingValueToken] = Field(default_factory=list, max_length=200)
+
+
+class SourceFieldMapping(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    source_field: SourceFieldName
+    disposition: Literal["MAP", "IGNORE"]
+    field_key: str | None = Field(default=None, max_length=120)
+
+
+class _SourceSchemaMappingMutationRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+
+class SourceSchemaMappingVersionCreate(_SourceSchemaMappingMutationRequest):
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: Literal["SIMPA", "ORDO"]
+    connector_contract_version_id: uuid.UUID
+    schema_kind: Literal["TABULAR", "RECORD"]
+    source_schema: list[SourceSchemaField] = Field(min_length=1, max_length=500)
+    field_mapping: list[SourceFieldMapping] = Field(min_length=1, max_length=500)
+    missing_value_policy: Literal["PRESERVE_MISSING"] = "PRESERVE_MISSING"
+    unexpected_field_policy: Literal["REJECT", "IGNORE"] = "REJECT"
+
+
+class SourceSchemaMappingActivationRequest(_SourceSchemaMappingMutationRequest):
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: Literal["SIMPA", "ORDO"]
+
+
+class SourceSchemaMappingVersionResponse(BaseModel):
+    id: uuid.UUID
+    source_id: uuid.UUID
+    connector_contract_version_id: uuid.UUID
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: str
+    version_no: int
+    contract_format_version: Literal[1]
+    schema_kind: Literal["TABULAR", "RECORD"]
+    source_schema: list[SourceSchemaField]
+    field_mapping: list[SourceFieldMapping]
+    missing_value_policy: Literal["PRESERVE_MISSING"]
+    unexpected_field_policy: Literal["REJECT", "IGNORE"]
+    fingerprint: str
+    lifecycle_state: Literal["DRAFT", "ACTIVE", "RETIRED"]
+    created_by_membership_id: uuid.UUID | None
+    activated_by_membership_id: uuid.UUID | None
+    retired_by_membership_id: uuid.UUID | None
+    created_at: datetime
+    activated_at: datetime | None
+    retired_at: datetime | None
+
+
 class SourceGovernanceResponse(BaseModel):
     id: uuid.UUID
     source_id: uuid.UUID

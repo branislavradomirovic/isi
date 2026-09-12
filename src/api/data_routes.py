@@ -43,6 +43,9 @@ from src.platform.data.schemas import (
     SourceGovernanceResponse,
     SourceGovernanceUpdate,
     SourceDetailResponse,
+    SourceSchemaMappingActivationRequest,
+    SourceSchemaMappingVersionCreate,
+    SourceSchemaMappingVersionResponse,
     SourceSummaryResponse,
     UploadCreateRequest,
     UploadResponse,
@@ -52,6 +55,11 @@ from src.platform.data.connector_service import (
     activate_connector_contract_version,
     create_connector_contract_version,
     list_connector_contract_versions,
+)
+from src.platform.data.schema_mapping_service import (
+    activate_source_schema_mapping_version,
+    create_source_schema_mapping_version,
+    list_source_schema_mapping_versions,
 )
 from src.platform.data.analytical_service import (
     create_analytical_dataset,
@@ -154,13 +162,15 @@ def _platform_error(exc: DataPlatformError) -> HTTPException:
     if code in {"source_not_accessible", "version_not_accessible", "anonymization_record_not_accessible", "workspace_scope_mismatch",
                 "analytical_dataset_not_accessible", "analytical_snapshot_not_accessible",
                 "analytical_feature_not_accessible", "analytical_feature_version_not_accessible",
-                "connector_contract_version_not_accessible"}:
+                "connector_contract_version_not_accessible", "schema_mapping_version_not_accessible"}:
         return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=code)
     if code in {"upload_too_large"}:
         return HTTPException(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail=code)
     if code in {"source_name_exists", "governance_revision_conflict", "retention_revision_conflict", "purge_state_conflict", "anonymization_state_conflict",
                 "analytical_dataset_code_exists", "analytical_feature_code_exists", "analytical_revision_conflict",
-                "connector_contract_state_conflict", "connector_contract_unchanged"}:
+                "connector_contract_state_conflict", "connector_contract_unchanged",
+                "schema_mapping_state_conflict", "schema_mapping_unchanged",
+                "schema_mapping_connector_retired", "schema_mapping_connector_not_active"}:
         return HTTPException(status_code=status.HTTP_409_CONFLICT, detail=code)
     if code in {"connector_secret_material_forbidden", "invalid_connector_credential_reference"}:
         return HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=code)
@@ -456,6 +466,115 @@ def post_connector_contract_activation(
     )
     try:
         result = activate_connector_contract_version(
+            db,
+            source_id=source_id,
+            version_id=version_id,
+            organization_id=payload.organization_id,
+            workspace_id=payload.workspace_id,
+            product_code=payload.product_code,
+            actor_id=actor_membership_id(
+                db,
+                user_id=context.user.id,
+                organization_id=payload.organization_id,
+            ),
+        )
+        db.commit()
+        return result
+    except DataPlatformError as exc:
+        db.rollback()
+        raise _platform_error(exc) from None
+
+
+@router.post(
+    "/sources/{source_id}/schema-mappings/versions",
+    response_model=SourceSchemaMappingVersionResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+def post_source_schema_mapping_version(
+    source_id: uuid.UUID,
+    payload: SourceSchemaMappingVersionCreate,
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db,
+        context,
+        organization_id=payload.organization_id,
+        workspace_id=payload.workspace_id,
+        product_code=payload.product_code,
+        permission_code="data.governance.manage",
+    )
+    try:
+        result = create_source_schema_mapping_version(
+            db,
+            source_id=source_id,
+            payload=payload,
+            actor_id=actor_membership_id(
+                db,
+                user_id=context.user.id,
+                organization_id=payload.organization_id,
+            ),
+        )
+        db.commit()
+        return result
+    except DataPlatformError as exc:
+        db.rollback()
+        raise _platform_error(exc) from None
+
+
+@router.get(
+    "/sources/{source_id}/schema-mappings",
+    response_model=list[SourceSchemaMappingVersionResponse],
+)
+def get_source_schema_mapping_versions(
+    source_id: uuid.UUID,
+    organization_id: uuid.UUID = Query(...),
+    workspace_id: uuid.UUID = Query(...),
+    product_code: str = Query(...),
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db,
+        context,
+        organization_id=organization_id,
+        workspace_id=workspace_id,
+        product_code=product_code,
+        permission_code="data.read",
+    )
+    try:
+        return list_source_schema_mapping_versions(
+            db,
+            source_id=source_id,
+            organization_id=organization_id,
+            workspace_id=workspace_id,
+            product_code=product_code,
+        )
+    except DataPlatformError as exc:
+        raise _platform_error(exc) from None
+
+
+@router.post(
+    "/sources/{source_id}/schema-mappings/{version_id}/activate",
+    response_model=SourceSchemaMappingVersionResponse,
+)
+def post_source_schema_mapping_activation(
+    source_id: uuid.UUID,
+    version_id: uuid.UUID,
+    payload: SourceSchemaMappingActivationRequest,
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db,
+        context,
+        organization_id=payload.organization_id,
+        workspace_id=payload.workspace_id,
+        product_code=payload.product_code,
+        permission_code="data.governance.manage",
+    )
+    try:
+        result = activate_source_schema_mapping_version(
             db,
             source_id=source_id,
             version_id=version_id,

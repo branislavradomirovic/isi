@@ -55,7 +55,11 @@ def test_0020_postgres_identifiers_fit_limit_and_migration_is_single_head():
     assert identifiers
     assert max(map(len, identifiers)) <= 63
     result = subprocess.run(["alembic", "heads"], check=True, capture_output=True, text=True)
-    assert result.stdout.strip() == "20260912_0020 (head)"
+    heads = [line for line in result.stdout.splitlines() if line.strip()]
+    assert len(heads) == 1
+    assert heads[0].endswith("(head)")
+    history = subprocess.run(["alembic", "history"], check=True, capture_output=True, text=True)
+    assert "20260912_0020" in history.stdout
 
 
 def test_0020_downgrade_removes_only_its_table_and_indexes():
