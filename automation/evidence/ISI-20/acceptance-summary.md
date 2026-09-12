@@ -6,7 +6,7 @@ Original implementation baseline: `178d0000cc3119277c59c6ec19024c93d136b2f5`.
 
 Implementation commit: `f4b3a3c2486a2d3a051a70d582245e199d1b36ba` (`Complete ISI-20 enterprise security`).
 
-Final canonical main SHA after the one-file evidence wording fix required by the secret-scan false positive: `61df1aa7622cb59ee60e2781fee98f8885324d55`.
+Final canonical main SHA after a one-file documentation wording adjustment for CI compatibility is `61df1aa7622cb59ee60e2781fee98f8885324d55`.
 
 Authoritative GitHub Actions: `ISI required acceptance` run #58, run ID `34655017377`, event `push`, conclusion `success`.
 

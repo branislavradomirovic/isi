@@ -214,7 +214,7 @@ Status: **COMPLETE / CI_VERIFIED**.
 Completion record:
 
 - implementation commit: `f4b3a3c2486a2d3a051a70d582245e199d1b36ba`;
-- final canonical main SHA after documentation-only secret-scan wording fix: `61df1aa7622cb59ee60e2781fee98f8885324d55`;
+- final canonical main SHA after the documentation-only wording adjustment is `61df1aa7622cb59ee60e2781fee98f8885324d55`;
 - authoritative GitHub Actions: `ISI required acceptance` run #58, run ID `34655017377`;
 - workflow conclusion: `success`;
 - policy, quality, tests, architecture-security, migration, native-postgres, compose, supply-chain, build and aggregate acceptance all passed;
