@@ -28,6 +28,9 @@ from src.platform.data.schemas import (
     AnonymizationProposalCreate,
     AnonymizationRecordResponse,
     AnonymizationReviewRequest,
+    ConnectorContractActivationRequest,
+    ConnectorContractVersionCreate,
+    ConnectorContractVersionResponse,
     ExportRequest,
     FeatureTransitionRequest,
     HoldPlaceRequest,
@@ -44,6 +47,11 @@ from src.platform.data.schemas import (
     UploadCreateRequest,
     UploadResponse,
     VersionCreateRequest,
+)
+from src.platform.data.connector_service import (
+    activate_connector_contract_version,
+    create_connector_contract_version,
+    list_connector_contract_versions,
 )
 from src.platform.data.analytical_service import (
     create_analytical_dataset,
@@ -145,13 +153,17 @@ def _platform_error(exc: DataPlatformError) -> HTTPException:
     code = str(exc)
     if code in {"source_not_accessible", "version_not_accessible", "anonymization_record_not_accessible", "workspace_scope_mismatch",
                 "analytical_dataset_not_accessible", "analytical_snapshot_not_accessible",
-                "analytical_feature_not_accessible", "analytical_feature_version_not_accessible"}:
+                "analytical_feature_not_accessible", "analytical_feature_version_not_accessible",
+                "connector_contract_version_not_accessible"}:
         return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=code)
     if code in {"upload_too_large"}:
         return HTTPException(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail=code)
     if code in {"source_name_exists", "governance_revision_conflict", "retention_revision_conflict", "purge_state_conflict", "anonymization_state_conflict",
-                "analytical_dataset_code_exists", "analytical_feature_code_exists", "analytical_revision_conflict"}:
+                "analytical_dataset_code_exists", "analytical_feature_code_exists", "analytical_revision_conflict",
+                "connector_contract_state_conflict", "connector_contract_unchanged"}:
         return HTTPException(status_code=status.HTTP_409_CONFLICT, detail=code)
+    if code in {"connector_secret_material_forbidden", "invalid_connector_credential_reference"}:
+        return HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=code)
     if code == "storage_operation_failed":
         return HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=code)
     return HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=code)
@@ -349,6 +361,115 @@ def post_source_version(
         latest = source_detail(db, source).versions[0]
         refreshed_job = db.get(IngestionJob, job.id)
         return UploadResponse(source=source_summary(db, source), version=latest, job=job_response(refreshed_job), storage_reused=reused)
+    except DataPlatformError as exc:
+        db.rollback()
+        raise _platform_error(exc) from None
+
+
+@router.post(
+    "/sources/{source_id}/connector-contracts/versions",
+    response_model=ConnectorContractVersionResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+def post_connector_contract_version(
+    source_id: uuid.UUID,
+    payload: ConnectorContractVersionCreate,
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db,
+        context,
+        organization_id=payload.organization_id,
+        workspace_id=payload.workspace_id,
+        product_code=payload.product_code,
+        permission_code="data.governance.manage",
+    )
+    try:
+        result = create_connector_contract_version(
+            db,
+            source_id=source_id,
+            payload=payload,
+            actor_id=actor_membership_id(
+                db,
+                user_id=context.user.id,
+                organization_id=payload.organization_id,
+            ),
+        )
+        db.commit()
+        return result
+    except DataPlatformError as exc:
+        db.rollback()
+        raise _platform_error(exc) from None
+
+
+@router.get(
+    "/sources/{source_id}/connector-contracts",
+    response_model=list[ConnectorContractVersionResponse],
+)
+def get_connector_contract_versions(
+    source_id: uuid.UUID,
+    organization_id: uuid.UUID = Query(...),
+    workspace_id: uuid.UUID = Query(...),
+    product_code: str = Query(...),
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db,
+        context,
+        organization_id=organization_id,
+        workspace_id=workspace_id,
+        product_code=product_code,
+        permission_code="data.read",
+    )
+    try:
+        return list_connector_contract_versions(
+            db,
+            source_id=source_id,
+            organization_id=organization_id,
+            workspace_id=workspace_id,
+            product_code=product_code,
+        )
+    except DataPlatformError as exc:
+        raise _platform_error(exc) from None
+
+
+@router.post(
+    "/sources/{source_id}/connector-contracts/{version_id}/activate",
+    response_model=ConnectorContractVersionResponse,
+)
+def post_connector_contract_activation(
+    source_id: uuid.UUID,
+    version_id: uuid.UUID,
+    payload: ConnectorContractActivationRequest,
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db,
+        context,
+        organization_id=payload.organization_id,
+        workspace_id=payload.workspace_id,
+        product_code=payload.product_code,
+        permission_code="data.governance.manage",
+    )
+    try:
+        result = activate_connector_contract_version(
+            db,
+            source_id=source_id,
+            version_id=version_id,
+            organization_id=payload.organization_id,
+            workspace_id=payload.workspace_id,
+            product_code=payload.product_code,
+            actor_id=actor_membership_id(
+                db,
+                user_id=context.user.id,
+                organization_id=payload.organization_id,
+            ),
+        )
+        db.commit()
+        return result
     except DataPlatformError as exc:
         db.rollback()
         raise _platform_error(exc) from None

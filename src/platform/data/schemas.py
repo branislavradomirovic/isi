@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import uuid
 from datetime import datetime
+from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -106,6 +107,55 @@ class UploadResponse(BaseModel):
     version: VersionResponse
     job: IngestionJobResponse
     storage_reused: bool
+
+
+ConnectorIdentifier = Annotated[
+    str,
+    Field(min_length=1, max_length=120, pattern=r"^[A-Za-z0-9][A-Za-z0-9._-]*$"),
+]
+
+
+class _ConnectorMutationRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+
+class ConnectorContractVersionCreate(_ConnectorMutationRequest):
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: Literal["SIMPA", "ORDO"]
+    connector_kind: ConnectorIdentifier
+    transport: ConnectorIdentifier
+    configuration: dict[str, Any] = Field(default_factory=dict)
+    credential_reference: str = Field(default="", max_length=500)
+    capabilities: list[ConnectorIdentifier] = Field(default_factory=list, max_length=200)
+
+
+class ConnectorContractActivationRequest(_ConnectorMutationRequest):
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: Literal["SIMPA", "ORDO"]
+
+
+class ConnectorContractVersionResponse(BaseModel):
+    id: uuid.UUID
+    source_id: uuid.UUID
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: str
+    version_no: int
+    connector_kind: str
+    transport: str
+    configuration: dict[str, Any]
+    credential_reference: str
+    capabilities: list[str]
+    fingerprint: str
+    lifecycle_state: Literal["DRAFT", "ACTIVE", "RETIRED"]
+    created_by_membership_id: uuid.UUID | None
+    activated_by_membership_id: uuid.UUID | None
+    retired_by_membership_id: uuid.UUID | None
+    created_at: datetime
+    activated_at: datetime | None
+    retired_at: datetime | None
 
 
 class SourceGovernanceResponse(BaseModel):

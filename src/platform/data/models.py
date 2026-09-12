@@ -29,6 +29,62 @@ class DataSource(Base):
     updated_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
 
 
+class DataConnectorContractVersion(Base):
+    __tablename__ = "core_data_connector_contract_versions"
+    __table_args__ = (
+        UniqueConstraint("source_id", "version_no", name="uq_connector_contract_source_version"),
+        CheckConstraint("version_no >= 1", name="ck_connector_contract_version_no"),
+        CheckConstraint("product_code IN ('SIMPA', 'ORDO')", name="ck_connector_contract_product"),
+        CheckConstraint(
+            "lifecycle_state IN ('DRAFT', 'ACTIVE', 'RETIRED')",
+            name="ck_connector_contract_state",
+        ),
+        Index(
+            "ix_connector_contract_scope",
+            "organization_id",
+            "workspace_id",
+            "product_code",
+        ),
+        Index(
+            "ix_connector_contract_source_state",
+            "source_id",
+            "lifecycle_state",
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    source_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_data_sources.id", ondelete="CASCADE"), nullable=False
+    )
+    organization_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False
+    )
+    workspace_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False
+    )
+    product_code: Mapped[str] = mapped_column(ForeignKey("core_products.code"), nullable=False)
+    version_no: Mapped[int] = mapped_column(Integer, nullable=False)
+    connector_kind: Mapped[str] = mapped_column(String(120), nullable=False)
+    transport: Mapped[str] = mapped_column(String(120), nullable=False)
+    configuration_json: Mapped[str] = mapped_column(Text, nullable=False, default="{}", server_default="{}")
+    credential_reference: Mapped[str] = mapped_column(String(500), nullable=False, default="", server_default="")
+    capabilities_json: Mapped[str] = mapped_column(Text, nullable=False, default="[]", server_default="[]")
+    fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    lifecycle_state: Mapped[str] = mapped_column(String(16), nullable=False, default="DRAFT", server_default="DRAFT")
+    created_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True
+    )
+    activated_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True
+    )
+    retired_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True
+    )
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    activated_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    retired_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
 class DataSourceVersion(Base):
     __tablename__ = "core_data_source_versions"
     __table_args__ = (

@@ -24,9 +24,13 @@ def test_0019_identity_tables_constraints_and_typed_edges():
     assert names and max(map(len, names)) <= 63
 
 
-def test_0019_is_single_head_and_downgrade_is_scoped():
+def test_0019_remains_in_history_and_downgrade_is_scoped():
     result = subprocess.run(["alembic", "heads"], check=True, capture_output=True, text=True)
-    assert result.stdout.strip() == "20260912_0019 (head)"
+    head_lines = [line.strip() for line in result.stdout.splitlines() if line.strip()]
+    assert len(head_lines) == 1
+    assert head_lines[0].endswith("(head)")
+    history = subprocess.run(["alembic", "history"], check=True, capture_output=True, text=True)
+    assert "20260912_0019" in history.stdout
     downgrade = MIGRATION.read_text().split("def downgrade()", 1)[1]
     assert downgrade.count("op.drop_table(") == 6
     assert "core_data_source_versions" not in downgrade
