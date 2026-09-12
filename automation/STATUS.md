@@ -6,23 +6,23 @@ Last status update: 2026-09-12.
 
 ## Current execution
 
-Last completed task: `ISI-20-ENTERPRISE-SECURITY-COMPLETION`.
+Last completed task: `ISI-21-DATA-GOVERNANCE-PRIVACY`.
 
-ISI-20 state: `COMPLETE / CI_VERIFIED`.
+ISI-21 state: `COMPLETE / CI_VERIFIED`.
 
-Canonical final main SHA: `61df1aa7622cb59ee60e2781fee98f8885324d55`.
+Canonical ISI-21 implementation SHA: `ac42601dc5cb67bf98603022febe8de276844ca3`.
 
-Implementation commit: `f4b3a3c2486a2d3a051a70d582245e199d1b36ba`.
+Implementation chain: ISI-21A `012c2f0ce0c04e92dc8240e12fab9a0005eef376`; ISI-21B `5421e65066ee1dfe841a0d4fcc96d95159859848`; ISI-21B native PostgreSQL fixture repair `dbe301dfe5db9743e9f3dfb8d605b89953de1949`; ISI-21C `ac42601dc5cb67bf98603022febe8de276844ca3`.
 
-Authoritative GitHub Actions: `ISI required acceptance` run #58, run ID `34655017377`, conclusion `success`.
+Authoritative implementation GitHub Actions: `ISI required acceptance` run #64, run ID `34714098565`, exact SHA `ac42601dc5cb67bf98603022febe8de276844ca3`, conclusion `success`.
 
-All blocking run #58 jobs passed: policy, quality, tests, architecture-security, migration, native-postgres, compose, supply-chain, build and aggregate acceptance. The supply-chain gate includes dependency audit, Python SAST and secret scan.
+All blocking run #64 jobs passed: policy, quality, tests, architecture-security, migration, native-postgres, compose, supply-chain, build and aggregate acceptance. Full pytest JUnit recorded 448 tests with 0 failures, 0 errors and 24 skipped; native PostgreSQL JUnit recorded 26 tests with 0 failures, 0 errors and 1 skipped.
 
-Server verification: `DEFERRED_SERVER_VERIFICATION`. Real-provider MFA integration and external penetration testing remain not performed and are not implied by CI completion.
+Server/live-host verification: `DEFERRED_SERVER_VERIFICATION`. No production deployment or production-data mutation is implied by ISI-21 completion.
 
-Next implementation task: `ISI-21-DATA-GOVERNANCE-PRIVACY`.
+Next implementation task: `ISI-22-INDUSTRIAL-DATA-PLATFORM`.
 
-ISI-21 remains `PLANNED` until a separate implementation specification is authored and owner-reviewed. The owner-approved canonical analytical AI direction is now recorded in ADR-0025, the Master Plan, the SIMPA/ORDO methodology design baselines and the AI Model Evaluation Protocol.
+ISI-22 remains `PLANNED`. Its implementation must begin only after this ISI-21 closeout bookkeeping/evidence change is independently reviewed, owner-approved, committed/pushed, and exact-head required CI verified.
 
 ## Owner-facing state model
 
@@ -38,8 +38,8 @@ A failed required gate returns the active task to implementation/fix state. Requ
 | 18 | `ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS` | Correlation IDs, structured logs, API/worker/AI/data metrics, health/readiness diagnostics and privacy-safe observability | **COMPLETE IN CANONICAL HISTORY** |
 | 19 | `ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY` | Deterministic PostgreSQL/object-storage backup and restore tooling, checksums, recovery rehearsal, proposed RPO/RTO and rollback-safe recovery | **COMPLETE IN CANONICAL HISTORY** |
 | 20 | `ISI-20-ENTERPRISE-SECURITY-COMPLETION` | MFA-ready controls, session/device administration, privileged-action controls, broader security events, RBAC/entitlement matrix and pen-test readiness | **COMPLETE / CI_VERIFIED - run #58 green** |
-| 21 | `ISI-21-DATA-GOVERNANCE-PRIVACY` | Data classification, ownership, lineage/provenance, retention/purge/anonymization, sensitive-access auditability, export controls and analytical feature/data governance | **NEXT - PLANNED; specification required** |
-| 22 | `ISI-22-INDUSTRIAL-DATA-PLATFORM` | Versioned connectors, canonical analytical datasets, schema/feature contracts, incremental/idempotent ingestion, reconciliation, quarantine, freshness, quality, backfill and lineage | PLANNED |
+| 21 | `ISI-21-DATA-GOVERNANCE-PRIVACY` | Data classification, ownership, lineage/provenance, retention/purge/anonymization, sensitive-access auditability, export controls and analytical feature/data governance | **COMPLETE / CI_VERIFIED - implementation run #64 green** |
+| 22 | `ISI-22-INDUSTRIAL-DATA-PLATFORM` | Versioned connectors, canonical analytical datasets, schema/feature contracts, incremental/idempotent ingestion, reconciliation, quarantine, freshness, quality, backfill and lineage | **NEXT - PLANNED** |
 | 23 | `ISI-23-SIMPA-PRODUCTION-METHODOLOGY` | Versioned SIMPA methodology, deterministic analytics/ML by target semantics, uncertainty/explainability, Help and User Guide | PLANNED - canonical design baseline recorded |
 | 24 | `ISI-24-ORDO-PRODUCTION-METHODOLOGY` | Versioned ORDO methodology, forecasting/scenario separation, temporal validation, uncertainty/spatial/evidence framework, Help and User Guide | PLANNED - canonical design baseline recorded |
 | 25 | `ISI-25-INDUSTRIAL-AI-MLOPS` | Champion/challenger registry, eval datasets, embeddings/RAG, structured-output validation, prompt/model governance, safety, human review and rollback | PLANNED - canonical evaluation protocol recorded |

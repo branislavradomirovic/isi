@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "task_id": "ISI-21-DATA-GOVERNANCE-PRIVACY",
+  "state": "COMPLETE / CI_VERIFIED",
+  "baseline_before_21a": "2ce1e5f54aa71beb0275553b427a0f11e0822612",
+  "implementation": {
+    "isi_21a": "012c2f0ce0c04e92dc8240e12fab9a0005eef376",
+    "isi_21b": "5421e65066ee1dfe841a0d4fcc96d95159859848",
+    "isi_21b_native_postgres_fix": "dbe301dfe5db9743e9f3dfb8d605b89953de1949",
+    "isi_21c": "ac42601dc5cb67bf98603022febe8de276844ca3",
+    "isi_21c_tree": "6f7744c72b877b7808e22a0412084cdfca6aec03"
+  },
+  "migrations": [
+    "20260912_0017",
+    "20260912_0018",
+    "20260912_0019"
+  ],
+  "github_actions": {
+    "workflow": "ISI required acceptance",
+    "run_number": 64,
+    "run_id": 34714098565,
+    "event": "push",
+    "head_branch": "main",
+    "head_sha": "ac42601dc5cb67bf98603022febe8de276844ca3",
+    "conclusion": "success",
+    "blocking_jobs": {
+      "policy": "success",
+      "quality": "success",
+      "tests": "success",
+      "architecture-security": "success",
+      "migration": "success",
+      "native-postgres": "success",
+      "compose": "success",
+      "supply-chain": "success",
+      "build": "success",
+      "acceptance": "success"
+    },
+    "full_pytest_junit": {
+      "tests": 448,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 24
+    },
+    "native_postgres_junit": {
+      "tests": 26,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1
+    }
+  },
+  "local_review": {
+    "h1_runner": "PASS",
+    "independent_r2_analyzer": "PASS",
+    "exact_isi_21c_candidate_files": 17,
+    "candidate_byte_stability": "PASS",
+    "scope_delegation": "PASS",
+    "offline_single_head_migration": "PASS",
+    "full_non_native_pytest": "PASS",
+    "cached_diff_check_after_eof_normalization": "PASS",
+    "focused_migration_after_eof_normalization": "PASS",
+    "owner_approved_commit_push": true
+  },
+  "review_state": "REVIEW_VERIFIED",
+  "warnings": [
+    {
+      "type": "StarletteDeprecationWarning",
+      "status": "NON_BLOCKING",
+      "note": "Current TestClient/httpx compatibility warning observed during local tests; dependency modernization is separate work."
+    }
+  ],
+  "deferred": {
+    "server_live_host_verification": "DEFERRED_SERVER_VERIFICATION",
+    "production_deployment_or_data_mutation": "NOT_PERFORMED"
+  },
+  "next_task": {
+    "id": "ISI-22-INDUSTRIAL-DATA-PLATFORM",
+    "status": "planned"
+  }
+}

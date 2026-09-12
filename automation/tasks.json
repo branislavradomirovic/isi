@@ -207,12 +207,13 @@
     {
       "id": "ISI-21-DATA-GOVERNANCE-PRIVACY",
       "title": "Data Governance & Privacy Controls",
-      "status": "planned",
+      "status": "done",
+      "spec": "automation/specs/ISI-21-DATA-GOVERNANCE-PRIVACY.md",
       "depends_on": [
         "ISI-20-ENTERPRISE-SECURITY-COMPLETION"
       ],
       "next": "ISI-22-INDUSTRIAL-DATA-PLATFORM",
-      "note": "Next implementation task after ISI-20. Before implementation, author a dedicated task specification that incorporates ADR-0025: analytical data classification, dataset/source ownership, lineage/provenance, retention, derived-data state, feature purpose/sensitivity governance, tenant/product isolation, export controls and reproducible dataset identity. Status remains planned until that spec is owner-reviewed."
+      "note": "ISI-21 is COMPLETE / CI_VERIFIED across ISI-21A, ISI-21B, the native PostgreSQL reference-catalog fixture repair, and ISI-21C. Canonical implementation SHA ac42601dc5cb67bf98603022febe8de276844ca3 passed authoritative GitHub Actions ISI required acceptance run #64 (run ID 34714098565) with all blocking jobs green. The dedicated spec is an as-built completion contract added during closeout and does not claim pre-implementation authorship. Server/live-host verification and production deployment/data mutation remain deferred/not performed. Next task ISI-22 remains planned."
     },
     {
       "id": "ISI-22-INDUSTRIAL-DATA-PLATFORM",
