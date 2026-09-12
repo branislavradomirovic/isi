@@ -8,6 +8,7 @@ from sqlalchemy import inspect, select, update
 
 from src.core.database import build_engine, build_session_factory
 from src.platform.access.models import Permission, Role, RolePermission
+from src.platform.access.service import bootstrap_reference_catalog
 from src.platform.data.models import DataRetentionState, DataSource, DataSourceVersion
 from src.platform.identity.models import Organization
 from src.platform.workspaces.models import Workspace
@@ -40,6 +41,7 @@ def test_native_postgres_privacy_schema_constraints_and_role_matrix():
     with build_session_factory(engine)() as db:
         permissions = {row.code: row for row in db.scalars(select(Permission).where(Permission.code.in_(("data.governance.manage", "data.export"))))}
         assert set(permissions) == {"data.governance.manage", "data.export"}
+        bootstrap_reference_catalog(db)
         mapped = set(db.execute(
             select(Role.code, Permission.code).join(RolePermission, RolePermission.role_id == Role.id)
             .join(Permission, Permission.id == RolePermission.permission_id)
@@ -53,6 +55,7 @@ def test_native_postgres_privacy_schema_constraints_and_role_matrix():
 def test_native_postgres_retention_revision_is_atomic_and_synthetic_rows_roll_back():
     engine = build_engine()
     with build_session_factory(engine)() as db:
+        bootstrap_reference_catalog(db)
         marker = uuid.uuid4().hex
         org = Organization(slug=f"isi21b-{marker}", name="ISI-21B synthetic")
         db.add(org); db.flush()
