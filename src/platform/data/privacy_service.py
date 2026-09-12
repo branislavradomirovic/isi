@@ -313,6 +313,17 @@ def execute_purge(session: Session, storage: StorageBackend, *, version_id: uuid
             upstream_entity_type="source_version", upstream_version_id=version.id, reason="PURGED",
             actor_membership_id=actor_id, fingerprint=tombstone,
         ))
+    session.flush()
+    # Analytical invalidation is downstream metadata only; source purge semantics remain authoritative here.
+    from src.platform.data.analytical_service import propagate_source_version_invalidation
+    propagate_source_version_invalidation(
+        session,
+        source_version_id=version.id,
+        organization_id=organization_id,
+        workspace_id=workspace_id,
+        product_code=product_code,
+        actor_id=actor_id,
+    )
     _audit(session, organization_id=organization_id, workspace_id=workspace_id, product_code=product_code, actor_id=actor_id,
            event_type="data.purge.executed", entity_type="data_source_version", entity_id=version.id,
            detail=f"revision={state.revision}; outcome={result_code}; tombstone={tombstone}")

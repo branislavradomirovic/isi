@@ -13,10 +13,23 @@ from src.platform.app_context.service import AppContextError, resolve_selection
 from src.platform.data.models import DataSourceVersion, IngestionJob
 from src.platform.data.queue import DataQueueError, dispatch_job
 from src.platform.data.schemas import (
+    AnalyticalAIEligibilityRequest,
+    AnalyticalAIEligibilityResponse,
+    AnalyticalDatasetCreate,
+    AnalyticalDatasetResponse,
+    AnalyticalFeatureCreate,
+    AnalyticalFeatureResponse,
+    AnalyticalFeatureVersionCreate,
+    AnalyticalFeatureVersionResponse,
+    AnalyticalLineageResponse,
+    AnalyticalSnapshotCreate,
+    AnalyticalSnapshotResponse,
+    AnalyticalTransitionRequest,
     AnonymizationProposalCreate,
     AnonymizationRecordResponse,
     AnonymizationReviewRequest,
     ExportRequest,
+    FeatureTransitionRequest,
     HoldPlaceRequest,
     IngestionJobResponse,
     ScopeQuery,
@@ -31,6 +44,20 @@ from src.platform.data.schemas import (
     UploadCreateRequest,
     UploadResponse,
     VersionCreateRequest,
+)
+from src.platform.data.analytical_service import (
+    create_analytical_dataset,
+    create_analytical_feature,
+    create_analytical_feature_version,
+    create_analytical_snapshot,
+    evaluate_analytical_ai_eligibility,
+    get_analytical_lineage,
+    list_analytical_datasets,
+    list_analytical_feature_versions,
+    list_analytical_features,
+    list_analytical_snapshots,
+    transition_analytical_feature_version,
+    transition_analytical_snapshot,
 )
 from src.platform.data.service import (
     DataPlatformError,
@@ -116,11 +143,14 @@ def _require_scope(
 
 def _platform_error(exc: DataPlatformError) -> HTTPException:
     code = str(exc)
-    if code in {"source_not_accessible", "version_not_accessible", "anonymization_record_not_accessible", "workspace_scope_mismatch"}:
+    if code in {"source_not_accessible", "version_not_accessible", "anonymization_record_not_accessible", "workspace_scope_mismatch",
+                "analytical_dataset_not_accessible", "analytical_snapshot_not_accessible",
+                "analytical_feature_not_accessible", "analytical_feature_version_not_accessible"}:
         return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=code)
     if code in {"upload_too_large"}:
         return HTTPException(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail=code)
-    if code in {"source_name_exists", "governance_revision_conflict", "retention_revision_conflict", "purge_state_conflict", "anonymization_state_conflict"}:
+    if code in {"source_name_exists", "governance_revision_conflict", "retention_revision_conflict", "purge_state_conflict", "anonymization_state_conflict",
+                "analytical_dataset_code_exists", "analytical_feature_code_exists", "analytical_revision_conflict"}:
         return HTTPException(status_code=status.HTTP_409_CONFLICT, detail=code)
     if code == "storage_operation_failed":
         return HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=code)
@@ -645,4 +675,182 @@ def post_version_export(version_id: uuid.UUID, payload: ExportRequest,
         else:
             # Policy-level denials are bounded, scoped, auditable attempts.
             db.commit()
+        raise _platform_error(exc) from None
+
+
+def _analytical_actor(db: Session, context: AuthContext, organization_id: uuid.UUID) -> uuid.UUID | None:
+    return actor_membership_id(db, user_id=context.user.id, organization_id=organization_id)
+
+
+@router.get("/analytical-datasets", response_model=list[AnalyticalDatasetResponse])
+def get_analytical_datasets(
+    organization_id: uuid.UUID = Query(...), workspace_id: uuid.UUID = Query(...), product_code: str = Query(...),
+    context: AuthContext = Depends(get_auth_context), db: Session = Depends(get_db),
+):
+    _require_scope(db, context, organization_id=organization_id, workspace_id=workspace_id,
+                   product_code=product_code, permission_code="data.read")
+    return list_analytical_datasets(db, organization_id=organization_id, workspace_id=workspace_id, product_code=product_code)
+
+
+@router.post("/analytical-datasets", response_model=AnalyticalDatasetResponse, status_code=status.HTTP_201_CREATED)
+def post_analytical_dataset(payload: AnalyticalDatasetCreate,
+                            context: AuthContext = Depends(get_auth_context), db: Session = Depends(get_db)):
+    _require_scope(db, context, organization_id=payload.organization_id, workspace_id=payload.workspace_id,
+                   product_code=payload.product_code, permission_code="data.governance.manage")
+    try:
+        result = create_analytical_dataset(db, payload=payload,
+                                           actor_id=_analytical_actor(db, context, payload.organization_id))
+        db.commit()
+        return result
+    except DataPlatformError as exc:
+        db.rollback()
+        raise _platform_error(exc) from None
+
+
+@router.get("/analytical-datasets/{dataset_id}/snapshots", response_model=list[AnalyticalSnapshotResponse])
+def get_analytical_snapshots(
+    dataset_id: uuid.UUID, organization_id: uuid.UUID = Query(...), workspace_id: uuid.UUID = Query(...),
+    product_code: str = Query(...), context: AuthContext = Depends(get_auth_context), db: Session = Depends(get_db),
+):
+    _require_scope(db, context, organization_id=organization_id, workspace_id=workspace_id,
+                   product_code=product_code, permission_code="data.read")
+    try:
+        return list_analytical_snapshots(db, dataset_id=dataset_id, organization_id=organization_id,
+                                         workspace_id=workspace_id, product_code=product_code)
+    except DataPlatformError as exc:
+        raise _platform_error(exc) from None
+
+
+@router.post("/analytical-datasets/{dataset_id}/snapshots", response_model=AnalyticalSnapshotResponse,
+             status_code=status.HTTP_201_CREATED)
+def post_analytical_snapshot(dataset_id: uuid.UUID, payload: AnalyticalSnapshotCreate,
+                             context: AuthContext = Depends(get_auth_context), db: Session = Depends(get_db)):
+    _require_scope(db, context, organization_id=payload.organization_id, workspace_id=payload.workspace_id,
+                   product_code=payload.product_code, permission_code="data.governance.manage")
+    try:
+        result = create_analytical_snapshot(db, dataset_id=dataset_id, payload=payload,
+                                            actor_id=_analytical_actor(db, context, payload.organization_id))
+        db.commit()
+        return result
+    except DataPlatformError as exc:
+        db.rollback()
+        raise _platform_error(exc) from None
+
+
+@router.post("/analytical-snapshots/{snapshot_id}/transition", response_model=AnalyticalSnapshotResponse)
+def post_analytical_snapshot_transition(snapshot_id: uuid.UUID, payload: AnalyticalTransitionRequest,
+                                        context: AuthContext = Depends(get_auth_context), db: Session = Depends(get_db)):
+    _require_scope(db, context, organization_id=payload.organization_id, workspace_id=payload.workspace_id,
+                   product_code=payload.product_code, permission_code="data.governance.manage")
+    try:
+        result = transition_analytical_snapshot(
+            db, snapshot_id=snapshot_id, organization_id=payload.organization_id, workspace_id=payload.workspace_id,
+            product_code=payload.product_code, expected_revision=payload.expected_revision,
+            target_state=payload.target_state, actor_id=_analytical_actor(db, context, payload.organization_id))
+        db.commit()
+        return result
+    except DataPlatformError as exc:
+        db.rollback()
+        raise _platform_error(exc) from None
+
+
+@router.get("/analytical-snapshots/{snapshot_id}/lineage", response_model=AnalyticalLineageResponse)
+def get_analytical_snapshot_lineage(
+    snapshot_id: uuid.UUID, organization_id: uuid.UUID = Query(...), workspace_id: uuid.UUID = Query(...),
+    product_code: str = Query(...), context: AuthContext = Depends(get_auth_context), db: Session = Depends(get_db),
+):
+    _require_scope(db, context, organization_id=organization_id, workspace_id=workspace_id,
+                   product_code=product_code, permission_code="data.read")
+    try:
+        return get_analytical_lineage(db, snapshot_id=snapshot_id, organization_id=organization_id,
+                                      workspace_id=workspace_id, product_code=product_code)
+    except DataPlatformError as exc:
+        raise _platform_error(exc) from None
+
+
+@router.get("/analytical-features", response_model=list[AnalyticalFeatureResponse])
+def get_analytical_features(
+    organization_id: uuid.UUID = Query(...), workspace_id: uuid.UUID = Query(...), product_code: str = Query(...),
+    context: AuthContext = Depends(get_auth_context), db: Session = Depends(get_db),
+):
+    _require_scope(db, context, organization_id=organization_id, workspace_id=workspace_id,
+                   product_code=product_code, permission_code="data.read")
+    return list_analytical_features(db, organization_id=organization_id, workspace_id=workspace_id, product_code=product_code)
+
+
+@router.post("/analytical-features", response_model=AnalyticalFeatureResponse, status_code=status.HTTP_201_CREATED)
+def post_analytical_feature(payload: AnalyticalFeatureCreate,
+                            context: AuthContext = Depends(get_auth_context), db: Session = Depends(get_db)):
+    _require_scope(db, context, organization_id=payload.organization_id, workspace_id=payload.workspace_id,
+                   product_code=payload.product_code, permission_code="data.governance.manage")
+    try:
+        result = create_analytical_feature(db, payload=payload,
+                                           actor_id=_analytical_actor(db, context, payload.organization_id))
+        db.commit()
+        return result
+    except DataPlatformError as exc:
+        db.rollback()
+        raise _platform_error(exc) from None
+
+
+@router.get("/analytical-features/{feature_id}/versions", response_model=list[AnalyticalFeatureVersionResponse])
+def get_analytical_feature_versions(
+    feature_id: uuid.UUID, organization_id: uuid.UUID = Query(...), workspace_id: uuid.UUID = Query(...),
+    product_code: str = Query(...), context: AuthContext = Depends(get_auth_context), db: Session = Depends(get_db),
+):
+    _require_scope(db, context, organization_id=organization_id, workspace_id=workspace_id,
+                   product_code=product_code, permission_code="data.read")
+    try:
+        return list_analytical_feature_versions(db, feature_id=feature_id, organization_id=organization_id,
+                                                workspace_id=workspace_id, product_code=product_code)
+    except DataPlatformError as exc:
+        raise _platform_error(exc) from None
+
+
+@router.post("/analytical-features/{feature_id}/versions", response_model=AnalyticalFeatureVersionResponse,
+             status_code=status.HTTP_201_CREATED)
+def post_analytical_feature_version(feature_id: uuid.UUID, payload: AnalyticalFeatureVersionCreate,
+                                    context: AuthContext = Depends(get_auth_context), db: Session = Depends(get_db)):
+    _require_scope(db, context, organization_id=payload.organization_id, workspace_id=payload.workspace_id,
+                   product_code=payload.product_code, permission_code="data.governance.manage")
+    try:
+        result = create_analytical_feature_version(db, feature_id=feature_id, payload=payload,
+                                                   actor_id=_analytical_actor(db, context, payload.organization_id))
+        db.commit()
+        return result
+    except DataPlatformError as exc:
+        db.rollback()
+        raise _platform_error(exc) from None
+
+
+@router.post("/analytical-feature-versions/{feature_version_id}/transition",
+             response_model=AnalyticalFeatureVersionResponse)
+def post_analytical_feature_transition(feature_version_id: uuid.UUID, payload: FeatureTransitionRequest,
+                                       context: AuthContext = Depends(get_auth_context), db: Session = Depends(get_db)):
+    _require_scope(db, context, organization_id=payload.organization_id, workspace_id=payload.workspace_id,
+                   product_code=payload.product_code, permission_code="data.governance.manage")
+    try:
+        result = transition_analytical_feature_version(
+            db, feature_version_id=feature_version_id, organization_id=payload.organization_id,
+            workspace_id=payload.workspace_id, product_code=payload.product_code,
+            expected_revision=payload.expected_revision, target_state=payload.target_state,
+            actor_id=_analytical_actor(db, context, payload.organization_id))
+        db.commit()
+        return result
+    except DataPlatformError as exc:
+        db.rollback()
+        raise _platform_error(exc) from None
+
+
+@router.post("/analytical-ai/eligibility", response_model=AnalyticalAIEligibilityResponse)
+def post_analytical_ai_eligibility(payload: AnalyticalAIEligibilityRequest,
+                                   context: AuthContext = Depends(get_auth_context), db: Session = Depends(get_db)):
+    _require_scope(db, context, organization_id=payload.organization_id, workspace_id=payload.workspace_id,
+                   product_code=payload.product_code, permission_code="data.read")
+    try:
+        return evaluate_analytical_ai_eligibility(
+            db, artifact_type=payload.artifact_type, artifact_id=payload.artifact_id, action=payload.action,
+            organization_id=payload.organization_id, workspace_id=payload.workspace_id,
+            product_code=payload.product_code, namespace=payload.namespace)
+    except DataPlatformError as exc:
         raise _platform_error(exc) from None

@@ -3,10 +3,12 @@ from __future__ import annotations
 import uuid
 from datetime import datetime
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from src.platform.data.governance import (
     AIUsePolicy,
+    AnalyticalAIAction,
+    AnalyticalSnapshotState,
     AnonymizationStatus,
     ContentState,
     DataClassification,
@@ -272,3 +274,211 @@ class ExportRequest(BaseModel):
     workspace_id: uuid.UUID
     product_code: str
     purpose_reference: str = Field(min_length=1, max_length=1000)
+
+
+class _AnalyticalRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+
+class AnalyticalDatasetCreate(_AnalyticalRequest):
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: str = Field(pattern=r"^(SIMPA|ORDO)$")
+    code: str = Field(min_length=1, max_length=120, pattern=r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
+    name: str = Field(min_length=1, max_length=240)
+    description: str = Field(default="", max_length=1000)
+    methodology_reference: str = Field(min_length=1, max_length=500)
+    methodology_version: str = Field(min_length=1, max_length=120)
+
+
+class AnalyticalDatasetResponse(BaseModel):
+    id: uuid.UUID
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: str
+    code: str
+    name: str
+    description: str
+    methodology_reference: str
+    methodology_version: str
+    revision: int
+    created_by_membership_id: uuid.UUID | None
+    updated_by_membership_id: uuid.UUID | None
+    created_at: datetime
+    updated_at: datetime
+
+
+class AnalyticalSnapshotCreate(_AnalyticalRequest):
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: str = Field(pattern=r"^(SIMPA|ORDO)$")
+    source_version_ids: list[uuid.UUID] = Field(min_length=1)
+    methodology_reference: str = Field(min_length=1, max_length=500)
+    methodology_version: str = Field(min_length=1, max_length=120)
+    build_reference: str = Field(default="", max_length=500)
+
+
+class AnalyticalTransitionRequest(_AnalyticalRequest):
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: str = Field(pattern=r"^(SIMPA|ORDO)$")
+    expected_revision: int = Field(ge=1)
+    target_state: AnalyticalSnapshotState
+
+
+class FeatureTransitionRequest(_AnalyticalRequest):
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: str = Field(pattern=r"^(SIMPA|ORDO)$")
+    expected_revision: int = Field(ge=1)
+    target_state: GovernanceState
+
+
+class SourceLineageResponse(BaseModel):
+    source_id: uuid.UUID
+    source_version_id: uuid.UUID
+    source_version_no: int
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: str
+    classification: DataClassification
+    privacy_category: PrivacyCategory
+    ai_use_policy: AIUsePolicy
+    source_fingerprint: str
+
+
+class AnalyticalSnapshotResponse(BaseModel):
+    id: uuid.UUID
+    dataset_id: uuid.UUID
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: str
+    version_no: int
+    methodology_reference: str
+    methodology_version: str
+    build_reference: str
+    classification: DataClassification
+    privacy_category: PrivacyCategory
+    ai_use_policy: AIUsePolicy
+    state: AnalyticalSnapshotState
+    fingerprint: str
+    revision: int
+    invalidated: bool
+    invalidation_reason: str
+    invalidated_at: datetime | None
+    invalidated_by_membership_id: uuid.UUID | None
+    frozen_at: datetime | None
+    created_by_membership_id: uuid.UUID | None
+    updated_by_membership_id: uuid.UUID | None
+    created_at: datetime
+    updated_at: datetime
+    source_versions: list[SourceLineageResponse] = Field(default_factory=list)
+
+
+class AnalyticalFeatureCreate(_AnalyticalRequest):
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: str = Field(pattern=r"^(SIMPA|ORDO)$")
+    code: str = Field(min_length=1, max_length=120, pattern=r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
+    name: str = Field(min_length=1, max_length=240)
+    description: str = Field(default="", max_length=1000)
+    methodology_reference: str = Field(min_length=1, max_length=500)
+    methodology_version: str = Field(min_length=1, max_length=120)
+
+
+class AnalyticalFeatureResponse(BaseModel):
+    id: uuid.UUID
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: str
+    code: str
+    name: str
+    description: str
+    methodology_reference: str
+    methodology_version: str
+    revision: int
+    created_by_membership_id: uuid.UUID | None
+    updated_by_membership_id: uuid.UUID | None
+    created_at: datetime
+    updated_at: datetime
+
+
+class AnalyticalFeatureVersionCreate(_AnalyticalRequest):
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: str = Field(pattern=r"^(SIMPA|ORDO)$")
+    snapshot_ids: list[uuid.UUID] = Field(min_length=1)
+    methodology_reference: str = Field(min_length=1, max_length=500)
+    methodology_version: str = Field(min_length=1, max_length=120)
+
+
+class SnapshotInputResponse(BaseModel):
+    snapshot_id: uuid.UUID
+    snapshot_version_no: int
+    snapshot_fingerprint: str
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: str
+
+
+class AnalyticalFeatureVersionResponse(BaseModel):
+    id: uuid.UUID
+    feature_id: uuid.UUID
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: str
+    version_no: int
+    methodology_reference: str
+    methodology_version: str
+    classification: DataClassification
+    privacy_category: PrivacyCategory
+    ai_use_policy: AIUsePolicy
+    state: GovernanceState
+    fingerprint: str
+    revision: int
+    invalidated: bool
+    invalidation_reason: str
+    invalidated_at: datetime | None
+    invalidated_by_membership_id: uuid.UUID | None
+    frozen_at: datetime | None
+    created_by_membership_id: uuid.UUID | None
+    updated_by_membership_id: uuid.UUID | None
+    created_at: datetime
+    updated_at: datetime
+    snapshot_inputs: list[SnapshotInputResponse] = Field(default_factory=list)
+
+
+class AnalyticalLineageResponse(BaseModel):
+    dataset: AnalyticalDatasetResponse
+    snapshot: AnalyticalSnapshotResponse
+    dependent_feature_versions: list[AnalyticalFeatureVersionResponse] = Field(default_factory=list)
+
+
+class AnalyticalAIEligibilityRequest(_AnalyticalRequest):
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: str = Field(pattern=r"^(SIMPA|ORDO)$")
+    artifact_type: str = Field(pattern=r"^(snapshot|feature_version)$")
+    artifact_id: uuid.UUID
+    action: AnalyticalAIAction
+    namespace: str = Field(min_length=1, max_length=160)
+
+
+class AnalyticalAIEligibilityResponse(BaseModel):
+    allowed: bool
+    requested_action: AnalyticalAIAction
+    reason_code: str
+    requires_separate_approval: bool
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: str
+    artifact_type: str
+    artifact_id: uuid.UUID
+    artifact_version: int
+    lifecycle_state: str
+    classification: DataClassification
+    privacy_category: PrivacyCategory
+    ai_use_policy: AIUsePolicy
+    namespace: str
+    human_review_required: bool
+    provenance_fingerprint: str

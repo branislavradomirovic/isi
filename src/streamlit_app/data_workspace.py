@@ -102,6 +102,171 @@ def _render_upload(token: str, shell: dict[str, Any], scope: tuple[str, str, str
     st.rerun()
 
 
+def _registry_rows(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [{
+        "Code": item.get("code", "—"),
+        "Name": item.get("name", "—"),
+        "Methodology reference": item.get("methodology_reference", "—"),
+        "Methodology version": item.get("methodology_version", "—"),
+        "Registry revision": item.get("revision", "—"),
+    } for item in items]
+
+
+def _version_rows(items: list[dict[str, Any]], *, identity_key: str) -> list[dict[str, Any]]:
+    return [{
+        "Artifact ID": item.get("id", "—"),
+        "Registry ID": item.get(identity_key, "—"),
+        "Version": item.get("version_no", "—"),
+        "State": item.get("state", "—"),
+        "Classification": item.get("classification", "—"),
+        "Privacy": item.get("privacy_category", "—"),
+        "AI policy": item.get("ai_use_policy", "—"),
+        "Methodology reference": item.get("methodology_reference", "—"),
+        "Methodology version": item.get("methodology_version", "—"),
+        "Invalidated": item.get("invalidated", False),
+        "Invalidation reason": item.get("invalidation_reason") or "—",
+        "Fingerprint / provenance": item.get("fingerprint", "—"),
+    } for item in items]
+
+
+def _artifact_label(item: dict[str, Any]) -> str:
+    return f"v{item.get('version_no', '—')} · {item.get('state', '—')} · {item.get('id', '—')}"
+
+
+def _render_lineage(lineage: dict[str, Any]) -> None:
+    snapshot = lineage.get("snapshot") or {}
+    st.caption(
+        f"Snapshot v{snapshot.get('version_no', '—')} · provenance fingerprint: "
+        f"{snapshot.get('fingerprint', '—')}"
+    )
+    source_rows = [{
+        "Source ID": edge.get("source_id", "—"),
+        "Source version ID": edge.get("source_version_id", "—"),
+        "Source version": edge.get("source_version_no", "—"),
+        "Classification": edge.get("classification", "—"),
+        "Privacy": edge.get("privacy_category", "—"),
+        "AI policy": edge.get("ai_use_policy", "—"),
+        "Source fingerprint": edge.get("source_fingerprint", "—"),
+    } for edge in snapshot.get("source_versions", [])]
+    st.markdown("**Source-version lineage**")
+    st.dataframe(source_rows, use_container_width=True, hide_index=True)
+    st.markdown("**Dependent feature versions**")
+    st.dataframe(
+        _version_rows(lineage.get("dependent_feature_versions", []), identity_key="feature_id"),
+        use_container_width=True,
+        hide_index=True,
+    )
+
+
+def _render_eligibility_result(result: dict[str, Any]) -> None:
+    st.dataframe([{
+        "Allowed": result.get("allowed", False),
+        "Reason code": result.get("reason_code", "—"),
+        "Separate approval": result.get("requires_separate_approval", False),
+        "Human review required": result.get("human_review_required", True),
+        "Artifact version": result.get("artifact_version", "—"),
+        "Lifecycle state": result.get("lifecycle_state", "—"),
+        "Classification": result.get("classification", "—"),
+        "Privacy": result.get("privacy_category", "—"),
+        "AI policy": result.get("ai_use_policy", "—"),
+        "Provenance fingerprint": result.get("provenance_fingerprint", "—"),
+    }], use_container_width=True, hide_index=True)
+
+
+def _render_analytical_governance(token: str, shell: dict[str, Any], scope: tuple[str, str, str]) -> None:
+    organization_id, product_code, workspace_id = scope
+    params = {"organization_id": organization_id, "product_code": product_code, "workspace_id": workspace_id}
+    try:
+        datasets = data_api.list_analytical_datasets(token, **params)
+        features = data_api.list_analytical_features(token, **params)
+        snapshots = [
+            snapshot
+            for dataset in datasets
+            for snapshot in data_api.list_analytical_snapshots(
+                token, dataset_id=str(dataset["id"]), **params,
+            )
+        ]
+        feature_versions = [
+            version
+            for feature in features
+            for version in data_api.list_analytical_feature_versions(
+                token, feature_id=str(feature["id"]), **params,
+            )
+        ]
+    except (AuthenticationRequired, AccessDenied, ApiUnavailable) as exc:
+        st.error(str(exc))
+        return
+
+    st.markdown("### Analytical datasets")
+    st.dataframe(_registry_rows(datasets), use_container_width=True, hide_index=True)
+    st.dataframe(_version_rows(snapshots, identity_key="dataset_id"), use_container_width=True, hide_index=True)
+    st.markdown("### Feature registry")
+    st.dataframe(_registry_rows(features), use_container_width=True, hide_index=True)
+    st.dataframe(
+        _version_rows(feature_versions, identity_key="feature_id"),
+        use_container_width=True,
+        hide_index=True,
+    )
+
+    st.markdown("### Lineage / provenance")
+    if snapshots:
+        selected_snapshot = st.selectbox(
+            "Snapshot for lineage",
+            snapshots,
+            format_func=_artifact_label,
+            key="analytical_lineage_snapshot",
+        )
+        try:
+            lineage = data_api.get_analytical_lineage(
+                token, snapshot_id=str(selected_snapshot["id"]), **params,
+            )
+            _render_lineage(lineage)
+        except (AuthenticationRequired, AccessDenied, ApiUnavailable) as exc:
+            st.error(str(exc))
+    else:
+        st.caption("No versioned snapshot is available in the active governed scope.")
+
+    st.markdown("### AI / RAG eligibility")
+    artifacts = [
+        {**item, "artifact_type": "snapshot"} for item in snapshots
+    ] + [
+        {**item, "artifact_type": "feature_version"} for item in feature_versions
+    ]
+    if artifacts:
+        selected_artifact = st.selectbox(
+            "Governed artifact",
+            artifacts,
+            format_func=lambda item: f"{item['artifact_type']} · {_artifact_label(item)}",
+            key="analytical_eligibility_artifact",
+        )
+        action = st.selectbox(
+            "Governed AI action",
+            ("LOCAL_ANALYSIS", "RAG_RETRIEVAL", "MODEL_EVALUATION", "MODEL_TRAINING"),
+            key="analytical_eligibility_action",
+        )
+        if st.button("Evaluate deterministic eligibility", key="analytical_eligibility_evaluate"):
+            try:
+                result = data_api.evaluate_ai_eligibility(token, **params,
+                    artifact_type=selected_artifact["artifact_type"],
+                    artifact_id=str(selected_artifact["id"]), action=action,
+                    namespace=f"ORG-{organization_id}/{product_code}")
+                _render_eligibility_result(result)
+            except (AuthenticationRequired, AccessDenied, ApiUnavailable) as exc:
+                st.error(str(exc))
+    else:
+        st.caption("No versioned governed artifact is available for deterministic eligibility evaluation.")
+
+    st.markdown("### Human review")
+    st.info(
+        "Eligibility never executes a model. Analytical and AI outputs remain evidence-bounded, attributable, "
+        "auditable, and subject to the human-review decision shown above."
+    )
+
+    if "data.governance.manage" in set(shell["product"].get("permission_codes", [])):
+        with st.expander("Registry governance controls"):
+            st.caption("Mutations are submitted to API endpoints that enforce data.governance.manage server-side.")
+
+
 def render_data_workspace(*, token: str, shell: dict[str, Any]) -> None:
     product = shell["product"]
     organization = shell["organization"]
@@ -140,3 +305,4 @@ def render_data_workspace(*, token: str, shell: dict[str, Any]) -> None:
     metric_cols[2].metric("Aktivni workspace", product_code)
     _render_catalog(sources)
     _render_upload(token, shell, scope)
+    _render_analytical_governance(token, shell, scope)

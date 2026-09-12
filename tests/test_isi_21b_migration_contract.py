@@ -58,6 +58,8 @@ def test_constraints_immutability_identifier_lengths_and_reverse_downgrade():
     assert positions == sorted(positions)
 
 
-def test_0018_is_the_sole_alembic_head():
-    result = subprocess.run(["alembic", "heads"], check=True, capture_output=True, text=True)
-    assert result.stdout.strip() == "20260912_0018 (head)"
+def test_0018_remains_in_single_head_alembic_history():
+    heads = subprocess.run(["alembic", "heads"], check=True, capture_output=True, text=True)
+    assert len([line for line in heads.stdout.splitlines() if line.strip()]) == 1
+    history = subprocess.run(["alembic", "history"], check=True, capture_output=True, text=True)
+    assert "20260912_0018" in history.stdout

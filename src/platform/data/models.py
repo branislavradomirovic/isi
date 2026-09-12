@@ -355,3 +355,168 @@ class DataAuditEvent(Base):
     entity_id: Mapped[uuid.UUID] = mapped_column(nullable=False)
     detail: Mapped[str] = mapped_column(Text, nullable=False, default="", server_default="")
     created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+
+
+class AnalyticalDataset(Base):
+    __tablename__ = "core_analytical_datasets"
+    __table_args__ = (
+        UniqueConstraint("workspace_id", "product_code", "code", name="uq_analytical_dataset_scope_code"),
+        CheckConstraint("product_code IN ('SIMPA', 'ORDO')", name="ck_analytical_dataset_product"),
+        CheckConstraint("revision >= 1", name="ck_analytical_dataset_revision"),
+        Index("ix_analytical_dataset_scope", "organization_id", "workspace_id", "product_code"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    organization_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False)
+    workspace_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False)
+    product_code: Mapped[str] = mapped_column(ForeignKey("core_products.code"), nullable=False)
+    code: Mapped[str] = mapped_column(String(120), nullable=False)
+    name: Mapped[str] = mapped_column(String(240), nullable=False)
+    description: Mapped[str] = mapped_column(String(1000), nullable=False, default="", server_default="")
+    methodology_reference: Mapped[str] = mapped_column(String(500), nullable=False)
+    methodology_version: Mapped[str] = mapped_column(String(120), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False, default=1, server_default="1")
+    created_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    updated_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updated_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
+
+
+class AnalyticalDatasetSnapshot(Base):
+    __tablename__ = "core_analytical_dataset_snapshots"
+    __table_args__ = (
+        UniqueConstraint("dataset_id", "version_no", name="uq_analytical_snapshot_dataset_version"),
+        CheckConstraint("version_no >= 1", name="ck_analytical_snapshot_version"),
+        CheckConstraint("revision >= 1", name="ck_analytical_snapshot_revision"),
+        CheckConstraint("product_code IN ('SIMPA', 'ORDO')", name="ck_analytical_snapshot_product"),
+        CheckConstraint("state IN ('DRAFT', 'VALIDATED', 'FROZEN', 'RETIRED')", name="ck_analytical_snapshot_state"),
+        Index("ix_analytical_snapshot_scope", "organization_id", "workspace_id", "product_code"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    dataset_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_analytical_datasets.id", ondelete="CASCADE"), nullable=False, index=True)
+    organization_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False)
+    workspace_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False)
+    product_code: Mapped[str] = mapped_column(ForeignKey("core_products.code"), nullable=False)
+    version_no: Mapped[int] = mapped_column(Integer, nullable=False)
+    methodology_reference: Mapped[str] = mapped_column(String(500), nullable=False)
+    methodology_version: Mapped[str] = mapped_column(String(120), nullable=False)
+    build_reference: Mapped[str] = mapped_column(String(500), nullable=False, default="", server_default="")
+    classification: Mapped[str] = mapped_column(String(32), nullable=False)
+    privacy_category: Mapped[str] = mapped_column(String(40), nullable=False)
+    ai_use_policy: Mapped[str] = mapped_column(String(64), nullable=False)
+    state: Mapped[str] = mapped_column(String(24), nullable=False, default="DRAFT", server_default="DRAFT")
+    fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False, default=1, server_default="1")
+    invalidated: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default="false")
+    invalidation_reason: Mapped[str] = mapped_column(String(120), nullable=False, default="", server_default="")
+    invalidated_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    invalidated_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    frozen_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    updated_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updated_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
+
+
+class AnalyticalSnapshotSourceVersion(Base):
+    __tablename__ = "core_analytical_snapshot_source_versions"
+    __table_args__ = (
+        UniqueConstraint("snapshot_id", "source_version_id", name="uq_analytical_snapshot_source_edge"),
+        CheckConstraint("product_code IN ('SIMPA', 'ORDO')", name="ck_analytical_snapshot_source_product"),
+        Index("ix_analytical_snapshot_source_lineage", "source_version_id", "snapshot_id"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    snapshot_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_analytical_dataset_snapshots.id", ondelete="CASCADE"), nullable=False, index=True)
+    source_version_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_source_versions.id", ondelete="RESTRICT"), nullable=False, index=True)
+    source_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_sources.id", ondelete="RESTRICT"), nullable=False)
+    organization_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False)
+    workspace_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False)
+    product_code: Mapped[str] = mapped_column(ForeignKey("core_products.code"), nullable=False)
+    source_version_no: Mapped[int] = mapped_column(Integer, nullable=False)
+    classification: Mapped[str] = mapped_column(String(32), nullable=False)
+    privacy_category: Mapped[str] = mapped_column(String(40), nullable=False)
+    ai_use_policy: Mapped[str] = mapped_column(String(64), nullable=False)
+    source_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+
+
+class AnalyticalFeature(Base):
+    __tablename__ = "core_analytical_features"
+    __table_args__ = (
+        UniqueConstraint("workspace_id", "product_code", "code", name="uq_analytical_feature_scope_code"),
+        CheckConstraint("product_code IN ('SIMPA', 'ORDO')", name="ck_analytical_feature_product"),
+        CheckConstraint("revision >= 1", name="ck_analytical_feature_revision"),
+        Index("ix_analytical_feature_scope", "organization_id", "workspace_id", "product_code"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    organization_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False)
+    workspace_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False)
+    product_code: Mapped[str] = mapped_column(ForeignKey("core_products.code"), nullable=False)
+    code: Mapped[str] = mapped_column(String(120), nullable=False)
+    name: Mapped[str] = mapped_column(String(240), nullable=False)
+    description: Mapped[str] = mapped_column(String(1000), nullable=False, default="", server_default="")
+    methodology_reference: Mapped[str] = mapped_column(String(500), nullable=False)
+    methodology_version: Mapped[str] = mapped_column(String(120), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False, default=1, server_default="1")
+    created_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    updated_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updated_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
+
+
+class AnalyticalFeatureVersion(Base):
+    __tablename__ = "core_analytical_feature_versions"
+    __table_args__ = (
+        UniqueConstraint("feature_id", "version_no", name="uq_analytical_feature_version"),
+        CheckConstraint("version_no >= 1", name="ck_analytical_feature_version_number"),
+        CheckConstraint("revision >= 1", name="ck_analytical_feature_version_revision"),
+        CheckConstraint("product_code IN ('SIMPA', 'ORDO')", name="ck_analytical_feature_version_product"),
+        CheckConstraint("state IN ('DRAFT', 'GOVERNED', 'FROZEN', 'RETIRED')", name="ck_analytical_feature_version_state"),
+        Index("ix_analytical_feature_version_scope", "organization_id", "workspace_id", "product_code"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    feature_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_analytical_features.id", ondelete="CASCADE"), nullable=False, index=True)
+    organization_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False)
+    workspace_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False)
+    product_code: Mapped[str] = mapped_column(ForeignKey("core_products.code"), nullable=False)
+    version_no: Mapped[int] = mapped_column(Integer, nullable=False)
+    methodology_reference: Mapped[str] = mapped_column(String(500), nullable=False)
+    methodology_version: Mapped[str] = mapped_column(String(120), nullable=False)
+    classification: Mapped[str] = mapped_column(String(32), nullable=False)
+    privacy_category: Mapped[str] = mapped_column(String(40), nullable=False)
+    ai_use_policy: Mapped[str] = mapped_column(String(64), nullable=False)
+    state: Mapped[str] = mapped_column(String(24), nullable=False, default="DRAFT", server_default="DRAFT")
+    fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False, default=1, server_default="1")
+    invalidated: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default="false")
+    invalidation_reason: Mapped[str] = mapped_column(String(120), nullable=False, default="", server_default="")
+    invalidated_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    invalidated_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    frozen_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    updated_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updated_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
+
+
+class AnalyticalFeatureSnapshotInput(Base):
+    __tablename__ = "core_analytical_feature_snapshot_inputs"
+    __table_args__ = (
+        UniqueConstraint("feature_version_id", "snapshot_id", name="uq_analytical_feature_snapshot_edge"),
+        CheckConstraint("product_code IN ('SIMPA', 'ORDO')", name="ck_analytical_feature_snapshot_product"),
+        Index("ix_analytical_feature_snapshot_lineage", "snapshot_id", "feature_version_id"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    feature_version_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_analytical_feature_versions.id", ondelete="CASCADE"), nullable=False, index=True)
+    snapshot_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_analytical_dataset_snapshots.id", ondelete="RESTRICT"), nullable=False, index=True)
+    organization_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False)
+    workspace_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False)
+    product_code: Mapped[str] = mapped_column(ForeignKey("core_products.code"), nullable=False)
+    snapshot_version_no: Mapped[int] = mapped_column(Integer, nullable=False)
+    snapshot_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())

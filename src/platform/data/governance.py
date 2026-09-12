@@ -27,6 +27,20 @@ class GovernanceState(StrEnum):
     RETIRED = "RETIRED"
 
 
+class AnalyticalSnapshotState(StrEnum):
+    DRAFT = "DRAFT"
+    VALIDATED = "VALIDATED"
+    FROZEN = "FROZEN"
+    RETIRED = "RETIRED"
+
+
+class AnalyticalAIAction(StrEnum):
+    LOCAL_ANALYSIS = "LOCAL_ANALYSIS"
+    RAG_RETRIEVAL = "RAG_RETRIEVAL"
+    MODEL_EVALUATION = "MODEL_EVALUATION"
+    MODEL_TRAINING = "MODEL_TRAINING"
+
+
 class AIUsePolicy(StrEnum):
     PROHIBITED = "PROHIBITED"
     LOCAL_ANALYSIS_ONLY = "LOCAL_ANALYSIS_ONLY"
@@ -99,3 +113,56 @@ def privacy_is_downgrade(before: PrivacyCategory | str, after: PrivacyCategory |
 
 def catalog_values(catalog: type[StrEnum]) -> tuple[str, ...]:
     return tuple(item.value for item in catalog)
+
+
+def inherited_classification(values: list[DataClassification | str]) -> DataClassification:
+    normalized = [DataClassification(value) for value in values]
+    if not normalized or DataClassification.UNCLASSIFIED in normalized:
+        return DataClassification.UNCLASSIFIED
+    return max(normalized, key=_CLASSIFICATION_SENSITIVITY.__getitem__)
+
+
+def inherited_privacy(values: list[PrivacyCategory | str]) -> PrivacyCategory:
+    normalized = [PrivacyCategory(value) for value in values]
+    if not normalized or PrivacyCategory.UNKNOWN in normalized:
+        return PrivacyCategory.UNKNOWN
+    if PrivacyCategory.NONE_DECLARED in normalized:
+        return PrivacyCategory.NONE_DECLARED
+    return max(normalized, key=_PRIVACY_SENSITIVITY.__getitem__)
+
+
+_AI_CAPABILITIES = {
+    AIUsePolicy.PROHIBITED: frozenset(),
+    AIUsePolicy.LOCAL_ANALYSIS_ONLY: frozenset({AnalyticalAIAction.LOCAL_ANALYSIS}),
+    AIUsePolicy.RAG_RETRIEVAL_ALLOWED: frozenset(
+        {AnalyticalAIAction.LOCAL_ANALYSIS, AnalyticalAIAction.RAG_RETRIEVAL}
+    ),
+    AIUsePolicy.MODEL_EVALUATION_ALLOWED: frozenset(
+        {AnalyticalAIAction.LOCAL_ANALYSIS, AnalyticalAIAction.MODEL_EVALUATION}
+    ),
+    AIUsePolicy.MODEL_TRAINING_REQUIRES_SEPARATE_APPROVAL: frozenset(
+        {AnalyticalAIAction.LOCAL_ANALYSIS, AnalyticalAIAction.MODEL_EVALUATION}
+    ),
+}
+
+
+def ai_policy_capabilities(policy: AIUsePolicy | str) -> frozenset[AnalyticalAIAction]:
+    return _AI_CAPABILITIES[AIUsePolicy(policy)]
+
+
+def inherited_ai_policy(values: list[AIUsePolicy | str]) -> AIUsePolicy:
+    normalized = [AIUsePolicy(value) for value in values]
+    if not normalized:
+        return AIUsePolicy.PROHIBITED
+    if len(set(normalized)) == 1:
+        return normalized[0]
+    capabilities = set(_AI_CAPABILITIES[normalized[0]])
+    for policy in normalized[1:]:
+        capabilities.intersection_update(_AI_CAPABILITIES[policy])
+    if not capabilities:
+        return AIUsePolicy.PROHIBITED
+    if capabilities == {AnalyticalAIAction.LOCAL_ANALYSIS, AnalyticalAIAction.RAG_RETRIEVAL}:
+        return AIUsePolicy.RAG_RETRIEVAL_ALLOWED
+    if capabilities == {AnalyticalAIAction.LOCAL_ANALYSIS, AnalyticalAIAction.MODEL_EVALUATION}:
+        return AIUsePolicy.MODEL_EVALUATION_ALLOWED
+    return AIUsePolicy.LOCAL_ANALYSIS_ONLY
