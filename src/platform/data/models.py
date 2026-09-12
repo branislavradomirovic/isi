@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import uuid
 
-from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint, func
+from sqlalchemy import Boolean, CheckConstraint, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.core.database import Base
@@ -60,6 +60,123 @@ class DataSourceVersion(Base):
     schema_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False, default="", server_default="")
     created_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
     created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+
+
+class DataRetentionPolicy(Base):
+    __tablename__ = "core_data_retention_policies"
+    __table_args__ = (
+        UniqueConstraint(
+            "workspace_id",
+            "policy_code",
+            "version_no",
+            name="uq_core_data_retention_policies_workspace_code_version",
+        ),
+        CheckConstraint("product_code IN ('SIMPA', 'ORDO')", name="ck_core_data_retention_policies_product"),
+        CheckConstraint("version_no >= 1", name="ck_core_data_retention_policies_version"),
+        CheckConstraint("status IN ('active', 'retired')", name="ck_core_data_retention_policies_status"),
+        CheckConstraint("retention_days IS NULL OR retention_days >= 0", name="ck_core_data_retention_policies_days"),
+        CheckConstraint(
+            "tombstone_retention_days IS NULL OR tombstone_retention_days >= 0",
+            name="ck_core_data_retention_policies_tombstone_days",
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    organization_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False, index=True)
+    workspace_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False, index=True)
+    product_code: Mapped[str] = mapped_column(ForeignKey("core_products.code"), nullable=False, index=True)
+    policy_code: Mapped[str] = mapped_column(String(120), nullable=False)
+    version_no: Mapped[int] = mapped_column(Integer, nullable=False)
+    name: Mapped[str] = mapped_column(String(240), nullable=False)
+    status: Mapped[str] = mapped_column(String(16), nullable=False, default="active", server_default="active")
+    retention_days: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    no_auto_delete: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, server_default="true")
+    manual_review_required: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, server_default="true")
+    archive_before_purge: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, server_default="true")
+    tombstone_retention_days: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    reference_text: Mapped[str] = mapped_column(String(1000), nullable=False, default="", server_default="")
+    created_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+
+
+class DataSourceGovernanceProfile(Base):
+    __tablename__ = "core_data_source_governance_profiles"
+    __table_args__ = (
+        CheckConstraint("product_code IN ('SIMPA', 'ORDO')", name="ck_core_data_source_governance_profiles_product"),
+        CheckConstraint(
+            "classification IN ('UNCLASSIFIED', 'PUBLIC', 'INTERNAL', 'CONFIDENTIAL', 'RESTRICTED')",
+            name="ck_core_data_source_governance_profiles_classification",
+        ),
+        CheckConstraint(
+            "privacy_category IN ('NONE_DECLARED', 'AGGREGATE_NON_PERSONAL', 'PSEUDONYMOUS_OR_LINKABLE', "
+            "'PERSONAL_DATA', 'SENSITIVE_PERSONAL_DATA', 'UNKNOWN')",
+            name="ck_core_data_source_governance_profiles_privacy",
+        ),
+        CheckConstraint(
+            "ai_use_policy IN ('PROHIBITED', 'LOCAL_ANALYSIS_ONLY', 'RAG_RETRIEVAL_ALLOWED', "
+            "'MODEL_EVALUATION_ALLOWED', 'MODEL_TRAINING_REQUIRES_SEPARATE_APPROVAL')",
+            name="ck_core_data_source_governance_profiles_ai_use",
+        ),
+        CheckConstraint("export_policy = 'PROHIBITED'", name="ck_core_data_source_governance_profiles_export"),
+        CheckConstraint(
+            "governance_state IN ('DRAFT', 'GOVERNED', 'FROZEN', 'RETIRED')",
+            name="ck_core_data_source_governance_profiles_state",
+        ),
+        CheckConstraint("revision >= 1", name="ck_core_data_source_governance_profiles_revision"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    source_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_data_sources.id", ondelete="CASCADE"), nullable=False, unique=True, index=True
+    )
+    organization_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False, index=True)
+    workspace_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False, index=True)
+    product_code: Mapped[str] = mapped_column(ForeignKey("core_products.code"), nullable=False, index=True)
+    classification: Mapped[str] = mapped_column(String(32), nullable=False, default="UNCLASSIFIED", server_default="UNCLASSIFIED")
+    privacy_category: Mapped[str] = mapped_column(String(40), nullable=False, default="UNKNOWN", server_default="UNKNOWN")
+    processing_purpose: Mapped[str] = mapped_column(String(1000), nullable=False, default="", server_default="")
+    data_owner_ref: Mapped[str] = mapped_column(String(300), nullable=False, default="", server_default="")
+    data_steward_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    retention_policy_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_data_retention_policies.id", ondelete="SET NULL"), nullable=True)
+    ai_use_policy: Mapped[str] = mapped_column(String(64), nullable=False, default="PROHIBITED", server_default="PROHIBITED")
+    export_policy: Mapped[str] = mapped_column(String(32), nullable=False, default="PROHIBITED", server_default="PROHIBITED")
+    governance_state: Mapped[str] = mapped_column(String(24), nullable=False, default="DRAFT", server_default="DRAFT")
+    classification_rationale: Mapped[str] = mapped_column(String(1000), nullable=False, default="", server_default="")
+    revision: Mapped[int] = mapped_column(Integer, nullable=False, default=1, server_default="1")
+    created_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    updated_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updated_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
+
+
+class DataRetentionState(Base):
+    __tablename__ = "core_data_retention_states"
+    __table_args__ = (
+        CheckConstraint("product_code IN ('SIMPA', 'ORDO')", name="ck_core_data_retention_states_product"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    version_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_data_source_versions.id", ondelete="CASCADE"), nullable=False, unique=True, index=True
+    )
+    source_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_sources.id", ondelete="CASCADE"), nullable=False, index=True)
+    organization_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False, index=True)
+    workspace_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False, index=True)
+    product_code: Mapped[str] = mapped_column(ForeignKey("core_products.code"), nullable=False, index=True)
+    retention_start_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    retention_due_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    hold_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default="false")
+    hold_reason_ref: Mapped[str] = mapped_column(String(500), nullable=False, default="", server_default="")
+    purge_requested_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    purge_requested_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    purge_approved_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    purge_approved_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    purge_executed_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    purge_executed_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    purge_result: Mapped[str] = mapped_column(String(500), nullable=False, default="", server_default="")
+    tombstone_checksum: Mapped[str] = mapped_column(String(64), nullable=False, default="", server_default="")
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updated_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
 
 
 class IngestionJob(Base):
