@@ -4,7 +4,7 @@ import uuid
 from datetime import datetime
 from typing import Annotated, Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from src.platform.data.governance import (
     AIUsePolicy,
@@ -107,6 +107,83 @@ class UploadResponse(BaseModel):
     version: VersionResponse
     job: IngestionJobResponse
     storage_reused: bool
+
+
+IngestionIdempotencyKey = Annotated[
+    str,
+    Field(
+        min_length=1,
+        max_length=200,
+        pattern=r"^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+    ),
+]
+
+
+class _IngestionRunMutationRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+
+class IngestionRunCreate(_IngestionRunMutationRequest):
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: Literal["SIMPA", "ORDO"]
+    connector_contract_version_id: uuid.UUID
+    schema_mapping_version_id: uuid.UUID
+    idempotency_key: IngestionIdempotencyKey
+    filename: str = Field(min_length=1, max_length=500)
+    content_type: str = Field(default="application/octet-stream", max_length=200)
+    content_base64: str = Field(min_length=1)
+    cursor_after: str = Field(default="", max_length=1000)
+
+    @field_validator("filename")
+    @classmethod
+    def filename_must_not_be_blank(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("filename must not be blank")
+        return value
+
+    @field_validator("cursor_after")
+    @classmethod
+    def cursor_must_be_opaque_and_trimmed(cls, value: str) -> str:
+        if value != value.strip():
+            raise ValueError("cursor must not have leading or trailing whitespace")
+        if any(ord(character) < 32 or ord(character) == 127 for character in value):
+            raise ValueError("cursor must not contain control characters")
+        return value
+
+
+class IngestionRunRetryRequest(_IngestionRunMutationRequest):
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: Literal["SIMPA", "ORDO"]
+
+
+class IngestionRunResponse(BaseModel):
+    id: uuid.UUID
+    source_id: uuid.UUID
+    run_no: int
+    connector_contract_version_id: uuid.UUID
+    schema_mapping_version_id: uuid.UUID
+    source_version_id: uuid.UUID
+    inspection_job_id: uuid.UUID
+    request_fingerprint: str
+    payload_sha256: str
+    cursor_before: str
+    cursor_after: str
+    status: Literal["QUEUED", "RUNNING", "SUCCEEDED", "FAILED"]
+    attempts: int
+    error_code: str
+    error_message: str
+    queued_at: datetime
+    started_at: datetime | None
+    finished_at: datetime | None
+    created_at: datetime
+    updated_at: datetime
+
+
+class IngestionRunCreateResponse(BaseModel):
+    run: IngestionRunResponse
+    reused: bool
 
 
 ConnectorIdentifier = Annotated[

@@ -663,6 +663,12 @@ def _create_version(
     actor_id: uuid.UUID | None,
     backend: str,
 ) -> tuple[DataSourceVersion, IngestionJob, bool]:
+    locked_source = session.scalar(
+        select(DataSource).where(DataSource.id == source.id).with_for_update()
+    )
+    if locked_source is None:
+        raise DataPlatformError("source_not_accessible")
+    source = locked_source
     safe_name, extension = safe_filename(filename)
     sha256 = digest_bytes(payload)
     storage_key = scoped_storage_key(

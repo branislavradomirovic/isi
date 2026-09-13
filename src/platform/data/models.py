@@ -466,6 +466,90 @@ class IngestionJob(Base):
     updated_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
 
 
+class DataIngestionRun(Base):
+    __tablename__ = "core_data_ingestion_runs"
+    __table_args__ = (
+        UniqueConstraint("source_id", "run_no", name="uq_ing_run_source_no"),
+        UniqueConstraint("source_id", "idempotency_key", name="uq_ing_run_source_idem"),
+        UniqueConstraint("source_id", "request_fingerprint", name="uq_ing_run_source_fp"),
+        UniqueConstraint("source_version_id", name="uq_ing_run_source_version"),
+        UniqueConstraint("inspection_job_id", name="uq_ing_run_inspection_job"),
+        CheckConstraint("run_no >= 1", name="ck_ing_run_no"),
+        CheckConstraint("attempts >= 0", name="ck_ing_run_attempts"),
+        CheckConstraint("product_code IN ('SIMPA', 'ORDO')", name="ck_ing_run_product"),
+        CheckConstraint(
+            "status IN ('QUEUED', 'RUNNING', 'SUCCEEDED', 'FAILED')",
+            name="ck_ing_run_status",
+        ),
+        Index(
+            "ix_ing_run_scope",
+            "organization_id",
+            "workspace_id",
+            "product_code",
+        ),
+        Index("ix_ing_run_source_status", "source_id", "status"),
+        Index(
+            "ix_ing_run_binding",
+            "source_id",
+            "connector_contract_version_id",
+            "schema_mapping_version_id",
+        ),
+        Index(
+            "uq_ing_run_live_source",
+            "source_id",
+            unique=True,
+            postgresql_where=text("status IN ('QUEUED', 'RUNNING')"),
+            sqlite_where=text("status IN ('QUEUED', 'RUNNING')"),
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    source_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_data_sources.id", ondelete="CASCADE"), nullable=False
+    )
+    organization_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False
+    )
+    workspace_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False
+    )
+    product_code: Mapped[str] = mapped_column(ForeignKey("core_products.code"), nullable=False)
+    run_no: Mapped[int] = mapped_column(Integer, nullable=False)
+    connector_contract_version_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_data_connector_contract_versions.id", ondelete="RESTRICT"),
+        nullable=False,
+    )
+    schema_mapping_version_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_data_source_schema_mapping_versions.id", ondelete="RESTRICT"),
+        nullable=False,
+    )
+    source_version_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_data_source_versions.id", ondelete="RESTRICT"), nullable=False
+    )
+    inspection_job_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_ingestion_jobs.id", ondelete="RESTRICT"), nullable=False
+    )
+    idempotency_key: Mapped[str] = mapped_column(String(200), nullable=False)
+    request_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    payload_sha256: Mapped[str] = mapped_column(String(64), nullable=False)
+    cursor_before: Mapped[str] = mapped_column(String(1000), nullable=False, default="", server_default="")
+    cursor_after: Mapped[str] = mapped_column(String(1000), nullable=False, default="", server_default="")
+    status: Mapped[str] = mapped_column(String(16), nullable=False, default="QUEUED", server_default="QUEUED")
+    attempts: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
+    error_code: Mapped[str] = mapped_column(String(120), nullable=False, default="", server_default="")
+    error_message: Mapped[str] = mapped_column(Text, nullable=False, default="", server_default="")
+    created_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True
+    )
+    queued_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    started_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    finished_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updated_at: Mapped[object] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now()
+    )
+
+
 class DataQualityResult(Base):
     __tablename__ = "core_data_quality_results"
     __table_args__ = (

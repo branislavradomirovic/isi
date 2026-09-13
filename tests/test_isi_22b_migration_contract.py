@@ -70,13 +70,18 @@ def test_0021_identity_table_columns_foreign_keys_constraints_and_indexes():
     assert 'sqlite_where=sa.text("lifecycle_state = \'ACTIVE\'")' in active_index
 
 
-def test_0021_postgres_identifiers_fit_limit_and_is_sole_head():
+def test_0021_postgres_identifiers_fit_limit_and_remains_in_history():
     text = MIGRATION.read_text()
     identifiers = re.findall(r'"((?:ck|fk|ix|pk|uq|tr)_[a-z0-9_]+)"', text)
     assert identifiers
     assert max(map(len, identifiers)) <= 63
-    result = subprocess.run(["alembic", "heads"], check=True, capture_output=True, text=True)
-    assert result.stdout.strip() == "20260913_0021 (head)"
+    history = subprocess.run(
+        ["alembic", "history"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    assert "20260913_0021" in history.stdout
 
 
 def test_0021_downgrade_removes_only_owned_indexes_and_table():

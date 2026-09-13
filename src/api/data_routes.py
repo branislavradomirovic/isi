@@ -35,6 +35,10 @@ from src.platform.data.schemas import (
     FeatureTransitionRequest,
     HoldPlaceRequest,
     IngestionJobResponse,
+    IngestionRunCreate,
+    IngestionRunCreateResponse,
+    IngestionRunResponse,
+    IngestionRunRetryRequest,
     ScopeQuery,
     RetentionMutationRequest,
     RetentionPolicyCreate,
@@ -60,6 +64,12 @@ from src.platform.data.schema_mapping_service import (
     activate_source_schema_mapping_version,
     create_source_schema_mapping_version,
     list_source_schema_mapping_versions,
+)
+from src.platform.data.ingestion_run_service import (
+    create_ingestion_run,
+    get_ingestion_run as get_ingestion_run_service,
+    list_ingestion_runs,
+    retry_ingestion_run,
 )
 from src.platform.data.analytical_service import (
     create_analytical_dataset,
@@ -162,7 +172,8 @@ def _platform_error(exc: DataPlatformError) -> HTTPException:
     if code in {"source_not_accessible", "version_not_accessible", "anonymization_record_not_accessible", "workspace_scope_mismatch",
                 "analytical_dataset_not_accessible", "analytical_snapshot_not_accessible",
                 "analytical_feature_not_accessible", "analytical_feature_version_not_accessible",
-                "connector_contract_version_not_accessible", "schema_mapping_version_not_accessible"}:
+                "connector_contract_version_not_accessible", "schema_mapping_version_not_accessible",
+                "ingestion_run_not_accessible"}:
         return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=code)
     if code in {"upload_too_large"}:
         return HTTPException(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail=code)
@@ -170,7 +181,12 @@ def _platform_error(exc: DataPlatformError) -> HTTPException:
                 "analytical_dataset_code_exists", "analytical_feature_code_exists", "analytical_revision_conflict",
                 "connector_contract_state_conflict", "connector_contract_unchanged",
                 "schema_mapping_state_conflict", "schema_mapping_unchanged",
-                "schema_mapping_connector_retired", "schema_mapping_connector_not_active"}:
+                "schema_mapping_connector_retired", "schema_mapping_connector_not_active",
+                "ingestion_run_connector_not_active", "ingestion_run_mapping_not_active",
+                "ingestion_run_contract_mismatch", "ingestion_run_idempotency_conflict",
+                "ingestion_run_duplicate_batch", "ingestion_run_active_conflict",
+                "ingestion_run_retry_required", "ingestion_run_retry_state_conflict",
+                "ingestion_run_content_unavailable", "ingestion_run_execution_integrity_failed"}:
         return HTTPException(status_code=status.HTTP_409_CONFLICT, detail=code)
     if code in {"connector_secret_material_forbidden", "invalid_connector_credential_reference"}:
         return HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=code)
@@ -371,6 +387,179 @@ def post_source_version(
         latest = source_detail(db, source).versions[0]
         refreshed_job = db.get(IngestionJob, job.id)
         return UploadResponse(source=source_summary(db, source), version=latest, job=job_response(refreshed_job), storage_reused=reused)
+    except DataPlatformError as exc:
+        db.rollback()
+        raise _platform_error(exc) from None
+
+
+@router.post(
+    "/sources/{source_id}/ingestion-runs",
+    response_model=IngestionRunCreateResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+def post_ingestion_run(
+    source_id: uuid.UUID,
+    payload: IngestionRunCreate,
+    response: Response,
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db,
+        context,
+        organization_id=payload.organization_id,
+        workspace_id=payload.workspace_id,
+        product_code=payload.product_code,
+        permission_code="data.upload",
+    )
+    settings = get_settings()
+    try:
+        raw = decode_upload(
+            payload.content_base64,
+            max_bytes=int(getattr(settings, "data_max_upload_bytes", 16777216)),
+        )
+        result = create_ingestion_run(
+            db,
+            build_storage(),
+            source_id=source_id,
+            request=payload,
+            payload_bytes=raw,
+            actor_id=actor_membership_id(
+                db,
+                user_id=context.user.id,
+                organization_id=payload.organization_id,
+            ),
+            backend=getattr(settings, "data_job_backend", "inline"),
+        )
+        db.commit()
+        response.status_code = status.HTTP_200_OK if result.reused else status.HTTP_201_CREATED
+        if not result.reused or result.run.status == "QUEUED":
+            _dispatch_or_503(result.run.inspection_job_id)
+        db.expire_all()
+        refreshed = get_ingestion_run_service(
+            db,
+            source_id=source_id,
+            run_id=result.run.id,
+            organization_id=payload.organization_id,
+            workspace_id=payload.workspace_id,
+            product_code=payload.product_code,
+        )
+        return IngestionRunCreateResponse(run=refreshed, reused=result.reused)
+    except DataPlatformError as exc:
+        db.rollback()
+        raise _platform_error(exc) from None
+
+
+@router.get(
+    "/sources/{source_id}/ingestion-runs",
+    response_model=list[IngestionRunResponse],
+)
+def get_ingestion_runs(
+    source_id: uuid.UUID,
+    organization_id: uuid.UUID = Query(...),
+    workspace_id: uuid.UUID = Query(...),
+    product_code: str = Query(...),
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db,
+        context,
+        organization_id=organization_id,
+        workspace_id=workspace_id,
+        product_code=product_code,
+        permission_code="data.read",
+    )
+    try:
+        return list_ingestion_runs(
+            db,
+            source_id=source_id,
+            organization_id=organization_id,
+            workspace_id=workspace_id,
+            product_code=product_code,
+        )
+    except DataPlatformError as exc:
+        raise _platform_error(exc) from None
+
+
+@router.get(
+    "/sources/{source_id}/ingestion-runs/{run_id}",
+    response_model=IngestionRunResponse,
+)
+def get_ingestion_run(
+    source_id: uuid.UUID,
+    run_id: uuid.UUID,
+    organization_id: uuid.UUID = Query(...),
+    workspace_id: uuid.UUID = Query(...),
+    product_code: str = Query(...),
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db,
+        context,
+        organization_id=organization_id,
+        workspace_id=workspace_id,
+        product_code=product_code,
+        permission_code="data.read",
+    )
+    try:
+        return get_ingestion_run_service(
+            db,
+            source_id=source_id,
+            run_id=run_id,
+            organization_id=organization_id,
+            workspace_id=workspace_id,
+            product_code=product_code,
+        )
+    except DataPlatformError as exc:
+        raise _platform_error(exc) from None
+
+
+@router.post(
+    "/sources/{source_id}/ingestion-runs/{run_id}/retry",
+    response_model=IngestionRunResponse,
+)
+def post_ingestion_run_retry(
+    source_id: uuid.UUID,
+    run_id: uuid.UUID,
+    payload: IngestionRunRetryRequest,
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db,
+        context,
+        organization_id=payload.organization_id,
+        workspace_id=payload.workspace_id,
+        product_code=payload.product_code,
+        permission_code="data.upload",
+    )
+    try:
+        result = retry_ingestion_run(
+            db,
+            source_id=source_id,
+            run_id=run_id,
+            organization_id=payload.organization_id,
+            workspace_id=payload.workspace_id,
+            product_code=payload.product_code,
+            actor_id=actor_membership_id(
+                db,
+                user_id=context.user.id,
+                organization_id=payload.organization_id,
+            ),
+        )
+        db.commit()
+        _dispatch_or_503(result.inspection_job_id)
+        db.expire_all()
+        return get_ingestion_run_service(
+            db,
+            source_id=source_id,
+            run_id=run_id,
+            organization_id=payload.organization_id,
+            workspace_id=payload.workspace_id,
+            product_code=payload.product_code,
+        )
     except DataPlatformError as exc:
         db.rollback()
         raise _platform_error(exc) from None
