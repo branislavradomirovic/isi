@@ -104,10 +104,13 @@ def main() -> None:
         "ISI-15-PRODUCTION-STAGING": "historical",
         "ISI-16-ISI-RS-PRODUCTION-CUTOVER": "superseded",
     }
-    for task_id, expected_status in expected_legacy_states.items():
+    for task_id, expected_legacy_status in expected_legacy_states.items():
         actual_status = by_id.get(task_id, {}).get("status")
-        if actual_status != expected_status:
-            fail(f"{task_id} canonical legacy status drift: expected {expected_status}, got {actual_status}")
+        if actual_status != expected_legacy_status:
+            fail(
+                f"{task_id} canonical legacy status drift: "
+                f"expected {expected_legacy_status}, got {actual_status}"
+            )
     for entry in entries:
         for dependency in entry.get("depends_on", []):
             if dependency not in ids:
@@ -177,14 +180,14 @@ def main() -> None:
         rows.append(cells)
     if len(rows) < 210:
         fail(f"SYSTEM INVENTORY is incomplete: expected at least 210 governed rows, found {len(rows)}")
-    ids = [row[0] for row in rows]
-    if len(ids) != len(set(ids)):
+    inventory_ids = [row[0] for row in rows]
+    if len(inventory_ids) != len(set(inventory_ids)):
         fail("SYSTEM INVENTORY contains duplicate IDs")
     missing_categories = [letter for letter, count in categories.items() if count == 0]
     if missing_categories:
         fail(f"SYSTEM INVENTORY missing categories: {','.join(missing_categories)}")
     inventory_by_id = {row[0]: row for row in rows}
-    expected_status = {
+    expected_inventory_statuses = {
         "INV-D05": "NOT_PRESENT",
         "INV-E08": "NOT_PRESENT",
         "INV-E09": "NOT_PRESENT",
@@ -206,7 +209,7 @@ def main() -> None:
         "INV-L07": "NOT_PRESENT",
         "INV-L08": "NOT_PRESENT",
     }
-    for inventory_id, status in expected_status.items():
+    for inventory_id, status in expected_inventory_statuses.items():
         actual = inventory_by_id.get(inventory_id, [None, None, None, None])[3]
         if actual != status:
             fail(f"SYSTEM INVENTORY sentinel drift: {inventory_id} expected {status}, got {actual}")
