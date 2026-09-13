@@ -25,6 +25,7 @@ from src.platform.data.models import (
     DataAuditEvent,
     DataConnectorContractVersion,
     DataIngestionRun,
+    DataRecordGovernancePolicyVersion,
     DataSource,
     DataSourceSchemaMappingVersion,
     DataSourceVersion,
@@ -178,6 +179,29 @@ def _create(case, *, request=None, raw=b"external_id\n1\n"):
     )
 
 
+def _active_record_policy(case):
+    policy = DataRecordGovernancePolicyVersion(
+        source_id=case["source"].id,
+        connector_contract_version_id=case["connector"].id,
+        schema_mapping_version_id=case["mapping"].id,
+        organization_id=case["organization"].id,
+        workspace_id=case["workspace"].id,
+        product_code="SIMPA",
+        version_no=1,
+        contract_format_version=1,
+        identity_field_keys_json='["record.id"]',
+        missing_identity_policy="QUARANTINE",
+        exact_duplicate_policy="LINK_EXISTING",
+        conflict_policy="QUARANTINE",
+        fingerprint="9" * 64,
+        lifecycle_state="ACTIVE",
+        created_by_membership_id=case["membership"].id,
+    )
+    case["db"].add(policy)
+    case["db"].flush()
+    return policy
+
+
 def _terminal(case, run_id, status, *, attempts=1):
     run = case["db"].get(DataIngestionRun, run_id)
     job = case["db"].get(IngestionJob, run.inspection_job_id)
@@ -215,6 +239,8 @@ def test_new_run_pins_exact_provenance_and_normalizes_materialized_content_type(
         case["connector"].id,
         case["mapping"].id,
     )
+    assert run.record_governance_policy_version_id is None
+    assert result.run.record_governance_policy_version_id is None
     assert (run.source_version_id, run.inspection_job_id) == (version.id, job.id)
     assert (run.run_no, run.status, run.cursor_before, run.cursor_after) == (
         1,
@@ -250,6 +276,40 @@ def test_new_run_pins_exact_provenance_and_normalizes_materialized_content_type(
     ).hexdigest()
     assert run.request_fingerprint == expected_fingerprint
     assert result.run.model_dump().keys().isdisjoint({"idempotency_key", "content_base64"})
+
+
+def test_new_run_pins_nullable_record_policy_without_changing_raw_batch_fingerprint(tmp_path):
+    case = _build_case(tmp_path)
+    policy = _active_record_policy(case)
+    result = _create(case)
+    run = case["db"].get(DataIngestionRun, result.run.id)
+    assert run.record_governance_policy_version_id == policy.id
+    assert result.run.record_governance_policy_version_id == policy.id
+    assert "record_governance_policy_version_id" not in inspect.getsource(
+        __import__(
+            "src.platform.data.ingestion_run_service",
+            fromlist=["_request_fingerprint"],
+        )._request_fingerprint
+    )
+
+
+def test_retry_rejects_missing_pinned_record_policy_as_provenance_corruption(tmp_path):
+    case = _build_case(tmp_path)
+    _active_record_policy(case)
+    created = _create(case)
+    run, _job, _version = _terminal(case, created.run.id, "FAILED")
+    run.record_governance_policy_version_id = uuid.uuid4()
+    case["db"].flush()
+    with pytest.raises(DataPlatformError, match="ingestion_run_execution_integrity_failed"):
+        retry_ingestion_run(
+            case["db"],
+            source_id=case["source"].id,
+            run_id=run.id,
+            organization_id=case["organization"].id,
+            workspace_id=case["workspace"].id,
+            product_code="SIMPA",
+            actor_id=case["membership"].id,
+        )
 
 
 @pytest.mark.parametrize(

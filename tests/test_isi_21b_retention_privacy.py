@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from datetime import timedelta
+from datetime import datetime, timedelta, timezone
+import uuid
 
 import pytest
 from sqlalchemy import create_engine, func, select
@@ -8,7 +9,18 @@ from sqlalchemy.orm import Session
 
 from src.core.database import Base
 from src.platform.access.models import Product
-from src.platform.data.models import DataGovernanceInvalidation, DataRetentionState, DataSourceVersion
+from src.platform.data.models import (
+    DataConnectorContractVersion,
+    DataGovernanceInvalidation,
+    DataIngestionRun,
+    DataNormalizedRecord,
+    DataRecordEntity,
+    DataRecordGovernancePolicyVersion,
+    DataRetentionState,
+    DataSourceVersion,
+    DataSourceSchemaMappingVersion,
+    IngestionJob,
+)
 from src.platform.data.privacy_service import approve_purge, execute_purge, place_hold, release_hold, request_purge, utcnow
 from src.platform.data.schemas import RetentionPolicyCreate, SourceGovernanceUpdate
 from src.platform.data.service import DataPlatformError, create_retention_policy, create_source_upload, create_source_version, update_source_governance
@@ -179,3 +191,181 @@ def test_local_delete_is_exact_idempotent_and_cannot_escape_root(tmp_path):
     (root / "link").symlink_to(outside, target_is_directory=True)
     with pytest.raises(StorageError, match="unsafe storage key"):
         storage.delete_bytes("link/outside.bin")
+
+
+def _seed_22d_purge_graph(db, source, first, second):
+    connector = DataConnectorContractVersion(
+        source_id=source.id, organization_id=source.organization_id,
+        workspace_id=source.workspace_id, product_code=source.product_code,
+        version_no=1, connector_kind="purge", transport="batch",
+        fingerprint="a" * 64, lifecycle_state="ACTIVE",
+    )
+    db.add(connector); db.flush()
+    mapping = DataSourceSchemaMappingVersion(
+        source_id=source.id, connector_contract_version_id=connector.id,
+        organization_id=source.organization_id, workspace_id=source.workspace_id,
+        product_code=source.product_code, version_no=1, contract_format_version=1,
+        schema_kind="TABULAR",
+        source_schema_json='[{"logical_type":"STRING","missing_values":[],"nullable":false,"ordinal":1,"required":true,"source_field":"id"}]',
+        field_mapping_json='[{"disposition":"MAP","field_key":"record.id","source_field":"id"}]',
+        missing_value_policy="PRESERVE_MISSING", unexpected_field_policy="REJECT",
+        fingerprint="b" * 64, lifecycle_state="ACTIVE",
+    )
+    db.add(mapping); db.flush()
+    policy = DataRecordGovernancePolicyVersion(
+        source_id=source.id, connector_contract_version_id=connector.id,
+        schema_mapping_version_id=mapping.id, organization_id=source.organization_id,
+        workspace_id=source.workspace_id, product_code=source.product_code,
+        version_no=1, contract_format_version=1,
+        identity_field_keys_json='["record.id"]', missing_identity_policy="QUARANTINE",
+        exact_duplicate_policy="LINK_EXISTING", conflict_policy="QUARANTINE",
+        fingerprint="c" * 64, lifecycle_state="ACTIVE",
+    )
+    db.add(policy); db.flush()
+
+    def run_for(version, number):
+        job = db.scalar(select(IngestionJob).where(IngestionJob.version_id == version.id).order_by(IngestionJob.id))
+        run = DataIngestionRun(
+            source_id=source.id, organization_id=source.organization_id,
+            workspace_id=source.workspace_id, product_code=source.product_code,
+            run_no=number, connector_contract_version_id=connector.id,
+            schema_mapping_version_id=mapping.id,
+            record_governance_policy_version_id=policy.id,
+            source_version_id=version.id, inspection_job_id=job.id,
+            idempotency_key=f"purge:{number}", request_fingerprint=str(number) * 64,
+            payload_sha256=version.sha256, cursor_before="", cursor_after=str(number),
+            status="SUCCEEDED",
+        )
+        db.add(run); db.flush()
+        return run
+
+    first_run = run_for(first, 1)
+    second_run = run_for(second, 2)
+
+    def entity(identity, state="ACTIVE"):
+        row = DataRecordEntity(
+            source_id=source.id, record_governance_policy_version_id=policy.id,
+            organization_id=source.organization_id, workspace_id=source.workspace_id,
+            product_code=source.product_code, identity_fingerprint=identity * 64,
+            state=state,
+        )
+        db.add(row); db.flush()
+        return row
+
+    def record(version, run, entity_row, ordinal, marker, disposition, *, duplicate=None, conflict=None, reason=None, at=None):
+        row = DataNormalizedRecord(
+            source_id=source.id, source_version_id=version.id, ingestion_run_id=run.id,
+            connector_contract_version_id=connector.id, schema_mapping_version_id=mapping.id,
+            record_governance_policy_version_id=policy.id,
+            organization_id=source.organization_id, workspace_id=source.workspace_id,
+            product_code=source.product_code, source_record_ordinal=ordinal,
+            source_locator=f"purge:{run.run_no}:{ordinal}", entity_id=entity_row.id,
+            normalized_record_json=f'{{"record.id":"private-{marker}"}}',
+            identity_fingerprint=entity_row.identity_fingerprint,
+            content_fingerprint=marker * 64, disposition=disposition,
+            duplicate_of_record_id=duplicate.id if duplicate else None,
+            conflict_with_record_id=conflict.id if conflict else None,
+            quarantine_reason=reason, created_at=at,
+        )
+        db.add(row); db.flush()
+        return row
+
+    base = datetime(2026, 1, 1, tzinfo=timezone.utc)
+    promoted_entity = entity("1", "QUARANTINED")
+    accepted = record(first, first_run, promoted_entity, 1, "d", "ACCEPTED", at=base)
+    oldest = record(second, second_run, promoted_entity, 1, "d", "DUPLICATE", duplicate=accepted, at=base + timedelta(seconds=1))
+    newer = record(second, second_run, promoted_entity, 2, "d", "DUPLICATE", duplicate=accepted, at=base + timedelta(seconds=2))
+    conflict = record(
+        second, second_run, promoted_entity, 3, "e", "QUARANTINED",
+        conflict=accepted, reason="IDENTITY_CONTENT_CONFLICT", at=base + timedelta(seconds=3),
+    )
+
+    quarantined_entity = entity("2", "QUARANTINED")
+    accepted_without_duplicate = record(first, first_run, quarantined_entity, 2, "f", "ACCEPTED", at=base)
+    remaining_quarantine = record(
+        second, second_run, quarantined_entity, 4, "g", "QUARANTINED",
+        conflict=accepted_without_duplicate, reason="IDENTITY_CONTENT_CONFLICT",
+        at=base + timedelta(seconds=1),
+    )
+
+    empty_entity = entity("3")
+    empty_original_identity = empty_entity.identity_fingerprint
+    empty_accepted = record(first, first_run, empty_entity, 3, "h", "ACCEPTED", at=base)
+
+    unrelated_entity = entity("4")
+    unrelated = record(second, second_run, unrelated_entity, 5, "i", "ACCEPTED", at=base)
+    db.flush()
+    return {
+        "target": [accepted, accepted_without_duplicate, empty_accepted],
+        "oldest": oldest,
+        "newer": newer,
+        "conflict": conflict,
+        "promoted_entity": promoted_entity,
+        "remaining_quarantine": remaining_quarantine,
+        "quarantined_entity": quarantined_entity,
+        "empty_entity": empty_entity,
+        "empty_original_identity": empty_original_identity,
+        "unrelated": unrelated,
+    }
+
+
+def test_purge_scrubs_22d_records_promotes_duplicate_repairs_references_and_is_idempotent(governed):
+    db, org, ws, _foreign_org, _foreign_ws, member, source, first, _policy, storage = governed
+    second, _job, _reused = create_source_version(
+        db, storage, source=source, filename="second.csv", content_type="text/csv",
+        payload=b"second-private-content\n", actor_id=member.id, backend="inline",
+    )
+    graph = _seed_22d_purge_graph(db, source, first, second)
+    unrelated_before = (
+        graph["unrelated"].normalized_record_json,
+        graph["unrelated"].identity_fingerprint,
+        graph["unrelated"].content_fingerprint,
+        graph["unrelated"].disposition,
+    )
+    approved = _approve(db, org, ws, member, first)
+    result = execute_purge(
+        db, storage, version_id=first.id, organization_id=org.id,
+        workspace_id=ws.id, product_code="SIMPA", expected_revision=approved.revision,
+        actor_id=member.id,
+    )
+    assert result.purge_status == "EXECUTED"
+    for row in graph["target"]:
+        assert row.normalized_record_json == "{}"
+        assert row.disposition == "PURGED"
+        assert row.quarantine_reason is None
+        assert row.duplicate_of_record_id is None and row.conflict_with_record_id is None
+        assert "private" not in row.normalized_record_json
+    assert graph["oldest"].disposition == "ACCEPTED"
+    assert graph["newer"].duplicate_of_record_id == graph["oldest"].id
+    assert graph["conflict"].conflict_with_record_id == graph["oldest"].id
+    assert graph["promoted_entity"].state == "QUARANTINED"
+    assert graph["remaining_quarantine"].conflict_with_record_id is None
+    assert graph["quarantined_entity"].state == "QUARANTINED"
+    assert graph["empty_entity"].state == "EMPTY"
+    assert graph["empty_entity"].identity_fingerprint != graph["empty_original_identity"]
+    assert unrelated_before == (
+        graph["unrelated"].normalized_record_json,
+        graph["unrelated"].identity_fingerprint,
+        graph["unrelated"].content_fingerprint,
+        graph["unrelated"].disposition,
+    )
+    logical_state = [
+        (row.id, row.normalized_record_json, row.identity_fingerprint, row.content_fingerprint, row.disposition)
+        for row in db.scalars(select(DataNormalizedRecord).order_by(DataNormalizedRecord.id))
+    ]
+    repeated = execute_purge(
+        db, storage, version_id=first.id, organization_id=org.id,
+        workspace_id=ws.id, product_code="SIMPA", expected_revision=result.revision,
+        actor_id=member.id,
+    )
+    assert repeated.revision == result.revision
+    assert logical_state == [
+        (row.id, row.normalized_record_json, row.identity_fingerprint, row.content_fingerprint, row.disposition)
+        for row in db.scalars(select(DataNormalizedRecord).order_by(DataNormalizedRecord.id))
+    ]
+    assert not db.scalars(
+        select(DataNormalizedRecord).where(
+            DataNormalizedRecord.source_version_id == first.id,
+            DataNormalizedRecord.normalized_record_json != "{}",
+        )
+    ).all()

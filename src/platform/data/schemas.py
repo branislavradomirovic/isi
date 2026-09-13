@@ -164,6 +164,7 @@ class IngestionRunResponse(BaseModel):
     run_no: int
     connector_contract_version_id: uuid.UUID
     schema_mapping_version_id: uuid.UUID
+    record_governance_policy_version_id: uuid.UUID | None
     source_version_id: uuid.UUID
     inspection_job_id: uuid.UUID
     request_fingerprint: str
@@ -302,6 +303,114 @@ class SourceSchemaMappingVersionResponse(BaseModel):
     created_at: datetime
     activated_at: datetime | None
     retired_at: datetime | None
+
+
+class _RecordGovernanceMutationRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+
+class RecordGovernancePolicyVersionCreate(_RecordGovernanceMutationRequest):
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: Literal["SIMPA", "ORDO"]
+    connector_contract_version_id: uuid.UUID
+    schema_mapping_version_id: uuid.UUID
+    identity_field_keys: list[str] = Field(min_length=1, max_length=500)
+    missing_identity_policy: Literal["QUARANTINE"] = "QUARANTINE"
+    exact_duplicate_policy: Literal["LINK_EXISTING"] = "LINK_EXISTING"
+    conflict_policy: Literal["QUARANTINE"] = "QUARANTINE"
+
+
+class RecordGovernancePolicyActivationRequest(_RecordGovernanceMutationRequest):
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: Literal["SIMPA", "ORDO"]
+
+
+class RecordGovernancePolicyVersionResponse(BaseModel):
+    id: uuid.UUID
+    source_id: uuid.UUID
+    connector_contract_version_id: uuid.UUID
+    schema_mapping_version_id: uuid.UUID
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: Literal["SIMPA", "ORDO"]
+    version_no: int
+    contract_format_version: Literal[1]
+    identity_field_keys: list[str]
+    missing_identity_policy: Literal["QUARANTINE"]
+    exact_duplicate_policy: Literal["LINK_EXISTING"]
+    conflict_policy: Literal["QUARANTINE"]
+    fingerprint: str
+    lifecycle_state: Literal["DRAFT", "ACTIVE", "RETIRED"]
+    created_by_membership_id: uuid.UUID | None
+    activated_by_membership_id: uuid.UUID | None
+    retired_by_membership_id: uuid.UUID | None
+    created_at: datetime
+    activated_at: datetime | None
+    retired_at: datetime | None
+
+
+class RecordQuarantineListItem(BaseModel):
+    id: uuid.UUID
+    source_id: uuid.UUID
+    source_version_id: uuid.UUID
+    ingestion_run_id: uuid.UUID
+    connector_contract_version_id: uuid.UUID
+    schema_mapping_version_id: uuid.UUID
+    record_governance_policy_version_id: uuid.UUID
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: Literal["SIMPA", "ORDO"]
+    source_record_ordinal: int
+    source_locator: str
+    entity_id: uuid.UUID | None
+    identity_fingerprint: str
+    content_fingerprint: str
+    disposition: Literal["QUARANTINED"]
+    duplicate_of_record_id: uuid.UUID | None
+    conflict_with_record_id: uuid.UUID | None
+    quarantine_reason: str | None
+    created_at: datetime
+    updated_at: datetime
+
+
+class RecordQuarantineDetailResponse(RecordQuarantineListItem):
+    normalized_record: dict[str, Any]
+    current_accepted_record_id: uuid.UUID | None
+    current_accepted_record: dict[str, Any] | None
+
+
+class RecordResolutionCreate(_RecordGovernanceMutationRequest):
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: Literal["SIMPA", "ORDO"]
+    decision: Literal["REJECT_INCOMING", "ACCEPT_INCOMING"]
+    resolution_reference: str = Field(min_length=1, max_length=1000)
+    reason: str | None = Field(default=None, max_length=1000)
+
+    @field_validator("resolution_reference")
+    @classmethod
+    def resolution_reference_must_not_be_blank(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("resolution_reference must not be blank")
+        return value
+
+
+class RecordResolutionResponse(BaseModel):
+    id: uuid.UUID
+    source_id: uuid.UUID
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: Literal["SIMPA", "ORDO"]
+    entity_id: uuid.UUID
+    quarantined_record_id: uuid.UUID
+    existing_accepted_record_id: uuid.UUID | None
+    decision: Literal["REJECT_INCOMING", "ACCEPT_INCOMING"]
+    resolution_reference: str
+    reason: str | None
+    resolved_by_membership_id: uuid.UUID | None
+    resolved_at: datetime
 
 
 class SourceGovernanceResponse(BaseModel):

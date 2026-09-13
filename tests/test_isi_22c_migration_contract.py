@@ -92,13 +92,13 @@ def test_0022_scope_binding_and_cross_dialect_live_source_indexes():
     assert f'sqlite_where=sa.text("{predicate}")' in live_index
 
 
-def test_0022_identifiers_fit_postgres_limit_and_is_sole_head():
+def test_0022_identifiers_fit_postgres_limit_and_remains_in_history():
     text = MIGRATION.read_text()
     identifiers = re.findall(r'"((?:ck|fk|ix|pk|uq|tr)_[a-z0-9_]+)"', text)
     assert identifiers
     assert max(map(len, identifiers)) <= 63
-    result = subprocess.run(["alembic", "heads"], check=True, capture_output=True, text=True)
-    assert result.stdout.strip() == "20260913_0022 (head)"
+    result = subprocess.run(["alembic", "history"], check=True, capture_output=True, text=True)
+    assert "20260913_0022" in result.stdout
 
 
 def test_0022_downgrade_removes_only_owned_indexes_and_table():

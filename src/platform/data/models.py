@@ -172,6 +172,84 @@ class DataSourceSchemaMappingVersion(Base):
     retired_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
+class DataRecordGovernancePolicyVersion(Base):
+    __tablename__ = "core_data_record_governance_policy_versions"
+    __table_args__ = (
+        UniqueConstraint("source_id", "version_no", name="uq_rec_policy_source_version"),
+        CheckConstraint("version_no >= 1", name="ck_rec_policy_version_no"),
+        CheckConstraint("contract_format_version = 1", name="ck_rec_policy_format"),
+        CheckConstraint("product_code IN ('SIMPA', 'ORDO')", name="ck_rec_policy_product"),
+        CheckConstraint("missing_identity_policy = 'QUARANTINE'", name="ck_rec_policy_missing"),
+        CheckConstraint("exact_duplicate_policy = 'LINK_EXISTING'", name="ck_rec_policy_duplicate"),
+        CheckConstraint("conflict_policy = 'QUARANTINE'", name="ck_rec_policy_conflict"),
+        CheckConstraint(
+            "lifecycle_state IN ('DRAFT', 'ACTIVE', 'RETIRED')",
+            name="ck_rec_policy_lifecycle",
+        ),
+        Index("ix_rec_policy_scope", "organization_id", "workspace_id", "product_code"),
+        Index(
+            "ix_rec_policy_binding",
+            "source_id",
+            "connector_contract_version_id",
+            "schema_mapping_version_id",
+        ),
+        Index("ix_rec_policy_source_state", "source_id", "lifecycle_state"),
+        Index(
+            "uq_rec_policy_active_source",
+            "source_id",
+            unique=True,
+            postgresql_where=text("lifecycle_state = 'ACTIVE'"),
+            sqlite_where=text("lifecycle_state = 'ACTIVE'"),
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    source_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_data_sources.id", ondelete="RESTRICT"), nullable=False
+    )
+    connector_contract_version_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_data_connector_contract_versions.id", ondelete="RESTRICT"), nullable=False
+    )
+    schema_mapping_version_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_data_source_schema_mapping_versions.id", ondelete="RESTRICT"), nullable=False
+    )
+    organization_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False
+    )
+    workspace_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False
+    )
+    product_code: Mapped[str] = mapped_column(ForeignKey("core_products.code"), nullable=False)
+    version_no: Mapped[int] = mapped_column(Integer, nullable=False)
+    contract_format_version: Mapped[int] = mapped_column(Integer, nullable=False, default=1, server_default="1")
+    identity_field_keys_json: Mapped[str] = mapped_column(Text, nullable=False)
+    missing_identity_policy: Mapped[str] = mapped_column(
+        String(24), nullable=False, default="QUARANTINE", server_default="QUARANTINE"
+    )
+    exact_duplicate_policy: Mapped[str] = mapped_column(
+        String(24), nullable=False, default="LINK_EXISTING", server_default="LINK_EXISTING"
+    )
+    conflict_policy: Mapped[str] = mapped_column(
+        String(24), nullable=False, default="QUARANTINE", server_default="QUARANTINE"
+    )
+    fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    lifecycle_state: Mapped[str] = mapped_column(
+        String(16), nullable=False, default="DRAFT", server_default="DRAFT"
+    )
+    created_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True
+    )
+    activated_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True
+    )
+    retired_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True
+    )
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    activated_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    retired_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
 class DataSourceVersion(Base):
     __tablename__ = "core_data_source_versions"
     __table_args__ = (
@@ -523,6 +601,11 @@ class DataIngestionRun(Base):
         ForeignKey("core_data_source_schema_mapping_versions.id", ondelete="RESTRICT"),
         nullable=False,
     )
+    record_governance_policy_version_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_data_record_governance_policy_versions.id", ondelete="RESTRICT"),
+        nullable=True,
+        index=True,
+    )
     source_version_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("core_data_source_versions.id", ondelete="RESTRICT"), nullable=False
     )
@@ -548,6 +631,163 @@ class DataIngestionRun(Base):
     updated_at: Mapped[object] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now()
     )
+
+
+class DataRecordEntity(Base):
+    __tablename__ = "core_data_record_entities"
+    __table_args__ = (
+        UniqueConstraint(
+            "source_id",
+            "record_governance_policy_version_id",
+            "identity_fingerprint",
+            name="uq_rec_entity_source_policy_identity",
+        ),
+        CheckConstraint("product_code IN ('SIMPA', 'ORDO')", name="ck_rec_entity_product"),
+        CheckConstraint("state IN ('ACTIVE', 'QUARANTINED', 'EMPTY')", name="ck_rec_entity_state"),
+        Index("ix_rec_entity_scope", "organization_id", "workspace_id", "product_code"),
+        Index("ix_rec_entity_source_policy", "source_id", "record_governance_policy_version_id"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    source_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_data_sources.id", ondelete="RESTRICT"), nullable=False
+    )
+    record_governance_policy_version_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_data_record_governance_policy_versions.id", ondelete="RESTRICT"), nullable=False
+    )
+    organization_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False
+    )
+    workspace_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False
+    )
+    product_code: Mapped[str] = mapped_column(ForeignKey("core_products.code"), nullable=False)
+    identity_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    state: Mapped[str] = mapped_column(String(16), nullable=False, default="ACTIVE", server_default="ACTIVE")
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updated_at: Mapped[object] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now()
+    )
+
+
+class DataNormalizedRecord(Base):
+    __tablename__ = "core_data_normalized_records"
+    __table_args__ = (
+        UniqueConstraint("ingestion_run_id", "source_record_ordinal", name="uq_norm_rec_run_ordinal"),
+        CheckConstraint("source_record_ordinal >= 1", name="ck_norm_rec_ordinal"),
+        CheckConstraint("product_code IN ('SIMPA', 'ORDO')", name="ck_norm_rec_product"),
+        CheckConstraint(
+            "disposition IN ('ACCEPTED', 'DUPLICATE', 'QUARANTINED', 'REJECTED', 'SUPERSEDED', 'PURGED')",
+            name="ck_norm_rec_disposition",
+        ),
+        Index("ix_norm_rec_scope", "organization_id", "workspace_id", "product_code"),
+        Index("ix_norm_rec_source_version", "source_id", "source_version_id"),
+        Index("ix_norm_rec_run", "ingestion_run_id"),
+        Index("ix_norm_rec_entity", "entity_id"),
+        Index(
+            "ix_norm_rec_identity_fp",
+            "source_id",
+            "record_governance_policy_version_id",
+            "identity_fingerprint",
+        ),
+        Index("ix_norm_rec_content_fp", "schema_mapping_version_id", "content_fingerprint"),
+        Index(
+            "uq_norm_rec_accepted_entity",
+            "entity_id",
+            unique=True,
+            postgresql_where=text("entity_id IS NOT NULL AND disposition = 'ACCEPTED'"),
+            sqlite_where=text("entity_id IS NOT NULL AND disposition = 'ACCEPTED'"),
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    source_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_data_sources.id", ondelete="RESTRICT"), nullable=False
+    )
+    source_version_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_data_source_versions.id", ondelete="RESTRICT"), nullable=False
+    )
+    ingestion_run_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_data_ingestion_runs.id", ondelete="RESTRICT"), nullable=False
+    )
+    connector_contract_version_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_data_connector_contract_versions.id", ondelete="RESTRICT"), nullable=False
+    )
+    schema_mapping_version_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_data_source_schema_mapping_versions.id", ondelete="RESTRICT"), nullable=False
+    )
+    record_governance_policy_version_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_data_record_governance_policy_versions.id", ondelete="RESTRICT"), nullable=False
+    )
+    organization_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False
+    )
+    workspace_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False
+    )
+    product_code: Mapped[str] = mapped_column(ForeignKey("core_products.code"), nullable=False)
+    source_record_ordinal: Mapped[int] = mapped_column(Integer, nullable=False)
+    source_locator: Mapped[str] = mapped_column(String(1000), nullable=False)
+    entity_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_data_record_entities.id", ondelete="RESTRICT"), nullable=True
+    )
+    normalized_record_json: Mapped[str] = mapped_column(Text, nullable=False)
+    identity_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    content_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    disposition: Mapped[str] = mapped_column(String(16), nullable=False)
+    duplicate_of_record_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_data_normalized_records.id", ondelete="RESTRICT"), nullable=True
+    )
+    conflict_with_record_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_data_normalized_records.id", ondelete="RESTRICT"), nullable=True
+    )
+    quarantine_reason: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updated_at: Mapped[object] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now()
+    )
+
+
+class DataRecordResolution(Base):
+    __tablename__ = "core_data_record_resolutions"
+    __table_args__ = (
+        UniqueConstraint("quarantined_record_id", name="uq_rec_resolution_quarantine"),
+        CheckConstraint("product_code IN ('SIMPA', 'ORDO')", name="ck_rec_resolution_product"),
+        CheckConstraint(
+            "decision IN ('REJECT_INCOMING', 'ACCEPT_INCOMING')",
+            name="ck_rec_resolution_decision",
+        ),
+        Index("ix_rec_resolution_scope", "organization_id", "workspace_id", "product_code"),
+        Index("ix_rec_resolution_entity", "entity_id", "resolved_at"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    source_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_data_sources.id", ondelete="RESTRICT"), nullable=False
+    )
+    organization_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False
+    )
+    workspace_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False
+    )
+    product_code: Mapped[str] = mapped_column(ForeignKey("core_products.code"), nullable=False)
+    entity_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_data_record_entities.id", ondelete="RESTRICT"), nullable=False
+    )
+    quarantined_record_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_data_normalized_records.id", ondelete="RESTRICT"), nullable=False
+    )
+    existing_accepted_record_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_data_normalized_records.id", ondelete="RESTRICT"), nullable=True
+    )
+    decision: Mapped[str] = mapped_column(String(24), nullable=False)
+    resolution_reference: Mapped[str] = mapped_column(String(1000), nullable=False)
+    reason: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    resolved_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True
+    )
+    resolved_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
 
 
 class DataQualityResult(Base):

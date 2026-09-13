@@ -9,7 +9,12 @@ from sqlalchemy.orm import Session
 
 from src.core.config import get_settings
 from src.core.database import build_session_factory
-from src.platform.data.ingestion import IngestionError, inspect_payload
+from src.platform.data.ingestion import (
+    IngestionError,
+    QualityCheck,
+    extract_structured_records,
+    inspect_payload,
+)
 from src.platform.data.models import (
     DataAuditEvent,
     DataConnectorContractVersion,
@@ -20,6 +25,11 @@ from src.platform.data.models import (
     IngestionJob,
 )
 from src.platform.data.service import replace_quality_results
+from src.platform.data.record_governance_service import (
+    materialize_ingestion_run_records,
+    validate_pinned_record_governance_policy,
+)
+from src.platform.data.service import DataPlatformError
 from src.platform.data.storage import StorageError, build_storage
 from src.platform.observability.telemetry import record_ingestion, record_worker_execution
 
@@ -38,6 +48,7 @@ def _run_audit(
     detail = (
         f"run_no={run.run_no}; connector_contract_version_id={run.connector_contract_version_id}; "
         f"schema_mapping_version_id={run.schema_mapping_version_id}; "
+        f"record_governance_policy_version_id={run.record_governance_policy_version_id}; "
         f"source_version_id={run.source_version_id}; inspection_job_id={run.inspection_job_id}; "
         f"status={run.status}; request_fingerprint={run.request_fingerprint}"
     )
@@ -105,13 +116,20 @@ def _linked_run_integrity_valid(
             DataSourceSchemaMappingVersion.product_code == source.product_code,
         )
     )
-    return bool(
+    binding_valid = bool(
         connector is not None
         and mapping is not None
         and run.connector_contract_version_id == connector.id
         and run.schema_mapping_version_id == mapping.id
         and mapping.connector_contract_version_id == connector.id
     )
+    if not binding_valid:
+        return False
+    try:
+        validate_pinned_record_governance_policy(session, run=run)
+    except DataPlatformError:
+        return False
+    return True
 
 
 def _fail_linked_integrity(
@@ -215,7 +233,53 @@ def process_ingestion_job(session: Session, *, job_id: uuid.UUID) -> None:
         version.column_count = profile.column_count
         version.sheet_count = profile.sheet_count
         version.schema_fingerprint = profile.schema_fingerprint
-        replace_quality_results(session, version.id, profile.quality)
+        quality = list(profile.quality)
+        if run is not None and run.record_governance_policy_version_id is not None:
+            mapping = session.get(DataSourceSchemaMappingVersion, run.schema_mapping_version_id)
+            if mapping is None:
+                raise DataPlatformError("record_materialization_provenance_integrity_failed")
+            records = extract_structured_records(
+                payload,
+                filename=version.original_filename,
+                schema_kind=mapping.schema_kind,
+                max_uncompressed_bytes=int(
+                    getattr(settings, "data_max_xlsx_uncompressed_bytes", 67108864)
+                ),
+            )
+            result = materialize_ingestion_run_records(session, run=run, records=records)
+            quality.extend(
+                (
+                    QualityCheck(
+                        "records.materialized",
+                        "pass",
+                        f"Normalized records materialized: {result.materialized}.",
+                        "record_count",
+                        str(result.materialized),
+                    ),
+                    QualityCheck(
+                        "records.accepted",
+                        "pass",
+                        f"Normalized records accepted: {result.accepted}.",
+                        "record_count",
+                        str(result.accepted),
+                    ),
+                    QualityCheck(
+                        "records.duplicates",
+                        "pass",
+                        f"Exact duplicate records linked: {result.duplicates}.",
+                        "record_count",
+                        str(result.duplicates),
+                    ),
+                    QualityCheck(
+                        "records.quarantined",
+                        "warn" if result.quarantined else "pass",
+                        f"Normalized records quarantined: {result.quarantined}.",
+                        "record_count",
+                        str(result.quarantined),
+                    ),
+                )
+            )
+        replace_quality_results(session, version.id, quality)
         version.ingest_status = "succeeded"
         job.status = "succeeded"
         job.progress = 100

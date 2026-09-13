@@ -30,6 +30,7 @@ from src.platform.data.schemas import (
     AnonymizationRecordResponse,
     RetentionStateResponse,
 )
+from src.platform.data.record_governance_service import purge_source_version_records
 from src.platform.data.service import DataPlatformError, _audit, retention_state_response, validate_scope
 from src.platform.data.storage import StorageBackend, StorageError, digest_bytes
 
@@ -258,7 +259,19 @@ def execute_purge(session: Session, storage: StorageBackend, *, version_id: uuid
                   workspace_id: uuid.UUID, product_code: str, expected_revision: int,
                   actor_id: uuid.UUID | None, now: datetime | None = None) -> RetentionStateResponse:
     at = now or utcnow()
-    version = _scoped_version(session, version_id=version_id, organization_id=organization_id, workspace_id=workspace_id, product_code=product_code)
+    scoped_version = _scoped_version(session, version_id=version_id, organization_id=organization_id, workspace_id=workspace_id, product_code=product_code)
+    version = session.scalar(
+        select(DataSourceVersion)
+        .where(
+            DataSourceVersion.id == scoped_version.id,
+            DataSourceVersion.organization_id == organization_id,
+            DataSourceVersion.workspace_id == workspace_id,
+            DataSourceVersion.product_code == product_code,
+        )
+        .with_for_update()
+    )
+    if version is None:
+        raise DataPlatformError("version_not_accessible")
     state = _state(session, version)
     if state.purge_status == PurgeStatus.EXECUTED and version.content_state == ContentState.PURGED:
         if state.revision != expected_revision:
@@ -294,6 +307,14 @@ def execute_purge(session: Session, storage: StorageBackend, *, version_id: uuid
                    detail=f"revision={state.revision}; outcome=STORAGE_OPERATION_FAILED")
             raise DataPlatformError("storage_operation_failed") from None
         result_code = "PHYSICAL_OBJECT_DELETED"
+    purge_source_version_records(
+        session,
+        source_version_id=version.id,
+        organization_id=organization_id,
+        workspace_id=workspace_id,
+        product_code=product_code,
+        actor_id=actor_id,
+    )
     version.content_state = ContentState.PURGED.value
     tombstone = hashlib.sha256(
         f"{organization_id}:{product_code}:{workspace_id}:{version.id}:{version.sha256}:PURGED".encode()

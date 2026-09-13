@@ -18,6 +18,10 @@ from src.platform.data.models import (
     DataSourceVersion,
     IngestionJob,
 )
+from src.platform.data.record_governance_service import (
+    get_active_record_governance_policy_for_binding,
+    validate_pinned_record_governance_policy,
+)
 from src.platform.data.schemas import (
     IngestionRunCreate,
     IngestionRunCreateResponse,
@@ -165,6 +169,7 @@ def _audit(
     detail = (
         f"run_no={run.run_no}; connector_contract_version_id={run.connector_contract_version_id}; "
         f"schema_mapping_version_id={run.schema_mapping_version_id}; "
+        f"record_governance_policy_version_id={run.record_governance_policy_version_id}; "
         f"source_version_id={run.source_version_id}; inspection_job_id={run.inspection_job_id}; "
         f"status={run.status}; request_fingerprint={run.request_fingerprint}"
     )
@@ -189,6 +194,7 @@ def ingestion_run_response(run: DataIngestionRun) -> IngestionRunResponse:
         run_no=run.run_no,
         connector_contract_version_id=run.connector_contract_version_id,
         schema_mapping_version_id=run.schema_mapping_version_id,
+        record_governance_policy_version_id=run.record_governance_policy_version_id,
         source_version_id=run.source_version_id,
         inspection_job_id=run.inspection_job_id,
         request_fingerprint=run.request_fingerprint,
@@ -255,6 +261,16 @@ def create_ingestion_run(
         if fingerprint != existing.request_fingerprint:
             raise DataPlatformError("ingestion_run_idempotency_conflict")
         return IngestionRunCreateResponse(run=ingestion_run_response(existing), reused=True)
+
+    record_policy = get_active_record_governance_policy_for_binding(
+        session,
+        source_id=source.id,
+        organization_id=source.organization_id,
+        workspace_id=source.workspace_id,
+        product_code=source.product_code,
+        connector_contract_version_id=connector.id,
+        schema_mapping_version_id=mapping.id,
+    )
 
     live_run = session.scalar(
         select(DataIngestionRun)
@@ -333,6 +349,7 @@ def create_ingestion_run(
         run_no=next_run_no,
         connector_contract_version_id=connector.id,
         schema_mapping_version_id=mapping.id,
+        record_governance_policy_version_id=(record_policy.id if record_policy is not None else None),
         source_version_id=version.id,
         inspection_job_id=job.id,
         idempotency_key=request.idempotency_key,
@@ -494,11 +511,13 @@ def retry_ingestion_run(
             schema_mapping_version_id=run.schema_mapping_version_id,
             require_active=False,
         )
+        validate_pinned_record_governance_policy(session, run=run)
     except DataPlatformError as exc:
         if str(exc) in {
             "connector_contract_version_not_accessible",
             "schema_mapping_version_not_accessible",
             "ingestion_run_contract_mismatch",
+            "record_policy_integrity_failed",
         }:
             raise DataPlatformError("ingestion_run_execution_integrity_failed") from None
         raise

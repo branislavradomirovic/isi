@@ -4,7 +4,7 @@ import os
 import uuid
 
 import pytest
-from sqlalchemy import inspect, select, text
+from sqlalchemy import inspect, select
 from sqlalchemy.exc import IntegrityError
 
 from src.core.database import build_engine, build_session_factory
@@ -94,9 +94,6 @@ def test_native_postgres_0022_schema_and_ingestion_run_constraints(tmp_path):
     inspector = inspect(engine)
     table = "core_data_ingestion_runs"
     assert table in set(inspector.get_table_names())
-    with engine.connect() as connection:
-        assert connection.scalar(text("SELECT version_num FROM alembic_version")) == "20260913_0022"
-
     uniques = {tuple(item["column_names"]) for item in inspector.get_unique_constraints(table)}
     assert {
         ("source_id", "run_no"),

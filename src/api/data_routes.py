@@ -39,6 +39,13 @@ from src.platform.data.schemas import (
     IngestionRunCreateResponse,
     IngestionRunResponse,
     IngestionRunRetryRequest,
+    RecordGovernancePolicyActivationRequest,
+    RecordGovernancePolicyVersionCreate,
+    RecordGovernancePolicyVersionResponse,
+    RecordQuarantineDetailResponse,
+    RecordQuarantineListItem,
+    RecordResolutionCreate,
+    RecordResolutionResponse,
     ScopeQuery,
     RetentionMutationRequest,
     RetentionPolicyCreate,
@@ -70,6 +77,14 @@ from src.platform.data.ingestion_run_service import (
     get_ingestion_run as get_ingestion_run_service,
     list_ingestion_runs,
     retry_ingestion_run,
+)
+from src.platform.data.record_governance_service import (
+    activate_record_governance_policy_version,
+    create_record_governance_policy_version,
+    get_record_quarantine_detail as get_record_quarantine_detail_service,
+    list_record_governance_policy_versions,
+    list_record_quarantine,
+    resolve_quarantined_record,
 )
 from src.platform.data.analytical_service import (
     create_analytical_dataset,
@@ -173,7 +188,8 @@ def _platform_error(exc: DataPlatformError) -> HTTPException:
                 "analytical_dataset_not_accessible", "analytical_snapshot_not_accessible",
                 "analytical_feature_not_accessible", "analytical_feature_version_not_accessible",
                 "connector_contract_version_not_accessible", "schema_mapping_version_not_accessible",
-                "ingestion_run_not_accessible"}:
+                "ingestion_run_not_accessible", "record_policy_version_not_accessible",
+                "record_quarantine_not_accessible"}:
         return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=code)
     if code in {"upload_too_large"}:
         return HTTPException(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail=code)
@@ -186,7 +202,13 @@ def _platform_error(exc: DataPlatformError) -> HTTPException:
                 "ingestion_run_contract_mismatch", "ingestion_run_idempotency_conflict",
                 "ingestion_run_duplicate_batch", "ingestion_run_active_conflict",
                 "ingestion_run_retry_required", "ingestion_run_retry_state_conflict",
-                "ingestion_run_content_unavailable", "ingestion_run_execution_integrity_failed"}:
+                "ingestion_run_content_unavailable", "ingestion_run_execution_integrity_failed",
+                "record_policy_state_conflict", "record_policy_unchanged",
+                "record_policy_connector_retired", "record_policy_mapping_retired",
+                "record_policy_connector_not_active", "record_policy_mapping_not_active",
+                "record_policy_binding_mismatch", "record_policy_integrity_failed",
+                "record_policy_mapping_integrity_failed", "record_resolution_state_conflict",
+                "record_resolution_accept_forbidden", "record_resolution_integrity_failed"}:
         return HTTPException(status_code=status.HTTP_409_CONFLICT, detail=code)
     if code in {"connector_secret_material_forbidden", "invalid_connector_credential_reference"}:
         return HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=code)
@@ -770,6 +792,219 @@ def post_source_schema_mapping_activation(
             organization_id=payload.organization_id,
             workspace_id=payload.workspace_id,
             product_code=payload.product_code,
+            actor_id=actor_membership_id(
+                db,
+                user_id=context.user.id,
+                organization_id=payload.organization_id,
+            ),
+        )
+        db.commit()
+        return result
+    except DataPlatformError as exc:
+        db.rollback()
+        raise _platform_error(exc) from None
+
+
+@router.post(
+    "/sources/{source_id}/record-policies/versions",
+    response_model=RecordGovernancePolicyVersionResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+def post_record_governance_policy_version(
+    source_id: uuid.UUID,
+    payload: RecordGovernancePolicyVersionCreate,
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db,
+        context,
+        organization_id=payload.organization_id,
+        workspace_id=payload.workspace_id,
+        product_code=payload.product_code,
+        permission_code="data.governance.manage",
+    )
+    try:
+        result = create_record_governance_policy_version(
+            db,
+            source_id=source_id,
+            payload=payload,
+            actor_id=actor_membership_id(
+                db,
+                user_id=context.user.id,
+                organization_id=payload.organization_id,
+            ),
+        )
+        db.commit()
+        return result
+    except DataPlatformError as exc:
+        db.rollback()
+        raise _platform_error(exc) from None
+
+
+@router.get(
+    "/sources/{source_id}/record-policies",
+    response_model=list[RecordGovernancePolicyVersionResponse],
+)
+def get_record_governance_policy_versions(
+    source_id: uuid.UUID,
+    organization_id: uuid.UUID = Query(...),
+    workspace_id: uuid.UUID = Query(...),
+    product_code: str = Query(...),
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db,
+        context,
+        organization_id=organization_id,
+        workspace_id=workspace_id,
+        product_code=product_code,
+        permission_code="data.read",
+    )
+    try:
+        return list_record_governance_policy_versions(
+            db,
+            source_id=source_id,
+            organization_id=organization_id,
+            workspace_id=workspace_id,
+            product_code=product_code,
+        )
+    except DataPlatformError as exc:
+        raise _platform_error(exc) from None
+
+
+@router.post(
+    "/sources/{source_id}/record-policies/{policy_id}/activate",
+    response_model=RecordGovernancePolicyVersionResponse,
+)
+def post_record_governance_policy_activation(
+    source_id: uuid.UUID,
+    policy_id: uuid.UUID,
+    payload: RecordGovernancePolicyActivationRequest,
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db,
+        context,
+        organization_id=payload.organization_id,
+        workspace_id=payload.workspace_id,
+        product_code=payload.product_code,
+        permission_code="data.governance.manage",
+    )
+    try:
+        result = activate_record_governance_policy_version(
+            db,
+            source_id=source_id,
+            policy_id=policy_id,
+            organization_id=payload.organization_id,
+            workspace_id=payload.workspace_id,
+            product_code=payload.product_code,
+            actor_id=actor_membership_id(
+                db,
+                user_id=context.user.id,
+                organization_id=payload.organization_id,
+            ),
+        )
+        db.commit()
+        return result
+    except DataPlatformError as exc:
+        db.rollback()
+        raise _platform_error(exc) from None
+
+
+@router.get(
+    "/sources/{source_id}/record-quarantine",
+    response_model=list[RecordQuarantineListItem],
+)
+def get_record_quarantine(
+    source_id: uuid.UUID,
+    organization_id: uuid.UUID = Query(...),
+    workspace_id: uuid.UUID = Query(...),
+    product_code: str = Query(...),
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db,
+        context,
+        organization_id=organization_id,
+        workspace_id=workspace_id,
+        product_code=product_code,
+        permission_code="data.governance.manage",
+    )
+    try:
+        return list_record_quarantine(
+            db,
+            source_id=source_id,
+            organization_id=organization_id,
+            workspace_id=workspace_id,
+            product_code=product_code,
+        )
+    except DataPlatformError as exc:
+        raise _platform_error(exc) from None
+
+
+@router.get(
+    "/sources/{source_id}/record-quarantine/{record_id}",
+    response_model=RecordQuarantineDetailResponse,
+)
+def get_record_quarantine_detail(
+    source_id: uuid.UUID,
+    record_id: uuid.UUID,
+    organization_id: uuid.UUID = Query(...),
+    workspace_id: uuid.UUID = Query(...),
+    product_code: str = Query(...),
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db,
+        context,
+        organization_id=organization_id,
+        workspace_id=workspace_id,
+        product_code=product_code,
+        permission_code="data.governance.manage",
+    )
+    try:
+        return get_record_quarantine_detail_service(
+            db,
+            source_id=source_id,
+            record_id=record_id,
+            organization_id=organization_id,
+            workspace_id=workspace_id,
+            product_code=product_code,
+        )
+    except DataPlatformError as exc:
+        raise _platform_error(exc) from None
+
+
+@router.post(
+    "/sources/{source_id}/record-quarantine/{record_id}/resolve",
+    response_model=RecordResolutionResponse,
+)
+def post_record_quarantine_resolution(
+    source_id: uuid.UUID,
+    record_id: uuid.UUID,
+    payload: RecordResolutionCreate,
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db,
+        context,
+        organization_id=payload.organization_id,
+        workspace_id=payload.workspace_id,
+        product_code=payload.product_code,
+        permission_code="data.governance.manage",
+    )
+    try:
+        result = resolve_quarantined_record(
+            db,
+            source_id=source_id,
+            record_id=record_id,
+            payload=payload,
             actor_id=actor_membership_id(
                 db,
                 user_id=context.user.id,
