@@ -2,6 +2,49 @@
 
 This repository is developed using specification-driven autonomous engineering. These instructions are binding for Codex and any other implementation agent unless a task specification or owner instruction explicitly narrows them further.
 
+## Canonical authority and mandatory bootstrap
+
+`docs/roadmap/ISI-AUTONOMOUS-INDUSTRIALIZATION-MASTER-PLAN.md` is the canonical roadmap, architecture, development-governance and phase-boundary authority. Read the complete MasterPlan before any task design or implementation.
+
+Before editing or invoking Codex for every new chat/task/function/recovery:
+
+1. verify canonical repository path, `main`, HEAD/tree, `origin/main`, one worktree, index and worktree state;
+2. verify relevant exact-main `ISI required acceptance` evidence;
+3. read the MasterPlan, this file, task/status ledgers, relevant specification, ADRs and ops contracts;
+4. inspect actual relevant code/migrations/tests/services/APIs/workers/data/AI boundaries;
+5. reconstruct accepted SHAs, recoveries, architectural decisions and owner approvals;
+6. produce `DONE / PARTIAL / MISSING / DRIFT` against the MasterPlan;
+7. perform the mandatory legacy/drift audit and resolve/classify findings;
+8. only then lock the next exact mutable surface and implementation contract.
+
+A new chat must retrieve available repository truth instead of asking the owner to repeat retrievable project history.
+
+## Mandatory legacy/drift audit
+
+Search for stale status/task text, duplicate/dead architecture, temporary/recovery code that became permanent, historical tests freezing mutable global state, stale branches/worktrees/clones, superseded schema/API/configuration, contradictory docs/ADRs/runbooks, stale flags/env/CI exemptions, raw-source governance bypasses, accidental generated dependencies and deprecated runtime/AI/deployment paths.
+
+Classify every finding as `LEGITIMATE_HISTORY`, `REQUIRED_COMPATIBILITY`, `REMOVE_BEFORE_NEXT_SLICE`, or `REMOVE_IN_NAMED_PHASE(<phase>)`. Incompatible unclassified legacy blocks the next implementation slice.
+
+## Canonical System Inventory maintenance
+
+The MasterPlan `Canonical SYSTEM INVENTORY - complete product map` is the mandatory as-built/target/legacy component map. Every bootstrap reconciles the relevant inventory rows against actual code before implementation. Any task that adds, removes, renames, replaces or changes ownership/boundaries of a customer surface, service, model family, worker/job mechanism, AI provider, report component, security boundary, storage/deployment component, configuration family, external integration, test authority or legacy item must update the inventory in the same candidate. If there is no inventory impact, the task specification states `Canonical system inventory impact: NONE` and gives evidence.
+
+## Codex execution authority
+
+- ISI Codex may run only through `$HOME/bin/codex-isi` / `codex-isi`, authenticated with ChatGPT.
+- Generic `codex` is forbidden for ISI implementation.
+- Codex is not invoked until bootstrap, architecture review and exact scope lock are complete.
+- Normal implementation handoff is a locked MD contract plus runner and independent analyzer, not an ad-hoc conversational prompt.
+- Codex must not stage, commit, push, deploy, use production secrets, create alternate workspaces or redefine architecture/scope/acceptance.
+- The independent analyzer does not invoke Codex and does not mutate repository content/control state.
+
+## GitHub acceptance authority
+
+Normal development is direct on canonical local `main`; branches/PRs require an explicit owner exception. After deterministic validation, independent analysis and assistant human review, exact-file staging requires explicit owner approval. Commit/push then goes directly to `main`. `CI_VERIFIED` and `COMPLETE` require the blocking `ISI required acceptance` workflow to finish `completed / success` on the exact committed `main` SHA.
+
+GitHub is source-control/CI evidence during industrialization, not a production deployment plane. Server mutation remains deferred to owner-approved ISI-28.
+
+
 ## Product architecture
 
 - ISI is the institutional platform of the Institute for Social Inclusion.
@@ -22,7 +65,7 @@ This repository is developed using specification-driven autonomous engineering. 
 
 For every task:
 
-1. Read this file, the task specification, relevant ADRs, and the current task registry.
+1. Complete the MasterPlan-first canonical bootstrap above, then read the task specification, relevant ADRs and the current task registry.
 2. Verify the required baseline and dependencies before editing.
 3. Perform normal owner-driven development only on the canonical local `main` branch. Do not create, switch to, rename, or use feature, implementation, review, temporary, or automation branches unless the owner explicitly authorizes an exception.
 4. Preserve backward compatibility unless the specification explicitly authorizes a breaking change.

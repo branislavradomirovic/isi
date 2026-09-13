@@ -1,12 +1,12 @@
 from pathlib import Path
 
 
-def test_locked_workflow_forbids_local_docker_runtime_and_manual_owner_qa():
+def test_production_workflow_document_is_historical_and_non_executable():
     text = Path("docs/ops/ISI-PRODUCTION-WORKFLOW-LOCK.md").read_text()
-    assert "Do not run the ISI Docker runtime on the developer workstation" in text
-    assert "reuse the existing server Ollama runtime" in text
-    assert "owner does not perform manual browser QA" in text
-    assert "No script in this workflow may commit, push, reset, clean" in text
+    assert "HISTORICAL / SUPERSEDED - DO NOT EXECUTE" in text
+    assert "canonical authority is `docs/roadmap/ISI-AUTONOMOUS-INDUSTRIALIZATION-MASTER-PLAN.md`" in text
+    assert "server is frozen through ISI-27" in text
+    assert "fresh explicit owner approval for ISI-28" in text
 
 
 def test_old_local_staging_launcher_fails_closed():

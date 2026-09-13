@@ -145,26 +145,27 @@
     {
       "id": "ISI-15-PRODUCTION-STAGING",
       "title": "Production Staging / Server Readiness Baseline",
-      "status": "ready",
+      "status": "historical",
       "spec": "automation/specs/ISI-15-PRODUCTION-STAGING.md",
       "depends_on": [
         "ISI-14-SECURITY-HARDENING"
       ],
-      "next": "ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS"
+      "next": "ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS",
+      "note": "Historical production-readiness baseline only. It does not authorize server execution. The old ISI-15/ISI-16 deployment sequence is superseded; server mutation belongs exclusively to owner-approved ISI-28."
     },
     {
       "id": "ISI-16-ISI-RS-PRODUCTION-CUTOVER",
       "title": "isi.rs Production Cutover (legacy planned sequence)",
-      "status": "on_hold",
+      "status": "superseded",
       "depends_on": [
         "ISI-15-PRODUCTION-STAGING"
       ],
-      "note": "Superseded as immediate next work by autonomous industrialization. No cutover until explicit owner approval after ISI-27."
+      "note": "HISTORICAL / SUPERSEDED. Do not execute this legacy cutover sequence. All current server/DNS/ingress/SMTP/production-data work is deferred to owner-approved ISI-28."
     },
     {
       "id": "ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS",
       "title": "Autonomous Development Harness + CI",
-      "status": "merged",
+      "status": "done",
       "spec": "automation/specs/ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS.md",
       "depends_on": [
         "ISI-15-PRODUCTION-STAGING"
@@ -175,7 +176,7 @@
     {
       "id": "ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS",
       "title": "Observability & Operational Diagnostics",
-      "status": "merged",
+      "status": "done",
       "spec": "automation/specs/ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS.md",
       "depends_on": [
         "ISI-17-AUTONOMOUS-DEVELOPMENT-HARNESS"
@@ -186,12 +187,12 @@
     {
       "id": "ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY",
       "title": "Backup, Restore & Disaster Recovery Automation",
-      "status": "implemented",
+      "status": "done",
       "spec": "automation/specs/ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY.md",
       "depends_on": [
         "ISI-18-OBSERVABILITY-OPERATIONAL-DIAGNOSTICS"
       ],
-      "note": "Repository-visible implementation code head dd0cf78a48afcb984aadd74a4808e48d4d739a65 passed authoritative PR CI run #49 (34500748759), including PostgreSQL 17 and scoped object-storage recovery rehearsal. Final synchronized bookkeeping head still requires fresh exact-head CI and independent review before merge. Server verification remains deferred.",
+      "note": "COMPLETE in canonical history. Final merge commit 4713a1deb7ccec0b99b92985424693a50727a1f6 records blocking CI run #50 and independent exact-head review. Later native acceptance/recovery rehearsals remain green. Server verification remains deferred to owner-approved ISI-28.",
       "next": "ISI-20-ENTERPRISE-SECURITY-COMPLETION"
     },
     {
@@ -213,7 +214,7 @@
         "ISI-20-ENTERPRISE-SECURITY-COMPLETION"
       ],
       "next": "ISI-22-INDUSTRIAL-DATA-PLATFORM",
-      "note": "ISI-21 is COMPLETE / CI_VERIFIED across ISI-21A, ISI-21B, the native PostgreSQL reference-catalog fixture repair, and ISI-21C. Canonical implementation SHA ac42601dc5cb67bf98603022febe8de276844ca3 passed authoritative GitHub Actions ISI required acceptance run #64 (run ID 34714098565) with all blocking jobs green. The dedicated spec is an as-built completion contract added during closeout and does not claim pre-implementation authorship. Server/live-host verification and production deployment/data mutation remain deferred/not performed. Next task ISI-22 remains planned."
+      "note": "ISI-21 is COMPLETE / CI_VERIFIED. Canonical implementation SHA ac42601dc5cb67bf98603022febe8de276844ca3 passed ISI required acceptance run #64 (34714098565). Server/live-host verification and production mutation remain deferred. ISI-22 is active; ISI-22A through ISI-22E are now complete."
     },
     {
       "id": "ISI-22-INDUSTRIAL-DATA-PLATFORM",
@@ -222,7 +223,7 @@
       "depends_on": [
         "ISI-21-DATA-GOVERNANCE-PRIVACY"
       ],
-      "note": "ISI-22A through ISI-22D are complete. ISI-22E governed ingestion operations, quality, freshness, backfill, dead-letter handling, and provenance is the current implementation slice. Production deployment and server verification remain deferred.",
+      "note": "ISI-22 remains IN_PROGRESS. ISI-22A 4047a1ef2ff3ac755d86947cfe666ee8507c9a0b, 22B daeb5f2bbdb20bfed1be43f226ba13aa13e470aa, 22C abbf6845864e5a61ff83fc7127739d9e68709077, 22D 6347ecde3cbb9a37a65ddbe7d5a6b3f35310b35d and 22E 44002aa0774a902bdf2d7a0ae56ff3558303571c are complete. 22E exact-main ISI required acceptance run #70 (34774329038) completed/success. Next action is a read-only whole-phase ISI-22 DONE/PARTIAL/MISSING/DRIFT audit against the MasterPlan and actual code; remaining work, if any, is grouped into at most two serious vertical packages. Production deployment/server verification remain deferred.",
       "next": "ISI-23-SIMPA-PRODUCTION-METHODOLOGY"
     },
     {

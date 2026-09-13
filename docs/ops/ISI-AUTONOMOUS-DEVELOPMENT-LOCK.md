@@ -1,18 +1,26 @@
 # ISI Autonomous Development Lock
 
-GitHub is the development control plane. The current ISI server is a deployment target only and is outside autonomous-development acceptance.
+This document is subordinate to the canonical MasterPlan and mirrors its autonomous-development boundary.
 
-## Hard prohibitions
+## Development control plane
 
-Autonomous agents and CI must not use SSH/SCP, invoke server deployment or release-deployment scripts, mutate DNS or central ingress, change production SMTP or Ollama configuration, or read/write production credentials, secrets, or institution data. Workflows receive no production secrets and use synthetic test values. Server tooling stays quarantined for the explicitly approved ISI-28 task.
+- Canonical local repo: `/Users/branislavradomirovic/Applications/Python/ISI`; normal branch `main`; exactly one worktree.
+- Normal workflow is owner-driven direct-main. Branches/PRs require an explicit owner exception.
+- Every new chat/task must complete the MasterPlan-first bootstrap and legacy/drift audit before implementation.
+- ISI Codex may run only through `codex-isi`; generic `codex` is forbidden.
+- Candidates remain unstaged/uncommitted through runner, independent analyzer and assistant human review. Exact staging/commit/push requires explicit owner approval.
+- Repository acceptance is exact-main GitHub Actions `ISI required acceptance` = `completed / success` on the exact committed SHA.
 
-Any server action, production credential use, release promotion, or deployment requires a separate owner-approved task. Ambiguity fails closed. Pull-request workflows never deploy, including for trusted branches.
+## Hard production boundary
 
-## Status meanings
+Autonomous agents and CI must not use SSH/SCP, deploy to the server, mutate DNS/ingress, change production SMTP/Ollama, access production credentials/secrets/institution data, or execute production data migrations. Workflows receive no production secrets. Server tooling stays quarantined until explicitly approved ISI-28.
 
-- `IMPLEMENTED`: code exists and local/task acceptance passes.
-- `CI_VERIFIED`: required GitHub checks pass for the pull request.
-- `SERVER_VERIFIED`: an explicitly approved server acceptance passed.
-- `DEFERRED_SERVER_VERIFICATION`: implementation deliberately performed no server action.
+## Evidence-backed states
 
-Only evidence can advance status. ISI-17 ends with `DEFERRED_SERVER_VERIFICATION`; it cannot claim production verification.
+- `IMPLEMENTED`: exact unstaged/uncommitted candidate passed required local/task gates.
+- `REVIEW_VERIFIED`: assistant human review of the exact candidate/final SHA has no unresolved blocker.
+- `OWNER_APPROVED_MAIN_COMMIT`: owner explicitly approved exact staging/commit/push.
+- `CI_VERIFIED`: required GitHub checks passed on the exact committed main SHA.
+- `COMPLETE`: implementation, review, owner-approved main commit/push and exact-main CI are complete.
+- `SERVER_VERIFIED`: separately approved server acceptance passed.
+- `DEFERRED_SERVER_VERIFICATION`: the task deliberately performed no server action.

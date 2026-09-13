@@ -1,9 +1,17 @@
 # ISI Release Policy
 
-All changes use a dedicated branch, reviewed pull request, task specification, deterministic acceptance, and recorded evidence. Required checks are blocking and may not be bypassed or changed to allowed-to-fail to merge a defect.
+This policy is subordinate to the canonical MasterPlan.
 
-Release candidates derive from reviewed commits on the protected default branch. A release uses an immutable, unique tag, release notes/changelog describing changes, migrations, compatibility and known limitations, and artifacts tied to the exact commit with SHA-256 checksums. Deployment is allowed only from an owner-approved release candidate; a casual production `git pull` is not the operating model.
+## Development-to-main policy
 
-The release record must identify source SHA, tag, builder/workflow, artifact checksums, approvals, migration plan and rollback procedure. Rollback instructions must cover application artifacts and database compatibility/backups before deployment approval. Production secrets never enter artifacts or release notes.
+Normal industrialization development uses one canonical local repository, one worktree and direct `main`; a feature branch or pull request is not required and must not be introduced without an explicit owner exception.
 
-Signed tags/releases, generated SBOMs, artifact attestations and image vulnerability enforcement are mandatory target controls for ISI-27. Until then, checksums and immutable commit identity are required, and the missing signing/SBOM provenance must be stated as deferred rather than implied.
+Every change still requires a locked specification/scope, deterministic acceptance, independent analysis where defined, assistant human review, explicit owner approval before exact-file staging, direct commit/push to `main`, and `ISI required acceptance` completed/success on the exact main SHA. Required checks are blocking and may not be weakened to accept a defect.
+
+## Release-candidate policy
+
+ISI-27 owns the industrial release-candidate/acceptance pack. Release candidates derive from exact CI-verified main commits and use immutable identity, checksums, release notes/changelog, migration/compatibility/known-limitations records, security/privacy/methodology acceptance, backup/restore proof and rollback instructions. Signed provenance/SBOM/attestations and image vulnerability enforcement are ISI-27 target controls.
+
+## Production deployment policy
+
+Only owner-approved ISI-28 may perform current-server deployment, DNS/ingress, real SMTP, production secret/data or server Ollama mutation. Deployment is release-based rather than a casual production `git pull`. Historical ISI-15/ISI-16 deployment documents are not current execution authority.

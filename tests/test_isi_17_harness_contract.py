@@ -75,3 +75,101 @@ def test_dependency_and_container_hygiene_contracts_exist() -> None:
     assert ".git" in ignored
     assert ".env" in ignored
     assert "runtime" in ignored
+
+
+def test_masterplan_bootstrap_and_legacy_governance_is_enforced() -> None:
+    master = (ROOT / "docs/roadmap/ISI-AUTONOMOUS-INDUSTRIALIZATION-MASTER-PLAN.md").read_text()
+    for required in (
+        "Mandatory bootstrap for every new chat, feature or task",
+        "Mandatory legacy/drift audit",
+        "Canonical Codex execution contract",
+        "Canonical Git/GitHub development contract",
+        "Canonical platform architecture map",
+        "Canonical SYSTEM INVENTORY - complete product map",
+        "Accepted ISI-22E implementation checkpoint - 2026-09-13",
+    ):
+        assert required in master
+
+    template = (ROOT / "automation/specs/TASK-TEMPLATE.md").read_text()
+    for section in (
+        "Canonical bootstrap evidence",
+        "Canonical system inventory impact",
+        "Legacy/drift audit",
+        "Exact mutable surface",
+        "Implementation-tool authority",
+        "Human review and owner gate",
+    ):
+        assert f"## {section}" in template
+
+    release = (ROOT / "docs/ops/ISI-RELEASE-POLICY.md").read_text()
+    assert "direct `main`" in release
+    assert "feature branch or pull request is not required" in release
+
+    for rel in (
+        "docs/ops/ISI-PRODUCTION-WORKFLOW-LOCK.md",
+        "docs/ops/ISI-SERVER-DEPLOYMENT-RUNBOOK.md",
+        "docs/ops/ISI-15-STAGING-RUNBOOK.md",
+        "automation/specs/ISI-15-PRODUCTION-STAGING.md",
+    ):
+        assert "HISTORICAL / SUPERSEDED - DO NOT EXECUTE" in (ROOT / rel).read_text()
+
+
+def test_live_status_records_22e_and_whole_phase_22_audit() -> None:
+    status = (ROOT / "automation/STATUS.md").read_text()
+    assert "Accepted ISI-22E implementation SHA: `44002aa0774a902bdf2d7a0ae56ff3558303571c`." in status
+    assert "Accepted ISI-22E implementation tree: `15578107fb21b6aae174a4bf77fc62812377949c`." in status
+    assert "Canonical main SHA:" not in status
+    assert "Canonical tree:" not in status
+    assert status.count("## Owner-facing state model") == 1
+    assert "run #70" in status
+    assert "whole-phase ISI-22" in status
+
+    tasks = json.loads((ROOT / "automation/tasks.json").read_text())["tasks"]
+    by_id = {task["id"]: task for task in tasks}
+    assert by_id["ISI-15-PRODUCTION-STAGING"]["status"] == "historical"
+    assert by_id["ISI-16-ISI-RS-PRODUCTION-CUTOVER"]["status"] == "superseded"
+    assert by_id["ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY"]["status"] == "done"
+    assert by_id["ISI-22-INDUSTRIAL-DATA-PLATFORM"]["status"] == "in_progress"
+    assert "22E 44002aa0774a902bdf2d7a0ae56ff3558303571c" in by_id["ISI-22-INDUSTRIAL-DATA-PLATFORM"]["note"]
+
+
+def test_canonical_system_inventory_is_complete_and_self_contained() -> None:
+    master = (ROOT / "docs/roadmap/ISI-AUTONOMOUS-INDUSTRIALIZATION-MASTER-PLAN.md").read_text()
+    assert master.count("### 0.7 Canonical SYSTEM INVENTORY - complete product map") == 1
+    rows = []
+    for line in master.splitlines():
+        if line.startswith("| INV-"):
+            cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+            assert len(cells) == 18
+            assert all(cells)
+            rows.append(cells)
+    assert len(rows) >= 210
+    ids = [row[0] for row in rows]
+    assert len(ids) == len(set(ids))
+    for letter in "ABCDEFGHIJKLMN":
+        assert any(row[0].startswith(f"INV-{letter}") for row in rows)
+    by_id = {row[0]: row for row in rows}
+    assert by_id["INV-D05"][3] == "NOT_PRESENT"
+    assert by_id["INV-E08"][3] == "NOT_PRESENT"
+    assert by_id["INV-E09"][3] == "NOT_PRESENT"
+    assert by_id["INV-F06"][3] == "NOT_PRESENT"
+    assert by_id["INV-H01"][3] == "NOT_PRESENT"
+    assert by_id["INV-H02"][3] == "NOT_PRESENT"
+    assert by_id["INV-H03"][3] == "NOT_PRESENT"
+    assert by_id["INV-H04"][3] == "NOT_PRESENT"
+    assert by_id["INV-H05"][3] == "CURRENT_AS_BUILT"
+    assert by_id["INV-A17"][3] == "NOT_PRESENT"
+    assert by_id["INV-A18"][3] == "PLANNED"
+    assert by_id["INV-A19"][3] == "PLANNED"
+    assert by_id["INV-A20"][3] == "NOT_PRESENT"
+    assert by_id["INV-J13"][3] == "TARGET"
+    assert by_id["INV-J15"][3] == "TARGET"
+    assert by_id["INV-J16"][3] == "DEVELOPMENT_ONLY"
+    assert by_id["INV-J21"][3] == "HISTORICAL"
+    assert by_id["INV-J31"][3] == "HISTORICAL"
+    assert by_id["INV-L07"][3] == "NOT_PRESENT"
+    assert by_id["INV-L08"][3] == "NOT_PRESENT"
+    assert "isi.opus.rs:8445" in master
+    assert "historical `isi.rs:8443`" in master
+    assert "There is no application-owned scheduler" in master
+    assert "no active external document-conversion service" in master
