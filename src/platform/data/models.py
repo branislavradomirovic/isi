@@ -250,6 +250,46 @@ class DataRecordGovernancePolicyVersion(Base):
     retired_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
+class DataIngestionOperationalPolicyVersion(Base):
+    __tablename__ = "core_data_ingestion_operational_policy_versions"
+    __table_args__ = (
+        UniqueConstraint("source_id", "version_no", name="uq_ing_op_policy_source_version"),
+        CheckConstraint("version_no >= 1", name="ck_ing_op_policy_version_no"),
+        CheckConstraint("contract_format_version = 1", name="ck_ing_op_policy_format"),
+        CheckConstraint("product_code IN ('SIMPA', 'ORDO')", name="ck_ing_op_policy_product"),
+        CheckConstraint("lifecycle_state IN ('DRAFT', 'ACTIVE', 'RETIRED')", name="ck_ing_op_policy_lifecycle"),
+        Index("ix_ing_op_policy_scope", "organization_id", "workspace_id", "product_code"),
+        Index("ix_ing_op_policy_binding", "source_id", "connector_contract_version_id", "schema_mapping_version_id", "record_governance_policy_version_id"),
+        Index("ix_ing_op_policy_source_state", "source_id", "lifecycle_state"),
+        Index("uq_ing_op_policy_active_source", "source_id", unique=True,
+              postgresql_where=text("lifecycle_state = 'ACTIVE'"),
+              sqlite_where=text("lifecycle_state = 'ACTIVE'")),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    source_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_sources.id", ondelete="RESTRICT"), nullable=False)
+    connector_contract_version_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_connector_contract_versions.id", ondelete="RESTRICT"), nullable=False)
+    schema_mapping_version_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_source_schema_mapping_versions.id", ondelete="RESTRICT"), nullable=False)
+    record_governance_policy_version_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_record_governance_policy_versions.id", ondelete="RESTRICT"), nullable=False)
+    organization_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False)
+    workspace_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False)
+    product_code: Mapped[str] = mapped_column(ForeignKey("core_products.code"), nullable=False)
+    version_no: Mapped[int] = mapped_column(Integer, nullable=False)
+    contract_format_version: Mapped[int] = mapped_column(Integer, nullable=False, default=1, server_default="1")
+    freshness_contract_json: Mapped[str] = mapped_column(Text, nullable=False)
+    quality_contract_json: Mapped[str] = mapped_column(Text, nullable=False)
+    backfill_contract_json: Mapped[str] = mapped_column(Text, nullable=False)
+    dead_letter_contract_json: Mapped[str] = mapped_column(Text, nullable=False)
+    fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    lifecycle_state: Mapped[str] = mapped_column(String(16), nullable=False, default="DRAFT", server_default="DRAFT")
+    created_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    activated_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    retired_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    activated_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    retired_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
 class DataSourceVersion(Base):
     __tablename__ = "core_data_source_versions"
     __table_args__ = (
@@ -559,6 +599,7 @@ class DataIngestionRun(Base):
             "status IN ('QUEUED', 'RUNNING', 'SUCCEEDED', 'FAILED')",
             name="ck_ing_run_status",
         ),
+        CheckConstraint("execution_mode IN ('INCREMENTAL', 'BACKFILL', 'REPLAY')", name="ck_ing_run_execution_mode"),
         Index(
             "ix_ing_run_scope",
             "organization_id",
@@ -606,6 +647,15 @@ class DataIngestionRun(Base):
         nullable=True,
         index=True,
     )
+    operational_policy_version_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_data_ingestion_operational_policy_versions.id", ondelete="RESTRICT"), nullable=True, index=True
+    )
+    execution_mode: Mapped[str] = mapped_column(String(16), nullable=False, default="INCREMENTAL", server_default="INCREMENTAL")
+    window_start_cursor: Mapped[str] = mapped_column(String(1000), nullable=False, default="", server_default="")
+    window_end_cursor: Mapped[str] = mapped_column(String(1000), nullable=False, default="", server_default="")
+    replay_of_run_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_data_ingestion_runs.id", ondelete="RESTRICT"), nullable=True, index=True)
+    source_observed_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    forward_cursor_committed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default="false")
     source_version_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("core_data_source_versions.id", ondelete="RESTRICT"), nullable=False
     )
@@ -631,6 +681,94 @@ class DataIngestionRun(Base):
     updated_at: Mapped[object] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now()
     )
+
+
+class DataIngestionEvaluation(Base):
+    __tablename__ = "core_data_ingestion_evaluations"
+    __table_args__ = (
+        UniqueConstraint("ingestion_run_id", name="uq_ing_eval_run"),
+        CheckConstraint("product_code IN ('SIMPA', 'ORDO')", name="ck_ing_eval_product"),
+        CheckConstraint("freshness_status IN ('FRESH', 'STALE_WARNING', 'STALE_REJECTED', 'UNKNOWN', 'NOT_APPLICABLE')", name="ck_ing_eval_freshness"),
+        CheckConstraint("quality_status IN ('PASS', 'WARNING', 'REJECTED', 'UNKNOWN')", name="ck_ing_eval_quality"),
+        CheckConstraint("decision IN ('ACCEPTED', 'ACCEPTED_WITH_WARNING', 'REJECTED', 'DEAD_LETTERED')", name="ck_ing_eval_decision"),
+        Index("ix_ing_eval_scope", "organization_id", "workspace_id", "product_code"),
+    )
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    source_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_sources.id", ondelete="RESTRICT"), nullable=False)
+    ingestion_run_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_ingestion_runs.id", ondelete="RESTRICT"), nullable=False)
+    operational_policy_version_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_ingestion_operational_policy_versions.id", ondelete="RESTRICT"), nullable=False)
+    organization_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False)
+    workspace_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False)
+    product_code: Mapped[str] = mapped_column(ForeignKey("core_products.code"), nullable=False)
+    freshness_status: Mapped[str] = mapped_column(String(24), nullable=False)
+    quality_status: Mapped[str] = mapped_column(String(16), nullable=False)
+    decision: Mapped[str] = mapped_column(String(24), nullable=False)
+    freshness_details_json: Mapped[str] = mapped_column(Text, nullable=False)
+    quality_details_json: Mapped[str] = mapped_column(Text, nullable=False)
+    record_metrics_json: Mapped[str] = mapped_column(Text, nullable=False)
+    evidence_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    evaluated_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+
+
+class DataIngestionDeadLetter(Base):
+    __tablename__ = "core_data_ingestion_dead_letters"
+    __table_args__ = (
+        CheckConstraint("product_code IN ('SIMPA', 'ORDO')", name="ck_ing_dead_product"),
+        CheckConstraint("status IN ('OPEN', 'REQUEUED', 'RESOLVED', 'DISCARDED')", name="ck_ing_dead_status"),
+        Index("ix_ing_dead_scope", "organization_id", "workspace_id", "product_code"),
+        Index("ix_ing_dead_run_reason", "ingestion_run_id", "reason_code"),
+        Index("uq_ing_dead_open_run_reason", "ingestion_run_id", "reason_code", unique=True,
+              postgresql_where=text("status = 'OPEN'"), sqlite_where=text("status = 'OPEN'")),
+    )
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    source_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_sources.id", ondelete="RESTRICT"), nullable=False)
+    ingestion_run_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_ingestion_runs.id", ondelete="RESTRICT"), nullable=False)
+    evaluation_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_data_ingestion_evaluations.id", ondelete="RESTRICT"), nullable=True)
+    operational_policy_version_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_ingestion_operational_policy_versions.id", ondelete="RESTRICT"), nullable=False)
+    organization_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False)
+    workspace_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False)
+    product_code: Mapped[str] = mapped_column(ForeignKey("core_products.code"), nullable=False)
+    reason_code: Mapped[str] = mapped_column(String(120), nullable=False)
+    error_category: Mapped[str] = mapped_column(String(120), nullable=False)
+    details_json: Mapped[str] = mapped_column(Text, nullable=False, default="{}", server_default="{}")
+    status: Mapped[str] = mapped_column(String(16), nullable=False, default="OPEN", server_default="OPEN")
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    resolved_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    resolver_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    resolution_note: Mapped[str] = mapped_column(String(1000), nullable=False, default="", server_default="")
+    replacement_run_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_data_ingestion_runs.id", ondelete="RESTRICT"), nullable=True)
+
+
+class DataGovernedIngestionOutput(Base):
+    __tablename__ = "core_data_governed_ingestion_outputs"
+    __table_args__ = (
+        UniqueConstraint("ingestion_run_id", name="uq_gov_ing_output_run"),
+        UniqueConstraint("evaluation_id", name="uq_gov_ing_output_evaluation"),
+        CheckConstraint("contract_version = 1", name="ck_gov_ing_output_contract"),
+        CheckConstraint("product_code IN ('SIMPA', 'ORDO')", name="ck_gov_ing_output_product"),
+        CheckConstraint("record_count >= 0 AND current_record_count >= 0 AND duplicate_record_count >= 0 AND quarantined_record_count >= 0 AND superseded_record_count >= 0", name="ck_gov_ing_output_counts"),
+        Index("ix_gov_ing_output_scope", "organization_id", "workspace_id", "product_code"),
+    )
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    source_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_sources.id", ondelete="RESTRICT"), nullable=False)
+    source_version_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_source_versions.id", ondelete="RESTRICT"), nullable=False)
+    ingestion_run_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_ingestion_runs.id", ondelete="RESTRICT"), nullable=False)
+    evaluation_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_ingestion_evaluations.id", ondelete="RESTRICT"), nullable=False)
+    connector_contract_version_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_connector_contract_versions.id", ondelete="RESTRICT"), nullable=False)
+    schema_mapping_version_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_source_schema_mapping_versions.id", ondelete="RESTRICT"), nullable=False)
+    record_governance_policy_version_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_record_governance_policy_versions.id", ondelete="RESTRICT"), nullable=False)
+    operational_policy_version_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_ingestion_operational_policy_versions.id", ondelete="RESTRICT"), nullable=False)
+    organization_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False)
+    workspace_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False)
+    product_code: Mapped[str] = mapped_column(ForeignKey("core_products.code"), nullable=False)
+    contract_version: Mapped[int] = mapped_column(Integer, nullable=False, default=1, server_default="1")
+    record_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    current_record_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    duplicate_record_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    quarantined_record_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    superseded_record_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    output_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
 
 
 class DataRecordEntity(Base):

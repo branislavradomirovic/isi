@@ -134,6 +134,7 @@ class IngestionRunCreate(_IngestionRunMutationRequest):
     content_type: str = Field(default="application/octet-stream", max_length=200)
     content_base64: str = Field(min_length=1)
     cursor_after: str = Field(default="", max_length=1000)
+    source_observed_at: datetime | None = None
 
     @field_validator("filename")
     @classmethod
@@ -165,6 +166,13 @@ class IngestionRunResponse(BaseModel):
     connector_contract_version_id: uuid.UUID
     schema_mapping_version_id: uuid.UUID
     record_governance_policy_version_id: uuid.UUID | None
+    operational_policy_version_id: uuid.UUID | None
+    execution_mode: Literal["INCREMENTAL", "BACKFILL", "REPLAY"]
+    window_start_cursor: str
+    window_end_cursor: str
+    replay_of_run_id: uuid.UUID | None
+    source_observed_at: datetime | None
+    forward_cursor_committed: bool
     source_version_id: uuid.UUID
     inspection_job_id: uuid.UUID
     request_fingerprint: str
@@ -185,6 +193,232 @@ class IngestionRunResponse(BaseModel):
 class IngestionRunCreateResponse(BaseModel):
     run: IngestionRunResponse
     reused: bool
+
+
+OperationalIdentifier = Annotated[
+    str,
+    Field(min_length=1, max_length=120, pattern=r"^[A-Za-z0-9][A-Za-z0-9._:-]*$"),
+]
+
+
+class _IngestionOperationsMutationRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+
+class IngestionFreshnessContract(_IngestionOperationsMutationRequest):
+    warning_after_seconds: int = Field(ge=0)
+    reject_after_seconds: int = Field(ge=0)
+    missing_evidence_action: Literal["WARN", "REJECT"]
+
+    @field_validator("reject_after_seconds")
+    @classmethod
+    def reject_must_not_precede_warning(cls, value: int, info):
+        warning = info.data.get("warning_after_seconds")
+        if warning is not None and value < warning:
+            raise ValueError("reject_after_seconds must be >= warning_after_seconds")
+        return value
+
+
+class IngestionQualityContract(_IngestionOperationsMutationRequest):
+    required_check_codes: list[OperationalIdentifier] = Field(default_factory=list, max_length=200)
+    warning_quarantine_ratio: float = Field(ge=0, le=1)
+    reject_quarantine_ratio: float = Field(ge=0, le=1)
+    missing_required_check_action: Literal["WARN", "REJECT"]
+
+    @field_validator("required_check_codes")
+    @classmethod
+    def required_checks_are_unique(cls, value: list[str]) -> list[str]:
+        normalized = [item.strip() for item in value]
+        if len(normalized) != len(set(normalized)):
+            raise ValueError("required_check_codes must be unique")
+        return sorted(normalized)
+
+    @field_validator("reject_quarantine_ratio")
+    @classmethod
+    def reject_ratio_must_not_precede_warning(cls, value: float, info):
+        warning = info.data.get("warning_quarantine_ratio")
+        if warning is not None and value < warning:
+            raise ValueError("reject_quarantine_ratio must be >= warning_quarantine_ratio")
+        return value
+
+
+class IngestionBackfillContract(_IngestionOperationsMutationRequest):
+    backfill_allowed: bool
+    replay_allowed: bool
+    require_explicit_window: Literal[True] = True
+    cursor_mutation_allowed: Literal[False] = False
+
+
+class IngestionDeadLetterContract(_IngestionOperationsMutationRequest):
+    max_retry_attempts: int = Field(ge=1)
+    terminal_error_codes: list[OperationalIdentifier] = Field(default_factory=list, max_length=200)
+    rejected_evaluation_to_dead_letter: bool
+
+    @field_validator("terminal_error_codes")
+    @classmethod
+    def terminal_codes_are_unique(cls, value: list[str]) -> list[str]:
+        normalized = [item.strip() for item in value]
+        if len(normalized) != len(set(normalized)):
+            raise ValueError("terminal_error_codes must be unique")
+        return sorted(normalized)
+
+
+class IngestionOperationalPolicyVersionCreate(_IngestionOperationsMutationRequest):
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: Literal["SIMPA", "ORDO"]
+    connector_contract_version_id: uuid.UUID
+    schema_mapping_version_id: uuid.UUID
+    record_governance_policy_version_id: uuid.UUID
+    freshness_contract: IngestionFreshnessContract
+    quality_contract: IngestionQualityContract
+    backfill_contract: IngestionBackfillContract
+    dead_letter_contract: IngestionDeadLetterContract
+
+
+class IngestionOperationalPolicyActivationRequest(_IngestionOperationsMutationRequest):
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: Literal["SIMPA", "ORDO"]
+
+
+class IngestionOperationalPolicyVersionResponse(BaseModel):
+    id: uuid.UUID
+    source_id: uuid.UUID
+    connector_contract_version_id: uuid.UUID
+    schema_mapping_version_id: uuid.UUID
+    record_governance_policy_version_id: uuid.UUID
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: Literal["SIMPA", "ORDO"]
+    version_no: int
+    contract_format_version: Literal[1]
+    freshness_contract: IngestionFreshnessContract
+    quality_contract: IngestionQualityContract
+    backfill_contract: IngestionBackfillContract
+    dead_letter_contract: IngestionDeadLetterContract
+    fingerprint: str
+    lifecycle_state: Literal["DRAFT", "ACTIVE", "RETIRED"]
+    created_by_membership_id: uuid.UUID | None
+    activated_by_membership_id: uuid.UUID | None
+    retired_by_membership_id: uuid.UUID | None
+    created_at: datetime
+    activated_at: datetime | None
+    retired_at: datetime | None
+
+
+class IngestionBackfillCreate(_IngestionOperationsMutationRequest):
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: Literal["SIMPA", "ORDO"]
+    connector_contract_version_id: uuid.UUID
+    schema_mapping_version_id: uuid.UUID
+    idempotency_key: IngestionIdempotencyKey
+    filename: str = Field(min_length=1, max_length=500)
+    content_type: str = Field(default="application/octet-stream", max_length=200)
+    content_base64: str = Field(min_length=1)
+    source_observed_at: datetime | None = None
+    window_start_cursor: str = Field(min_length=1, max_length=1000)
+    window_end_cursor: str = Field(min_length=1, max_length=1000)
+
+    @field_validator("filename", "window_start_cursor", "window_end_cursor")
+    @classmethod
+    def nonblank_trimmed_value(cls, value: str) -> str:
+        if not value.strip() or value != value.strip():
+            raise ValueError("value must be nonblank and trimmed")
+        if any(ord(character) < 32 or ord(character) == 127 for character in value):
+            raise ValueError("value must not contain control characters")
+        return value
+
+
+class IngestionReplayCreate(_IngestionOperationsMutationRequest):
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: Literal["SIMPA", "ORDO"]
+    idempotency_key: IngestionIdempotencyKey
+
+
+class IngestionEvaluationResponse(BaseModel):
+    id: uuid.UUID
+    source_id: uuid.UUID
+    ingestion_run_id: uuid.UUID
+    operational_policy_version_id: uuid.UUID
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: Literal["SIMPA", "ORDO"]
+    freshness_status: Literal["FRESH", "STALE_WARNING", "STALE_REJECTED", "UNKNOWN", "NOT_APPLICABLE"]
+    quality_status: Literal["PASS", "WARNING", "REJECTED", "UNKNOWN"]
+    decision: Literal["ACCEPTED", "ACCEPTED_WITH_WARNING", "REJECTED", "DEAD_LETTERED"]
+    freshness_details: dict[str, Any]
+    quality_details: dict[str, Any]
+    record_metrics: dict[str, Any]
+    evidence_fingerprint: str
+    evaluated_at: datetime
+
+
+class IngestionDeadLetterRequeueRequest(_IngestionOperationsMutationRequest):
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: Literal["SIMPA", "ORDO"]
+    idempotency_key: IngestionIdempotencyKey
+
+
+class IngestionDeadLetterResolveRequest(_IngestionOperationsMutationRequest):
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: Literal["SIMPA", "ORDO"]
+    status: Literal["RESOLVED", "DISCARDED"] = "RESOLVED"
+    resolution_note: str = Field(min_length=1, max_length=1000)
+
+    @field_validator("resolution_note")
+    @classmethod
+    def note_must_not_be_blank(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("resolution_note must not be blank")
+        return value
+
+
+class IngestionDeadLetterResponse(BaseModel):
+    id: uuid.UUID
+    source_id: uuid.UUID
+    ingestion_run_id: uuid.UUID
+    evaluation_id: uuid.UUID | None
+    operational_policy_version_id: uuid.UUID
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: Literal["SIMPA", "ORDO"]
+    reason_code: str
+    error_category: str
+    details: dict[str, Any]
+    status: Literal["OPEN", "REQUEUED", "RESOLVED", "DISCARDED"]
+    created_at: datetime
+    resolved_at: datetime | None
+    resolver_membership_id: uuid.UUID | None
+    resolution_note: str
+    replacement_run_id: uuid.UUID | None
+
+
+class GovernedIngestionOutputResponse(BaseModel):
+    id: uuid.UUID
+    source_id: uuid.UUID
+    source_version_id: uuid.UUID
+    ingestion_run_id: uuid.UUID
+    evaluation_id: uuid.UUID
+    connector_contract_version_id: uuid.UUID
+    schema_mapping_version_id: uuid.UUID
+    record_governance_policy_version_id: uuid.UUID
+    operational_policy_version_id: uuid.UUID
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: Literal["SIMPA", "ORDO"]
+    contract_version: Literal[1]
+    record_count: int
+    current_record_count: int
+    duplicate_record_count: int
+    quarantined_record_count: int
+    superseded_record_count: int
+    output_fingerprint: str
+    created_at: datetime
 
 
 ConnectorIdentifier = Annotated[

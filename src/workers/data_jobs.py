@@ -24,6 +24,12 @@ from src.platform.data.models import (
     DataSourceVersion,
     IngestionJob,
 )
+from src.platform.data.ingestion_operations_service import (
+    create_or_get_governed_ingestion_output,
+    create_or_get_ingestion_evaluation,
+    record_ingestion_failure_dead_letter,
+    validate_pinned_ingestion_operational_policy,
+)
 from src.platform.data.service import replace_quality_results
 from src.platform.data.record_governance_service import (
     materialize_ingestion_run_records,
@@ -127,6 +133,7 @@ def _linked_run_integrity_valid(
         return False
     try:
         validate_pinned_record_governance_policy(session, run=run)
+        validate_pinned_ingestion_operational_policy(session, run=run)
     except DataPlatformError:
         return False
     return True
@@ -163,6 +170,11 @@ def _fail_linked_integrity(
         event_type="data.ingestion_run.worker_failed",
         error_code=error_code,
     )
+    if run.operational_policy_version_id is not None:
+        record_ingestion_failure_dead_letter(
+            session, run=run, reason_code=error_code, error_category="INTEGRITY",
+            details={"attempts": run.attempts},
+        )
     session.flush()
 
 
@@ -280,6 +292,12 @@ def process_ingestion_job(session: Session, *, job_id: uuid.UUID) -> None:
                 )
             )
         replace_quality_results(session, version.id, quality)
+        session.flush()
+        evaluation = None
+        if run is not None and run.operational_policy_version_id is not None:
+            evaluation = create_or_get_ingestion_evaluation(session, run=run)
+            if evaluation.decision in {"ACCEPTED", "ACCEPTED_WITH_WARNING"}:
+                create_or_get_governed_ingestion_output(session, run=run)
         version.ingest_status = "succeeded"
         job.status = "succeeded"
         job.progress = 100
@@ -290,12 +308,19 @@ def process_ingestion_job(session: Session, *, job_id: uuid.UUID) -> None:
             run.finished_at = job.finished_at
             run.error_code = ""
             run.error_message = ""
+            run.forward_cursor_committed = bool(
+                run.execution_mode == "INCREMENTAL"
+                and (run.operational_policy_version_id is None or (
+                    evaluation is not None
+                    and evaluation.decision in {"ACCEPTED", "ACCEPTED_WITH_WARNING"}
+                ))
+            )
             _run_audit(
                 session,
                 run=run,
                 event_type="data.ingestion_run.worker_succeeded",
             )
-    except (IngestionError, StorageError, ValueError) as exc:
+    except (IngestionError, StorageError, DataPlatformError, ValueError) as exc:
         version.ingest_status = "failed"
         job.status = "failed"
         job.progress = 100
@@ -314,6 +339,11 @@ def process_ingestion_job(session: Session, *, job_id: uuid.UUID) -> None:
                 event_type="data.ingestion_run.worker_failed",
                 error_code=job.error_code,
             )
+            if run.operational_policy_version_id is not None:
+                record_ingestion_failure_dead_letter(
+                    session, run=run, reason_code=job.error_code,
+                    error_category=exc.__class__.__name__, details={"attempts": run.attempts},
+                )
     session.flush()
 
 

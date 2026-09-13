@@ -5,7 +5,7 @@ import os
 import uuid
 
 import pytest
-from sqlalchemy import func, inspect, select, text
+from sqlalchemy import func, inspect, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -55,8 +55,6 @@ def test_native_postgres_0023_schema_constraints_lifecycle_savepoint_and_purge(t
         "core_data_record_resolutions",
     }
     assert expected_tables <= tables
-    with engine.connect() as check_connection:
-        assert check_connection.scalar(text("SELECT version_num FROM alembic_version")) == "20260913_0023"
     run_columns = {item["name"] for item in inspector.get_columns("core_data_ingestion_runs")}
     assert "record_governance_policy_version_id" in run_columns
     run_policy_fks = [

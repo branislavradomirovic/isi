@@ -218,10 +218,11 @@
     {
       "id": "ISI-22-INDUSTRIAL-DATA-PLATFORM",
       "title": "Industrial Data Platform",
-      "status": "planned",
+      "status": "in_progress",
       "depends_on": [
         "ISI-21-DATA-GOVERNANCE-PRIVACY"
       ],
+      "note": "ISI-22A through ISI-22D are complete. ISI-22E governed ingestion operations, quality, freshness, backfill, dead-letter handling, and provenance is the current implementation slice. Production deployment and server verification remain deferred.",
       "next": "ISI-23-SIMPA-PRODUCTION-METHODOLOGY"
     },
     {

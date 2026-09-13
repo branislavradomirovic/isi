@@ -10,7 +10,7 @@ from src.api.dependencies import AuthContext, get_auth_context, get_db
 from src.core.config import get_settings
 from src.platform.access.service import has_permission
 from src.platform.app_context.service import AppContextError, resolve_selection
-from src.platform.data.models import DataSourceVersion, IngestionJob
+from src.platform.data.models import DataIngestionRun, DataSourceVersion, IngestionJob
 from src.platform.data.queue import DataQueueError, dispatch_job
 from src.platform.data.schemas import (
     AnalyticalAIEligibilityRequest,
@@ -34,7 +34,17 @@ from src.platform.data.schemas import (
     ExportRequest,
     FeatureTransitionRequest,
     HoldPlaceRequest,
+    GovernedIngestionOutputResponse,
+    IngestionBackfillCreate,
+    IngestionDeadLetterRequeueRequest,
+    IngestionDeadLetterResolveRequest,
+    IngestionDeadLetterResponse,
+    IngestionEvaluationResponse,
     IngestionJobResponse,
+    IngestionOperationalPolicyActivationRequest,
+    IngestionOperationalPolicyVersionCreate,
+    IngestionOperationalPolicyVersionResponse,
+    IngestionReplayCreate,
     IngestionRunCreate,
     IngestionRunCreateResponse,
     IngestionRunResponse,
@@ -73,10 +83,22 @@ from src.platform.data.schema_mapping_service import (
     list_source_schema_mapping_versions,
 )
 from src.platform.data.ingestion_run_service import (
+    create_backfill_ingestion_run,
     create_ingestion_run,
+    create_replay_ingestion_run,
     get_ingestion_run as get_ingestion_run_service,
     list_ingestion_runs,
     retry_ingestion_run,
+)
+from src.platform.data.ingestion_operations_service import (
+    activate_ingestion_operational_policy_version,
+    create_ingestion_operational_policy_version,
+    get_governed_ingestion_output,
+    get_ingestion_evaluation,
+    list_ingestion_dead_letters,
+    list_ingestion_operational_policy_versions,
+    requeue_ingestion_dead_letter,
+    resolve_ingestion_dead_letter,
 )
 from src.platform.data.record_governance_service import (
     activate_record_governance_policy_version,
@@ -189,7 +211,9 @@ def _platform_error(exc: DataPlatformError) -> HTTPException:
                 "analytical_feature_not_accessible", "analytical_feature_version_not_accessible",
                 "connector_contract_version_not_accessible", "schema_mapping_version_not_accessible",
                 "ingestion_run_not_accessible", "record_policy_version_not_accessible",
-                "record_quarantine_not_accessible"}:
+                "record_quarantine_not_accessible", "operational_policy_version_not_accessible",
+                "ingestion_evaluation_not_accessible", "governed_ingestion_output_not_accessible",
+                "ingestion_dead_letter_not_accessible"}:
         return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=code)
     if code in {"upload_too_large"}:
         return HTTPException(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail=code)
@@ -208,7 +232,15 @@ def _platform_error(exc: DataPlatformError) -> HTTPException:
                 "record_policy_connector_not_active", "record_policy_mapping_not_active",
                 "record_policy_binding_mismatch", "record_policy_integrity_failed",
                 "record_policy_mapping_integrity_failed", "record_resolution_state_conflict",
-                "record_resolution_accept_forbidden", "record_resolution_integrity_failed"}:
+                "record_resolution_accept_forbidden", "record_resolution_integrity_failed",
+                "operational_policy_state_conflict", "operational_policy_unchanged",
+                "operational_policy_binding_mismatch", "operational_policy_connector_not_active",
+                "operational_policy_mapping_not_active", "operational_policy_record_policy_not_active",
+                "operational_policy_integrity_failed", "operational_policy_required",
+                "ingestion_backfill_not_allowed", "ingestion_replay_not_allowed",
+                "ingestion_replay_legacy_run_forbidden", "ingestion_replay_content_integrity_failed",
+                "governed_output_decision_conflict", "governed_output_requires_governed_run",
+                "ingestion_dead_letter_state_conflict"}:
         return HTTPException(status_code=status.HTTP_409_CONFLICT, detail=code)
     if code in {"connector_secret_material_forbidden", "invalid_connector_credential_reference"}:
         return HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=code)
@@ -585,6 +617,195 @@ def post_ingestion_run_retry(
     except DataPlatformError as exc:
         db.rollback()
         raise _platform_error(exc) from None
+
+
+@router.post("/sources/{source_id}/ingestion-operational-policy-versions",
+             response_model=IngestionOperationalPolicyVersionResponse,
+             status_code=status.HTTP_201_CREATED)
+def post_ingestion_operational_policy_version(source_id: uuid.UUID,
+        payload: IngestionOperationalPolicyVersionCreate,
+        context: AuthContext = Depends(get_auth_context), db: Session = Depends(get_db)):
+    _require_scope(db, context, organization_id=payload.organization_id,
+                   workspace_id=payload.workspace_id, product_code=payload.product_code,
+                   permission_code="data.governance.manage")
+    try:
+        result = create_ingestion_operational_policy_version(db, source_id=source_id,
+            payload=payload, actor_id=actor_membership_id(db, user_id=context.user.id,
+                                                         organization_id=payload.organization_id))
+        db.commit(); return result
+    except DataPlatformError as exc:
+        db.rollback(); raise _platform_error(exc) from None
+
+
+@router.get("/sources/{source_id}/ingestion-operational-policy-versions",
+            response_model=list[IngestionOperationalPolicyVersionResponse])
+def get_ingestion_operational_policy_versions(source_id: uuid.UUID,
+        organization_id: uuid.UUID = Query(...), workspace_id: uuid.UUID = Query(...),
+        product_code: str = Query(...), context: AuthContext = Depends(get_auth_context),
+        db: Session = Depends(get_db)):
+    _require_scope(db, context, organization_id=organization_id, workspace_id=workspace_id,
+                   product_code=product_code, permission_code="data.read")
+    try:
+        return list_ingestion_operational_policy_versions(db, source_id=source_id,
+            organization_id=organization_id, workspace_id=workspace_id, product_code=product_code)
+    except DataPlatformError as exc:
+        raise _platform_error(exc) from None
+
+
+@router.post("/sources/{source_id}/ingestion-operational-policy-versions/{policy_version_id}/activate",
+             response_model=IngestionOperationalPolicyVersionResponse)
+def post_ingestion_operational_policy_activation(source_id: uuid.UUID,
+        policy_version_id: uuid.UUID, payload: IngestionOperationalPolicyActivationRequest,
+        context: AuthContext = Depends(get_auth_context), db: Session = Depends(get_db)):
+    _require_scope(db, context, organization_id=payload.organization_id,
+                   workspace_id=payload.workspace_id, product_code=payload.product_code,
+                   permission_code="data.governance.manage")
+    try:
+        result = activate_ingestion_operational_policy_version(db, source_id=source_id,
+            policy_version_id=policy_version_id, organization_id=payload.organization_id,
+            workspace_id=payload.workspace_id, product_code=payload.product_code,
+            actor_id=actor_membership_id(db, user_id=context.user.id,
+                                         organization_id=payload.organization_id))
+        db.commit(); return result
+    except DataPlatformError as exc:
+        db.rollback(); raise _platform_error(exc) from None
+
+
+@router.post("/sources/{source_id}/ingestion-runs/backfill",
+             response_model=IngestionRunCreateResponse, status_code=status.HTTP_201_CREATED)
+def post_backfill_ingestion_run(source_id: uuid.UUID, payload: IngestionBackfillCreate,
+        response: Response, context: AuthContext = Depends(get_auth_context),
+        db: Session = Depends(get_db)):
+    _require_scope(db, context, organization_id=payload.organization_id,
+                   workspace_id=payload.workspace_id, product_code=payload.product_code,
+                   permission_code="data.upload")
+    settings = get_settings()
+    try:
+        raw = decode_upload(payload.content_base64,
+            max_bytes=int(getattr(settings, "data_max_upload_bytes", 16777216)))
+        result = create_backfill_ingestion_run(db, build_storage(), source_id=source_id,
+            request=payload, payload_bytes=raw,
+            actor_id=actor_membership_id(db, user_id=context.user.id,
+                                         organization_id=payload.organization_id),
+            backend=getattr(settings, "data_job_backend", "inline"))
+        db.commit(); response.status_code = status.HTTP_200_OK if result.reused else status.HTTP_201_CREATED
+        if not result.reused or result.run.status == "QUEUED": _dispatch_or_503(result.run.inspection_job_id)
+        db.expire_all()
+        refreshed = get_ingestion_run_service(db, source_id=source_id, run_id=result.run.id,
+            organization_id=payload.organization_id, workspace_id=payload.workspace_id,
+            product_code=payload.product_code)
+        return IngestionRunCreateResponse(run=refreshed, reused=result.reused)
+    except DataPlatformError as exc:
+        db.rollback(); raise _platform_error(exc) from None
+
+
+@router.post("/sources/{source_id}/ingestion-runs/{run_id}/replay",
+             response_model=IngestionRunCreateResponse, status_code=status.HTTP_201_CREATED)
+def post_replay_ingestion_run(source_id: uuid.UUID, run_id: uuid.UUID,
+        payload: IngestionReplayCreate, response: Response,
+        context: AuthContext = Depends(get_auth_context), db: Session = Depends(get_db)):
+    _require_scope(db, context, organization_id=payload.organization_id,
+                   workspace_id=payload.workspace_id, product_code=payload.product_code,
+                   permission_code="data.upload")
+    settings = get_settings()
+    try:
+        result = create_replay_ingestion_run(db, build_storage(), source_id=source_id,
+            run_id=run_id, request=payload,
+            actor_id=actor_membership_id(db, user_id=context.user.id,
+                                         organization_id=payload.organization_id),
+            backend=getattr(settings, "data_job_backend", "inline"))
+        db.commit(); response.status_code = status.HTTP_200_OK if result.reused else status.HTTP_201_CREATED
+        if not result.reused or result.run.status == "QUEUED": _dispatch_or_503(result.run.inspection_job_id)
+        db.expire_all()
+        refreshed = get_ingestion_run_service(db, source_id=source_id, run_id=result.run.id,
+            organization_id=payload.organization_id, workspace_id=payload.workspace_id,
+            product_code=payload.product_code)
+        return IngestionRunCreateResponse(run=refreshed, reused=result.reused)
+    except DataPlatformError as exc:
+        db.rollback(); raise _platform_error(exc) from None
+
+
+@router.get("/sources/{source_id}/ingestion-runs/{run_id}/evaluation",
+            response_model=IngestionEvaluationResponse)
+def get_run_evaluation(source_id: uuid.UUID, run_id: uuid.UUID,
+        organization_id: uuid.UUID = Query(...), workspace_id: uuid.UUID = Query(...),
+        product_code: str = Query(...), context: AuthContext = Depends(get_auth_context),
+        db: Session = Depends(get_db)):
+    _require_scope(db, context, organization_id=organization_id, workspace_id=workspace_id,
+                   product_code=product_code, permission_code="data.read")
+    try:
+        return get_ingestion_evaluation(db, source_id=source_id, run_id=run_id,
+            organization_id=organization_id, workspace_id=workspace_id, product_code=product_code)
+    except DataPlatformError as exc: raise _platform_error(exc) from None
+
+
+@router.get("/sources/{source_id}/ingestion-runs/{run_id}/governed-output",
+            response_model=GovernedIngestionOutputResponse)
+def get_run_governed_output(source_id: uuid.UUID, run_id: uuid.UUID,
+        organization_id: uuid.UUID = Query(...), workspace_id: uuid.UUID = Query(...),
+        product_code: str = Query(...), context: AuthContext = Depends(get_auth_context),
+        db: Session = Depends(get_db)):
+    _require_scope(db, context, organization_id=organization_id, workspace_id=workspace_id,
+                   product_code=product_code, permission_code="data.read")
+    try:
+        return get_governed_ingestion_output(db, source_id=source_id, run_id=run_id,
+            organization_id=organization_id, workspace_id=workspace_id, product_code=product_code)
+    except DataPlatformError as exc: raise _platform_error(exc) from None
+
+
+@router.get("/sources/{source_id}/ingestion-dead-letters",
+            response_model=list[IngestionDeadLetterResponse])
+def get_source_ingestion_dead_letters(source_id: uuid.UUID,
+        organization_id: uuid.UUID = Query(...), workspace_id: uuid.UUID = Query(...),
+        product_code: str = Query(...), context: AuthContext = Depends(get_auth_context),
+        db: Session = Depends(get_db)):
+    _require_scope(db, context, organization_id=organization_id, workspace_id=workspace_id,
+                   product_code=product_code, permission_code="data.read")
+    try:
+        return list_ingestion_dead_letters(db, source_id=source_id,
+            organization_id=organization_id, workspace_id=workspace_id, product_code=product_code)
+    except DataPlatformError as exc: raise _platform_error(exc) from None
+
+
+@router.post("/sources/{source_id}/ingestion-dead-letters/{dead_letter_id}/requeue",
+             response_model=IngestionDeadLetterResponse)
+def post_ingestion_dead_letter_requeue(source_id: uuid.UUID, dead_letter_id: uuid.UUID,
+        payload: IngestionDeadLetterRequeueRequest,
+        context: AuthContext = Depends(get_auth_context), db: Session = Depends(get_db)):
+    _require_scope(db, context, organization_id=payload.organization_id,
+                   workspace_id=payload.workspace_id, product_code=payload.product_code,
+                   permission_code="data.governance.manage")
+    settings = get_settings()
+    try:
+        result = requeue_ingestion_dead_letter(db, build_storage(), source_id=source_id,
+            dead_letter_id=dead_letter_id, request=payload,
+            actor_id=actor_membership_id(db, user_id=context.user.id,
+                                         organization_id=payload.organization_id),
+            backend=getattr(settings, "data_job_backend", "inline"))
+        replacement = db.get(DataIngestionRun, result.replacement_run_id)
+        db.commit()
+        if replacement is not None: _dispatch_or_503(replacement.inspection_job_id)
+        return result
+    except DataPlatformError as exc:
+        db.rollback(); raise _platform_error(exc) from None
+
+
+@router.post("/sources/{source_id}/ingestion-dead-letters/{dead_letter_id}/resolve",
+             response_model=IngestionDeadLetterResponse)
+def post_ingestion_dead_letter_resolve(source_id: uuid.UUID, dead_letter_id: uuid.UUID,
+        payload: IngestionDeadLetterResolveRequest,
+        context: AuthContext = Depends(get_auth_context), db: Session = Depends(get_db)):
+    _require_scope(db, context, organization_id=payload.organization_id,
+                   workspace_id=payload.workspace_id, product_code=payload.product_code,
+                   permission_code="data.governance.manage")
+    try:
+        result = resolve_ingestion_dead_letter(db, source_id=source_id,
+            dead_letter_id=dead_letter_id, request=payload,
+            actor_id=actor_membership_id(db, user_id=context.user.id,
+                                         organization_id=payload.organization_id))
+        db.commit(); return result
+    except DataPlatformError as exc:
+        db.rollback(); raise _platform_error(exc) from None
 
 
 @router.post(
