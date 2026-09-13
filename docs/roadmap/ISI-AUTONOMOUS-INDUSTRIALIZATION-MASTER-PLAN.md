@@ -104,7 +104,7 @@ The system is layered as follows:
 3. **Domain separation** - SIMPA and ORDO are the only current domain applications; they remain domain-isolated while sharing infrastructure. COSMOS is not a runtime/application/domain layer.
 4. **Shared data platform** - scoped source registrations, immutable source versions/payload identity, storage metadata and queued processing.
 5. **Governed ingestion (ISI-22A-22E)** - versioned connector contracts -> versioned schema mappings -> incremental/idempotent ingestion -> normalized records -> record governance/dedup/quarantine/reconciliation -> operational policy for freshness/quality/backfill/replay/dead-letter -> immutable governed ingestion output.
-6. **Reproducible analytical data boundary (remaining ISI-22)** - governed output -> canonical analytical dataset contracts -> stable temporal/granularity keys -> explicit missing-value semantics -> reproducible dataset/snapshot/feature versions -> typed source-to-feature lineage and quality state.
+6. **Reproducible analytical data boundary (ISI-22F - CURRENT AS BUILT)** - governed output -> canonical analytical dataset contracts -> stable temporal/granularity keys -> explicit missing-value semantics -> reproducible dataset/snapshot/feature versions -> typed source-to-feature lineage and quality state.
 7. **Deterministic analytics** - indicators/statistics/ML own authoritative numerical truth, diagnostics, uncertainty, calibration and validated model outputs.
 8. **Document AI/RAG** - extraction/retrieval with provenance and tenant/product namespace isolation.
 9. **AI synthesis** - LLM/VLM is bounded explanation/synthesis through the shared AI HTTP boundary; it does not silently become numerical or state authority.
@@ -430,6 +430,19 @@ At the accepted ISI-22E implementation SHA `44002aa0774a902bdf2d7a0ae56ff3558303
 - ISI-23 through ISI-28 remain serially pending;
 - server verification/deployment remains deferred and the server remains frozen.
 
+### 0.8.1 Accepted ISI-22F implementation checkpoint - 2026-09-14
+
+At the accepted ISI-22F implementation SHA `cfe1574532df65589132bbdd10625172b32fb959` (tree `5afd978151a49d3f3ff897dd47481faf2438cbac`):
+
+- ISI-22A through ISI-22E remain complete accepted predecessors;
+- ISI-22F `cfe1574532df65589132bbdd10625172b32fb959` is `COMPLETE / CI_VERIFIED`;
+- authoritative ISI-22F GitHub Actions is `ISI required acceptance` run #73, run ID `34787001102`, `completed / success`, with all blocking jobs and aggregate `acceptance` green;
+- the mandatory whole-phase ISI-22 gap/legacy audit was completed before ISI-22F and resolved the remaining Phase 22 work into ISI-22F and ISI-22G;
+- overall ISI-22 remains `IN_PROGRESS` until ISI-22G enforces governed domain consumption, proves no downstream raw-source bypass, completes synthetic SIMPA/ORDO E2E acceptance and closes the phase;
+- current/next implementation slice is ISI-22G - Domain Consumption Enforcement + ISI-22 Closeout;
+- ISI-23 through ISI-28 remain serially pending;
+- server verification/deployment remains deferred and the server remains frozen.
+
 ### 0.9 Phase/task closeout synchronization gate
 
 A task or phase cannot be closed while any of these are true:
@@ -687,9 +700,9 @@ Required deliverables now include:
 
 Goal: evolve ingestion from framework capability to robust production-grade data engineering and reproducible analytical datasets.
 
-Status: **IN_PROGRESS**. ISI-22A through ISI-22E are complete; the next gate is a whole-phase gap audit before any further implementation.
+Status: **IN_PROGRESS**. ISI-22A through ISI-22F are complete; ISI-22F is `COMPLETE / CI_VERIFIED`, and the current/next implementation slice is ISI-22G - Domain Consumption Enforcement + ISI-22 Closeout.
 
-Accepted checkpoints: 22A `4047a1ef2ff3ac755d86947cfe666ee8507c9a0b`; 22B `daeb5f2bbdb20bfed1be43f226ba13aa13e470aa`; 22C `abbf6845864e5a61ff83fc7127739d9e68709077`; 22D `6347ecde3cbb9a37a65ddbe7d5a6b3f35310b35d`; 22E `44002aa0774a902bdf2d7a0ae56ff3558303571c`, exact-main acceptance run #70 / `34774329038` success.
+Accepted checkpoints: 22A `4047a1ef2ff3ac755d86947cfe666ee8507c9a0b`; 22B `daeb5f2bbdb20bfed1be43f226ba13aa13e470aa`; 22C `abbf6845864e5a61ff83fc7127739d9e68709077`; 22D `6347ecde3cbb9a37a65ddbe7d5a6b3f35310b35d`; 22E `44002aa0774a902bdf2d7a0ae56ff3558303571c`; 22F `cfe1574532df65589132bbdd10625172b32fb959`, exact-main acceptance run #73 / `34787001102` success.
 
 Required deliverables include:
 
@@ -911,5 +924,9 @@ Owner approvals now binding in this master plan include:
 - historical branch/PR workflow remains legitimate history but is not current execution authority;
 - stale ISI-15/ISI-16 deployment workflow documents are superseded as active instructions; only ISI-28 may authorize server mutation;
 - ISI-22E is COMPLETE / CI_VERIFIED on `44002aa0774a902bdf2d7a0ae56ff3558303571c`, and the next work is a whole-phase ISI-22 gap audit.
+
+### 2026-09-14 ISI-22F completion and ISI-22G transition
+
+- ISI-22F is COMPLETE / CI_VERIFIED on `cfe1574532df65589132bbdd10625172b32fb959` with exact-main acceptance run #73 / `34787001102`, and the current/next work is ISI-22G - Domain Consumption Enforcement + ISI-22 Closeout.
 
 Material changes to these points require a new explicit owner approval and, where architectural, a new or superseding ADR.

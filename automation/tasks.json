@@ -214,7 +214,7 @@
         "ISI-20-ENTERPRISE-SECURITY-COMPLETION"
       ],
       "next": "ISI-22-INDUSTRIAL-DATA-PLATFORM",
-      "note": "ISI-21 is COMPLETE / CI_VERIFIED. Canonical implementation SHA ac42601dc5cb67bf98603022febe8de276844ca3 passed ISI required acceptance run #64 (34714098565). Server/live-host verification and production mutation remain deferred. ISI-22 is active; ISI-22A through ISI-22E are now complete."
+      "note": "ISI-21 is COMPLETE / CI_VERIFIED. Canonical implementation SHA ac42601dc5cb67bf98603022febe8de276844ca3 passed ISI required acceptance run #64 (34714098565). Server/live-host verification and production mutation remain deferred. ISI-22 is active; ISI-22A through ISI-22F are now complete; ISI-22F is COMPLETE / CI_VERIFIED and ISI-22G is current/next."
     },
     {
       "id": "ISI-22-INDUSTRIAL-DATA-PLATFORM",
@@ -223,7 +223,7 @@
       "depends_on": [
         "ISI-21-DATA-GOVERNANCE-PRIVACY"
       ],
-      "note": "ISI-22 remains IN_PROGRESS. ISI-22A 4047a1ef2ff3ac755d86947cfe666ee8507c9a0b, 22B daeb5f2bbdb20bfed1be43f226ba13aa13e470aa, 22C abbf6845864e5a61ff83fc7127739d9e68709077, 22D 6347ecde3cbb9a37a65ddbe7d5a6b3f35310b35d and 22E 44002aa0774a902bdf2d7a0ae56ff3558303571c are complete. 22E exact-main ISI required acceptance run #70 (34774329038) completed/success. Next action is a read-only whole-phase ISI-22 DONE/PARTIAL/MISSING/DRIFT audit against the MasterPlan and actual code; remaining work, if any, is grouped into at most two serious vertical packages. Production deployment/server verification remain deferred.",
+      "note": "ISI-22 remains IN_PROGRESS. ISI-22A 4047a1ef2ff3ac755d86947cfe666ee8507c9a0b, 22B daeb5f2bbdb20bfed1be43f226ba13aa13e470aa, 22C abbf6845864e5a61ff83fc7127739d9e68709077, 22D 6347ecde3cbb9a37a65ddbe7d5a6b3f35310b35d, 22E 44002aa0774a902bdf2d7a0ae56ff3558303571c and 22F cfe1574532df65589132bbdd10625172b32fb959 are complete. ISI-22F is COMPLETE / CI_VERIFIED; exact-main ISI required acceptance run #73 (34787001102) completed/success. The mandatory whole-phase gap/legacy audit was completed before 22F and resolved remaining Phase 22 work into ISI-22F and ISI-22G. Current/next implementation slice is ISI-22G - Domain Consumption Enforcement + ISI-22 Closeout. ISI-22 remains IN_PROGRESS until ISI-22G closeout and exact-main CI succeed. Production deployment/server verification remain deferred.",
       "next": "ISI-23-SIMPA-PRODUCTION-METHODOLOGY"
     },
     {

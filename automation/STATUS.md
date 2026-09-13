@@ -2,25 +2,33 @@
 
 This is the human-facing live execution ledger. The MasterPlan is the canonical roadmap/architecture/governance authority; `automation/tasks.json`, accepted code, exact-main GitHub Actions and recorded evidence provide synchronized execution proof.
 
-Last status update: 2026-09-13.
+Last status update: 2026-09-14.
 
 ## Current execution
 
-Last completed slice: `ISI-22E - Governed Ingestion Operations, Quality, Freshness, Backfill & Provenance`.
+Last completed slice: `ISI-22F - Reproducible Analytical Data Boundary`.
 
-ISI-22E state: `COMPLETE / CI_VERIFIED`.
+ISI-22F state: `COMPLETE / CI_VERIFIED`.
+
+Accepted ISI-22F implementation SHA: `cfe1574532df65589132bbdd10625172b32fb959`.
+
+Accepted ISI-22F implementation tree: `5afd978151a49d3f3ff897dd47481faf2438cbac`.
+
+Authoritative GitHub Actions: `ISI required acceptance` run #73, run ID `34787001102`, exact SHA `cfe1574532df65589132bbdd10625172b32fb959`, conclusion `success`; all blocking jobs and aggregate `acceptance` passed.
+
+Historical predecessor checkpoint retained for canonical traceability:
 
 Accepted ISI-22E implementation SHA: `44002aa0774a902bdf2d7a0ae56ff3558303571c`.
 
 Accepted ISI-22E implementation tree: `15578107fb21b6aae174a4bf77fc62812377949c`.
 
-Authoritative GitHub Actions: `ISI required acceptance` run #70, run ID `34774329038`, exact SHA `44002aa0774a902bdf2d7a0ae56ff3558303571c`, conclusion `success`; all blocking jobs and aggregate `acceptance` passed.
+Authoritative predecessor GitHub Actions: `ISI required acceptance` run #70, run ID `34774329038`, exact SHA `44002aa0774a902bdf2d7a0ae56ff3558303571c`, conclusion `success`.
 
 Server/live-host verification: `DEFERRED_SERVER_VERIFICATION`. No production deployment or production-data mutation is implied.
 
-Overall `ISI-22-INDUSTRIAL-DATA-PLATFORM` remains `IN_PROGRESS` until a whole-phase audit proves every MasterPlan deliverable complete.
+Overall `ISI-22-INDUSTRIAL-DATA-PLATFORM` remains `IN_PROGRESS`. The mandatory whole-phase ISI-22 gap/legacy audit was completed before ISI-22F; the remaining closeout slice is ISI-22G.
 
-Next action: **read-only whole-phase ISI-22 gap/legacy audit** against the complete MasterPlan and accepted as-built code. No Codex is used before that audit and architecture/scope lock are complete. Remaining ISI-22 implementation, if any, is grouped into at most two serious vertical packages.
+Next action: **ISI-22G bootstrap/audit - Domain Consumption Enforcement + ISI-22 Closeout** against the complete MasterPlan and accepted as-built code. Audit SIMPA direct reads, ORDO direct reads, deterministic analytics, bounded AI synthesis, reporting/downstream bypasses, tests and legacy/drift before locking any implementation contract. No Codex is used before that bootstrap/audit and architecture/scope lock are complete.
 
 ## Mandatory bootstrap rule
 
@@ -41,7 +49,7 @@ A failed required gate returns the active task to implementation/fix state. Requ
 | 19 | Backup, Restore & Disaster Recovery | **COMPLETE** |
 | 20 | Enterprise Security Completion | **COMPLETE / CI_VERIFIED** |
 | 21 | Data Governance & Privacy Controls | **COMPLETE / CI_VERIFIED** |
-| 22 | Industrial Data Platform | **IN_PROGRESS - 22A through 22E complete; whole-phase audit next** |
+| 22 | Industrial Data Platform | **IN_PROGRESS - 22A through 22F complete; 22F CI_VERIFIED; 22G next** |
 | 23 | SIMPA Production Methodology + Help/User Guide | PLANNED |
 | 24 | ORDO Production Methodology + Help/User Guide | PLANNED |
 | 25 | Industrial AI / MLOps | PLANNED |
