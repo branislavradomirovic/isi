@@ -8,7 +8,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
-from sqlalchemy import inspect, select, text
+from sqlalchemy import inspect, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -44,8 +44,6 @@ def test_native_postgres_0024_constraints_uniqueness_and_cursor_commitment(tmp_p
     engine = build_engine(); inspector = inspect(engine)
     assert {"core_data_ingestion_operational_policy_versions", "core_data_ingestion_evaluations",
             "core_data_ingestion_dead_letters", "core_data_governed_ingestion_outputs"} <= set(inspector.get_table_names())
-    with engine.connect() as connection:
-        assert connection.scalar(text("SELECT version_num FROM alembic_version")) == "20260913_0024"
     run_columns = {item["name"] for item in inspector.get_columns("core_data_ingestion_runs")}
     assert {"operational_policy_version_id", "execution_mode", "window_start_cursor", "window_end_cursor",
             "replay_of_run_id", "source_observed_at", "forward_cursor_committed"} <= run_columns

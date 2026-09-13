@@ -4,7 +4,7 @@ import uuid
 from datetime import datetime
 from typing import Annotated, Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from src.platform.data.governance import (
     AIUsePolicy,
@@ -847,14 +847,92 @@ class AnalyticalDatasetResponse(BaseModel):
     updated_at: datetime
 
 
+class AnalyticalDatasetFieldContract(_AnalyticalRequest):
+    field_key: str = Field(min_length=1, max_length=240, pattern=r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
+    logical_type: Literal["STRING", "INTEGER", "NUMBER", "BOOLEAN", "DATE", "DATETIME", "JSON"]
+    required: bool
+    semantic_role: Literal["KEY", "DIMENSION", "MEASURE", "ATTRIBUTE"]
+
+
+class AnalyticalDatasetContractVersionCreate(_AnalyticalRequest):
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: Literal["SIMPA", "ORDO"]
+    field_contract: list[AnalyticalDatasetFieldContract] = Field(min_length=1)
+    temporal_mode: Literal["STATIC", "POINT_IN_TIME", "PERIOD"]
+    temporal_key_fields: list[str] = Field(default_factory=list)
+    granularity_key_fields: list[str] = Field(min_length=1)
+    missing_value_policy: Literal["PRESERVE_MISSING"] = "PRESERVE_MISSING"
+
+    @model_validator(mode="after")
+    def validate_contract_semantics(self):
+        field_keys = [field.field_key for field in self.field_contract]
+        if len(field_keys) != len(set(field_keys)):
+            raise ValueError("analytical_contract_field_keys_duplicate")
+        if len(self.temporal_key_fields) != len(set(self.temporal_key_fields)):
+            raise ValueError("analytical_contract_temporal_keys_duplicate")
+        if len(self.granularity_key_fields) != len(set(self.granularity_key_fields)):
+            raise ValueError("analytical_contract_granularity_keys_duplicate")
+        declared = set(field_keys)
+        if not set(self.temporal_key_fields).issubset(declared):
+            raise ValueError("analytical_contract_temporal_key_missing")
+        if not set(self.granularity_key_fields).issubset(declared):
+            raise ValueError("analytical_contract_granularity_key_missing")
+        if self.temporal_mode == "STATIC" and self.temporal_key_fields:
+            raise ValueError("analytical_contract_static_temporal_keys_forbidden")
+        if self.temporal_mode == "POINT_IN_TIME" and len(self.temporal_key_fields) != 1:
+            raise ValueError("analytical_contract_point_temporal_key_required")
+        if self.temporal_mode == "PERIOD" and len(self.temporal_key_fields) != 2:
+            raise ValueError("analytical_contract_period_temporal_keys_required")
+        by_key = {field.field_key: field for field in self.field_contract}
+        if any(not by_key[key].required for key in self.granularity_key_fields):
+            raise ValueError("analytical_contract_granularity_key_must_be_required")
+        if any(by_key[key].semantic_role != "KEY" for key in self.granularity_key_fields):
+            raise ValueError("analytical_contract_granularity_key_role_invalid")
+        if any(not by_key[key].required or by_key[key].logical_type not in {"DATE", "DATETIME"}
+               for key in self.temporal_key_fields):
+            raise ValueError("analytical_contract_temporal_key_type_invalid")
+        return self
+
+
+class AnalyticalDatasetContractVersionResponse(BaseModel):
+    id: uuid.UUID
+    dataset_id: uuid.UUID
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: str
+    version_no: int
+    contract_format_version: int
+    field_contract: list[AnalyticalDatasetFieldContract]
+    temporal_mode: str
+    temporal_key_fields: list[str]
+    granularity_key_fields: list[str]
+    missing_value_policy: str
+    fingerprint: str
+    lifecycle_state: str
+    created_by_membership_id: uuid.UUID | None
+    activated_by_membership_id: uuid.UUID | None
+    retired_by_membership_id: uuid.UUID | None
+    created_at: datetime
+    activated_at: datetime | None
+    retired_at: datetime | None
+
+
+class AnalyticalDatasetContractActivationRequest(_AnalyticalRequest):
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: Literal["SIMPA", "ORDO"]
+
+
 class AnalyticalSnapshotCreate(_AnalyticalRequest):
     organization_id: uuid.UUID
     workspace_id: uuid.UUID
     product_code: str = Field(pattern=r"^(SIMPA|ORDO)$")
-    source_version_ids: list[uuid.UUID] = Field(min_length=1)
+    dataset_contract_version_id: uuid.UUID
+    governed_output_ids: list[uuid.UUID] = Field(min_length=1)
     methodology_reference: str = Field(min_length=1, max_length=500)
     methodology_version: str = Field(min_length=1, max_length=120)
-    build_reference: str = Field(default="", max_length=500)
+    build_reference: str = Field(min_length=1, max_length=500)
 
 
 class AnalyticalTransitionRequest(_AnalyticalRequest):
@@ -886,6 +964,38 @@ class SourceLineageResponse(BaseModel):
     source_fingerprint: str
 
 
+class GovernedOutputLineageResponse(BaseModel):
+    governed_output_id: uuid.UUID
+    governed_output_fingerprint: str
+    source_id: uuid.UUID
+    source_version_id: uuid.UUID
+    ingestion_run_id: uuid.UUID
+    evaluation_id: uuid.UUID
+    evaluation_fingerprint: str
+    evaluation_decision: str
+    classification: DataClassification
+    privacy_category: PrivacyCategory
+    ai_use_policy: AIUsePolicy
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: str
+
+
+class SnapshotRecordMembershipResponse(BaseModel):
+    governed_output_id: uuid.UUID
+    normalized_record_id: uuid.UUID
+    source_id: uuid.UUID
+    source_version_id: uuid.UUID
+    ingestion_run_id: uuid.UUID
+    source_record_ordinal: int
+    source_locator: str
+    identity_fingerprint: str
+    content_fingerprint: str
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    product_code: str
+
+
 class AnalyticalSnapshotResponse(BaseModel):
     id: uuid.UUID
     dataset_id: uuid.UUID
@@ -893,6 +1003,15 @@ class AnalyticalSnapshotResponse(BaseModel):
     workspace_id: uuid.UUID
     product_code: str
     version_no: int
+    dataset_contract_version_id: uuid.UUID | None
+    dataset_contract_fingerprint: str
+    lineage_mode: str
+    temporal_mode: str
+    temporal_key_fields: list[str]
+    granularity_key_fields: list[str]
+    missing_value_policy: str
+    analytical_quality_state: str
+    record_count: int
     methodology_reference: str
     methodology_version: str
     build_reference: str
@@ -912,6 +1031,8 @@ class AnalyticalSnapshotResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
     source_versions: list[SourceLineageResponse] = Field(default_factory=list)
+    governed_outputs: list[GovernedOutputLineageResponse] = Field(default_factory=list)
+    record_membership: list[SnapshotRecordMembershipResponse] = Field(default_factory=list)
 
 
 class AnalyticalFeatureCreate(_AnalyticalRequest):
@@ -955,6 +1076,10 @@ class SnapshotInputResponse(BaseModel):
     snapshot_id: uuid.UUID
     snapshot_version_no: int
     snapshot_fingerprint: str
+    snapshot_lineage_mode: str
+    dataset_contract_version_id: uuid.UUID | None
+    dataset_contract_fingerprint: str
+    analytical_quality_state: str
     organization_id: uuid.UUID
     workspace_id: uuid.UUID
     product_code: str

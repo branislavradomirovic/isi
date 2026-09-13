@@ -987,6 +987,48 @@ class AnalyticalDataset(Base):
     updated_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
 
 
+class AnalyticalDatasetContractVersion(Base):
+    __tablename__ = "core_analytical_dataset_contract_versions"
+    __table_args__ = (
+        UniqueConstraint("dataset_id", "version_no", name="uq_analytical_contract_dataset_version"),
+        UniqueConstraint("dataset_id", "fingerprint", name="uq_analytical_contract_dataset_fingerprint"),
+        CheckConstraint("version_no >= 1", name="ck_analytical_contract_version"),
+        CheckConstraint("contract_format_version = 1", name="ck_analytical_contract_format"),
+        CheckConstraint("product_code IN ('SIMPA', 'ORDO')", name="ck_analytical_contract_product"),
+        CheckConstraint("temporal_mode IN ('STATIC', 'POINT_IN_TIME', 'PERIOD')", name="ck_analytical_contract_temporal"),
+        CheckConstraint("missing_value_policy = 'PRESERVE_MISSING'", name="ck_analytical_contract_missing"),
+        CheckConstraint("lifecycle_state IN ('DRAFT', 'ACTIVE', 'RETIRED')", name="ck_analytical_contract_lifecycle"),
+        Index("ix_analytical_contract_scope", "organization_id", "workspace_id", "product_code"),
+        Index("ix_analytical_contract_dataset_state", "dataset_id", "lifecycle_state"),
+        Index(
+            "uq_analytical_contract_active_dataset", "dataset_id", unique=True,
+            postgresql_where=text("lifecycle_state = 'ACTIVE'"),
+            sqlite_where=text("lifecycle_state = 'ACTIVE'"),
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    dataset_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_analytical_datasets.id", ondelete="CASCADE"), nullable=False, index=True)
+    organization_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False)
+    workspace_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False)
+    product_code: Mapped[str] = mapped_column(ForeignKey("core_products.code"), nullable=False)
+    version_no: Mapped[int] = mapped_column(Integer, nullable=False)
+    contract_format_version: Mapped[int] = mapped_column(Integer, nullable=False, default=1, server_default="1")
+    field_contract_json: Mapped[str] = mapped_column(Text, nullable=False)
+    temporal_mode: Mapped[str] = mapped_column(String(24), nullable=False)
+    temporal_key_fields_json: Mapped[str] = mapped_column(Text, nullable=False, default="[]", server_default="[]")
+    granularity_key_fields_json: Mapped[str] = mapped_column(Text, nullable=False)
+    missing_value_policy: Mapped[str] = mapped_column(String(32), nullable=False, default="PRESERVE_MISSING", server_default="PRESERVE_MISSING")
+    fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    lifecycle_state: Mapped[str] = mapped_column(String(16), nullable=False, default="DRAFT", server_default="DRAFT")
+    created_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    activated_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    retired_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    activated_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    retired_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
 class AnalyticalDatasetSnapshot(Base):
     __tablename__ = "core_analytical_dataset_snapshots"
     __table_args__ = (
@@ -995,6 +1037,9 @@ class AnalyticalDatasetSnapshot(Base):
         CheckConstraint("revision >= 1", name="ck_analytical_snapshot_revision"),
         CheckConstraint("product_code IN ('SIMPA', 'ORDO')", name="ck_analytical_snapshot_product"),
         CheckConstraint("state IN ('DRAFT', 'VALIDATED', 'FROZEN', 'RETIRED')", name="ck_analytical_snapshot_state"),
+        CheckConstraint("lineage_mode IN ('LEGACY_SOURCE_VERSION', 'GOVERNED_OUTPUT_V1')", name="ck_analytical_snapshot_lineage_mode"),
+        CheckConstraint("analytical_quality_state IN ('LEGACY_UNKNOWN', 'ACCEPTED_CLEAN', 'ACCEPTED_WITH_WARNING')", name="ck_analytical_snapshot_quality"),
+        CheckConstraint("record_count >= 0", name="ck_analytical_snapshot_record_count"),
         Index("ix_analytical_snapshot_scope", "organization_id", "workspace_id", "product_code"),
     )
 
@@ -1004,6 +1049,15 @@ class AnalyticalDatasetSnapshot(Base):
     workspace_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False)
     product_code: Mapped[str] = mapped_column(ForeignKey("core_products.code"), nullable=False)
     version_no: Mapped[int] = mapped_column(Integer, nullable=False)
+    dataset_contract_version_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_analytical_dataset_contract_versions.id", ondelete="RESTRICT"), nullable=True, index=True)
+    dataset_contract_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False, default="", server_default="")
+    lineage_mode: Mapped[str] = mapped_column(String(32), nullable=False, default="LEGACY_SOURCE_VERSION", server_default="LEGACY_SOURCE_VERSION")
+    temporal_mode: Mapped[str] = mapped_column(String(24), nullable=False, default="", server_default="")
+    temporal_key_fields_json: Mapped[str] = mapped_column(Text, nullable=False, default="[]", server_default="[]")
+    granularity_key_fields_json: Mapped[str] = mapped_column(Text, nullable=False, default="[]", server_default="[]")
+    missing_value_policy: Mapped[str] = mapped_column(String(32), nullable=False, default="", server_default="")
+    analytical_quality_state: Mapped[str] = mapped_column(String(32), nullable=False, default="LEGACY_UNKNOWN", server_default="LEGACY_UNKNOWN")
+    record_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
     methodology_reference: Mapped[str] = mapped_column(String(500), nullable=False)
     methodology_version: Mapped[str] = mapped_column(String(120), nullable=False)
     build_reference: Mapped[str] = mapped_column(String(500), nullable=False, default="", server_default="")
@@ -1044,6 +1098,62 @@ class AnalyticalSnapshotSourceVersion(Base):
     privacy_category: Mapped[str] = mapped_column(String(40), nullable=False)
     ai_use_policy: Mapped[str] = mapped_column(String(64), nullable=False)
     source_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+
+
+class AnalyticalSnapshotGovernedOutput(Base):
+    __tablename__ = "core_analytical_snapshot_governed_outputs"
+    __table_args__ = (
+        UniqueConstraint("snapshot_id", "governed_output_id", name="uq_analytical_snapshot_output_edge"),
+        CheckConstraint("product_code IN ('SIMPA', 'ORDO')", name="ck_analytical_snapshot_output_product"),
+        CheckConstraint("evaluation_decision IN ('ACCEPTED', 'ACCEPTED_WITH_WARNING')", name="ck_analytical_snapshot_output_decision"),
+        Index("ix_analytical_snapshot_output_lineage", "governed_output_id", "snapshot_id"),
+        Index("ix_analytical_snapshot_output_source", "source_version_id", "snapshot_id"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    snapshot_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_analytical_dataset_snapshots.id", ondelete="CASCADE"), nullable=False, index=True)
+    governed_output_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_governed_ingestion_outputs.id", ondelete="RESTRICT"), nullable=False)
+    governed_output_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    source_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_sources.id", ondelete="RESTRICT"), nullable=False)
+    source_version_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_source_versions.id", ondelete="RESTRICT"), nullable=False)
+    ingestion_run_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_ingestion_runs.id", ondelete="RESTRICT"), nullable=False)
+    evaluation_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_ingestion_evaluations.id", ondelete="RESTRICT"), nullable=False)
+    evaluation_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    evaluation_decision: Mapped[str] = mapped_column(String(24), nullable=False)
+    classification: Mapped[str] = mapped_column(String(32), nullable=False)
+    privacy_category: Mapped[str] = mapped_column(String(40), nullable=False)
+    ai_use_policy: Mapped[str] = mapped_column(String(64), nullable=False)
+    organization_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False)
+    workspace_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False)
+    product_code: Mapped[str] = mapped_column(ForeignKey("core_products.code"), nullable=False)
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+
+
+class AnalyticalSnapshotRecordInput(Base):
+    __tablename__ = "core_analytical_snapshot_record_inputs"
+    __table_args__ = (
+        UniqueConstraint("snapshot_id", "normalized_record_id", name="uq_analytical_snapshot_record_edge"),
+        CheckConstraint("source_record_ordinal >= 1", name="ck_analytical_snapshot_record_ordinal"),
+        CheckConstraint("product_code IN ('SIMPA', 'ORDO')", name="ck_analytical_snapshot_record_product"),
+        Index("ix_analytical_snapshot_record_membership", "snapshot_id", "source_id", "source_record_ordinal"),
+        Index("ix_analytical_snapshot_record_input", "normalized_record_id", "snapshot_id"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    snapshot_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_analytical_dataset_snapshots.id", ondelete="CASCADE"), nullable=False, index=True)
+    governed_output_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_governed_ingestion_outputs.id", ondelete="RESTRICT"), nullable=False)
+    normalized_record_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_normalized_records.id", ondelete="RESTRICT"), nullable=False)
+    source_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_sources.id", ondelete="RESTRICT"), nullable=False)
+    source_version_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_source_versions.id", ondelete="RESTRICT"), nullable=False)
+    ingestion_run_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_data_ingestion_runs.id", ondelete="RESTRICT"), nullable=False)
+    source_record_ordinal: Mapped[int] = mapped_column(Integer, nullable=False)
+    source_locator: Mapped[str] = mapped_column(String(1000), nullable=False)
+    identity_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    content_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    organization_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False)
+    workspace_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False)
+    product_code: Mapped[str] = mapped_column(ForeignKey("core_products.code"), nullable=False)
     created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
 
 
@@ -1124,4 +1234,8 @@ class AnalyticalFeatureSnapshotInput(Base):
     product_code: Mapped[str] = mapped_column(ForeignKey("core_products.code"), nullable=False)
     snapshot_version_no: Mapped[int] = mapped_column(Integer, nullable=False)
     snapshot_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    snapshot_lineage_mode: Mapped[str] = mapped_column(String(32), nullable=False, default="LEGACY_SOURCE_VERSION", server_default="LEGACY_SOURCE_VERSION")
+    dataset_contract_version_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_analytical_dataset_contract_versions.id", ondelete="RESTRICT"), nullable=True)
+    dataset_contract_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False, default="", server_default="")
+    analytical_quality_state: Mapped[str] = mapped_column(String(32), nullable=False, default="LEGACY_UNKNOWN", server_default="LEGACY_UNKNOWN")
     created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())

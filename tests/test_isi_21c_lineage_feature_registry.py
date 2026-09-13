@@ -28,4 +28,6 @@ def test_typed_lineage_and_feature_inheritance(tmp_path):
     lineage = get_analytical_lineage(db, snapshot_id=snapshot.id, organization_id=org.id,
                                      workspace_id=ws.id, product_code="SIMPA")
     assert frozen.frozen_at is not None and lineage.dependent_feature_versions[0].id == version.id
-    assert lineage.snapshot.source_versions[0].source_version_id
+    assert lineage.snapshot.lineage_mode == "GOVERNED_OUTPUT_V1"
+    assert lineage.snapshot.governed_outputs[0].source_version_id
+    assert frozen.snapshot_inputs[0].dataset_contract_fingerprint

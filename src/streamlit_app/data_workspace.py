@@ -135,10 +135,38 @@ def _artifact_label(item: dict[str, Any]) -> str:
 
 def _render_lineage(lineage: dict[str, Any]) -> None:
     snapshot = lineage.get("snapshot") or {}
+    lineage_mode = snapshot.get("lineage_mode", "LEGACY_SOURCE_VERSION")
     st.caption(
-        f"Snapshot v{snapshot.get('version_no', '—')} · provenance fingerprint: "
+        f"Snapshot v{snapshot.get('version_no', '—')} · lineage: {lineage_mode} · provenance fingerprint: "
         f"{snapshot.get('fingerprint', '—')}"
     )
+    if lineage_mode == "LEGACY_SOURCE_VERSION":
+        st.warning(
+            "Historical legacy source-version lineage. This snapshot is readable history, "
+            "but is not a governed-output reproducible artifact."
+        )
+    else:
+        st.markdown("**Pinned analytical dataset contract**")
+        st.dataframe([{
+            "Contract version ID": snapshot.get("dataset_contract_version_id", "—"),
+            "Contract fingerprint": snapshot.get("dataset_contract_fingerprint", "—"),
+            "Temporal mode": snapshot.get("temporal_mode", "—"),
+            "Temporal keys": ", ".join(snapshot.get("temporal_key_fields", [])) or "—",
+            "Granularity / entity keys": ", ".join(snapshot.get("granularity_key_fields", [])) or "—",
+            "Missing-value policy": snapshot.get("missing_value_policy", "—"),
+            "Quality state": snapshot.get("analytical_quality_state", "—"),
+            "Persisted record count": snapshot.get("record_count", 0),
+        }], use_container_width=True, hide_index=True)
+        output_rows = [{
+            "Governed output ID": edge.get("governed_output_id", "—"),
+            "Output fingerprint": edge.get("governed_output_fingerprint", "—"),
+            "Source version ID": edge.get("source_version_id", "—"),
+            "Ingestion run ID": edge.get("ingestion_run_id", "—"),
+            "Evaluation ID": edge.get("evaluation_id", "—"),
+            "Decision": edge.get("evaluation_decision", "—"),
+        } for edge in snapshot.get("governed_outputs", [])]
+        st.markdown("**Governed-output lineage**")
+        st.dataframe(output_rows, use_container_width=True, hide_index=True)
     source_rows = [{
         "Source ID": edge.get("source_id", "—"),
         "Source version ID": edge.get("source_version_id", "—"),
@@ -148,8 +176,9 @@ def _render_lineage(lineage: dict[str, Any]) -> None:
         "AI policy": edge.get("ai_use_policy", "—"),
         "Source fingerprint": edge.get("source_fingerprint", "—"),
     } for edge in snapshot.get("source_versions", [])]
-    st.markdown("**Source-version lineage**")
-    st.dataframe(source_rows, use_container_width=True, hide_index=True)
+    if lineage_mode == "LEGACY_SOURCE_VERSION":
+        st.markdown("**Historical source-version lineage**")
+        st.dataframe(source_rows, use_container_width=True, hide_index=True)
     st.markdown("**Dependent feature versions**")
     st.dataframe(
         _version_rows(lineage.get("dependent_feature_versions", []), identity_key="feature_id"),

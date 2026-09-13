@@ -16,6 +16,9 @@ from src.platform.data.schemas import (
     AnalyticalAIEligibilityRequest,
     AnalyticalAIEligibilityResponse,
     AnalyticalDatasetCreate,
+    AnalyticalDatasetContractActivationRequest,
+    AnalyticalDatasetContractVersionCreate,
+    AnalyticalDatasetContractVersionResponse,
     AnalyticalDatasetResponse,
     AnalyticalFeatureCreate,
     AnalyticalFeatureResponse,
@@ -109,13 +112,16 @@ from src.platform.data.record_governance_service import (
     resolve_quarantined_record,
 )
 from src.platform.data.analytical_service import (
+    activate_analytical_dataset_contract_version,
     create_analytical_dataset,
+    create_analytical_dataset_contract_version,
     create_analytical_feature,
     create_analytical_feature_version,
     create_analytical_snapshot,
     evaluate_analytical_ai_eligibility,
     get_analytical_lineage,
     list_analytical_datasets,
+    list_analytical_dataset_contract_versions,
     list_analytical_feature_versions,
     list_analytical_features,
     list_analytical_snapshots,
@@ -209,6 +215,7 @@ def _platform_error(exc: DataPlatformError) -> HTTPException:
     if code in {"source_not_accessible", "version_not_accessible", "anonymization_record_not_accessible", "workspace_scope_mismatch",
                 "analytical_dataset_not_accessible", "analytical_snapshot_not_accessible",
                 "analytical_feature_not_accessible", "analytical_feature_version_not_accessible",
+                "analytical_contract_version_not_accessible",
                 "connector_contract_version_not_accessible", "schema_mapping_version_not_accessible",
                 "ingestion_run_not_accessible", "record_policy_version_not_accessible",
                 "record_quarantine_not_accessible", "operational_policy_version_not_accessible",
@@ -219,6 +226,8 @@ def _platform_error(exc: DataPlatformError) -> HTTPException:
         return HTTPException(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail=code)
     if code in {"source_name_exists", "governance_revision_conflict", "retention_revision_conflict", "purge_state_conflict", "anonymization_state_conflict",
                 "analytical_dataset_code_exists", "analytical_feature_code_exists", "analytical_revision_conflict",
+                "analytical_contract_unchanged", "analytical_contract_version_conflict",
+                "analytical_contract_state_conflict",
                 "connector_contract_state_conflict", "connector_contract_unchanged",
                 "schema_mapping_state_conflict", "schema_mapping_unchanged",
                 "schema_mapping_connector_retired", "schema_mapping_connector_not_active",
@@ -1585,6 +1594,70 @@ def post_analytical_dataset(payload: AnalyticalDatasetCreate,
     try:
         result = create_analytical_dataset(db, payload=payload,
                                            actor_id=_analytical_actor(db, context, payload.organization_id))
+        db.commit()
+        return result
+    except DataPlatformError as exc:
+        db.rollback()
+        raise _platform_error(exc) from None
+
+
+@router.get("/analytical-datasets/{dataset_id}/contract-versions",
+            response_model=list[AnalyticalDatasetContractVersionResponse])
+def get_analytical_dataset_contract_versions(
+    dataset_id: uuid.UUID, organization_id: uuid.UUID = Query(...), workspace_id: uuid.UUID = Query(...),
+    product_code: str = Query(...), context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(db, context, organization_id=organization_id, workspace_id=workspace_id,
+                   product_code=product_code, permission_code="data.read")
+    try:
+        return list_analytical_dataset_contract_versions(
+            db, dataset_id=dataset_id, organization_id=organization_id,
+            workspace_id=workspace_id, product_code=product_code,
+        )
+    except DataPlatformError as exc:
+        raise _platform_error(exc) from None
+
+
+@router.post("/analytical-datasets/{dataset_id}/contract-versions",
+             response_model=AnalyticalDatasetContractVersionResponse,
+             status_code=status.HTTP_201_CREATED)
+def post_analytical_dataset_contract_version(
+    dataset_id: uuid.UUID, payload: AnalyticalDatasetContractVersionCreate,
+    context: AuthContext = Depends(get_auth_context), db: Session = Depends(get_db),
+):
+    _require_scope(db, context, organization_id=payload.organization_id,
+                   workspace_id=payload.workspace_id, product_code=payload.product_code,
+                   permission_code="data.governance.manage")
+    try:
+        result = create_analytical_dataset_contract_version(
+            db, dataset_id=dataset_id, payload=payload,
+            actor_id=_analytical_actor(db, context, payload.organization_id),
+        )
+        db.commit()
+        return result
+    except DataPlatformError as exc:
+        db.rollback()
+        raise _platform_error(exc) from None
+
+
+@router.post("/analytical-datasets/{dataset_id}/contract-versions/{contract_version_id}/activate",
+             response_model=AnalyticalDatasetContractVersionResponse)
+def post_analytical_dataset_contract_activation(
+    dataset_id: uuid.UUID, contract_version_id: uuid.UUID,
+    payload: AnalyticalDatasetContractActivationRequest,
+    context: AuthContext = Depends(get_auth_context), db: Session = Depends(get_db),
+):
+    _require_scope(db, context, organization_id=payload.organization_id,
+                   workspace_id=payload.workspace_id, product_code=payload.product_code,
+                   permission_code="data.governance.manage")
+    try:
+        result = activate_analytical_dataset_contract_version(
+            db, dataset_id=dataset_id, contract_version_id=contract_version_id,
+            organization_id=payload.organization_id, workspace_id=payload.workspace_id,
+            product_code=payload.product_code,
+            actor_id=_analytical_actor(db, context, payload.organization_id),
+        )
         db.commit()
         return result
     except DataPlatformError as exc:

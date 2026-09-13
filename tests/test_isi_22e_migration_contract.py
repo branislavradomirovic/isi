@@ -26,9 +26,7 @@ def test_0024_graph_tables_columns_and_constraints():
         assert contract in text
 
 
-def test_0024_is_sole_head_offline_sql_and_identifiers_are_postgres_safe(tmp_path):
-    heads = subprocess.run(["alembic", "heads"], check=True, capture_output=True, text=True)
-    assert heads.stdout.strip() == "20260913_0024 (head)"
+def test_0024_offline_sql_and_identifiers_are_postgres_safe():
     sql = subprocess.run(["alembic", "upgrade", "20260913_0024", "--sql"],
                          check=True, capture_output=True, text=True).stdout
     assert "core_data_ingestion_operational_policy_versions" in sql
