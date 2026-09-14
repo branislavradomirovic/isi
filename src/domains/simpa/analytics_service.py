@@ -7,13 +7,25 @@ from datetime import datetime, timezone
 
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
+from pydantic import ValidationError
 
-from src.domains.simpa.analytics_models import SimpaAISynthesis, SimpaAnalyticsRun, SimpaIndicatorMethodology, SimpaIndicatorResult
+from src.domains.simpa.analytics_models import (
+    SimpaAISynthesis,
+    SimpaAnalyticsRun,
+    SimpaIndicatorMethodology,
+    SimpaIndicatorResult,
+)
+from src.domains.simpa.methodology_contracts import (
+    contract_fingerprint,
+    normalize_draft_methodology_contract,
+    normalize_methodology_contract,
+)
 from src.domains.simpa.models import SimpaIndicatorDefinition, SimpaMonitoringCycle
 from src.platform.ai.models import AIJob
 from src.platform.ai.service import create_ai_job
 from src.platform.data.analytical_service import GovernedAnalyticalInput, load_governed_analytical_input
 from src.platform.data.service import DataPlatformError
+from src.platform.identity.models import Membership
 
 
 class SimpaAnalyticsError(ValueError):
@@ -28,12 +40,70 @@ def _ratio(num: int, den: int) -> float:
     return round(float(num) / float(den), 6) if den else 0.0
 
 
-def _load_input(session: Session, *, artifact_type: str, artifact_id: uuid.UUID,
-                organization_id: uuid.UUID, workspace_id: uuid.UUID) -> GovernedAnalyticalInput:
+def _require_actor(session: Session, actor_id: uuid.UUID | None) -> uuid.UUID:
+    membership = session.get(Membership, actor_id) if actor_id is not None else None
+    if membership is None or membership.status != "active":
+        raise SimpaAnalyticsError("methodology_actor_required")
+    return membership.id
+
+
+def _sync_indicator_methodology_status(session: Session, indicator: SimpaIndicatorDefinition) -> str:
+    statuses = set(
+        session.scalars(
+            select(SimpaIndicatorMethodology.status).where(SimpaIndicatorMethodology.indicator_id == indicator.id)
+        ).all()
+    )
+    for status in ("validated", "proposed", "draft", "retired"):
+        if status in statuses:
+            indicator.methodology_status = status
+            return status
+    indicator.methodology_status = "conceptual"
+    return "conceptual"
+
+
+def _normalize_direct_observation_value(value_numeric: object, value_text: object) -> tuple[float | None, str]:
+    text_value = value_text.strip() if isinstance(value_text, str) else ""
+    numeric_value: float | None = None
+    if value_numeric is not None:
+        if isinstance(value_numeric, bool):
+            raise SimpaAnalyticsError("computed_value_invalid")
+        try:
+            numeric_value = float(value_numeric)
+        except (TypeError, ValueError):
+            raise SimpaAnalyticsError("computed_value_invalid") from None
+        if not (float("-inf") < numeric_value < float("inf")):
+            raise SimpaAnalyticsError("computed_value_invalid")
+    if numeric_value is None and not text_value:
+        raise SimpaAnalyticsError("computed_value_required")
+    return numeric_value, text_value
+
+
+def _canonical_json(value: dict) -> str:
+    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+
+
+def _assert_draft_unit_matches_indicator(computation_spec: dict, indicator: SimpaIndicatorDefinition) -> None:
+    unit = computation_spec.get("unit")
+    if (
+        isinstance(unit, str)
+        and indicator.unit_hint.strip()
+        and unit.casefold() != indicator.unit_hint.strip().casefold()
+    ):
+        raise SimpaAnalyticsError("methodology_contract_unit_mismatch")
+
+
+def _load_input(
+    session: Session, *, artifact_type: str, artifact_id: uuid.UUID, organization_id: uuid.UUID, workspace_id: uuid.UUID
+) -> GovernedAnalyticalInput:
     try:
         return load_governed_analytical_input(
-            session, artifact_type=artifact_type, artifact_id=artifact_id,
-            organization_id=organization_id, workspace_id=workspace_id, product_code="SIMPA")
+            session,
+            artifact_type=artifact_type,
+            artifact_id=artifact_id,
+            organization_id=organization_id,
+            workspace_id=workspace_id,
+            product_code="SIMPA",
+        )
     except DataPlatformError as exc:
         raise SimpaAnalyticsError(str(exc)) from None
 
@@ -84,8 +154,9 @@ def _records(value: GovernedAnalyticalInput, monitoring_cycle_id: uuid.UUID | No
     return selected
 
 
-def revalidate_analytics_run(session: Session, *, run: SimpaAnalyticsRun,
-                             organization_id: uuid.UUID, workspace_id: uuid.UUID) -> GovernedAnalyticalInput:
+def revalidate_analytics_run(
+    session: Session, *, run: SimpaAnalyticsRun, organization_id: uuid.UUID, workspace_id: uuid.UUID
+) -> GovernedAnalyticalInput:
     if run.status != "completed" or (run.organization_id, run.workspace_id) != (organization_id, workspace_id):
         raise SimpaAnalyticsError("analytics_run_not_accessible")
     if run.analytical_artifact_type == "ANALYTICAL_SNAPSHOT":
@@ -96,8 +167,13 @@ def revalidate_analytics_run(session: Session, *, run: SimpaAnalyticsRun,
         raise SimpaAnalyticsError("legacy_analytics_run_ineligible")
     if artifact_id is None:
         raise SimpaAnalyticsError("analytics_run_governed_binding_invalid")
-    value = _load_input(session, artifact_type=artifact_type, artifact_id=artifact_id,
-                        organization_id=organization_id, workspace_id=workspace_id)
+    value = _load_input(
+        session,
+        artifact_type=artifact_type,
+        artifact_id=artifact_id,
+        organization_id=organization_id,
+        workspace_id=workspace_id,
+    )
     if (
         run.analytical_artifact_fingerprint != value.artifact_fingerprint
         or run.dataset_contract_version_id != value.dataset_contract_version_id
@@ -109,7 +185,9 @@ def revalidate_analytics_run(session: Session, *, run: SimpaAnalyticsRun,
     return value
 
 
-def _assert_cycle_scope(session: Session, *, cycle_id: uuid.UUID | None, organization_id: uuid.UUID, workspace_id: uuid.UUID) -> None:
+def _assert_cycle_scope(
+    session: Session, *, cycle_id: uuid.UUID | None, organization_id: uuid.UUID, workspace_id: uuid.UUID
+) -> None:
     if cycle_id is None:
         return
     cycle = session.scalar(
@@ -132,12 +210,20 @@ def build_monitoring_snapshot(
     analytical_artifact_id: uuid.UUID,
     monitoring_cycle_id: uuid.UUID | None = None,
 ) -> dict:
-    _assert_cycle_scope(session, cycle_id=monitoring_cycle_id, organization_id=organization_id, workspace_id=workspace_id)
+    _assert_cycle_scope(
+        session, cycle_id=monitoring_cycle_id, organization_id=organization_id, workspace_id=workspace_id
+    )
     analytical_input = _load_input(
-        session, artifact_type=analytical_artifact_type, artifact_id=analytical_artifact_id,
-        organization_id=organization_id, workspace_id=workspace_id)
+        session,
+        artifact_type=analytical_artifact_type,
+        artifact_id=analytical_artifact_id,
+        organization_id=organization_id,
+        workspace_id=workspace_id,
+    )
     observations = _records(analytical_input, monitoring_cycle_id)
-    active_indicators = list(session.scalars(select(SimpaIndicatorDefinition).where(SimpaIndicatorDefinition.active.is_(True))).all())
+    active_indicators = list(
+        session.scalars(select(SimpaIndicatorDefinition).where(SimpaIndicatorDefinition.active.is_(True))).all()
+    )
     indicators_by_code = {row.code: row for row in active_indicators}
     for observation in observations:
         if observation.payload["indicator_code"] not in indicators_by_code:
@@ -155,7 +241,9 @@ def build_monitoring_snapshot(
     validated_ratio = _ratio(validated, total)
     provenance_coverage = _ratio(provenance, total)
     indicator_coverage = _ratio(len(observed_indicator_ids), len(active_indicators))
-    evidence_quality_score = round((0.45 * validated_ratio) + (0.35 * provenance_coverage) + (0.20 * indicator_coverage), 6)
+    evidence_quality_score = round(
+        (0.45 * validated_ratio) + (0.35 * provenance_coverage) + (0.20 * indicator_coverage), 6
+    )
     if total == 0:
         quality_band = "no_evidence"
     elif evidence_quality_score < 0.50:
@@ -167,7 +255,11 @@ def build_monitoring_snapshot(
 
     return {
         "analytical_source": _analytical_source(analytical_input),
-        "scope": {"organization_id": str(organization_id), "workspace_id": str(workspace_id), "monitoring_cycle_id": str(monitoring_cycle_id) if monitoring_cycle_id else None},
+        "scope": {
+            "organization_id": str(organization_id),
+            "workspace_id": str(workspace_id),
+            "monitoring_cycle_id": str(monitoring_cycle_id) if monitoring_cycle_id else None,
+        },
         "observation_count": total,
         "validated_observation_count": validated,
         "draft_observation_count": draft,
@@ -185,19 +277,32 @@ def build_monitoring_snapshot(
     }
 
 
-def create_analytics_run(session: Session, *, organization_id: uuid.UUID, workspace_id: uuid.UUID,
-                         analytical_artifact_type: str, analytical_artifact_id: uuid.UUID,
-                         monitoring_cycle_id: uuid.UUID | None, actor_id: uuid.UUID | None) -> SimpaAnalyticsRun:
+def create_analytics_run(
+    session: Session,
+    *,
+    organization_id: uuid.UUID,
+    workspace_id: uuid.UUID,
+    analytical_artifact_type: str,
+    analytical_artifact_id: uuid.UUID,
+    monitoring_cycle_id: uuid.UUID | None,
+    actor_id: uuid.UUID | None,
+) -> SimpaAnalyticsRun:
     snapshot = build_monitoring_snapshot(
-        session, organization_id=organization_id, workspace_id=workspace_id,
+        session,
+        organization_id=organization_id,
+        workspace_id=workspace_id,
         analytical_artifact_type=analytical_artifact_type,
-        analytical_artifact_id=analytical_artifact_id, monitoring_cycle_id=monitoring_cycle_id)
+        analytical_artifact_id=analytical_artifact_id,
+        monitoring_cycle_id=monitoring_cycle_id,
+    )
     source = snapshot["analytical_source"]
     row = SimpaAnalyticsRun(
         organization_id=organization_id,
         workspace_id=workspace_id,
         monitoring_cycle_id=monitoring_cycle_id,
-        analytical_artifact_type=("ANALYTICAL_SNAPSHOT" if analytical_artifact_type == "snapshot" else "ANALYTICAL_FEATURE_VERSION"),
+        analytical_artifact_type=(
+            "ANALYTICAL_SNAPSHOT" if analytical_artifact_type == "snapshot" else "ANALYTICAL_FEATURE_VERSION"
+        ),
         analytical_snapshot_id=analytical_artifact_id if analytical_artifact_type == "snapshot" else None,
         analytical_feature_version_id=analytical_artifact_id if analytical_artifact_type == "feature_version" else None,
         analytical_artifact_fingerprint=source["artifact_fingerprint"],
@@ -217,53 +322,297 @@ def create_analytics_run(session: Session, *, organization_id: uuid.UUID, worksp
     return row
 
 
-def list_analytics_runs(session: Session, *, organization_id: uuid.UUID, workspace_id: uuid.UUID, limit: int = 50) -> list[SimpaAnalyticsRun]:
-    return list(session.scalars(select(SimpaAnalyticsRun).where(SimpaAnalyticsRun.organization_id == organization_id, SimpaAnalyticsRun.workspace_id == workspace_id).order_by(SimpaAnalyticsRun.created_at.desc()).limit(max(1, min(limit, 100)))).all())
+def list_analytics_runs(
+    session: Session, *, organization_id: uuid.UUID, workspace_id: uuid.UUID, limit: int = 50
+) -> list[SimpaAnalyticsRun]:
+    return list(
+        session.scalars(
+            select(SimpaAnalyticsRun)
+            .where(SimpaAnalyticsRun.organization_id == organization_id, SimpaAnalyticsRun.workspace_id == workspace_id)
+            .order_by(SimpaAnalyticsRun.created_at.desc())
+            .limit(max(1, min(limit, 100)))
+        ).all()
+    )
 
 
 def list_methodologies(session: Session) -> list[tuple[SimpaIndicatorMethodology, SimpaIndicatorDefinition]]:
-    return list(session.execute(select(SimpaIndicatorMethodology, SimpaIndicatorDefinition).join(SimpaIndicatorDefinition, SimpaIndicatorDefinition.id == SimpaIndicatorMethodology.indicator_id).order_by(SimpaIndicatorDefinition.code, SimpaIndicatorMethodology.version_no.desc())).all())
+    return list(
+        session.execute(
+            select(SimpaIndicatorMethodology, SimpaIndicatorDefinition)
+            .join(SimpaIndicatorDefinition, SimpaIndicatorDefinition.id == SimpaIndicatorMethodology.indicator_id)
+            .order_by(SimpaIndicatorDefinition.code, SimpaIndicatorMethodology.version_no.desc())
+        ).all()
+    )
 
 
-def create_methodology(session: Session, *, indicator_code: str, computation_type: str, methodology_note: str, source_requirements: dict, actor_id: uuid.UUID | None) -> SimpaIndicatorMethodology:
-    indicator = session.scalar(select(SimpaIndicatorDefinition).where(SimpaIndicatorDefinition.code == indicator_code, SimpaIndicatorDefinition.active.is_(True)))
+def create_methodology(
+    session: Session,
+    *,
+    indicator_code: str,
+    computation_type: str,
+    methodology_note: str,
+    source_requirements: dict,
+    actor_id: uuid.UUID | None,
+    computation_spec: dict | None = None,
+) -> SimpaIndicatorMethodology:
+    indicator = session.scalar(
+        select(SimpaIndicatorDefinition).where(
+            SimpaIndicatorDefinition.code == indicator_code, SimpaIndicatorDefinition.active.is_(True)
+        )
+    )
     if indicator is None:
         raise SimpaAnalyticsError("indicator_unknown")
-    latest = session.scalar(select(func.max(SimpaIndicatorMethodology.version_no)).where(SimpaIndicatorMethodology.indicator_id == indicator.id))
+    if computation_type != "direct_observation":
+        raise SimpaAnalyticsError("unsupported_computation_type")
+    latest = session.scalar(
+        select(func.max(SimpaIndicatorMethodology.version_no)).where(
+            SimpaIndicatorMethodology.indicator_id == indicator.id
+        )
+    )
+    try:
+        raw_spec = normalize_draft_methodology_contract(dict(computation_spec or {}))
+    except ValueError as exc:
+        raise SimpaAnalyticsError("methodology_contract_invalid") from exc
+    _assert_draft_unit_matches_indicator(raw_spec, indicator)
+    fingerprint = ""
+    if raw_spec:
+        try:
+            contract = normalize_methodology_contract(raw_spec, indicator_unit_hint=indicator.unit_hint)
+        except (ValidationError, ValueError):
+            # Drafts may be incomplete. Proposal is the strict production gate.
+            pass
+        else:
+            raw_spec = contract.model_dump(mode="json")
+            fingerprint = contract_fingerprint(contract)
     row = SimpaIndicatorMethodology(
         indicator_id=indicator.id,
         version_no=int(latest or 0) + 1,
         status="draft",
         computation_type=computation_type,
-        computation_spec={},
+        computation_spec=raw_spec,
+        contract_fingerprint=fingerprint,
         source_requirements=source_requirements,
         methodology_note=methodology_note.strip(),
+        reference_check_status="not_run",
+        reference_check_fingerprint="",
+        reference_check_detail={},
         created_by_membership_id=actor_id,
     )
     session.add(row)
     session.flush()
+    _sync_indicator_methodology_status(session, indicator)
+    session.flush()
     return row
 
 
-def validate_methodology(session: Session, *, methodology_id: uuid.UUID, validation_note: str, actor_id: uuid.UUID | None) -> SimpaIndicatorMethodology:
+def set_methodology_contract(
+    session: Session, *, methodology_id: uuid.UUID, computation_spec: dict
+) -> SimpaIndicatorMethodology:
     row = session.get(SimpaIndicatorMethodology, methodology_id)
     if row is None:
         raise SimpaAnalyticsError("methodology_not_found")
     indicator = session.get(SimpaIndicatorDefinition, row.indicator_id)
     if indicator is None or not indicator.active:
         raise SimpaAnalyticsError("indicator_unknown")
-    if not row.methodology_note.strip():
-        raise SimpaAnalyticsError("methodology_note_required")
-    if row.computation_type != "direct_observation":
-        raise SimpaAnalyticsError("unsupported_computation_type")
-    for other in session.scalars(select(SimpaIndicatorMethodology).where(SimpaIndicatorMethodology.indicator_id == row.indicator_id, SimpaIndicatorMethodology.status == "validated", SimpaIndicatorMethodology.id != row.id)).all():
+    if row.status != "draft":
+        raise SimpaAnalyticsError("methodology_contract_immutable")
+    try:
+        draft_contract = normalize_draft_methodology_contract(computation_spec)
+    except ValueError as exc:
+        raise SimpaAnalyticsError("methodology_contract_invalid") from exc
+    _assert_draft_unit_matches_indicator(draft_contract, indicator)
+    row.computation_spec = draft_contract
+    row.contract_fingerprint = ""
+    try:
+        contract = normalize_methodology_contract(draft_contract, indicator_unit_hint=indicator.unit_hint)
+    except (ValidationError, ValueError):
+        pass
+    else:
+        row.computation_spec = contract.model_dump(mode="json")
+        row.contract_fingerprint = contract_fingerprint(contract)
+        row.computation_type = contract.computation_type
+    row.reference_check_status = "not_run"
+    row.reference_check_fingerprint = ""
+    row.reference_check_detail = {}
+    session.flush()
+    return row
+
+
+def propose_methodology(
+    session: Session, *, methodology_id: uuid.UUID, actor_id: uuid.UUID | None
+) -> SimpaIndicatorMethodology:
+    actor = _require_actor(session, actor_id)
+    row = session.get(SimpaIndicatorMethodology, methodology_id)
+    if row is None:
+        raise SimpaAnalyticsError("methodology_not_found")
+    if row.status != "draft":
+        raise SimpaAnalyticsError("methodology_transition_forbidden")
+    indicator = session.get(SimpaIndicatorDefinition, row.indicator_id)
+    if indicator is None or not indicator.active:
+        raise SimpaAnalyticsError("indicator_unknown")
+    try:
+        contract = normalize_methodology_contract(row.computation_spec, indicator_unit_hint=indicator.unit_hint)
+    except (ValidationError, ValueError) as exc:
+        raise SimpaAnalyticsError("methodology_contract_invalid") from exc
+    row.computation_spec = contract.model_dump(mode="json")
+    row.contract_fingerprint = contract_fingerprint(contract)
+    row.computation_type = contract.computation_type
+    row.status = "proposed"
+    row.proposed_by_membership_id = actor
+    row.proposed_at = _utcnow()
+    row.reference_check_status = "not_run"
+    row.reference_check_fingerprint = ""
+    row.reference_check_detail = {}
+    session.flush()
+    _sync_indicator_methodology_status(session, indicator)
+    session.flush()
+    return row
+
+
+def run_methodology_reference_check(
+    session: Session,
+    *,
+    methodology_id: uuid.UUID,
+    reference_record: dict,
+    expected_result: dict,
+) -> SimpaIndicatorMethodology:
+    row = session.get(SimpaIndicatorMethodology, methodology_id)
+    if row is None:
+        raise SimpaAnalyticsError("methodology_not_found")
+    if row.status != "proposed":
+        raise SimpaAnalyticsError("methodology_not_proposed")
+    if row.reference_check_status == "failed":
+        raise SimpaAnalyticsError("methodology_reference_check_failed")
+    if row.reference_check_status == "passed":
+        raise SimpaAnalyticsError("methodology_reference_check_already_run")
+    indicator = session.get(SimpaIndicatorDefinition, row.indicator_id)
+    if indicator is None or not indicator.active:
+        raise SimpaAnalyticsError("indicator_unknown")
+    try:
+        contract = normalize_methodology_contract(row.computation_spec, indicator_unit_hint=indicator.unit_hint)
+    except (ValidationError, ValueError) as exc:
+        raise SimpaAnalyticsError("methodology_contract_invalid") from exc
+    fresh_fingerprint = contract_fingerprint(contract)
+    if row.contract_fingerprint != fresh_fingerprint:
+        raise SimpaAnalyticsError("methodology_contract_fingerprint_mismatch")
+    if reference_record.get("indicator_code") != indicator.code:
+        raise SimpaAnalyticsError("reference_indicator_mismatch")
+    if reference_record.get("quality_status") != "validated":
+        raise SimpaAnalyticsError("reference_quality_not_validated")
+    expected_has_numeric = expected_result.get("value_numeric") is not None
+    expected_has_text = bool(
+        expected_result.get("value_text").strip() if isinstance(expected_result.get("value_text"), str) else False
+    )
+    if expected_has_numeric == expected_has_text:
+        raise SimpaAnalyticsError("reference_expected_result_invalid")
+    actual_numeric, actual_text = _normalize_direct_observation_value(
+        reference_record.get("value_numeric"), reference_record.get("value_text")
+    )
+    expected_numeric, expected_text = _normalize_direct_observation_value(
+        expected_result.get("value_numeric"), expected_result.get("value_text")
+    )
+    if expected_numeric is not None:
+        passed = actual_numeric is not None and abs(actual_numeric - expected_numeric) <= contract.accepted_tolerance
+        comparison = "numeric_tolerance"
+    else:
+        passed = actual_text == expected_text
+        comparison = "normalized_text_exact"
+    detail = {
+        "schema_version": contract.schema_version,
+        "computation_type": contract.computation_type,
+        "contract_fingerprint": fresh_fingerprint,
+        "indicator_code": indicator.code,
+        "quality_status": "validated",
+        "actual": {"value_numeric": actual_numeric, "value_text": actual_text},
+        "expected": {"value_numeric": expected_numeric, "value_text": expected_text},
+        "accepted_tolerance": contract.accepted_tolerance,
+        "comparison": comparison,
+        "passed": passed,
+    }
+    row.reference_check_status = "passed" if passed else "failed"
+    row.reference_check_fingerprint = hashlib.sha256(_canonical_json(detail).encode("utf-8")).hexdigest()
+    row.reference_check_detail = detail
+    session.flush()
+    return row
+
+
+def validate_methodology(
+    session: Session, *, methodology_id: uuid.UUID, validation_note: str, actor_id: uuid.UUID | None
+) -> SimpaIndicatorMethodology:
+    actor = _require_actor(session, actor_id)
+    row = session.get(SimpaIndicatorMethodology, methodology_id)
+    if row is None:
+        raise SimpaAnalyticsError("methodology_not_found")
+    indicator = session.get(SimpaIndicatorDefinition, row.indicator_id)
+    if indicator is None or not indicator.active:
+        raise SimpaAnalyticsError("indicator_unknown")
+    if row.status != "proposed":
+        raise SimpaAnalyticsError("methodology_transition_forbidden")
+    note = validation_note.strip()
+    if not note:
+        raise SimpaAnalyticsError("validation_note_required")
+    try:
+        contract = normalize_methodology_contract(row.computation_spec, indicator_unit_hint=indicator.unit_hint)
+    except (ValidationError, ValueError) as exc:
+        raise SimpaAnalyticsError("methodology_contract_invalid") from exc
+    if row.contract_fingerprint != contract_fingerprint(contract):
+        raise SimpaAnalyticsError("methodology_contract_fingerprint_mismatch")
+    detail = row.reference_check_detail if isinstance(row.reference_check_detail, dict) else {}
+    expected_reference_fingerprint = hashlib.sha256(_canonical_json(detail).encode("utf-8")).hexdigest()
+    if (
+        row.reference_check_status != "passed"
+        or detail.get("passed") is not True
+        or detail.get("contract_fingerprint") != row.contract_fingerprint
+        or row.reference_check_fingerprint != expected_reference_fingerprint
+    ):
+        raise SimpaAnalyticsError("methodology_reference_check_required")
+    for other in session.scalars(
+        select(SimpaIndicatorMethodology).where(
+            SimpaIndicatorMethodology.indicator_id == row.indicator_id,
+            SimpaIndicatorMethodology.status == "validated",
+            SimpaIndicatorMethodology.id != row.id,
+        )
+    ).all():
         other.status = "retired"
+        other.retired_by_membership_id = actor
+        other.retired_at = _utcnow()
+        other.retirement_note = f"Superseded by validated methodology version {row.version_no}."
     row.status = "validated"
-    row.validation_note = validation_note.strip()
-    row.approved_by_membership_id = actor_id
+    row.validation_note = note
+    row.approved_by_membership_id = actor
     row.approved_at = _utcnow()
-    indicator.methodology_status = "validated"
     indicator.methodology_note = row.methodology_note
+    session.flush()
+    _sync_indicator_methodology_status(session, indicator)
+    session.flush()
+    return row
+
+
+def retire_methodology(
+    session: Session,
+    *,
+    methodology_id: uuid.UUID,
+    retirement_note: str,
+    actor_id: uuid.UUID | None,
+) -> SimpaIndicatorMethodology:
+    actor = _require_actor(session, actor_id)
+    row = session.get(SimpaIndicatorMethodology, methodology_id)
+    if row is None:
+        raise SimpaAnalyticsError("methodology_not_found")
+    if row.status not in {"draft", "proposed", "validated"}:
+        raise SimpaAnalyticsError("methodology_transition_forbidden")
+    note = retirement_note.strip()
+    if not note:
+        raise SimpaAnalyticsError("retirement_note_required")
+    indicator = session.get(SimpaIndicatorDefinition, row.indicator_id)
+    if indicator is None:
+        raise SimpaAnalyticsError("indicator_unknown")
+    row.status = "retired"
+    row.retired_by_membership_id = actor
+    row.retired_at = _utcnow()
+    row.retirement_note = note
+    session.flush()
+    _sync_indicator_methodology_status(session, indicator)
     session.flush()
     return row
 
@@ -278,49 +627,70 @@ def compute_indicator(
     analytics_run_id: uuid.UUID,
     actor_id: uuid.UUID | None,
 ) -> SimpaIndicatorResult:
-    _assert_cycle_scope(session, cycle_id=monitoring_cycle_id, organization_id=organization_id, workspace_id=workspace_id)
-    indicator = session.scalar(select(SimpaIndicatorDefinition).where(SimpaIndicatorDefinition.code == indicator_code, SimpaIndicatorDefinition.active.is_(True)))
+    _assert_cycle_scope(
+        session, cycle_id=monitoring_cycle_id, organization_id=organization_id, workspace_id=workspace_id
+    )
+    indicator = session.scalar(
+        select(SimpaIndicatorDefinition).where(
+            SimpaIndicatorDefinition.code == indicator_code, SimpaIndicatorDefinition.active.is_(True)
+        )
+    )
     if indicator is None:
         raise SimpaAnalyticsError("indicator_unknown")
     if indicator.methodology_status != "validated":
         raise SimpaAnalyticsError("methodology_not_validated")
-    methodology = session.scalar(select(SimpaIndicatorMethodology).where(SimpaIndicatorMethodology.indicator_id == indicator.id, SimpaIndicatorMethodology.status == "validated").order_by(SimpaIndicatorMethodology.version_no.desc()))
+    methodology = session.scalar(
+        select(SimpaIndicatorMethodology)
+        .where(SimpaIndicatorMethodology.indicator_id == indicator.id, SimpaIndicatorMethodology.status == "validated")
+        .order_by(SimpaIndicatorMethodology.version_no.desc())
+    )
     if methodology is None:
         raise SimpaAnalyticsError("methodology_not_validated")
     if methodology.computation_type != "direct_observation":
         raise SimpaAnalyticsError("unsupported_computation_type")
-    run = session.scalar(select(SimpaAnalyticsRun).where(
-        SimpaAnalyticsRun.id == analytics_run_id,
-        SimpaAnalyticsRun.organization_id == organization_id,
-        SimpaAnalyticsRun.workspace_id == workspace_id))
+    if methodology.contract_fingerprint:
+        try:
+            production_contract = normalize_methodology_contract(
+                methodology.computation_spec, indicator_unit_hint=indicator.unit_hint
+            )
+        except (ValidationError, ValueError) as exc:
+            raise SimpaAnalyticsError("methodology_contract_invalid") from exc
+        if methodology.contract_fingerprint != contract_fingerprint(production_contract):
+            raise SimpaAnalyticsError("methodology_contract_fingerprint_mismatch")
+    run = session.scalar(
+        select(SimpaAnalyticsRun).where(
+            SimpaAnalyticsRun.id == analytics_run_id,
+            SimpaAnalyticsRun.organization_id == organization_id,
+            SimpaAnalyticsRun.workspace_id == workspace_id,
+        )
+    )
     if run is None:
         raise SimpaAnalyticsError("analytics_run_not_accessible")
     if monitoring_cycle_id != run.monitoring_cycle_id:
         raise SimpaAnalyticsError("monitoring_cycle_run_mismatch")
     analytical_input = revalidate_analytics_run(
-        session, run=run, organization_id=organization_id, workspace_id=workspace_id)
+        session, run=run, organization_id=organization_id, workspace_id=workspace_id
+    )
     matches = [
-        row for row in _records(analytical_input, monitoring_cycle_id)
-        if row.payload["indicator_code"] == indicator.code
-        and row.payload["quality_status"] == "validated"
+        row
+        for row in _records(analytical_input, monitoring_cycle_id)
+        if row.payload["indicator_code"] == indicator.code and row.payload["quality_status"] == "validated"
     ]
     if not matches:
         raise SimpaAnalyticsError("validated_observation_required")
     if len(matches) > 1:
         raise SimpaAnalyticsError("validated_observation_ambiguous")
     observation = matches[0]
-    numeric = observation.payload.get("value_numeric")
-    text = observation.payload.get("value_text")
-    value_text = text.strip() if isinstance(text, str) else ""
-    if numeric is None and not value_text:
-        raise SimpaAnalyticsError("computed_value_required")
+    numeric, value_text = _normalize_direct_observation_value(
+        observation.payload.get("value_numeric"), observation.payload.get("value_text")
+    )
     result = SimpaIndicatorResult(
         organization_id=organization_id,
         workspace_id=workspace_id,
         analytics_run_id=analytics_run_id,
         indicator_id=indicator.id,
         methodology_id=methodology.id,
-        value_numeric=float(numeric) if numeric is not None else None,
+        value_numeric=numeric,
         value_text=value_text,
         unit=indicator.unit_hint,
         quality_score=1.0,
@@ -335,6 +705,7 @@ def compute_indicator(
             "identity_fingerprint": observation.identity_fingerprint,
             "content_fingerprint": observation.content_fingerprint,
             "methodology_version": methodology.version_no,
+            "methodology_contract_fingerprint": methodology.contract_fingerprint,
             "analytical_quality_state": analytical_input.analytical_quality_state,
             "observation_quality": "validated",
             "provenance_present": True,
@@ -357,12 +728,26 @@ def _synthesis_input(run: SimpaAnalyticsRun) -> str:
     return json.dumps(payload, ensure_ascii=False, sort_keys=True)
 
 
-def create_synthesis(session: Session, *, organization_id: uuid.UUID, workspace_id: uuid.UUID, analytics_run_id: uuid.UUID, sensitivity: str, model_key: str | None, actor_id: uuid.UUID | None) -> tuple[SimpaAISynthesis, AIJob]:
-    run = session.scalar(select(SimpaAnalyticsRun).where(SimpaAnalyticsRun.id == analytics_run_id, SimpaAnalyticsRun.organization_id == organization_id, SimpaAnalyticsRun.workspace_id == workspace_id))
+def create_synthesis(
+    session: Session,
+    *,
+    organization_id: uuid.UUID,
+    workspace_id: uuid.UUID,
+    analytics_run_id: uuid.UUID,
+    sensitivity: str,
+    model_key: str | None,
+    actor_id: uuid.UUID | None,
+) -> tuple[SimpaAISynthesis, AIJob]:
+    run = session.scalar(
+        select(SimpaAnalyticsRun).where(
+            SimpaAnalyticsRun.id == analytics_run_id,
+            SimpaAnalyticsRun.organization_id == organization_id,
+            SimpaAnalyticsRun.workspace_id == workspace_id,
+        )
+    )
     if run is None:
         raise SimpaAnalyticsError("analytics_run_not_accessible")
-    revalidate_analytics_run(
-        session, run=run, organization_id=organization_id, workspace_id=workspace_id)
+    revalidate_analytics_run(session, run=run, organization_id=organization_id, workspace_id=workspace_id)
     input_text = _synthesis_input(run)
     job = create_ai_job(
         session,
@@ -390,25 +775,56 @@ def create_synthesis(session: Session, *, organization_id: uuid.UUID, workspace_
     return row, job
 
 
-def list_syntheses(session: Session, *, organization_id: uuid.UUID, workspace_id: uuid.UUID, limit: int = 50) -> list[tuple[SimpaAISynthesis, AIJob]]:
-    return list(session.execute(select(SimpaAISynthesis, AIJob).join(AIJob, AIJob.id == SimpaAISynthesis.ai_job_id).where(SimpaAISynthesis.organization_id == organization_id, SimpaAISynthesis.workspace_id == workspace_id).order_by(SimpaAISynthesis.created_at.desc()).limit(max(1, min(limit, 100)))).all())
+def list_syntheses(
+    session: Session, *, organization_id: uuid.UUID, workspace_id: uuid.UUID, limit: int = 50
+) -> list[tuple[SimpaAISynthesis, AIJob]]:
+    return list(
+        session.execute(
+            select(SimpaAISynthesis, AIJob)
+            .join(AIJob, AIJob.id == SimpaAISynthesis.ai_job_id)
+            .where(SimpaAISynthesis.organization_id == organization_id, SimpaAISynthesis.workspace_id == workspace_id)
+            .order_by(SimpaAISynthesis.created_at.desc())
+            .limit(max(1, min(limit, 100)))
+        ).all()
+    )
 
 
-def review_synthesis(session: Session, *, synthesis_id: uuid.UUID, organization_id: uuid.UUID, workspace_id: uuid.UUID, decision: str, reviewer_note: str, actor_id: uuid.UUID | None) -> tuple[SimpaAISynthesis, AIJob]:
-    row = session.scalar(select(SimpaAISynthesis).where(SimpaAISynthesis.id == synthesis_id, SimpaAISynthesis.organization_id == organization_id, SimpaAISynthesis.workspace_id == workspace_id))
+def review_synthesis(
+    session: Session,
+    *,
+    synthesis_id: uuid.UUID,
+    organization_id: uuid.UUID,
+    workspace_id: uuid.UUID,
+    decision: str,
+    reviewer_note: str,
+    actor_id: uuid.UUID | None,
+) -> tuple[SimpaAISynthesis, AIJob]:
+    row = session.scalar(
+        select(SimpaAISynthesis).where(
+            SimpaAISynthesis.id == synthesis_id,
+            SimpaAISynthesis.organization_id == organization_id,
+            SimpaAISynthesis.workspace_id == workspace_id,
+        )
+    )
     if row is None:
         raise SimpaAnalyticsError("synthesis_not_accessible")
-    run = session.scalar(select(SimpaAnalyticsRun).where(
-        SimpaAnalyticsRun.id == row.analytics_run_id,
-        SimpaAnalyticsRun.organization_id == organization_id,
-        SimpaAnalyticsRun.workspace_id == workspace_id,
-    ))
+    run = session.scalar(
+        select(SimpaAnalyticsRun).where(
+            SimpaAnalyticsRun.id == row.analytics_run_id,
+            SimpaAnalyticsRun.organization_id == organization_id,
+            SimpaAnalyticsRun.workspace_id == workspace_id,
+        )
+    )
     if run is None:
         raise SimpaAnalyticsError("analytics_run_not_accessible")
-    revalidate_analytics_run(
-        session, run=run, organization_id=organization_id, workspace_id=workspace_id)
+    revalidate_analytics_run(session, run=run, organization_id=organization_id, workspace_id=workspace_id)
     job = session.get(AIJob, row.ai_job_id)
-    if job is None or job.product_code != "SIMPA" or job.organization_id != organization_id or job.workspace_id != workspace_id:
+    if (
+        job is None
+        or job.product_code != "SIMPA"
+        or job.organization_id != organization_id
+        or job.workspace_id != workspace_id
+    ):
         raise SimpaAnalyticsError("synthesis_ai_job_not_accessible")
     if job.status not in {"review_required", "succeeded"}:
         raise SimpaAnalyticsError("synthesis_not_reviewable")

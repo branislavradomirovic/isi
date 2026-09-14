@@ -6,6 +6,8 @@ def test_computation_is_guarded_by_validated_methodology():
     assert 'indicator.methodology_status != "validated"' in text
     assert 'raise SimpaAnalyticsError("methodology_not_validated")' in text
     assert 'SimpaIndicatorMethodology.status == "validated"' in text
+    assert 'row.status != "proposed"' in text
+    assert 'row.reference_check_status != "passed"' in text
     assert 'row.payload["quality_status"] == "validated"' in text
     assert "revalidate_analytics_run" in text
     assert "source_observation_ids=[]" in text
