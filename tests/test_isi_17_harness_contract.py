@@ -114,23 +114,33 @@ def test_masterplan_bootstrap_and_legacy_governance_is_enforced() -> None:
         assert "HISTORICAL / SUPERSEDED - DO NOT EXECUTE" in (ROOT / rel).read_text()
 
 
-def test_live_status_records_22e_and_whole_phase_22_audit() -> None:
+def test_live_status_records_phase22_closeout_and_history() -> None:
     status = (ROOT / "automation/STATUS.md").read_text()
+    assert "Accepted ISI-22G implementation SHA: `fd0e46631b5047c64b731d041645e528292f3664`." in status
+    assert "Accepted ISI-22G implementation tree: `1a405a65a6fa67f2845ee0a10f2a6f44b11e355e`." in status
+    assert "run #75" in status
+    assert "run ID `34856573722`" in status
+    assert "Accepted ISI-22F implementation SHA: `cfe1574532df65589132bbdd10625172b32fb959`." in status
     assert "Accepted ISI-22E implementation SHA: `44002aa0774a902bdf2d7a0ae56ff3558303571c`." in status
     assert "Accepted ISI-22E implementation tree: `15578107fb21b6aae174a4bf77fc62812377949c`." in status
     assert "Canonical main SHA:" not in status
     assert "Canonical tree:" not in status
     assert status.count("## Owner-facing state model") == 1
     assert "run #70" in status
-    assert "whole-phase ISI-22" in status
+    assert "whole-phase gap/legacy audit" in status
+    assert "Overall `ISI-22-INDUSTRIAL-DATA-PLATFORM` is `COMPLETE / CI_VERIFIED`." in status
+    assert "ISI-23 bootstrap/audit - SIMPA Production Methodology + Help/User Guide" in status
 
     tasks = json.loads((ROOT / "automation/tasks.json").read_text())["tasks"]
     by_id = {task["id"]: task for task in tasks}
     assert by_id["ISI-15-PRODUCTION-STAGING"]["status"] == "historical"
     assert by_id["ISI-16-ISI-RS-PRODUCTION-CUTOVER"]["status"] == "superseded"
     assert by_id["ISI-19-BACKUP-RESTORE-DISASTER-RECOVERY"]["status"] == "done"
-    assert by_id["ISI-22-INDUSTRIAL-DATA-PLATFORM"]["status"] == "in_progress"
+    assert by_id["ISI-22-INDUSTRIAL-DATA-PLATFORM"]["status"] == "done"
     assert "22E 44002aa0774a902bdf2d7a0ae56ff3558303571c" in by_id["ISI-22-INDUSTRIAL-DATA-PLATFORM"]["note"]
+    assert "22G fd0e46631b5047c64b731d041645e528292f3664" in by_id["ISI-22-INDUSTRIAL-DATA-PLATFORM"]["note"]
+    assert "run #75 (34856573722)" in by_id["ISI-22-INDUSTRIAL-DATA-PLATFORM"]["note"]
+    assert by_id["ISI-22-INDUSTRIAL-DATA-PLATFORM"]["next"] == "ISI-23-SIMPA-PRODUCTION-METHODOLOGY"
 
 
 def test_canonical_system_inventory_is_complete_and_self_contained() -> None:

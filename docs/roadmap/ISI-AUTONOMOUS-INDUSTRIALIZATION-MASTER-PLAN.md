@@ -104,7 +104,7 @@ The system is layered as follows:
 3. **Domain separation** - SIMPA and ORDO are the only current domain applications; they remain domain-isolated while sharing infrastructure. COSMOS is not a runtime/application/domain layer.
 4. **Shared data platform** - scoped source registrations, immutable source versions/payload identity, storage metadata and queued processing.
 5. **Governed ingestion (ISI-22A-22E)** - versioned connector contracts -> versioned schema mappings -> incremental/idempotent ingestion -> normalized records -> record governance/dedup/quarantine/reconciliation -> operational policy for freshness/quality/backfill/replay/dead-letter -> immutable governed ingestion output.
-6. **Reproducible analytical data boundary (ISI-22F - CURRENT AS BUILT)** - governed output -> canonical analytical dataset contracts -> stable temporal/granularity keys -> explicit missing-value semantics -> reproducible dataset/snapshot/feature versions -> typed source-to-feature lineage and quality state.
+6. **Reproducible analytical data boundary and governed domain consumption (ISI-22F/22G - CURRENT AS BUILT)** - governed output -> canonical analytical dataset contracts -> stable temporal/granularity keys -> explicit missing-value semantics -> reproducible dataset/snapshot/feature versions -> typed source-to-feature lineage and quality state; SIMPA/ORDO deterministic analytics consume explicitly bound and downstream-revalidated governed snapshots or eligible single-snapshot feature versions, while historical observation-derived runs remain read-only compatibility.
 7. **Deterministic analytics** - indicators/statistics/ML own authoritative numerical truth, diagnostics, uncertainty, calibration and validated model outputs.
 8. **Document AI/RAG** - extraction/retrieval with provenance and tenant/product namespace isolation.
 9. **AI synthesis** - LLM/VLM is bounded explanation/synthesis through the shared AI HTTP boundary; it does not silently become numerical or state authority.
@@ -443,6 +443,23 @@ At the accepted ISI-22F implementation SHA `cfe1574532df65589132bbdd10625172b32f
 - ISI-23 through ISI-28 remain serially pending;
 - server verification/deployment remains deferred and the server remains frozen.
 
+### 0.8.2 Accepted ISI-22G implementation checkpoint and Phase-22 closeout - 2026-09-14
+
+At the accepted ISI-22G implementation SHA `fd0e46631b5047c64b731d041645e528292f3664` (tree `1a405a65a6fa67f2845ee0a10f2a6f44b11e355e`):
+
+- ISI-22G - Domain Consumption Enforcement + ISI-22 Closeout implementation is `COMPLETE / CI_VERIFIED`;
+- authoritative ISI-22G GitHub Actions is `ISI required acceptance` run #75, run ID `34856573722`, `completed / success`, with policy, quality, tests, architecture-security, migration, native-postgres, compose, supply-chain, build and aggregate `acceptance` green;
+- SIMPA and ORDO deterministic analytics now consume explicitly bound governed reproducible analytical artifacts rather than direct observation reads for new work;
+- downstream compute, bounded AI synthesis, human review, scenario/reporting paths revalidate the governed analytical binding and fail closed for legacy, invalidated, tampered or cross-product inputs;
+- synthetic SIMPA and ORDO acceptance proves the governed pipeline through deterministic analytics, AI provenance, human review and report-manifest provenance;
+- historical pre-22G observation-derived runs remain `REQUIRED_COMPATIBILITY`: readable/listable but ineligible to authorize new compute/AI/scenario/report work;
+- the mandatory Phase-22 gap/legacy findings are either resolved or retained only as classified `LEGITIMATE_HISTORY` / `REQUIRED_COMPATIBILITY`; there is no open `REMOVE_BEFORE_NEXT_SLICE` item from Phase 22;
+- overall ISI-22 - Industrial Data Platform is `COMPLETE / CI_VERIFIED`;
+- current/next work is ISI-23 - SIMPA Production Methodology + Help/User Guide;
+- server verification/deployment remains deferred and the server remains frozen through ISI-27.
+
+This governance-only synchronization records the accepted 22G implementation and Phase-22 closeout; it does not change production code or authorize server work.
+
 ### 0.9 Phase/task closeout synchronization gate
 
 A task or phase cannot be closed while any of these are true:
@@ -700,9 +717,9 @@ Required deliverables now include:
 
 Goal: evolve ingestion from framework capability to robust production-grade data engineering and reproducible analytical datasets.
 
-Status: **IN_PROGRESS**. ISI-22A through ISI-22F are complete; ISI-22F is `COMPLETE / CI_VERIFIED`, and the current/next implementation slice is ISI-22G - Domain Consumption Enforcement + ISI-22 Closeout.
+Status: **COMPLETE / CI_VERIFIED**. ISI-22A through ISI-22G are complete. The final ISI-22G domain-consumption slice is accepted on `fd0e46631b5047c64b731d041645e528292f3664` (tree `1a405a65a6fa67f2845ee0a10f2a6f44b11e355e`) with exact-main `ISI required acceptance` run #75 / `34856573722` completed `success`, including aggregate `acceptance`. ISI-23 - SIMPA Production Methodology is current/next.
 
-Accepted checkpoints: 22A `4047a1ef2ff3ac755d86947cfe666ee8507c9a0b`; 22B `daeb5f2bbdb20bfed1be43f226ba13aa13e470aa`; 22C `abbf6845864e5a61ff83fc7127739d9e68709077`; 22D `6347ecde3cbb9a37a65ddbe7d5a6b3f35310b35d`; 22E `44002aa0774a902bdf2d7a0ae56ff3558303571c`; 22F `cfe1574532df65589132bbdd10625172b32fb959`, exact-main acceptance run #73 / `34787001102` success.
+Accepted checkpoints: 22A `4047a1ef2ff3ac755d86947cfe666ee8507c9a0b`; 22B `daeb5f2bbdb20bfed1be43f226ba13aa13e470aa`; 22C `abbf6845864e5a61ff83fc7127739d9e68709077`; 22D `6347ecde3cbb9a37a65ddbe7d5a6b3f35310b35d`; 22E `44002aa0774a902bdf2d7a0ae56ff3558303571c`; 22F `cfe1574532df65589132bbdd10625172b32fb959` with exact-main acceptance run #73 / `34787001102` success; 22G `fd0e46631b5047c64b731d041645e528292f3664` with exact-main acceptance run #75 / `34856573722` success.
 
 Required deliverables include:
 
@@ -928,5 +945,13 @@ Owner approvals now binding in this master plan include:
 ### 2026-09-14 ISI-22F completion and ISI-22G transition
 
 - ISI-22F is COMPLETE / CI_VERIFIED on `cfe1574532df65589132bbdd10625172b32fb959` with exact-main acceptance run #73 / `34787001102`, and the current/next work is ISI-22G - Domain Consumption Enforcement + ISI-22 Closeout.
+
+### 2026-09-14 ISI-22G completion and ISI-23 transition
+
+- ISI-22G implementation is COMPLETE / CI_VERIFIED on `fd0e46631b5047c64b731d041645e528292f3664` (tree `1a405a65a6fa67f2845ee0a10f2a6f44b11e355e`) with exact-main `ISI required acceptance` run #75 / `34856573722` completed `success` and aggregate `acceptance` green;
+- overall ISI-22 - Industrial Data Platform is COMPLETE / CI_VERIFIED;
+- current/next work is ISI-23 - SIMPA Production Methodology + Help/User Guide;
+- the serial dependency model remains `ISI-22 -> ISI-23 -> ISI-24 -> ISI-25 -> ISI-26 -> ISI-27 -> ISI-28`;
+- server/DNS/ingress/real SMTP/production secrets/data/server Ollama remain frozen until fresh owner-approved ISI-28.
 
 Material changes to these points require a new explicit owner approval and, where architectural, a new or superseding ADR.
