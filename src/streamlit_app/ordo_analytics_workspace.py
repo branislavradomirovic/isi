@@ -4,7 +4,7 @@ from typing import Any
 
 import streamlit as st
 
-from src.streamlit_app import ordo_analytics_api
+from src.streamlit_app import data_api, ordo_analytics_api
 
 
 def _scope(shell: dict[str, Any]) -> tuple[str, str] | None:
@@ -30,6 +30,33 @@ def _lines(value: str) -> list[str]:
     return [line.strip(" -\t") for line in value.splitlines() if line.strip(" -\t")]
 
 
+def _eligible_artifacts(token: str, organization_id: str, workspace_id: str) -> list[dict]:
+    items: list[dict] = []
+    eligible_snapshot_ids: set[str] = set()
+    datasets = _safe(data_api.list_analytical_datasets, token, organization_id=organization_id,
+                     product_code="ORDO", workspace_id=workspace_id) or []
+    for dataset in datasets:
+        snapshots = _safe(data_api.list_analytical_snapshots, token, dataset_id=dataset["id"],
+                          organization_id=organization_id, product_code="ORDO",
+                          workspace_id=workspace_id) or []
+        eligible = [row for row in snapshots if row.get("state") in {"VALIDATED", "FROZEN"}
+                    and not row.get("invalidated")]
+        eligible_snapshot_ids.update(row["id"] for row in eligible)
+        items.extend({"type": "snapshot", "id": row["id"], "fingerprint": row["fingerprint"]}
+                     for row in eligible)
+    features = _safe(data_api.list_analytical_features, token, organization_id=organization_id,
+                     product_code="ORDO", workspace_id=workspace_id) or []
+    for feature in features:
+        versions = _safe(data_api.list_analytical_feature_versions, token, feature_id=feature["id"],
+                         organization_id=organization_id, product_code="ORDO",
+                         workspace_id=workspace_id) or []
+        items.extend({"type": "feature_version", "id": row["id"], "fingerprint": row["fingerprint"]}
+                     for row in versions if row.get("state") in {"GOVERNED", "FROZEN"}
+                     and not row.get("invalidated") and len(row.get("snapshot_inputs") or []) == 1
+                     and row["snapshot_inputs"][0].get("snapshot_id") in eligible_snapshot_ids)
+    return items
+
+
 def render_ordo_analytics(*, token: str, shell: dict[str, Any]) -> None:
     scope = _scope(shell)
     st.markdown('<div class="isi-eyebrow">ORDO · Analitika + AI</div>', unsafe_allow_html=True)
@@ -43,38 +70,50 @@ def render_ordo_analytics(*, token: str, shell: dict[str, Any]) -> None:
         return
     organization_id, workspace_id = scope
     permissions = set(shell.get("product", {}).get("permission_codes", []))
+    runs = _safe(ordo_analytics_api.runs, token, organization_id, workspace_id) or []
 
-    snapshot = _safe(ordo_analytics_api.summary, token, organization_id, workspace_id)
-    if not snapshot:
-        return
+    artifacts = _eligible_artifacts(token, organization_id, workspace_id)
+    selected_artifact = None
+    snapshot = None
+    if not artifacts:
+        st.info("Nema validiranog governed analytical snapshot-a ili eligible feature verzije za analitiku.")
+    else:
+        selected_artifact = st.selectbox(
+            "Governed analytical artefakt", artifacts,
+            format_func=lambda row: f"{row['type']} · {row['id']} · {row['fingerprint']}",
+        )
+        snapshot = _safe(
+            ordo_analytics_api.summary, token, organization_id, workspace_id,
+            analytical_artifact_type=selected_artifact["type"],
+            analytical_artifact_id=selected_artifact["id"],
+        )
+    if snapshot:
+        cols = st.columns(5)
+        cards = [
+            ("Opservacije", snapshot.get("observation_count", 0)),
+            ("Validirane", _pct(snapshot.get("validated_observation_ratio"))),
+            ("Provenance", _pct(snapshot.get("provenance_coverage"))),
+            ("Dimenzije", _pct(snapshot.get("dimension_coverage"))),
+            ("Stubovi", _pct(snapshot.get("pillar_coverage"))),
+        ]
+        for col, (label, value) in zip(cols, cards):
+            col.metric(label, value)
+        st.progress(
+            float(snapshot.get("evidence_quality_score", 0.0)),
+            text=f"Kvalitet dokaza: {snapshot.get('evidence_quality_band', 'no_evidence')} · {_pct(snapshot.get('evidence_quality_score'))}",
+        )
+        st.caption(snapshot.get("semantic_notice", "Ovo nije destination-performance score."))
 
-    cols = st.columns(5)
-    cards = [
-        ("Opservacije", snapshot.get("observation_count", 0)),
-        ("Validirane", _pct(snapshot.get("validated_observation_ratio"))),
-        ("Provenance", _pct(snapshot.get("provenance_coverage"))),
-        ("Dimenzije", _pct(snapshot.get("dimension_coverage"))),
-        ("Stubovi", _pct(snapshot.get("pillar_coverage"))),
-    ]
-    for col, (label, value) in zip(cols, cards):
-        col.metric(label, value)
-    st.progress(
-        float(snapshot.get("evidence_quality_score", 0.0)),
-        text=f"Kvalitet dokaza: {snapshot.get('evidence_quality_band', 'no_evidence')} · {_pct(snapshot.get('evidence_quality_score'))}",
-    )
-    st.caption(snapshot.get("semantic_notice", "Ovo nije destination-performance score."))
-
-    left, right = st.columns(2)
-    with left:
         st.markdown("### Pokrivenost razvoja")
         st.write("**Pokrivene dimenzije:**", ", ".join(snapshot.get("observed_dimensions") or []) or "—")
         st.write("**Dimenzije bez dokaza:**", ", ".join(snapshot.get("missing_dimensions") or []) or "—")
-    with right:
-        st.markdown("### Metodološki status")
-        st.metric("Aktivni indikatori", snapshot.get("active_indicator_count", 0))
-        st.metric("Konceptualni", snapshot.get("conceptual_indicator_count", 0))
-        st.metric("Sa validiranom metodologijom", snapshot.get("validated_methodology_indicator_count", 0))
 
+    st.markdown("### Metodološki status")
+    if snapshot:
+        method_cols = st.columns(3)
+        method_cols[0].metric("Aktivni indikatori", snapshot.get("active_indicator_count", 0))
+        method_cols[1].metric("Konceptualni", snapshot.get("conceptual_indicator_count", 0))
+        method_cols[2].metric("Sa validiranom metodologijom", snapshot.get("validated_methodology_indicator_count", 0))
     methods = _safe(ordo_analytics_api.methodologies, token, organization_id, workspace_id) or []
     if methods:
         st.dataframe(methods, use_container_width=True, hide_index=True)
@@ -82,9 +121,8 @@ def render_ordo_analytics(*, token: str, shell: dict[str, Any]) -> None:
         st.info("Nema validiranih metodologija. ISI-11 ne izmišlja formule niti automatski validira konceptualne ORDO indikatore.")
 
     st.markdown("### Analitički snapshot")
-    runs = _safe(ordo_analytics_api.runs, token, organization_id, workspace_id) or []
-    if "analysis.run" in permissions and st.button("Sačuvaj trenutni ORDO snapshot", type="primary", use_container_width=True):
-        result = _safe(ordo_analytics_api.create_run, token, organization_id=organization_id, workspace_id=workspace_id)
+    if snapshot and selected_artifact is not None and "analysis.run" in permissions and st.button("Sačuvaj trenutni ORDO snapshot", type="primary", use_container_width=True):
+        result = _safe(ordo_analytics_api.create_run, token, organization_id=organization_id, workspace_id=workspace_id, analytical_artifact_type=selected_artifact["type"], analytical_artifact_id=selected_artifact["id"])
         if result is not None:
             st.success("ORDO snapshot je sačuvan.")
             st.rerun()
@@ -92,6 +130,9 @@ def render_ordo_analytics(*, token: str, shell: dict[str, Any]) -> None:
         compact = [
             {
                 "id": item["id"],
+                "artefakt": item.get("analytical_artifact_type"),
+                "artifact_id": item.get("analytical_snapshot_id") or item.get("analytical_feature_version_id"),
+                "fingerprint": item.get("analytical_artifact_fingerprint"),
                 "kvalitet_dokaza": item["evidence_quality_score"],
                 "provenance": item["provenance_coverage"],
                 "indikatori": item["indicator_coverage"],
@@ -104,6 +145,17 @@ def render_ordo_analytics(*, token: str, shell: dict[str, Any]) -> None:
         st.dataframe(compact, use_container_width=True, hide_index=True)
     else:
         st.info("Još nema sačuvanih ORDO analitičkih snapshot-a.")
+    eligible_artifacts = {
+        (("ANALYTICAL_SNAPSHOT" if item["type"] == "snapshot" else "ANALYTICAL_FEATURE_VERSION"), item["id"])
+        for item in artifacts
+    }
+    governed_runs = [
+        item for item in runs
+        if (
+            item.get("analytical_artifact_type"),
+            item.get("analytical_snapshot_id") or item.get("analytical_feature_version_id"),
+        ) in eligible_artifacts
+    ]
 
     st.markdown("### Razvojni ciljevi i scenariji")
     st.caption("Scenario je korisnički definisan razvojni pravac. Sistem ne predstavlja pretpostavke kao činjenice niti računa predviđene efekte bez validiranog modela.")
@@ -165,10 +217,10 @@ def render_ordo_analytics(*, token: str, shell: dict[str, Any]) -> None:
         st.dataframe(scenarios, use_container_width=True, hide_index=True)
 
     assessments = _safe(ordo_analytics_api.assessments, token, organization_id, workspace_id) or []
-    if scenarios and runs and "analysis.run" in permissions:
+    if scenarios and governed_runs and "analysis.run" in permissions:
         st.markdown("#### Evidence-only procena scenarija")
         scenario_map = {item["id"]: item["name"] for item in scenarios}
-        run_ids = [item["id"] for item in runs]
+        run_ids = [item["id"] for item in governed_runs]
         scenario_id = st.selectbox("Scenario", list(scenario_map), format_func=lambda value: scenario_map[value], key="ordo_assessment_scenario")
         run_id = st.selectbox("Analitički snapshot", run_ids, format_func=lambda value: f"Snapshot {value[:8]}", key="ordo_assessment_run")
         if st.button("Kreiraj evidence-only procenu", use_container_width=True, key="ordo_assessment_create"):
@@ -193,8 +245,8 @@ def render_ordo_analytics(*, token: str, shell: dict[str, Any]) -> None:
     st.caption(
         "Trenutni lokalni QA model: qwen2.5:7b-instruct preko shared ISI Ollama gateway-a. ORDO koristi sopstveni prompt i policy profil; finalni produkcioni model biće zaključan kasnije."
     )
-    if runs and "analysis.run" in permissions:
-        run_ids = [item["id"] for item in runs]
+    if governed_runs and "analysis.run" in permissions:
+        run_ids = [item["id"] for item in governed_runs]
         selected_run = st.selectbox("Snapshot za AI sintezu", run_ids, format_func=lambda value: f"Snapshot {value[:8]}", key="ordo_ai_run")
         mode = st.radio("Vrsta sinteze", ["monitoring", "scenario_review"], horizontal=True, key="ordo_ai_mode")
         selected_scenario = None

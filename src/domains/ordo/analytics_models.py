@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import uuid
 
-from sqlalchemy import Boolean, CheckConstraint, Date, DateTime, Float, ForeignKey, Integer, JSON, String, Text, UniqueConstraint, func
+from sqlalchemy import Boolean, CheckConstraint, Date, DateTime, Float, ForeignKey, Index, Integer, JSON, String, Text, UniqueConstraint, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.core.database import Base
@@ -42,12 +42,25 @@ class OrdoAnalyticsRun(Base):
         CheckConstraint("indicator_coverage >= 0 AND indicator_coverage <= 1", name="ck_ordo_analytics_run_indicator_coverage"),
         CheckConstraint("dimension_coverage >= 0 AND dimension_coverage <= 1", name="ck_ordo_analytics_run_dimension_coverage"),
         CheckConstraint("pillar_coverage >= 0 AND pillar_coverage <= 1", name="ck_ordo_analytics_run_pillar_coverage"),
+        CheckConstraint("analytical_artifact_type IN ('LEGACY_OBSERVATION','ANALYTICAL_SNAPSHOT','ANALYTICAL_FEATURE_VERSION')", name="ck_ordo_run_artifact_type"),
+        CheckConstraint("(analytical_artifact_type = 'LEGACY_OBSERVATION' AND analytical_snapshot_id IS NULL AND analytical_feature_version_id IS NULL) OR (analytical_artifact_type = 'ANALYTICAL_SNAPSHOT' AND analytical_snapshot_id IS NOT NULL AND analytical_feature_version_id IS NULL) OR (analytical_artifact_type = 'ANALYTICAL_FEATURE_VERSION' AND analytical_snapshot_id IS NULL AND analytical_feature_version_id IS NOT NULL)", name="ck_ordo_run_artifact_binding"),
+        CheckConstraint("analytical_artifact_type = 'LEGACY_OBSERVATION' OR (dataset_contract_version_id IS NOT NULL AND length(analytical_artifact_fingerprint) = 64 AND length(dataset_contract_fingerprint) = 64 AND analytical_quality_state IN ('ACCEPTED_CLEAN','ACCEPTED_WITH_WARNING'))", name="ck_ordo_run_governed_identity"),
+        Index("ix_ordo_run_analytical_snapshot", "analytical_snapshot_id"),
+        Index("ix_ordo_run_analytical_feature", "analytical_feature_version_id"),
+        Index("ix_ordo_run_dataset_contract", "dataset_contract_version_id"),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     organization_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False, index=True)
     workspace_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False, index=True)
     monitoring_cycle_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("ordo_monitoring_cycles.id", ondelete="SET NULL"), nullable=True, index=True)
+    analytical_artifact_type: Mapped[str] = mapped_column(String(40), nullable=False, default="LEGACY_OBSERVATION", server_default="LEGACY_OBSERVATION")
+    analytical_snapshot_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_analytical_dataset_snapshots.id", ondelete="RESTRICT"), nullable=True)
+    analytical_feature_version_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_analytical_feature_versions.id", ondelete="RESTRICT"), nullable=True)
+    analytical_artifact_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False, default="", server_default="")
+    dataset_contract_version_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_analytical_dataset_contract_versions.id", ondelete="RESTRICT"), nullable=True)
+    dataset_contract_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False, default="", server_default="")
+    analytical_quality_state: Mapped[str] = mapped_column(String(32), nullable=False, default="LEGACY_UNKNOWN", server_default="LEGACY_UNKNOWN")
     status: Mapped[str] = mapped_column(String(24), nullable=False, default="completed", server_default="completed")
     snapshot: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
     evidence_quality_score: Mapped[float] = mapped_column(Float, nullable=False, default=0.0, server_default="0")

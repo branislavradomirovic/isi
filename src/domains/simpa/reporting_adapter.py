@@ -8,6 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from src.domains.simpa.analytics_models import SimpaAISynthesis, SimpaAnalyticsRun, SimpaIndicatorResult
+from src.domains.simpa.analytics_service import SimpaAnalyticsError, revalidate_analytics_run
 from src.domains.simpa.models import SimpaIndicatorDefinition
 from src.platform.ai.models import AIJob
 
@@ -36,10 +37,19 @@ def _source(*, kind: str, object_id, organization_id, workspace_id, checksum: st
 def available_sources(session: Session, *, organization_id: uuid.UUID, workspace_id: uuid.UUID) -> list[dict]:
     rows = session.scalars(
         select(SimpaAnalyticsRun)
-        .where(SimpaAnalyticsRun.organization_id == organization_id, SimpaAnalyticsRun.workspace_id == workspace_id, SimpaAnalyticsRun.status == "completed")
+        .where(SimpaAnalyticsRun.organization_id == organization_id, SimpaAnalyticsRun.workspace_id == workspace_id,
+               SimpaAnalyticsRun.status == "completed",
+               SimpaAnalyticsRun.analytical_artifact_type.in_(("ANALYTICAL_SNAPSHOT", "ANALYTICAL_FEATURE_VERSION")))
         .order_by(SimpaAnalyticsRun.created_at.desc())
         .limit(50)
     ).all()
+    eligible = []
+    for row in rows:
+        try:
+            revalidate_analytics_run(session, run=row, organization_id=organization_id, workspace_id=workspace_id)
+        except SimpaAnalyticsError:
+            continue
+        eligible.append(row)
     return [
         {
             "kind": "analytics_run",
@@ -48,7 +58,7 @@ def available_sources(session: Session, *, organization_id: uuid.UUID, workspace
             "created_at": row.created_at,
             "status": row.status,
         }
-        for row in rows
+        for row in eligible
     ]
 
 
@@ -73,6 +83,11 @@ def build_report_payload(
     )
     if run is None:
         raise SimpaReportingError("simpa_report_source_not_accessible")
+    try:
+        analytical_input = revalidate_analytics_run(
+            session, run=run, organization_id=organization_id, workspace_id=workspace_id)
+    except SimpaAnalyticsError as exc:
+        raise SimpaReportingError(str(exc)) from None
 
     result_rows = session.execute(
         select(SimpaIndicatorResult, SimpaIndicatorDefinition)
@@ -88,6 +103,14 @@ def build_report_payload(
 
     indicators = []
     manifest = [
+        _source(
+            kind=("analytical_snapshot" if analytical_input.artifact_type == "snapshot" else "analytical_feature_version"),
+            object_id=analytical_input.artifact_id,
+            organization_id=organization_id,
+            workspace_id=workspace_id,
+            checksum=analytical_input.artifact_fingerprint,
+            label="SIMPA governed analytical source",
+        ),
         _source(
             kind="simpa_analytics_run",
             object_id=run.id,

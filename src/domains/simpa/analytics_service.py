@@ -9,9 +9,11 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from src.domains.simpa.analytics_models import SimpaAISynthesis, SimpaAnalyticsRun, SimpaIndicatorMethodology, SimpaIndicatorResult
-from src.domains.simpa.models import SimpaIndicatorDefinition, SimpaIndicatorObservation, SimpaMonitoringCycle
+from src.domains.simpa.models import SimpaIndicatorDefinition, SimpaMonitoringCycle
 from src.platform.ai.models import AIJob
 from src.platform.ai.service import create_ai_job
+from src.platform.data.analytical_service import GovernedAnalyticalInput, load_governed_analytical_input
+from src.platform.data.service import DataPlatformError
 
 
 class SimpaAnalyticsError(ValueError):
@@ -24,6 +26,87 @@ def _utcnow():
 
 def _ratio(num: int, den: int) -> float:
     return round(float(num) / float(den), 6) if den else 0.0
+
+
+def _load_input(session: Session, *, artifact_type: str, artifact_id: uuid.UUID,
+                organization_id: uuid.UUID, workspace_id: uuid.UUID) -> GovernedAnalyticalInput:
+    try:
+        return load_governed_analytical_input(
+            session, artifact_type=artifact_type, artifact_id=artifact_id,
+            organization_id=organization_id, workspace_id=workspace_id, product_code="SIMPA")
+    except DataPlatformError as exc:
+        raise SimpaAnalyticsError(str(exc)) from None
+
+
+def _analytical_source(value: GovernedAnalyticalInput) -> dict:
+    return {
+        "artifact_type": value.artifact_type,
+        "artifact_id": str(value.artifact_id),
+        "artifact_fingerprint": value.artifact_fingerprint,
+        "dataset_contract_version_id": str(value.dataset_contract_version_id),
+        "dataset_contract_fingerprint": value.dataset_contract_fingerprint,
+        "analytical_quality_state": value.analytical_quality_state,
+        "resolved_snapshot_id": str(value.snapshot_id),
+        "resolved_snapshot_fingerprint": value.snapshot_fingerprint,
+    }
+
+
+def _validate_direct_observation_contract(value: GovernedAnalyticalInput, *, cycle: bool) -> None:
+    fields = {str(item.get("field_key")): item for item in value.field_contract}
+    expected = {
+        "indicator_code": ("STRING", True),
+        "quality_status": ("STRING", True),
+        "value_numeric": ("NUMBER", False),
+        "value_text": ("STRING", False),
+    }
+    for key, (logical_type, required) in expected.items():
+        field = fields.get(key)
+        if field is None or field.get("logical_type") != logical_type or bool(field.get("required")) != required:
+            raise SimpaAnalyticsError("direct_observation_contract_invalid")
+    field = fields.get("monitoring_cycle_id")
+    if field is not None and (field.get("logical_type") != "STRING" or bool(field.get("required"))):
+        raise SimpaAnalyticsError("direct_observation_contract_invalid")
+    if cycle and field is None:
+        raise SimpaAnalyticsError("direct_observation_cycle_contract_required")
+
+
+def _records(value: GovernedAnalyticalInput, monitoring_cycle_id: uuid.UUID | None):
+    _validate_direct_observation_contract(value, cycle=monitoring_cycle_id is not None)
+    selected = []
+    for record in value.records:
+        quality = record.payload.get("quality_status")
+        code = record.payload.get("indicator_code")
+        if quality not in {"validated", "draft", "rejected"} or not isinstance(code, str) or not code.strip():
+            raise SimpaAnalyticsError("direct_observation_record_invalid")
+        if monitoring_cycle_id is not None and record.payload.get("monitoring_cycle_id") != str(monitoring_cycle_id):
+            continue
+        selected.append(record)
+    return selected
+
+
+def revalidate_analytics_run(session: Session, *, run: SimpaAnalyticsRun,
+                             organization_id: uuid.UUID, workspace_id: uuid.UUID) -> GovernedAnalyticalInput:
+    if run.status != "completed" or (run.organization_id, run.workspace_id) != (organization_id, workspace_id):
+        raise SimpaAnalyticsError("analytics_run_not_accessible")
+    if run.analytical_artifact_type == "ANALYTICAL_SNAPSHOT":
+        artifact_type, artifact_id = "snapshot", run.analytical_snapshot_id
+    elif run.analytical_artifact_type == "ANALYTICAL_FEATURE_VERSION":
+        artifact_type, artifact_id = "feature_version", run.analytical_feature_version_id
+    else:
+        raise SimpaAnalyticsError("legacy_analytics_run_ineligible")
+    if artifact_id is None:
+        raise SimpaAnalyticsError("analytics_run_governed_binding_invalid")
+    value = _load_input(session, artifact_type=artifact_type, artifact_id=artifact_id,
+                        organization_id=organization_id, workspace_id=workspace_id)
+    if (
+        run.analytical_artifact_fingerprint != value.artifact_fingerprint
+        or run.dataset_contract_version_id != value.dataset_contract_version_id
+        or run.dataset_contract_fingerprint != value.dataset_contract_fingerprint
+        or run.analytical_quality_state != value.analytical_quality_state
+        or (run.snapshot or {}).get("analytical_source") != _analytical_source(value)
+    ):
+        raise SimpaAnalyticsError("analytics_run_governed_binding_changed")
+    return value
 
 
 def _assert_cycle_scope(session: Session, *, cycle_id: uuid.UUID | None, organization_id: uuid.UUID, workspace_id: uuid.UUID) -> None:
@@ -45,24 +128,27 @@ def build_monitoring_snapshot(
     *,
     organization_id: uuid.UUID,
     workspace_id: uuid.UUID,
+    analytical_artifact_type: str,
+    analytical_artifact_id: uuid.UUID,
     monitoring_cycle_id: uuid.UUID | None = None,
 ) -> dict:
     _assert_cycle_scope(session, cycle_id=monitoring_cycle_id, organization_id=organization_id, workspace_id=workspace_id)
-    base = [
-        SimpaIndicatorObservation.organization_id == organization_id,
-        SimpaIndicatorObservation.workspace_id == workspace_id,
-    ]
-    if monitoring_cycle_id is not None:
-        base.append(SimpaIndicatorObservation.monitoring_cycle_id == monitoring_cycle_id)
-    observations = list(session.scalars(select(SimpaIndicatorObservation).where(*base)).all())
+    analytical_input = _load_input(
+        session, artifact_type=analytical_artifact_type, artifact_id=analytical_artifact_id,
+        organization_id=organization_id, workspace_id=workspace_id)
+    observations = _records(analytical_input, monitoring_cycle_id)
     active_indicators = list(session.scalars(select(SimpaIndicatorDefinition).where(SimpaIndicatorDefinition.active.is_(True))).all())
+    indicators_by_code = {row.code: row for row in active_indicators}
+    for observation in observations:
+        if observation.payload["indicator_code"] not in indicators_by_code:
+            raise SimpaAnalyticsError("indicator_unknown")
 
     total = len(observations)
-    validated = sum(1 for row in observations if row.quality_status == "validated")
-    draft = sum(1 for row in observations if row.quality_status == "draft")
-    rejected = sum(1 for row in observations if row.quality_status == "rejected")
-    provenance = sum(1 for row in observations if row.source_version_id is not None or bool((row.provenance_note or "").strip()))
-    observed_indicator_ids = {row.indicator_id for row in observations}
+    validated = sum(1 for row in observations if row.payload["quality_status"] == "validated")
+    draft = sum(1 for row in observations if row.payload["quality_status"] == "draft")
+    rejected = sum(1 for row in observations if row.payload["quality_status"] == "rejected")
+    provenance = total
+    observed_indicator_ids = {indicators_by_code[str(row.payload["indicator_code"])].id for row in observations}
     conceptual = sum(1 for row in active_indicators if row.methodology_status == "conceptual")
     validated_methodology = sum(1 for row in active_indicators if row.methodology_status == "validated")
 
@@ -80,6 +166,7 @@ def build_monitoring_snapshot(
         quality_band = "strong"
 
     return {
+        "analytical_source": _analytical_source(analytical_input),
         "scope": {"organization_id": str(organization_id), "workspace_id": str(workspace_id), "monitoring_cycle_id": str(monitoring_cycle_id) if monitoring_cycle_id else None},
         "observation_count": total,
         "validated_observation_count": validated,
@@ -98,12 +185,25 @@ def build_monitoring_snapshot(
     }
 
 
-def create_analytics_run(session: Session, *, organization_id: uuid.UUID, workspace_id: uuid.UUID, monitoring_cycle_id: uuid.UUID | None, actor_id: uuid.UUID | None) -> SimpaAnalyticsRun:
-    snapshot = build_monitoring_snapshot(session, organization_id=organization_id, workspace_id=workspace_id, monitoring_cycle_id=monitoring_cycle_id)
+def create_analytics_run(session: Session, *, organization_id: uuid.UUID, workspace_id: uuid.UUID,
+                         analytical_artifact_type: str, analytical_artifact_id: uuid.UUID,
+                         monitoring_cycle_id: uuid.UUID | None, actor_id: uuid.UUID | None) -> SimpaAnalyticsRun:
+    snapshot = build_monitoring_snapshot(
+        session, organization_id=organization_id, workspace_id=workspace_id,
+        analytical_artifact_type=analytical_artifact_type,
+        analytical_artifact_id=analytical_artifact_id, monitoring_cycle_id=monitoring_cycle_id)
+    source = snapshot["analytical_source"]
     row = SimpaAnalyticsRun(
         organization_id=organization_id,
         workspace_id=workspace_id,
         monitoring_cycle_id=monitoring_cycle_id,
+        analytical_artifact_type=("ANALYTICAL_SNAPSHOT" if analytical_artifact_type == "snapshot" else "ANALYTICAL_FEATURE_VERSION"),
+        analytical_snapshot_id=analytical_artifact_id if analytical_artifact_type == "snapshot" else None,
+        analytical_feature_version_id=analytical_artifact_id if analytical_artifact_type == "feature_version" else None,
+        analytical_artifact_fingerprint=source["artifact_fingerprint"],
+        dataset_contract_version_id=uuid.UUID(source["dataset_contract_version_id"]),
+        dataset_contract_fingerprint=source["dataset_contract_fingerprint"],
+        analytical_quality_state=source["analytical_quality_state"],
         status="completed",
         snapshot=snapshot,
         evidence_quality_score=snapshot["evidence_quality_score"],
@@ -175,7 +275,7 @@ def compute_indicator(
     workspace_id: uuid.UUID,
     indicator_code: str,
     monitoring_cycle_id: uuid.UUID | None,
-    analytics_run_id: uuid.UUID | None,
+    analytics_run_id: uuid.UUID,
     actor_id: uuid.UUID | None,
 ) -> SimpaIndicatorResult:
     _assert_cycle_scope(session, cycle_id=monitoring_cycle_id, organization_id=organization_id, workspace_id=workspace_id)
@@ -189,34 +289,56 @@ def compute_indicator(
         raise SimpaAnalyticsError("methodology_not_validated")
     if methodology.computation_type != "direct_observation":
         raise SimpaAnalyticsError("unsupported_computation_type")
-    predicates = [
-        SimpaIndicatorObservation.organization_id == organization_id,
-        SimpaIndicatorObservation.workspace_id == workspace_id,
-        SimpaIndicatorObservation.indicator_id == indicator.id,
-        SimpaIndicatorObservation.quality_status == "validated",
+    run = session.scalar(select(SimpaAnalyticsRun).where(
+        SimpaAnalyticsRun.id == analytics_run_id,
+        SimpaAnalyticsRun.organization_id == organization_id,
+        SimpaAnalyticsRun.workspace_id == workspace_id))
+    if run is None:
+        raise SimpaAnalyticsError("analytics_run_not_accessible")
+    if monitoring_cycle_id != run.monitoring_cycle_id:
+        raise SimpaAnalyticsError("monitoring_cycle_run_mismatch")
+    analytical_input = revalidate_analytics_run(
+        session, run=run, organization_id=organization_id, workspace_id=workspace_id)
+    matches = [
+        row for row in _records(analytical_input, monitoring_cycle_id)
+        if row.payload["indicator_code"] == indicator.code
+        and row.payload["quality_status"] == "validated"
     ]
-    if monitoring_cycle_id is not None:
-        predicates.append(SimpaIndicatorObservation.monitoring_cycle_id == monitoring_cycle_id)
-    observation = session.scalar(select(SimpaIndicatorObservation).where(*predicates).order_by(SimpaIndicatorObservation.created_at.desc()))
-    if observation is None:
+    if not matches:
         raise SimpaAnalyticsError("validated_observation_required")
-    if analytics_run_id is not None:
-        run = session.scalar(select(SimpaAnalyticsRun).where(SimpaAnalyticsRun.id == analytics_run_id, SimpaAnalyticsRun.organization_id == organization_id, SimpaAnalyticsRun.workspace_id == workspace_id))
-        if run is None:
-            raise SimpaAnalyticsError("analytics_run_not_accessible")
-    provenance_ok = observation.source_version_id is not None or bool((observation.provenance_note or "").strip())
+    if len(matches) > 1:
+        raise SimpaAnalyticsError("validated_observation_ambiguous")
+    observation = matches[0]
+    numeric = observation.payload.get("value_numeric")
+    text = observation.payload.get("value_text")
+    value_text = text.strip() if isinstance(text, str) else ""
+    if numeric is None and not value_text:
+        raise SimpaAnalyticsError("computed_value_required")
     result = SimpaIndicatorResult(
         organization_id=organization_id,
         workspace_id=workspace_id,
         analytics_run_id=analytics_run_id,
         indicator_id=indicator.id,
         methodology_id=methodology.id,
-        value_numeric=observation.value_numeric,
-        value_text=observation.value_text,
+        value_numeric=float(numeric) if numeric is not None else None,
+        value_text=value_text,
         unit=indicator.unit_hint,
-        quality_score=1.0 if provenance_ok else 0.75,
-        source_observation_ids=[str(observation.id)],
-        computation_trace={"type": "direct_observation", "methodology_version": methodology.version_no, "observation_quality": observation.quality_status, "provenance_present": provenance_ok},
+        quality_score=1.0,
+        source_observation_ids=[],
+        computation_trace={
+            "type": "direct_observation",
+            "artifact_type": analytical_input.artifact_type,
+            "artifact_id": str(analytical_input.artifact_id),
+            "artifact_fingerprint": analytical_input.artifact_fingerprint,
+            "dataset_contract_fingerprint": analytical_input.dataset_contract_fingerprint,
+            "normalized_record_id": str(observation.normalized_record_id),
+            "identity_fingerprint": observation.identity_fingerprint,
+            "content_fingerprint": observation.content_fingerprint,
+            "methodology_version": methodology.version_no,
+            "analytical_quality_state": analytical_input.analytical_quality_state,
+            "observation_quality": "validated",
+            "provenance_present": True,
+        },
         status="computed",
         created_by_membership_id=actor_id,
     )
@@ -228,6 +350,7 @@ def compute_indicator(
 def _synthesis_input(run: SimpaAnalyticsRun) -> str:
     payload = {
         "analytics_run_id": str(run.id),
+        "analytical_source": (run.snapshot or {}).get("analytical_source"),
         "snapshot": run.snapshot,
         "instruction": "Synthesize only the evidence-quality state. Do not infer citizen-level facts, eligibility, diagnosis, or institutional decisions.",
     }
@@ -238,6 +361,8 @@ def create_synthesis(session: Session, *, organization_id: uuid.UUID, workspace_
     run = session.scalar(select(SimpaAnalyticsRun).where(SimpaAnalyticsRun.id == analytics_run_id, SimpaAnalyticsRun.organization_id == organization_id, SimpaAnalyticsRun.workspace_id == workspace_id))
     if run is None:
         raise SimpaAnalyticsError("analytics_run_not_accessible")
+    revalidate_analytics_run(
+        session, run=run, organization_id=organization_id, workspace_id=workspace_id)
     input_text = _synthesis_input(run)
     job = create_ai_job(
         session,
@@ -273,6 +398,15 @@ def review_synthesis(session: Session, *, synthesis_id: uuid.UUID, organization_
     row = session.scalar(select(SimpaAISynthesis).where(SimpaAISynthesis.id == synthesis_id, SimpaAISynthesis.organization_id == organization_id, SimpaAISynthesis.workspace_id == workspace_id))
     if row is None:
         raise SimpaAnalyticsError("synthesis_not_accessible")
+    run = session.scalar(select(SimpaAnalyticsRun).where(
+        SimpaAnalyticsRun.id == row.analytics_run_id,
+        SimpaAnalyticsRun.organization_id == organization_id,
+        SimpaAnalyticsRun.workspace_id == workspace_id,
+    ))
+    if run is None:
+        raise SimpaAnalyticsError("analytics_run_not_accessible")
+    revalidate_analytics_run(
+        session, run=run, organization_id=organization_id, workspace_id=workspace_id)
     job = session.get(AIJob, row.ai_job_id)
     if job is None or job.product_code != "SIMPA" or job.organization_id != organization_id or job.workspace_id != workspace_id:
         raise SimpaAnalyticsError("synthesis_ai_job_not_accessible")

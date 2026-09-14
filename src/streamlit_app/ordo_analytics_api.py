@@ -21,8 +21,8 @@ def _checked(response, *, unavailable: str) -> Any:
     return response.json()
 
 
-def summary(token: str, organization_id: str, workspace_id: str, monitoring_cycle_id: str | None = None):
-    params = {"organization_id": organization_id, "workspace_id": workspace_id}
+def summary(token: str, organization_id: str, workspace_id: str, *, analytical_artifact_type: str, analytical_artifact_id: str, monitoring_cycle_id: str | None = None):
+    params = {"organization_id": organization_id, "workspace_id": workspace_id, "analytical_artifact_type": analytical_artifact_type, "analytical_artifact_id": analytical_artifact_id}
     if monitoring_cycle_id:
         params["monitoring_cycle_id"] = monitoring_cycle_id
     return _checked(request("GET", "/api/v1/ordo/analytics/summary", token=token, params=params), unavailable="Nije moguće učitati ORDO analitički pregled.")
@@ -32,8 +32,8 @@ def runs(token: str, organization_id: str, workspace_id: str):
     return _checked(request("GET", "/api/v1/ordo/analytics/runs", token=token, params={"organization_id": organization_id, "workspace_id": workspace_id}), unavailable="Nije moguće učitati ORDO analitičke snapshot-e.")
 
 
-def create_run(token: str, *, organization_id: str, workspace_id: str, monitoring_cycle_id: str | None = None):
-    return _checked(request("POST", "/api/v1/ordo/analytics/runs", token=token, json={"organization_id": organization_id, "workspace_id": workspace_id, "monitoring_cycle_id": monitoring_cycle_id}), unavailable="Nije moguće kreirati ORDO monitoring snapshot.")
+def create_run(token: str, *, organization_id: str, workspace_id: str, analytical_artifact_type: str, analytical_artifact_id: str, monitoring_cycle_id: str | None = None):
+    return _checked(request("POST", "/api/v1/ordo/analytics/runs", token=token, json={"organization_id": organization_id, "workspace_id": workspace_id, "analytical_artifact_type": analytical_artifact_type, "analytical_artifact_id": analytical_artifact_id, "monitoring_cycle_id": monitoring_cycle_id}), unavailable="Nije moguće kreirati ORDO monitoring snapshot.")
 
 
 def methodologies(token: str, organization_id: str, workspace_id: str):

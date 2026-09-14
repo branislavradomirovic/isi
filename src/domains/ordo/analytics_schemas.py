@@ -13,6 +13,8 @@ class OrdoAnalyticsScope(BaseModel):
 
 
 class AnalyticsRunCreateRequest(OrdoAnalyticsScope):
+    analytical_artifact_type: Literal["snapshot", "feature_version"]
+    analytical_artifact_id: uuid.UUID
     monitoring_cycle_id: uuid.UUID | None = None
 
 
@@ -30,7 +32,7 @@ class MethodologyValidateRequest(OrdoAnalyticsScope):
 class IndicatorComputeRequest(OrdoAnalyticsScope):
     indicator_code: str = Field(min_length=1, max_length=140)
     monitoring_cycle_id: uuid.UUID | None = None
-    analytics_run_id: uuid.UUID | None = None
+    analytics_run_id: uuid.UUID
 
 
 class DevelopmentGoalCreateRequest(OrdoAnalyticsScope):

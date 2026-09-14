@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import uuid
+from dataclasses import dataclass
 from datetime import date, datetime, timezone
 from decimal import Decimal, InvalidOperation
 
@@ -62,6 +63,34 @@ from src.platform.data.schemas import (
     SourceLineageResponse,
 )
 from src.platform.data.service import DataPlatformError, validate_scope
+
+
+@dataclass(frozen=True)
+class GovernedAnalyticalRecord:
+    governed_output_id: uuid.UUID
+    normalized_record_id: uuid.UUID
+    source_id: uuid.UUID
+    source_version_id: uuid.UUID
+    ingestion_run_id: uuid.UUID
+    identity_fingerprint: str
+    content_fingerprint: str
+    source_record_ordinal: int
+    source_locator: str
+    payload: dict[str, object]
+
+
+@dataclass(frozen=True)
+class GovernedAnalyticalInput:
+    artifact_type: str
+    artifact_id: uuid.UUID
+    artifact_fingerprint: str
+    dataset_contract_version_id: uuid.UUID
+    dataset_contract_fingerprint: str
+    analytical_quality_state: str
+    snapshot_id: uuid.UUID
+    snapshot_fingerprint: str
+    field_contract: tuple[dict[str, object], ...]
+    records: tuple[GovernedAnalyticalRecord, ...]
 
 
 def utcnow() -> datetime:
@@ -909,6 +938,121 @@ def _feature_snapshots_valid(session: Session, row: AnalyticalFeatureVersion, *,
         row.ai_use_policy = inherited_ai_policy([item.ai_use_policy for item in snapshots]).value
         row.fingerprint = _feature_version_fingerprint(row, edges)
     return edges
+
+
+def load_governed_analytical_input(
+    session: Session,
+    *,
+    artifact_type: str,
+    artifact_id: uuid.UUID,
+    organization_id: uuid.UUID,
+    workspace_id: uuid.UUID,
+    product_code: str,
+) -> GovernedAnalyticalInput:
+    """Resolve immutable normalized records for deterministic domain consumption."""
+    if artifact_type == "snapshot":
+        artifact = _get_snapshot(
+            session, artifact_id, organization_id, workspace_id, product_code
+        )
+        if artifact.invalidated:
+            raise DataPlatformError("analytical_artifact_invalidated")
+        if artifact.state not in {
+            AnalyticalSnapshotState.VALIDATED.value,
+            AnalyticalSnapshotState.FROZEN.value,
+        }:
+            raise DataPlatformError("analytical_snapshot_lifecycle_ineligible")
+        snapshot = artifact
+        artifact_fingerprint = artifact.fingerprint
+    elif artifact_type == "feature_version":
+        feature = _get_feature_version(
+            session, artifact_id, organization_id, workspace_id, product_code
+        )
+        if feature.invalidated:
+            raise DataPlatformError("analytical_artifact_invalidated")
+        if feature.state not in {GovernanceState.GOVERNED.value, GovernanceState.FROZEN.value}:
+            raise DataPlatformError("analytical_feature_lifecycle_ineligible")
+        inputs = _feature_snapshots_valid(session, feature, frozen=False, refresh=False)
+        if len(inputs) != 1:
+            raise DataPlatformError("analytical_feature_single_snapshot_required")
+        snapshot = _get_snapshot(
+            session, inputs[0].snapshot_id, organization_id, workspace_id, product_code
+        )
+        artifact_fingerprint = feature.fingerprint
+        if feature.fingerprint != _feature_version_fingerprint(feature, inputs):
+            raise DataPlatformError("analytical_upstream_changed")
+    else:
+        raise DataPlatformError("analytical_artifact_type_invalid")
+
+    if snapshot.invalidated:
+        raise DataPlatformError("analytical_artifact_invalidated")
+    if snapshot.lineage_mode != "GOVERNED_OUTPUT_V1":
+        raise DataPlatformError("analytical_legacy_snapshot_consumption_forbidden")
+    if snapshot.state not in {
+        AnalyticalSnapshotState.VALIDATED.value,
+        AnalyticalSnapshotState.FROZEN.value,
+    }:
+        raise DataPlatformError("analytical_snapshot_lifecycle_ineligible")
+    _governed_snapshot_valid(session, snapshot)
+    if snapshot.dataset_contract_version_id is None:
+        raise DataPlatformError("analytical_governed_lineage_incomplete")
+    contract = session.get(
+        AnalyticalDatasetContractVersion, snapshot.dataset_contract_version_id
+    )
+    if contract is None or contract.fingerprint != snapshot.dataset_contract_fingerprint:
+        raise DataPlatformError("analytical_governed_lineage_incomplete")
+
+    resolved_records: list[GovernedAnalyticalRecord] = []
+    for edge in _record_edges(session, snapshot.id):
+        record = session.get(DataNormalizedRecord, edge.normalized_record_id)
+        if record is None:
+            raise DataPlatformError("analytical_governed_lineage_incomplete")
+        _record_conforms(record, contract)
+        payload = _json(record.normalized_record_json)
+        if not isinstance(payload, dict):
+            raise DataPlatformError("analytical_record_contract_mismatch")
+        content_identity = {
+            "contract_format_version": 1,
+            "schema_mapping_version_id": str(record.schema_mapping_version_id),
+            "normalized_record": payload,
+        }
+        canonical_content = json.dumps(
+            content_identity, sort_keys=True, separators=(",", ":"),
+            ensure_ascii=False, allow_nan=False,
+        )
+        if hashlib.sha256(canonical_content.encode("utf-8")).hexdigest() != edge.content_fingerprint:
+            raise DataPlatformError("analytical_upstream_changed")
+        resolved_records.append(
+            GovernedAnalyticalRecord(
+                governed_output_id=edge.governed_output_id,
+                normalized_record_id=edge.normalized_record_id,
+                source_id=edge.source_id,
+                source_version_id=edge.source_version_id,
+                ingestion_run_id=edge.ingestion_run_id,
+                identity_fingerprint=edge.identity_fingerprint,
+                content_fingerprint=edge.content_fingerprint,
+                source_record_ordinal=edge.source_record_ordinal,
+                source_locator=edge.source_locator,
+                payload=payload,
+            )
+        )
+    resolved_records.sort(
+        key=lambda item: (str(item.source_id), item.source_record_ordinal, str(item.normalized_record_id))
+    )
+    fields = _json(contract.field_contract_json)
+    if not isinstance(fields, list):
+        raise DataPlatformError("analytical_record_contract_mismatch")
+    return GovernedAnalyticalInput(
+        artifact_type=artifact_type,
+        artifact_id=artifact_id,
+        artifact_fingerprint=artifact_fingerprint,
+        dataset_contract_version_id=contract.id,
+        dataset_contract_fingerprint=contract.fingerprint,
+        analytical_quality_state=snapshot.analytical_quality_state,
+        snapshot_id=snapshot.id,
+        snapshot_fingerprint=snapshot.fingerprint,
+        field_contract=tuple(fields),
+        records=tuple(resolved_records),
+    )
 
 
 _FEATURE_NEXT = {

@@ -8,7 +8,9 @@ def test_indicator_computation_requires_validated_methodology_and_observation():
     assert 'indicator.methodology_status != "validated"' in text
     assert 'raise OrdoAnalyticsError("methodology_not_validated")' in text
     assert 'OrdoIndicatorMethodology.status == "validated"' in text
-    assert 'OrdoIndicatorObservation.quality_status == "validated"' in text
+    assert 'row.payload["quality_status"] == "validated"' in text
+    assert "revalidate_analytics_run" in text
+    assert "source_observation_ids=[]" in text
 
 
 def test_migration_does_not_seed_validated_ordo_methodologies():

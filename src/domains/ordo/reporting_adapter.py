@@ -14,6 +14,7 @@ from src.domains.ordo.analytics_models import (
     OrdoScenario,
     OrdoScenarioAssessment,
 )
+from src.domains.ordo.analytics_service import OrdoAnalyticsError, revalidate_analytics_run
 from src.domains.ordo.models import OrdoIndicatorDefinition
 from src.platform.ai.models import AIJob
 
@@ -42,13 +43,16 @@ def _source(*, kind: str, object_id, organization_id, workspace_id, checksum: st
 def available_sources(session: Session, *, organization_id: uuid.UUID, workspace_id: uuid.UUID) -> list[dict]:
     runs = session.scalars(
         select(OrdoAnalyticsRun)
-        .where(OrdoAnalyticsRun.organization_id == organization_id, OrdoAnalyticsRun.workspace_id == workspace_id, OrdoAnalyticsRun.status == "completed")
+        .where(OrdoAnalyticsRun.organization_id == organization_id, OrdoAnalyticsRun.workspace_id == workspace_id,
+               OrdoAnalyticsRun.status == "completed",
+               OrdoAnalyticsRun.analytical_artifact_type.in_(("ANALYTICAL_SNAPSHOT", "ANALYTICAL_FEATURE_VERSION")))
         .order_by(OrdoAnalyticsRun.created_at.desc())
         .limit(50)
     ).all()
     assessments = session.execute(
-        select(OrdoScenarioAssessment, OrdoScenario)
+        select(OrdoScenarioAssessment, OrdoScenario, OrdoAnalyticsRun)
         .join(OrdoScenario, OrdoScenario.id == OrdoScenarioAssessment.scenario_id)
+        .join(OrdoAnalyticsRun, OrdoAnalyticsRun.id == OrdoScenarioAssessment.analytics_run_id)
         .where(
             OrdoScenarioAssessment.organization_id == organization_id,
             OrdoScenarioAssessment.workspace_id == workspace_id,
@@ -56,6 +60,21 @@ def available_sources(session: Session, *, organization_id: uuid.UUID, workspace
         .order_by(OrdoScenarioAssessment.created_at.desc())
         .limit(50)
     ).all()
+    eligible_runs = []
+    for row in runs:
+        try:
+            revalidate_analytics_run(session, run=row, organization_id=organization_id, workspace_id=workspace_id)
+        except OrdoAnalyticsError:
+            continue
+        eligible_runs.append(row)
+    eligible_assessments = []
+    for assessment, scenario, run in assessments:
+        try:
+            revalidate_analytics_run(
+                session, run=run, organization_id=organization_id, workspace_id=workspace_id)
+        except OrdoAnalyticsError:
+            continue
+        eligible_assessments.append((assessment, scenario))
     items = [
         {
             "kind": "analytics_run",
@@ -64,7 +83,7 @@ def available_sources(session: Session, *, organization_id: uuid.UUID, workspace
             "created_at": row.created_at,
             "status": row.status,
         }
-        for row in runs
+        for row in eligible_runs
     ]
     items.extend(
         {
@@ -74,7 +93,7 @@ def available_sources(session: Session, *, organization_id: uuid.UUID, workspace
             "created_at": assessment.created_at,
             "status": assessment.status,
         }
-        for assessment, scenario in assessments
+        for assessment, scenario in eligible_assessments
     )
     return items
 
@@ -86,6 +105,11 @@ def _run_content(
     organization_id: uuid.UUID,
     workspace_id: uuid.UUID,
 ) -> tuple[list[dict], list[dict]]:
+    try:
+        analytical_input = revalidate_analytics_run(
+            session, run=run, organization_id=organization_id, workspace_id=workspace_id)
+    except OrdoAnalyticsError as exc:
+        raise OrdoReportingError(str(exc)) from None
     result_rows = session.execute(
         select(OrdoIndicatorResult, OrdoIndicatorDefinition)
         .join(OrdoIndicatorDefinition, OrdoIndicatorDefinition.id == OrdoIndicatorResult.indicator_id)
@@ -99,6 +123,14 @@ def _run_content(
     ).all()
     indicators = []
     manifest = [
+        _source(
+            kind=("analytical_snapshot" if analytical_input.artifact_type == "snapshot" else "analytical_feature_version"),
+            object_id=analytical_input.artifact_id,
+            organization_id=organization_id,
+            workspace_id=workspace_id,
+            checksum=analytical_input.artifact_fingerprint,
+            label="ORDO governed analytical source",
+        ),
         _source(
             kind="ordo_analytics_run",
             object_id=run.id,

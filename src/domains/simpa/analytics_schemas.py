@@ -12,6 +12,8 @@ class SimpaAnalyticsScope(BaseModel):
 
 
 class AnalyticsRunCreateRequest(SimpaAnalyticsScope):
+    analytical_artifact_type: Literal["snapshot", "feature_version"]
+    analytical_artifact_id: uuid.UUID
     monitoring_cycle_id: uuid.UUID | None = None
 
 
@@ -29,7 +31,7 @@ class MethodologyValidateRequest(SimpaAnalyticsScope):
 class IndicatorComputeRequest(SimpaAnalyticsScope):
     indicator_code: str = Field(min_length=1, max_length=140)
     monitoring_cycle_id: uuid.UUID | None = None
-    analytics_run_id: uuid.UUID | None = None
+    analytics_run_id: uuid.UUID
 
 
 class SynthesisCreateRequest(SimpaAnalyticsScope):

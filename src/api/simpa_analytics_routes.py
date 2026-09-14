@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import uuid
+from typing import Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
@@ -38,14 +39,14 @@ def _error(exc: Exception) -> HTTPException:
 
 
 def _run_dict(row):
-    return {"id": str(row.id), "monitoring_cycle_id": str(row.monitoring_cycle_id) if row.monitoring_cycle_id else None, "status": row.status, "snapshot": row.snapshot, "evidence_quality_score": row.evidence_quality_score, "validated_observation_ratio": row.validated_observation_ratio, "provenance_coverage": row.provenance_coverage, "indicator_coverage": row.indicator_coverage, "created_at": row.created_at}
+    return {"id": str(row.id), "monitoring_cycle_id": str(row.monitoring_cycle_id) if row.monitoring_cycle_id else None, "status": row.status, "snapshot": row.snapshot, "analytical_artifact_type": row.analytical_artifact_type, "analytical_snapshot_id": str(row.analytical_snapshot_id) if row.analytical_snapshot_id else None, "analytical_feature_version_id": str(row.analytical_feature_version_id) if row.analytical_feature_version_id else None, "analytical_artifact_fingerprint": row.analytical_artifact_fingerprint, "dataset_contract_version_id": str(row.dataset_contract_version_id) if row.dataset_contract_version_id else None, "dataset_contract_fingerprint": row.dataset_contract_fingerprint, "analytical_quality_state": row.analytical_quality_state, "evidence_quality_score": row.evidence_quality_score, "validated_observation_ratio": row.validated_observation_ratio, "provenance_coverage": row.provenance_coverage, "indicator_coverage": row.indicator_coverage, "created_at": row.created_at}
 
 
 @router.get("/summary")
-def get_summary(organization_id: uuid.UUID = Query(...), workspace_id: uuid.UUID = Query(...), monitoring_cycle_id: uuid.UUID | None = Query(default=None), context: AuthContext = Depends(get_auth_context), db: Session = Depends(get_db)):
+def get_summary(organization_id: uuid.UUID = Query(...), workspace_id: uuid.UUID = Query(...), analytical_artifact_type: Literal["snapshot", "feature_version"] = Query(...), analytical_artifact_id: uuid.UUID = Query(...), monitoring_cycle_id: uuid.UUID | None = Query(default=None), context: AuthContext = Depends(get_auth_context), db: Session = Depends(get_db)):
     _require_scope(db, context, organization_id=organization_id, workspace_id=workspace_id, permission_code="analysis.read")
     try:
-        return build_monitoring_snapshot(db, organization_id=organization_id, workspace_id=workspace_id, monitoring_cycle_id=monitoring_cycle_id)
+        return build_monitoring_snapshot(db, organization_id=organization_id, workspace_id=workspace_id, analytical_artifact_type=analytical_artifact_type, analytical_artifact_id=analytical_artifact_id, monitoring_cycle_id=monitoring_cycle_id)
     except SimpaAnalyticsError as exc:
         raise _error(exc) from None
 
@@ -61,7 +62,7 @@ def post_run(payload: AnalyticsRunCreateRequest, context: AuthContext = Depends(
     _require_scope(db, context, organization_id=payload.organization_id, workspace_id=payload.workspace_id, permission_code="analysis.run")
     try:
         actor_id = actor_membership_id(db, user_id=context.user.id, organization_id=payload.organization_id)
-        row = create_analytics_run(db, organization_id=payload.organization_id, workspace_id=payload.workspace_id, monitoring_cycle_id=payload.monitoring_cycle_id, actor_id=actor_id)
+        row = create_analytics_run(db, organization_id=payload.organization_id, workspace_id=payload.workspace_id, analytical_artifact_type=payload.analytical_artifact_type, analytical_artifact_id=payload.analytical_artifact_id, monitoring_cycle_id=payload.monitoring_cycle_id, actor_id=actor_id)
         db.commit(); db.refresh(row)
         return _run_dict(row)
     except SimpaAnalyticsError as exc:
