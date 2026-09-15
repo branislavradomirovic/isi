@@ -747,9 +747,9 @@ Goal: convert SIMPA methodology infrastructure into a validated, versioned, repr
 
 The canonical design baseline is `docs/roadmap/ISI-SIMPA-METHODOLOGY-v1.md` and ADR-0025.
 
-Status: **IN PROGRESS**. ISI-23A - methodology lifecycle + production contract authority is COMPLETE / CI_VERIFIED on `238a881ef39906a2adebbb03fabe80a043017697` (tree `3778f29627100fb48ba369f0618250534870d0a8`) with exact-main `ISI required acceptance` run #77 / `34900812947` completed `success`, including aggregate `acceptance`. Current/next is ISI-23B - versioned reference-calculation evidence. The whole ISI-23 phase is not complete.
+Status: **IN PROGRESS**. ISI-23A - methodology lifecycle + production contract authority is COMPLETE / CI_VERIFIED on `238a881ef39906a2adebbb03fabe80a043017697` (tree `3778f29627100fb48ba369f0618250534870d0a8`) with exact-main `ISI required acceptance` run #77 / `34900812947` completed `success`. ISI-23B - versioned SIMPA reference-calculation evidence is COMPLETE / CI_VERIFIED on `088fe79904bd0cc85c4d52d5442218884501b538` (tree `5f8530f6fc7ca82afe7050f39a9f787b048fd8db`) with exact-main `ISI required acceptance` run #79 / `35018144968` completed `success`, including aggregate `acceptance`. Current/next is ISI-23C - deterministic statistical model contracts by target semantics + uncertainty/diagnostics/calibration. The whole ISI-23 phase is not complete.
 
-ISI-23B implementation boundary: methodology-owned `SIMPA-REFERENCE-SUITE-v1` suites/cases provide versioned immutable semantic and execution fingerprints for the existing direct-observation methodology only. Every case must deterministically pass before human validation, using the same calculator as governed production computation. Historical `legacy_unknown` and `legacy_inline` evidence is preserved without fabricated suite backfill. This boundary does not validate LISI/formulas/weights/thresholds, complete the detailed SIMPA Help/User Guide, or introduce ISI-25 evaluation-set/model-promotion scope; the whole ISI-23 phase remains in progress.
+Accepted ISI-23B as-built boundary: methodology-owned `SIMPA-REFERENCE-SUITE-v1` suites/cases provide versioned immutable semantic and execution fingerprints for the existing direct-observation methodology only. Every case deterministically passes before human validation, using the same calculator as governed production computation. Historical `legacy_unknown` and `legacy_inline` evidence is preserved without fabricated suite backfill. This accepted boundary does not validate LISI/formulas/weights/thresholds, complete the detailed SIMPA Help/User Guide, or introduce ISI-25 evaluation-set/model-promotion scope; the whole ISI-23 phase remains in progress.
 
 Required deliverables include:
 
@@ -968,6 +968,18 @@ Owner approvals now binding in this master plan include:
 - the read-only ISI-23B bootstrap/audit found reference calculation evidence PARTIAL: `reference_dataset` is text identity and the current reference gate is one inline case; versioned methodology-owned reference-suite/case evidence is MISSING;
 - current/next work is ISI-23B - versioned SIMPA reference-calculation evidence;
 - ISI-25 MLOps/champion-challenger/eval-set promotion remains out of ISI-23B scope; LISI formulas, weights, thresholds, citizen risk/eligibility logic and causal claims remain forbidden without separate owner-approved methodology;
+- server/DNS/ingress/real SMTP/production secrets/data/server Ollama remain frozen until fresh owner-approved ISI-28.
+
+### 2026-09-15 ISI-23B completion and ISI-23C transition
+
+- ISI-23B - Versioned SIMPA Reference-Calculation Evidence is COMPLETE / CI_VERIFIED on `088fe79904bd0cc85c4d52d5442218884501b538` (tree `5f8530f6fc7ca82afe7050f39a9f787b048fd8db`);
+- authoritative exact-main `ISI required acceptance` run #79 / `35018144968` completed `success` with policy, quality, tests, architecture-security, migration, native-postgres, compose, supply-chain, build and aggregate `acceptance` green;
+- accepted 23B scope provides methodology-owned `SIMPA-REFERENCE-SUITE-v1` suite/case persistence, deterministic semantic/result fingerprints, shared direct-observation calculation between reference evidence and governed production computation, failed-terminal/new-version recovery, historical `legacy_unknown`/`legacy_inline` compatibility and the human-validation boundary;
+- current/next work is ISI-23C - deterministic statistical model contracts by target semantics + uncertainty/diagnostics/calibration;
+- ISI-23C must remain non-causal for ordinary association analysis and may introduce system-level classes only where explicitly defined and validated;
+- LISI formulas/weights/thresholds remain forbidden without separate explicit owner-approved methodology; detailed SIMPA Help/User Guide remains open for later ISI-23 work;
+- ISI-25 champion/challenger, evaluation-set, prompt/model promotion and rollback governance remain out of ISI-23C scope;
+- the whole ISI-23 phase remains IN PROGRESS and is not complete;
 - server/DNS/ingress/real SMTP/production secrets/data/server Ollama remain frozen until fresh owner-approved ISI-28.
 
 Material changes to these points require a new explicit owner approval and, where architectural, a new or superseding ADR.

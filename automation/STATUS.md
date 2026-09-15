@@ -6,15 +6,23 @@ Last status update: 2026-09-15.
 
 ## Current execution
 
-Last completed slice: `ISI-23A - SIMPA Methodology Lifecycle + Production Contract Authority`.
+Last completed slice: `ISI-23B - Versioned SIMPA Reference-Calculation Evidence`.
 
-ISI-23A implementation state: `COMPLETE / CI_VERIFIED`.
+ISI-23B implementation state: `COMPLETE / CI_VERIFIED`.
+
+Accepted ISI-23B implementation SHA: `088fe79904bd0cc85c4d52d5442218884501b538`.
+
+Accepted ISI-23B implementation tree: `5f8530f6fc7ca82afe7050f39a9f787b048fd8db`.
+
+Authoritative GitHub Actions: `ISI required acceptance` run #79, run ID `35018144968`, exact SHA `088fe79904bd0cc85c4d52d5442218884501b538`, conclusion `success`; policy, quality, tests, architecture-security, migration, native-postgres, compose, supply-chain, build and aggregate `acceptance` all passed.
+
+Historical ISI-23A checkpoint retained for canonical traceability:
 
 Accepted ISI-23A implementation SHA: `238a881ef39906a2adebbb03fabe80a043017697`.
 
 Accepted ISI-23A implementation tree: `3778f29627100fb48ba369f0618250534870d0a8`.
 
-Authoritative GitHub Actions: `ISI required acceptance` run #77, run ID `34900812947`, exact SHA `238a881ef39906a2adebbb03fabe80a043017697`, conclusion `success`; policy, quality, tests, architecture-security, migration, native-postgres, compose, supply-chain, build and aggregate `acceptance` all passed.
+Authoritative ISI-23A GitHub Actions: `ISI required acceptance` run #77, run ID `34900812947`, exact SHA `238a881ef39906a2adebbb03fabe80a043017697`, conclusion `success`; aggregate `acceptance` passed.
 
 
 Historical ISI-22G closeout checkpoint retained for canonical traceability:
@@ -45,7 +53,7 @@ Server/live-host verification: `DEFERRED_SERVER_VERIFICATION`. No production dep
 
 Overall `ISI-22-INDUSTRIAL-DATA-PLATFORM` is `COMPLETE / CI_VERIFIED`. The mandatory whole-phase gap/legacy audit and ISI-22G closeout are complete; no Phase-22 `REMOVE_BEFORE_NEXT_SLICE` finding remains open.
 
-Next action: **ISI-23B - versioned SIMPA reference-calculation evidence**. The read-only 23B bootstrap/audit is complete. ISI-23A lifecycle/contract authority is accepted; 23B must add methodology-owned versioned/fingerprinted reference-suite evidence and deterministic calculation-case execution without introducing LISI/formulas/weights/thresholds or ISI-25 MLOps scope. Governance is synchronized before the 23B implementation contract is locked.
+Next action: **ISI-23C - deterministic statistical model contracts by target semantics + uncertainty/diagnostics/calibration**. ISI-23A lifecycle/contract authority and ISI-23B versioned reference-suite evidence are accepted. 23C must add deterministic model-family contracts and validated diagnostics/uncertainty rules without inventing LISI formulas/weights/thresholds, citizen risk/eligibility logic, causal claims or ISI-25 MLOps/model-promotion scope. Detailed SIMPA Help/User Guide remains a later ISI-23 deliverable.
 
 ## Mandatory bootstrap rule
 
@@ -67,7 +75,7 @@ A failed required gate returns the active task to implementation/fix state. Requ
 | 20 | Enterprise Security Completion | **COMPLETE / CI_VERIFIED** |
 | 21 | Data Governance & Privacy Controls | **COMPLETE / CI_VERIFIED** |
 | 22 | Industrial Data Platform | **COMPLETE / CI_VERIFIED - 22A through 22G complete** |
-| 23 | SIMPA Production Methodology + Help/User Guide | **IN PROGRESS - 23A COMPLETE / CI_VERIFIED; 23B current/next** |
+| 23 | SIMPA Production Methodology + Help/User Guide | **IN PROGRESS - 23A and 23B COMPLETE / CI_VERIFIED; 23C current/next** |
 | 24 | ORDO Production Methodology + Help/User Guide | PLANNED |
 | 25 | Industrial AI / MLOps | PLANNED |
 | 26 | Performance, Load & Resilience | PLANNED |
