@@ -746,6 +746,8 @@ Goal: convert SIMPA methodology infrastructure into a validated, versioned, repr
 
 The canonical design baseline is `docs/roadmap/ISI-SIMPA-METHODOLOGY-v1.md` and ADR-0025.
 
+Status: **IN PROGRESS**. ISI-23A - methodology lifecycle + production contract authority is COMPLETE / CI_VERIFIED on `238a881ef39906a2adebbb03fabe80a043017697` (tree `3778f29627100fb48ba369f0618250534870d0a8`) with exact-main `ISI required acceptance` run #77 / `34900812947` completed `success`, including aggregate `acceptance`. Current/next is ISI-23B - versioned reference-calculation evidence. The whole ISI-23 phase is not complete.
+
 Required deliverables include:
 
 - formal indicator registry contract;
@@ -952,6 +954,17 @@ Owner approvals now binding in this master plan include:
 - overall ISI-22 - Industrial Data Platform is COMPLETE / CI_VERIFIED;
 - current/next work is ISI-23 - SIMPA Production Methodology + Help/User Guide;
 - the serial dependency model remains `ISI-22 -> ISI-23 -> ISI-24 -> ISI-25 -> ISI-26 -> ISI-27 -> ISI-28`;
+- server/DNS/ingress/real SMTP/production secrets/data/server Ollama remain frozen until fresh owner-approved ISI-28.
+
+
+### 2026-09-14 ISI-23A completion and ISI-23B transition
+
+- ISI-23A - SIMPA Methodology Lifecycle + Production Contract Authority is COMPLETE / CI_VERIFIED on `238a881ef39906a2adebbb03fabe80a043017697` (tree `3778f29627100fb48ba369f0618250534870d0a8`);
+- authoritative exact-main `ISI required acceptance` run #77 / `34900812947` completed `success` with all blocking jobs and aggregate `acceptance` green;
+- accepted 23A scope provides `DRAFT -> PROPOSED -> VALIDATED -> RETIRED`, strict `SIMPA-METHODOLOGY-CONTRACT-v1`, deterministic direct-observation reference gate, contract/reference fingerprints, human approval trace and legacy compatibility;
+- the read-only ISI-23B bootstrap/audit found reference calculation evidence PARTIAL: `reference_dataset` is text identity and the current reference gate is one inline case; versioned methodology-owned reference-suite/case evidence is MISSING;
+- current/next work is ISI-23B - versioned SIMPA reference-calculation evidence;
+- ISI-25 MLOps/champion-challenger/eval-set promotion remains out of ISI-23B scope; LISI formulas, weights, thresholds, citizen risk/eligibility logic and causal claims remain forbidden without separate owner-approved methodology;
 - server/DNS/ingress/real SMTP/production secrets/data/server Ollama remain frozen until fresh owner-approved ISI-28.
 
 Material changes to these points require a new explicit owner approval and, where architectural, a new or superseding ADR.

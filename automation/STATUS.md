@@ -2,19 +2,28 @@
 
 This is the human-facing live execution ledger. The MasterPlan is the canonical roadmap/architecture/governance authority; `automation/tasks.json`, accepted code, exact-main GitHub Actions and recorded evidence provide synchronized execution proof.
 
-Last status update: 2026-09-14.
+Last status update: 2026-09-15.
 
 ## Current execution
 
-Last completed slice: `ISI-22G - Domain Consumption Enforcement + ISI-22 Closeout`.
+Last completed slice: `ISI-23A - SIMPA Methodology Lifecycle + Production Contract Authority`.
 
-ISI-22G implementation state: `COMPLETE / CI_VERIFIED`.
+ISI-23A implementation state: `COMPLETE / CI_VERIFIED`.
+
+Accepted ISI-23A implementation SHA: `238a881ef39906a2adebbb03fabe80a043017697`.
+
+Accepted ISI-23A implementation tree: `3778f29627100fb48ba369f0618250534870d0a8`.
+
+Authoritative GitHub Actions: `ISI required acceptance` run #77, run ID `34900812947`, exact SHA `238a881ef39906a2adebbb03fabe80a043017697`, conclusion `success`; policy, quality, tests, architecture-security, migration, native-postgres, compose, supply-chain, build and aggregate `acceptance` all passed.
+
+
+Historical ISI-22G closeout checkpoint retained for canonical traceability:
 
 Accepted ISI-22G implementation SHA: `fd0e46631b5047c64b731d041645e528292f3664`.
 
 Accepted ISI-22G implementation tree: `1a405a65a6fa67f2845ee0a10f2a6f44b11e355e`.
 
-Authoritative GitHub Actions: `ISI required acceptance` run #75, run ID `34856573722`, exact SHA `fd0e46631b5047c64b731d041645e528292f3664`, conclusion `success`; policy, quality, tests, architecture-security, migration, native-postgres, compose, supply-chain, build and aggregate `acceptance` all passed.
+Authoritative ISI-22G GitHub Actions: `ISI required acceptance` run #75, run ID `34856573722`, exact SHA `fd0e46631b5047c64b731d041645e528292f3664`, conclusion `success`; aggregate `acceptance` passed.
 
 Historical predecessor checkpoint retained for canonical traceability:
 
@@ -36,7 +45,7 @@ Server/live-host verification: `DEFERRED_SERVER_VERIFICATION`. No production dep
 
 Overall `ISI-22-INDUSTRIAL-DATA-PLATFORM` is `COMPLETE / CI_VERIFIED`. The mandatory whole-phase gap/legacy audit and ISI-22G closeout are complete; no Phase-22 `REMOVE_BEFORE_NEXT_SLICE` finding remains open.
 
-Next action: **ISI-23 bootstrap/audit - SIMPA Production Methodology + Help/User Guide** against the complete MasterPlan, `docs/roadmap/ISI-SIMPA-METHODOLOGY-v1.md`, ADR-0025 and accepted as-built code. Produce a fresh DONE / PARTIAL / MISSING / DRIFT matrix and legacy/drift audit before locking the ISI-23 implementation contract. No Codex is used before that bootstrap/audit and architecture/scope lock are complete.
+Next action: **ISI-23B - versioned SIMPA reference-calculation evidence**. The read-only 23B bootstrap/audit is complete. ISI-23A lifecycle/contract authority is accepted; 23B must add methodology-owned versioned/fingerprinted reference-suite evidence and deterministic calculation-case execution without introducing LISI/formulas/weights/thresholds or ISI-25 MLOps scope. Governance is synchronized before the 23B implementation contract is locked.
 
 ## Mandatory bootstrap rule
 
@@ -58,7 +67,7 @@ A failed required gate returns the active task to implementation/fix state. Requ
 | 20 | Enterprise Security Completion | **COMPLETE / CI_VERIFIED** |
 | 21 | Data Governance & Privacy Controls | **COMPLETE / CI_VERIFIED** |
 | 22 | Industrial Data Platform | **COMPLETE / CI_VERIFIED - 22A through 22G complete** |
-| 23 | SIMPA Production Methodology + Help/User Guide | **PLANNED - current/next** |
+| 23 | SIMPA Production Methodology + Help/User Guide | **IN PROGRESS - 23A COMPLETE / CI_VERIFIED; 23B current/next** |
 | 24 | ORDO Production Methodology + Help/User Guide | PLANNED |
 | 25 | Industrial AI / MLOps | PLANNED |
 | 26 | Performance, Load & Resilience | PLANNED |

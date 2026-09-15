@@ -114,7 +114,7 @@ def test_masterplan_bootstrap_and_legacy_governance_is_enforced() -> None:
         assert "HISTORICAL / SUPERSEDED - DO NOT EXECUTE" in (ROOT / rel).read_text()
 
 
-def test_live_status_records_phase22_closeout_and_history() -> None:
+def test_live_status_records_current_slice_and_phase22_history() -> None:
     status = (ROOT / "automation/STATUS.md").read_text()
     assert "Accepted ISI-22G implementation SHA: `fd0e46631b5047c64b731d041645e528292f3664`." in status
     assert "Accepted ISI-22G implementation tree: `1a405a65a6fa67f2845ee0a10f2a6f44b11e355e`." in status
@@ -129,7 +129,11 @@ def test_live_status_records_phase22_closeout_and_history() -> None:
     assert "run #70" in status
     assert "whole-phase gap/legacy audit" in status
     assert "Overall `ISI-22-INDUSTRIAL-DATA-PLATFORM` is `COMPLETE / CI_VERIFIED`." in status
-    assert "ISI-23 bootstrap/audit - SIMPA Production Methodology + Help/User Guide" in status
+    assert "Accepted ISI-23A implementation SHA: `238a881ef39906a2adebbb03fabe80a043017697`." in status
+    assert "Accepted ISI-23A implementation tree: `3778f29627100fb48ba369f0618250534870d0a8`." in status
+    assert "run #77" in status
+    assert "run ID `34900812947`" in status
+    assert "ISI-23B - versioned SIMPA reference-calculation evidence" in status
 
     tasks = json.loads((ROOT / "automation/tasks.json").read_text())["tasks"]
     by_id = {task["id"]: task for task in tasks}
