@@ -29,15 +29,14 @@ def test_0027_exact_chain_columns_constraints_and_simpa_only():
     assert "UPDATE simpa_indicator_methodologies SET status='draft' WHERE status='proposed'" in text
 
 
-def test_0027_is_the_sole_alembic_head():
-    heads = subprocess.run(
-        ["alembic", "heads"],
+def test_0027_remains_in_alembic_history_without_freezing_the_mutable_head():
+    history = subprocess.run(
+        ["alembic", "history"],
         check=True,
         capture_output=True,
         text=True,
     ).stdout
-    assert "20260914_0027 (head)" in heads
-    assert heads.count("(head)") == 1
+    assert "20260914_0026 -> 20260914_0027" in history
 
 
 def test_0027_offline_upgrade_and_downgrade_render():

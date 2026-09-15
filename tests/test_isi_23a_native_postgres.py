@@ -116,6 +116,7 @@ def test_native_postgres_legacy_validated_compatibility_and_new_trace_persistenc
             reference_check_status="legacy_unknown",
             reference_check_fingerprint="",
             reference_check_detail={},
+            reference_evidence_mode="legacy_unknown",
         )
         db.add(legacy)
         db.flush()
@@ -131,6 +132,8 @@ def test_native_postgres_legacy_validated_compatibility_and_new_trace_persistenc
             computation_spec=_contract(),
             actor_id=membership.id,
         )
+        # Emulate a persisted 23A row that migration 0028 classified as historical inline evidence.
+        candidate.reference_evidence_mode = "legacy_inline"
         assert indicator.methodology_status == "validated"
         propose_methodology(db, methodology_id=candidate.id, actor_id=membership.id)
         run_methodology_reference_check(

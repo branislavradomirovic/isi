@@ -146,6 +146,7 @@ def render_simpa_analytics(*, token: str, shell: dict[str, Any]) -> None:
     st.caption(
         "Reference-check state and fingerprints below are deterministic methodology evidence; they do not bypass governed production data."
     )
+    st.caption("PASSED reference suite nije institucionalno odobrenje; PROPOSED ostaje različit od VALIDATED.")
     if snapshot:
         m1, m2, m3 = st.columns(3)
         m1.metric("Aktivni indikatori", snapshot.get("active_indicator_count", 0))
@@ -159,6 +160,7 @@ def render_simpa_analytics(*, token: str, shell: dict[str, Any]) -> None:
                 "version": item.get("version_no"),
                 "lifecycle": item.get("status"),
                 "computation": item.get("computation_type"),
+                "reference_evidence_mode": item.get("reference_evidence_mode"),
                 "contract_fingerprint": item.get("contract_fingerprint"),
                 "reference_check": item.get("reference_check_status"),
                 "reference_fingerprint": item.get("reference_check_fingerprint"),
@@ -169,6 +171,52 @@ def render_simpa_analytics(*, token: str, shell: dict[str, Any]) -> None:
             for item in methods
         ]
         st.dataframe(lifecycle, use_container_width=True, hide_index=True)
+        suite_rows = []
+        case_rows = []
+        for method in methods:
+            suites = (
+                _safe(
+                    simpa_analytics_api.reference_suites,
+                    token,
+                    method["id"],
+                    organization_id,
+                    workspace_id,
+                )
+                or []
+            )
+            for suite in suites:
+                suite_rows.append(
+                    {
+                        "indicator": method.get("indicator_code"),
+                        "methodology_version": method.get("version_no"),
+                        "suite_version": suite.get("version_no"),
+                        "status": suite.get("status"),
+                        "reference_dataset": suite.get("reference_dataset"),
+                        "reference_dataset_version": suite.get("reference_dataset_version"),
+                        "suite_fingerprint": suite.get("suite_fingerprint"),
+                        "result_fingerprint": suite.get("result_fingerprint"),
+                        "case_count": suite.get("case_count"),
+                        "created_by": suite.get("created_by_membership_id"),
+                        "executed_by": suite.get("executed_by_membership_id"),
+                        "executed_at": suite.get("executed_at"),
+                    }
+                )
+                case_rows.extend(
+                    {
+                        "suite_version": suite.get("version_no"),
+                        "case_key": case.get("case_key"),
+                        "case_index": case.get("case_index"),
+                        "status": case.get("status"),
+                        "case_fingerprint": case.get("case_fingerprint"),
+                        "result_fingerprint": case.get("result_fingerprint"),
+                    }
+                    for case in suite.get("cases") or []
+                )
+        if suite_rows:
+            st.markdown("#### Versionirani referentni suite-ovi")
+            st.dataframe(suite_rows, use_container_width=True, hide_index=True)
+            st.markdown("#### Referentni slučajevi")
+            st.dataframe(case_rows, use_container_width=True, hide_index=True)
     else:
         st.info(
             "Nema draft, proposed, validated ili retired metodologija u analytics registru. SIMPA ne izmišlja formule niti automatski validira konceptualne indikatore."

@@ -7,12 +7,15 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from src.api.dependencies import AuthContext, get_auth_context, get_db
+from src.domains.simpa.analytics_models import SimpaIndicatorMethodology
 from src.domains.simpa.analytics_schemas import (
     AnalyticsRunCreateRequest,
     IndicatorComputeRequest,
     MethodologyCreateRequest,
     MethodologyProposeRequest,
     MethodologyReferenceCheckRequest,
+    MethodologyReferenceSuiteCreateRequest,
+    MethodologyReferenceSuiteRunRequest,
     MethodologyRetireRequest,
     MethodologyValidateRequest,
     SynthesisCreateRequest,
@@ -24,14 +27,17 @@ from src.domains.simpa.analytics_service import (
     compute_indicator,
     create_analytics_run,
     create_methodology,
+    create_methodology_reference_suite,
     create_synthesis,
     list_analytics_runs,
     list_methodologies,
+    list_methodology_reference_suites,
     list_syntheses,
     propose_methodology,
     retire_methodology,
     review_synthesis,
     run_methodology_reference_check,
+    run_methodology_reference_suite,
     validate_methodology,
 )
 from src.platform.access.service import has_permission
@@ -62,7 +68,10 @@ def _require_scope(
 
 def _error(exc: Exception) -> HTTPException:
     code = str(exc)
-    if code.endswith("not_accessible") or code in {"methodology_not_found"}:
+    if code.endswith("not_accessible") or code in {
+        "methodology_not_found",
+        "methodology_reference_suite_not_found",
+    }:
         return HTTPException(status_code=404, detail=code)
     if code in {
         "methodology_not_validated",
@@ -72,6 +81,11 @@ def _error(exc: Exception) -> HTTPException:
         "methodology_reference_check_required",
         "methodology_reference_check_failed",
         "methodology_contract_immutable",
+        "methodology_reference_suite_required",
+        "methodology_reference_suite_already_passed",
+        "methodology_reference_suite_terminal",
+        "methodology_reference_suite_evidence_invalid",
+        "methodology_reference_evidence_mode_ineligible",
     }:
         return HTTPException(status_code=409, detail=code)
     if code in {"provider_unavailable", "timeout", "provider_http_error", "external_provider_not_configured"}:
@@ -117,6 +131,7 @@ def _methodology_dict(method, indicator=None):
         "methodology_note": method.methodology_note,
         "reference_check_status": method.reference_check_status,
         "reference_check_fingerprint": method.reference_check_fingerprint,
+        "reference_evidence_mode": method.reference_evidence_mode,
         "proposed_by_membership_id": str(method.proposed_by_membership_id)
         if method.proposed_by_membership_id
         else None,
@@ -129,6 +144,42 @@ def _methodology_dict(method, indicator=None):
         "retired_by_membership_id": str(method.retired_by_membership_id) if method.retired_by_membership_id else None,
         "retired_at": method.retired_at,
         "retirement_note": method.retirement_note,
+    }
+
+
+def _reference_suite_dict(suite, cases):
+    return {
+        "id": str(suite.id),
+        "methodology_id": str(suite.methodology_id),
+        "version_no": suite.version_no,
+        "schema_version": suite.schema_version,
+        "methodology_contract_fingerprint": suite.methodology_contract_fingerprint,
+        "reference_dataset": suite.reference_dataset,
+        "reference_dataset_version": suite.reference_dataset_version,
+        "suite_fingerprint": suite.suite_fingerprint,
+        "case_count": suite.case_count,
+        "status": suite.status,
+        "result_fingerprint": suite.result_fingerprint,
+        "result_detail": suite.result_detail,
+        "created_by_membership_id": str(suite.created_by_membership_id) if suite.created_by_membership_id else None,
+        "executed_by_membership_id": str(suite.executed_by_membership_id) if suite.executed_by_membership_id else None,
+        "created_at": suite.created_at,
+        "executed_at": suite.executed_at,
+        "cases": [
+            {
+                "id": str(case.id),
+                "case_key": case.case_key,
+                "case_index": case.case_index,
+                "reference_record": case.reference_record,
+                "expected_result": case.expected_result,
+                "case_fingerprint": case.case_fingerprint,
+                "status": case.status,
+                "result_fingerprint": case.result_fingerprint,
+                "result_detail": case.result_detail,
+                "created_at": case.created_at,
+            }
+            for case in cases
+        ],
     }
 
 
@@ -295,6 +346,101 @@ def post_methodology_reference_check(
         db.commit()
         db.refresh(row)
         return _methodology_dict(row)
+    except SimpaAnalyticsError as exc:
+        db.rollback()
+        raise _error(exc) from None
+
+
+@router.get("/methodologies/{methodology_id}/reference-suites")
+def get_methodology_reference_suites(
+    methodology_id: uuid.UUID,
+    organization_id: uuid.UUID = Query(...),
+    workspace_id: uuid.UUID = Query(...),
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db,
+        context,
+        organization_id=organization_id,
+        workspace_id=workspace_id,
+        permission_code="analysis.read",
+    )
+    if db.get(SimpaIndicatorMethodology, methodology_id) is None:
+        raise HTTPException(status_code=404, detail="methodology_not_found")
+    return [
+        _reference_suite_dict(suite, cases)
+        for suite, cases in list_methodology_reference_suites(db, methodology_id=methodology_id)
+    ]
+
+
+@router.post("/methodologies/{methodology_id}/reference-suites", status_code=status.HTTP_201_CREATED)
+def post_methodology_reference_suite(
+    methodology_id: uuid.UUID,
+    payload: MethodologyReferenceSuiteCreateRequest,
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db,
+        context,
+        organization_id=payload.organization_id,
+        workspace_id=payload.workspace_id,
+        permission_code="indicator.manage",
+    )
+    try:
+        actor_id = actor_membership_id(db, user_id=context.user.id, organization_id=payload.organization_id)
+        suite = create_methodology_reference_suite(
+            db,
+            methodology_id=methodology_id,
+            reference_dataset_version=payload.reference_dataset_version,
+            cases=[case.model_dump(mode="json") for case in payload.cases],
+            actor_id=actor_id,
+        )
+        db.commit()
+        db.refresh(suite)
+        cases = next(
+            cases
+            for candidate, cases in list_methodology_reference_suites(db, methodology_id=methodology_id)
+            if candidate.id == suite.id
+        )
+        return _reference_suite_dict(suite, cases)
+    except SimpaAnalyticsError as exc:
+        db.rollback()
+        raise _error(exc) from None
+
+
+@router.post("/methodologies/{methodology_id}/reference-suites/{suite_id}/run")
+def post_run_methodology_reference_suite(
+    methodology_id: uuid.UUID,
+    suite_id: uuid.UUID,
+    payload: MethodologyReferenceSuiteRunRequest,
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db,
+        context,
+        organization_id=payload.organization_id,
+        workspace_id=payload.workspace_id,
+        permission_code="indicator.manage",
+    )
+    try:
+        actor_id = actor_membership_id(db, user_id=context.user.id, organization_id=payload.organization_id)
+        suite = run_methodology_reference_suite(
+            db,
+            methodology_id=methodology_id,
+            suite_id=suite_id,
+            actor_id=actor_id,
+        )
+        db.commit()
+        db.refresh(suite)
+        cases = next(
+            cases
+            for candidate, cases in list_methodology_reference_suites(db, methodology_id=methodology_id)
+            if candidate.id == suite.id
+        )
+        return _reference_suite_dict(suite, cases)
     except SimpaAnalyticsError as exc:
         db.rollback()
         raise _error(exc) from None

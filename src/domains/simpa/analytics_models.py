@@ -42,6 +42,10 @@ class SimpaIndicatorMethodology(Base):
             "(reference_check_status IN ('not_run','legacy_unknown') AND reference_check_fingerprint = '') OR (reference_check_status IN ('passed','failed') AND length(reference_check_fingerprint) = 64)",
             name="ck_simpa_methodology_reference_fingerprint",
         ),
+        CheckConstraint(
+            "reference_evidence_mode IN ('legacy_unknown','legacy_inline','suite_v1')",
+            name="ck_simpa_methodology_reference_evidence_mode",
+        ),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
@@ -67,6 +71,9 @@ class SimpaIndicatorMethodology(Base):
     )
     reference_check_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False, default="", server_default="")
     reference_check_detail: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    reference_evidence_mode: Mapped[str] = mapped_column(
+        String(24), nullable=False, default="suite_v1", server_default="suite_v1"
+    )
     approved_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True
     )
@@ -83,6 +90,85 @@ class SimpaIndicatorMethodology(Base):
     updated_at: Mapped[object] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now()
     )
+
+
+class SimpaMethodologyReferenceSuite(Base):
+    __tablename__ = "simpa_methodology_reference_suites"
+    __table_args__ = (
+        UniqueConstraint("methodology_id", "version_no", name="uq_simpa_reference_suite_version"),
+        UniqueConstraint("methodology_id", "suite_fingerprint", name="uq_simpa_reference_suite_fingerprint"),
+        CheckConstraint("version_no >= 1", name="ck_simpa_reference_suite_version"),
+        CheckConstraint("case_count >= 1", name="ck_simpa_reference_suite_case_count"),
+        CheckConstraint("schema_version = 'SIMPA-REFERENCE-SUITE-v1'", name="ck_simpa_reference_suite_schema_version"),
+        CheckConstraint(
+            "length(methodology_contract_fingerprint) = 64", name="ck_simpa_reference_suite_contract_fingerprint"
+        ),
+        CheckConstraint("length(reference_dataset) > 0", name="ck_simpa_reference_suite_dataset"),
+        CheckConstraint("length(reference_dataset_version) > 0", name="ck_simpa_reference_suite_dataset_version"),
+        CheckConstraint("length(suite_fingerprint) = 64", name="ck_simpa_reference_suite_fingerprint"),
+        CheckConstraint("status IN ('not_run','passed','failed')", name="ck_simpa_reference_suite_status"),
+        CheckConstraint(
+            "(status = 'not_run' AND result_fingerprint = '' AND length(CAST(result_detail AS TEXT)) = 2 AND executed_by_membership_id IS NULL AND executed_at IS NULL) OR (status IN ('passed','failed') AND length(result_fingerprint) = 64 AND length(CAST(result_detail AS TEXT)) > 2 AND executed_at IS NOT NULL)",
+            name="ck_simpa_reference_suite_terminal",
+        ),
+        Index("ix_simpa_reference_suite_methodology_status", "methodology_id", "status"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    methodology_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("simpa_indicator_methodologies.id", ondelete="CASCADE"), nullable=False
+    )
+    version_no: Mapped[int] = mapped_column(Integer, nullable=False)
+    schema_version: Mapped[str] = mapped_column(
+        String(40), nullable=False, default="SIMPA-REFERENCE-SUITE-v1", server_default="SIMPA-REFERENCE-SUITE-v1"
+    )
+    methodology_contract_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    reference_dataset: Mapped[str] = mapped_column(Text, nullable=False)
+    reference_dataset_version: Mapped[str] = mapped_column(String(255), nullable=False)
+    suite_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    case_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    status: Mapped[str] = mapped_column(String(24), nullable=False, default="not_run", server_default="not_run")
+    result_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False, default="", server_default="")
+    result_detail: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    created_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True
+    )
+    executed_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True
+    )
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    executed_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class SimpaMethodologyReferenceCase(Base):
+    __tablename__ = "simpa_methodology_reference_cases"
+    __table_args__ = (
+        UniqueConstraint("suite_id", "case_key", name="uq_simpa_reference_case_key"),
+        UniqueConstraint("suite_id", "case_index", name="uq_simpa_reference_case_index"),
+        CheckConstraint("length(case_key) > 0", name="ck_simpa_reference_case_key"),
+        CheckConstraint("case_index >= 0", name="ck_simpa_reference_case_index"),
+        CheckConstraint("length(case_fingerprint) = 64", name="ck_simpa_reference_case_fingerprint"),
+        CheckConstraint("status IN ('not_run','passed','failed')", name="ck_simpa_reference_case_status"),
+        CheckConstraint(
+            "(status = 'not_run' AND result_fingerprint = '' AND length(CAST(result_detail AS TEXT)) = 2) OR (status IN ('passed','failed') AND length(result_fingerprint) = 64 AND length(CAST(result_detail AS TEXT)) > 2)",
+            name="ck_simpa_reference_case_terminal",
+        ),
+        Index("ix_simpa_reference_case_suite", "suite_id"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    suite_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("simpa_methodology_reference_suites.id", ondelete="CASCADE"), nullable=False
+    )
+    case_key: Mapped[str] = mapped_column(String(255), nullable=False)
+    case_index: Mapped[int] = mapped_column(Integer, nullable=False)
+    reference_record: Mapped[dict] = mapped_column(JSON, nullable=False)
+    expected_result: Mapped[dict] = mapped_column(JSON, nullable=False)
+    case_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    status: Mapped[str] = mapped_column(String(24), nullable=False, default="not_run", server_default="not_run")
+    result_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False, default="", server_default="")
+    result_detail: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
 
 
 class SimpaAnalyticsRun(Base):

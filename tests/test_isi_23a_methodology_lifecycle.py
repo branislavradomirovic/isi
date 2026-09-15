@@ -73,7 +73,7 @@ def methodology_case():
 
 
 def _new(db, membership, indicator, *, contract=None):
-    return create_methodology(
+    row = create_methodology(
         db,
         indicator_code=indicator.code,
         computation_type="direct_observation",
@@ -82,6 +82,9 @@ def _new(db, membership, indicator, *, contract=None):
         computation_spec=contract if contract is not None else _contract(),
         actor_id=membership.id,
     )
+    # Emulate a persisted 23A row that migration 0028 classified as historical inline evidence.
+    row.reference_evidence_mode = "legacy_inline"
+    return row
 
 
 def _pass_reference(db, row, indicator, *, value=10, expected=10):
@@ -156,6 +159,7 @@ def test_reference_pass_validation_and_predecessor_retirement(methodology_case):
         methodology_note="Legacy",
         validation_note="Historical approval",
         reference_check_status="legacy_unknown",
+        reference_evidence_mode="legacy_unknown",
     )
     db.add(predecessor)
     db.flush()

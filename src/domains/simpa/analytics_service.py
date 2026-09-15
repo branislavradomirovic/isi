@@ -14,11 +14,24 @@ from src.domains.simpa.analytics_models import (
     SimpaAnalyticsRun,
     SimpaIndicatorMethodology,
     SimpaIndicatorResult,
+    SimpaMethodologyReferenceCase,
+    SimpaMethodologyReferenceSuite,
 )
 from src.domains.simpa.methodology_contracts import (
     contract_fingerprint,
     normalize_draft_methodology_contract,
     normalize_methodology_contract,
+)
+from src.domains.simpa.reference_calculations import (
+    REFERENCE_SUITE_SCHEMA_VERSION,
+    ReferenceCalculationError,
+    calculate_direct_observation,
+    compare_direct_observation,
+    normalize_direct_observation_expected,
+    reference_case_fingerprint,
+    reference_case_result_fingerprint,
+    reference_suite_fingerprint,
+    reference_suite_result_fingerprint,
 )
 from src.domains.simpa.models import SimpaIndicatorDefinition, SimpaMonitoringCycle
 from src.platform.ai.models import AIJob
@@ -59,23 +72,6 @@ def _sync_indicator_methodology_status(session: Session, indicator: SimpaIndicat
             return status
     indicator.methodology_status = "conceptual"
     return "conceptual"
-
-
-def _normalize_direct_observation_value(value_numeric: object, value_text: object) -> tuple[float | None, str]:
-    text_value = value_text.strip() if isinstance(value_text, str) else ""
-    numeric_value: float | None = None
-    if value_numeric is not None:
-        if isinstance(value_numeric, bool):
-            raise SimpaAnalyticsError("computed_value_invalid")
-        try:
-            numeric_value = float(value_numeric)
-        except (TypeError, ValueError):
-            raise SimpaAnalyticsError("computed_value_invalid") from None
-        if not (float("-inf") < numeric_value < float("inf")):
-            raise SimpaAnalyticsError("computed_value_invalid")
-    if numeric_value is None and not text_value:
-        raise SimpaAnalyticsError("computed_value_required")
-    return numeric_value, text_value
 
 
 def _canonical_json(value: dict) -> str:
@@ -396,6 +392,7 @@ def create_methodology(
         reference_check_status="not_run",
         reference_check_fingerprint="",
         reference_check_detail={},
+        reference_evidence_mode="suite_v1",
         created_by_membership_id=actor_id,
     )
     session.add(row)
@@ -469,6 +466,371 @@ def propose_methodology(
     return row
 
 
+def _intact_proposed_contract(
+    session: Session, row: SimpaIndicatorMethodology
+) -> tuple[SimpaIndicatorDefinition, object]:
+    if row.status != "proposed":
+        raise SimpaAnalyticsError("methodology_not_proposed")
+    if row.reference_evidence_mode != "suite_v1":
+        raise SimpaAnalyticsError("methodology_reference_suite_not_allowed")
+    indicator = session.get(SimpaIndicatorDefinition, row.indicator_id)
+    if indicator is None or not indicator.active:
+        raise SimpaAnalyticsError("indicator_unknown")
+    try:
+        contract = normalize_methodology_contract(row.computation_spec, indicator_unit_hint=indicator.unit_hint)
+    except (ValidationError, ValueError) as exc:
+        raise SimpaAnalyticsError("methodology_contract_invalid") from exc
+    if row.contract_fingerprint != contract_fingerprint(contract):
+        raise SimpaAnalyticsError("methodology_contract_fingerprint_mismatch")
+    return indicator, contract
+
+
+def _normalized_case(*, case: dict, indicator_code: str) -> tuple[str, dict, dict, str]:
+    if not isinstance(case, dict):
+        raise SimpaAnalyticsError("reference_case_invalid")
+    if set(case) != {"case_key", "reference_record", "expected_result"}:
+        raise SimpaAnalyticsError("reference_case_invalid")
+    key = case.get("case_key")
+    if not isinstance(key, str) or not key.strip() or len(key.strip()) > 255:
+        raise SimpaAnalyticsError("reference_case_key_required")
+    record = case.get("reference_record")
+    expected = case.get("expected_result")
+    if not isinstance(record, dict) or not isinstance(expected, dict):
+        raise SimpaAnalyticsError("reference_case_invalid")
+    if set(record) - {"indicator_code", "quality_status", "value_numeric", "value_text"}:
+        raise SimpaAnalyticsError("reference_case_invalid")
+    if set(expected) - {"value_numeric", "value_text"}:
+        raise SimpaAnalyticsError("reference_case_invalid")
+    try:
+        actual = calculate_direct_observation(record, indicator_code=indicator_code)
+        normalized_expected = normalize_direct_observation_expected(
+            expected.get("value_numeric"), expected.get("value_text")
+        )
+        normalized_record = {
+            "indicator_code": indicator_code,
+            "quality_status": "validated",
+            **actual,
+        }
+        fingerprint = reference_case_fingerprint(
+            case_key=key,
+            indicator_code=indicator_code,
+            reference_record=normalized_record,
+            expected_result=normalized_expected,
+        )
+    except ReferenceCalculationError as exc:
+        raise SimpaAnalyticsError(str(exc)) from None
+    return key.strip(), normalized_record, normalized_expected, fingerprint
+
+
+def create_methodology_reference_suite(
+    session: Session,
+    *,
+    methodology_id: uuid.UUID,
+    reference_dataset_version: str,
+    cases: list[dict],
+    actor_id: uuid.UUID | None,
+) -> SimpaMethodologyReferenceSuite:
+    actor = _require_actor(session, actor_id)
+    methodology = session.get(SimpaIndicatorMethodology, methodology_id)
+    if methodology is None:
+        raise SimpaAnalyticsError("methodology_not_found")
+    indicator, contract = _intact_proposed_contract(session, methodology)
+    if not isinstance(reference_dataset_version, str):
+        raise SimpaAnalyticsError("reference_dataset_version_required")
+    dataset_version = reference_dataset_version.strip()
+    if not dataset_version or len(dataset_version) > 255:
+        raise SimpaAnalyticsError("reference_dataset_version_required")
+    if not isinstance(cases, list) or not cases:
+        raise SimpaAnalyticsError("reference_suite_cases_required")
+    passed = session.scalar(
+        select(SimpaMethodologyReferenceSuite.id).where(
+            SimpaMethodologyReferenceSuite.methodology_id == methodology.id,
+            SimpaMethodologyReferenceSuite.status == "passed",
+        )
+    )
+    if passed is not None:
+        raise SimpaAnalyticsError("methodology_reference_suite_already_passed")
+
+    normalized = [_normalized_case(case=case, indicator_code=indicator.code) for case in cases]
+    normalized.sort(key=lambda item: item[0])
+    keys = [item[0] for item in normalized]
+    if len(keys) != len(set(keys)):
+        raise SimpaAnalyticsError("reference_case_keys_invalid")
+    semantic_cases = [
+        {"case_key": case_key, "case_fingerprint": fingerprint}
+        for case_key, _record, _expected, fingerprint in normalized
+    ]
+    try:
+        suite_fingerprint = reference_suite_fingerprint(
+            methodology_contract_fingerprint=methodology.contract_fingerprint,
+            reference_dataset=contract.reference_dataset,
+            reference_dataset_version=dataset_version,
+            cases=semantic_cases,
+        )
+    except ReferenceCalculationError as exc:
+        raise SimpaAnalyticsError(str(exc)) from None
+    latest = session.scalar(
+        select(func.max(SimpaMethodologyReferenceSuite.version_no)).where(
+            SimpaMethodologyReferenceSuite.methodology_id == methodology.id
+        )
+    )
+    suite = SimpaMethodologyReferenceSuite(
+        methodology_id=methodology.id,
+        version_no=int(latest or 0) + 1,
+        schema_version=REFERENCE_SUITE_SCHEMA_VERSION,
+        methodology_contract_fingerprint=methodology.contract_fingerprint,
+        reference_dataset=contract.reference_dataset,
+        reference_dataset_version=dataset_version,
+        suite_fingerprint=suite_fingerprint,
+        case_count=len(normalized),
+        status="not_run",
+        result_fingerprint="",
+        result_detail={},
+        created_by_membership_id=actor,
+    )
+    session.add(suite)
+    session.flush()
+    for index, (case_key, record, expected, fingerprint) in enumerate(normalized):
+        session.add(
+            SimpaMethodologyReferenceCase(
+                suite_id=suite.id,
+                case_key=case_key,
+                case_index=index,
+                reference_record=record,
+                expected_result=expected,
+                case_fingerprint=fingerprint,
+                status="not_run",
+                result_fingerprint="",
+                result_detail={},
+            )
+        )
+    session.flush()
+    return suite
+
+
+def list_methodology_reference_suites(
+    session: Session, *, methodology_id: uuid.UUID
+) -> list[tuple[SimpaMethodologyReferenceSuite, list[SimpaMethodologyReferenceCase]]]:
+    suites = list(
+        session.scalars(
+            select(SimpaMethodologyReferenceSuite)
+            .where(SimpaMethodologyReferenceSuite.methodology_id == methodology_id)
+            .order_by(SimpaMethodologyReferenceSuite.version_no.desc())
+        ).all()
+    )
+    result = []
+    for suite in suites:
+        cases = list(
+            session.scalars(
+                select(SimpaMethodologyReferenceCase)
+                .where(SimpaMethodologyReferenceCase.suite_id == suite.id)
+                .order_by(SimpaMethodologyReferenceCase.case_index)
+            ).all()
+        )
+        result.append((suite, cases))
+    return result
+
+
+def _expected_case_result_detail(
+    *,
+    suite: SimpaMethodologyReferenceSuite,
+    case: SimpaMethodologyReferenceCase,
+    indicator_code: str,
+    accepted_tolerance: float,
+) -> dict:
+    try:
+        actual = calculate_direct_observation(case.reference_record, indicator_code=indicator_code)
+        comparison = compare_direct_observation(
+            actual,
+            case.expected_result,
+            accepted_tolerance=accepted_tolerance,
+        )
+    except ReferenceCalculationError as exc:
+        raise SimpaAnalyticsError(str(exc)) from None
+    return {
+        "schema_version": REFERENCE_SUITE_SCHEMA_VERSION,
+        "suite_fingerprint": suite.suite_fingerprint,
+        "case_key": case.case_key,
+        "case_fingerprint": case.case_fingerprint,
+        **comparison,
+    }
+
+
+def _verify_suite_semantics(
+    methodology: SimpaIndicatorMethodology,
+    indicator: SimpaIndicatorDefinition,
+    contract,
+    suite: SimpaMethodologyReferenceSuite,
+    cases: list[SimpaMethodologyReferenceCase],
+) -> None:
+    if (
+        suite.schema_version != REFERENCE_SUITE_SCHEMA_VERSION
+        or suite.methodology_id != methodology.id
+        or suite.methodology_contract_fingerprint != methodology.contract_fingerprint
+        or suite.reference_dataset != contract.reference_dataset
+        or not suite.reference_dataset_version.strip()
+        or suite.case_count != len(cases)
+        or not cases
+        or [case.case_index for case in cases] != list(range(len(cases)))
+    ):
+        raise SimpaAnalyticsError("methodology_reference_suite_evidence_invalid")
+    semantic_cases = []
+    for case in cases:
+        try:
+            expected_fingerprint = reference_case_fingerprint(
+                case_key=case.case_key,
+                indicator_code=indicator.code,
+                reference_record=case.reference_record,
+                expected_result=case.expected_result,
+            )
+        except ReferenceCalculationError:
+            raise SimpaAnalyticsError("methodology_reference_suite_evidence_invalid") from None
+        if case.case_fingerprint != expected_fingerprint:
+            raise SimpaAnalyticsError("methodology_reference_suite_evidence_invalid")
+        semantic_cases.append({"case_key": case.case_key, "case_fingerprint": case.case_fingerprint})
+    try:
+        expected_suite_fingerprint = reference_suite_fingerprint(
+            methodology_contract_fingerprint=methodology.contract_fingerprint,
+            reference_dataset=contract.reference_dataset,
+            reference_dataset_version=suite.reference_dataset_version,
+            cases=semantic_cases,
+        )
+    except ReferenceCalculationError:
+        raise SimpaAnalyticsError("methodology_reference_suite_evidence_invalid") from None
+    if suite.suite_fingerprint != expected_suite_fingerprint:
+        raise SimpaAnalyticsError("methodology_reference_suite_evidence_invalid")
+
+
+def run_methodology_reference_suite(
+    session: Session,
+    *,
+    methodology_id: uuid.UUID,
+    suite_id: uuid.UUID,
+    actor_id: uuid.UUID | None,
+) -> SimpaMethodologyReferenceSuite:
+    actor = _require_actor(session, actor_id)
+    methodology = session.get(SimpaIndicatorMethodology, methodology_id)
+    if methodology is None:
+        raise SimpaAnalyticsError("methodology_not_found")
+    indicator, contract = _intact_proposed_contract(session, methodology)
+    suite = session.scalar(
+        select(SimpaMethodologyReferenceSuite).where(
+            SimpaMethodologyReferenceSuite.id == suite_id,
+            SimpaMethodologyReferenceSuite.methodology_id == methodology.id,
+        )
+    )
+    if suite is None:
+        raise SimpaAnalyticsError("methodology_reference_suite_not_found")
+    if suite.status != "not_run":
+        raise SimpaAnalyticsError("methodology_reference_suite_terminal")
+    cases = list_methodology_reference_suites(session, methodology_id=methodology.id)
+    case_rows = next(items for candidate, items in cases if candidate.id == suite.id)
+    _verify_suite_semantics(methodology, indicator, contract, suite, case_rows)
+
+    case_results = []
+    for case in case_rows:
+        detail = _expected_case_result_detail(
+            suite=suite,
+            case=case,
+            indicator_code=indicator.code,
+            accepted_tolerance=contract.accepted_tolerance,
+        )
+        case.status = "passed" if detail["passed"] else "failed"
+        case.result_detail = detail
+        case.result_fingerprint = reference_case_result_fingerprint(detail)
+        case_results.append(
+            {
+                "case_key": case.case_key,
+                "status": case.status,
+                "result_fingerprint": case.result_fingerprint,
+            }
+        )
+    passed = all(case.status == "passed" for case in case_rows)
+    suite_detail = {
+        "schema_version": REFERENCE_SUITE_SCHEMA_VERSION,
+        "suite_fingerprint": suite.suite_fingerprint,
+        "methodology_contract_fingerprint": methodology.contract_fingerprint,
+        "case_count": len(case_rows),
+        "case_results": case_results,
+        "passed": passed,
+    }
+    suite.status = "passed" if passed else "failed"
+    suite.result_detail = suite_detail
+    suite.result_fingerprint = reference_suite_result_fingerprint(suite_detail)
+    suite.executed_by_membership_id = actor
+    suite.executed_at = _utcnow()
+    methodology.reference_check_status = suite.status
+    methodology.reference_check_fingerprint = suite.result_fingerprint
+    methodology.reference_check_detail = {
+        "reference_evidence_mode": "suite_v1",
+        "suite_id": str(suite.id),
+        "suite_version_no": suite.version_no,
+        "suite_fingerprint": suite.suite_fingerprint,
+        "result_fingerprint": suite.result_fingerprint,
+        "case_count": suite.case_count,
+        "passed": passed,
+    }
+    session.flush()
+    return suite
+
+
+def _verify_passed_suite(
+    session: Session,
+    *,
+    methodology: SimpaIndicatorMethodology,
+    indicator: SimpaIndicatorDefinition,
+    contract,
+) -> SimpaMethodologyReferenceSuite:
+    passed_suites = list(
+        session.scalars(
+            select(SimpaMethodologyReferenceSuite).where(
+                SimpaMethodologyReferenceSuite.methodology_id == methodology.id,
+                SimpaMethodologyReferenceSuite.status == "passed",
+            )
+        ).all()
+    )
+    if len(passed_suites) != 1:
+        raise SimpaAnalyticsError("methodology_reference_suite_required")
+    suite = passed_suites[0]
+    all_suites = list_methodology_reference_suites(session, methodology_id=methodology.id)
+    cases = next(items for candidate, items in all_suites if candidate.id == suite.id)
+    _verify_suite_semantics(methodology, indicator, contract, suite, cases)
+    case_results = []
+    for case in cases:
+        detail = _expected_case_result_detail(
+            suite=suite,
+            case=case,
+            indicator_code=indicator.code,
+            accepted_tolerance=contract.accepted_tolerance,
+        )
+        fingerprint = reference_case_result_fingerprint(detail)
+        expected_status = "passed" if detail["passed"] else "failed"
+        if (
+            expected_status != "passed"
+            or case.status != expected_status
+            or case.result_detail != detail
+            or case.result_fingerprint != fingerprint
+        ):
+            raise SimpaAnalyticsError("methodology_reference_suite_evidence_invalid")
+        case_results.append({"case_key": case.case_key, "status": case.status, "result_fingerprint": fingerprint})
+    suite_detail = {
+        "schema_version": REFERENCE_SUITE_SCHEMA_VERSION,
+        "suite_fingerprint": suite.suite_fingerprint,
+        "methodology_contract_fingerprint": methodology.contract_fingerprint,
+        "case_count": len(cases),
+        "case_results": case_results,
+        "passed": True,
+    }
+    if (
+        suite.result_detail != suite_detail
+        or suite.result_fingerprint != reference_suite_result_fingerprint(suite_detail)
+        or methodology.reference_check_status != "passed"
+        or methodology.reference_check_fingerprint != suite.result_fingerprint
+    ):
+        raise SimpaAnalyticsError("methodology_reference_suite_evidence_invalid")
+    return suite
+
+
 def run_methodology_reference_check(
     session: Session,
     *,
@@ -479,6 +841,8 @@ def run_methodology_reference_check(
     row = session.get(SimpaIndicatorMethodology, methodology_id)
     if row is None:
         raise SimpaAnalyticsError("methodology_not_found")
+    if row.reference_evidence_mode != "legacy_inline":
+        raise SimpaAnalyticsError("methodology_reference_suite_required")
     if row.status != "proposed":
         raise SimpaAnalyticsError("methodology_not_proposed")
     if row.reference_check_status == "failed":
@@ -495,38 +859,26 @@ def run_methodology_reference_check(
     fresh_fingerprint = contract_fingerprint(contract)
     if row.contract_fingerprint != fresh_fingerprint:
         raise SimpaAnalyticsError("methodology_contract_fingerprint_mismatch")
-    if reference_record.get("indicator_code") != indicator.code:
-        raise SimpaAnalyticsError("reference_indicator_mismatch")
-    if reference_record.get("quality_status") != "validated":
-        raise SimpaAnalyticsError("reference_quality_not_validated")
-    expected_has_numeric = expected_result.get("value_numeric") is not None
-    expected_has_text = bool(
-        expected_result.get("value_text").strip() if isinstance(expected_result.get("value_text"), str) else False
-    )
-    if expected_has_numeric == expected_has_text:
-        raise SimpaAnalyticsError("reference_expected_result_invalid")
-    actual_numeric, actual_text = _normalize_direct_observation_value(
-        reference_record.get("value_numeric"), reference_record.get("value_text")
-    )
-    expected_numeric, expected_text = _normalize_direct_observation_value(
-        expected_result.get("value_numeric"), expected_result.get("value_text")
-    )
-    if expected_numeric is not None:
-        passed = actual_numeric is not None and abs(actual_numeric - expected_numeric) <= contract.accepted_tolerance
-        comparison = "numeric_tolerance"
-    else:
-        passed = actual_text == expected_text
-        comparison = "normalized_text_exact"
+    try:
+        actual = calculate_direct_observation(reference_record, indicator_code=indicator.code)
+        comparison_detail = compare_direct_observation(
+            actual,
+            expected_result,
+            accepted_tolerance=contract.accepted_tolerance,
+        )
+    except ReferenceCalculationError as exc:
+        raise SimpaAnalyticsError(str(exc)) from None
+    passed = bool(comparison_detail["passed"])
     detail = {
         "schema_version": contract.schema_version,
         "computation_type": contract.computation_type,
         "contract_fingerprint": fresh_fingerprint,
         "indicator_code": indicator.code,
         "quality_status": "validated",
-        "actual": {"value_numeric": actual_numeric, "value_text": actual_text},
-        "expected": {"value_numeric": expected_numeric, "value_text": expected_text},
-        "accepted_tolerance": contract.accepted_tolerance,
-        "comparison": comparison,
+        "actual": comparison_detail["actual"],
+        "expected": comparison_detail["expected"],
+        "accepted_tolerance": comparison_detail["accepted_tolerance"],
+        "comparison": comparison_detail["comparison"],
         "passed": passed,
     }
     row.reference_check_status = "passed" if passed else "failed"
@@ -557,15 +909,25 @@ def validate_methodology(
         raise SimpaAnalyticsError("methodology_contract_invalid") from exc
     if row.contract_fingerprint != contract_fingerprint(contract):
         raise SimpaAnalyticsError("methodology_contract_fingerprint_mismatch")
-    detail = row.reference_check_detail if isinstance(row.reference_check_detail, dict) else {}
-    expected_reference_fingerprint = hashlib.sha256(_canonical_json(detail).encode("utf-8")).hexdigest()
-    if (
-        row.reference_check_status != "passed"
-        or detail.get("passed") is not True
-        or detail.get("contract_fingerprint") != row.contract_fingerprint
-        or row.reference_check_fingerprint != expected_reference_fingerprint
-    ):
-        raise SimpaAnalyticsError("methodology_reference_check_required")
+    if row.reference_evidence_mode == "suite_v1":
+        _verify_passed_suite(
+            session,
+            methodology=row,
+            indicator=indicator,
+            contract=contract,
+        )
+    elif row.reference_evidence_mode == "legacy_inline":
+        detail = row.reference_check_detail if isinstance(row.reference_check_detail, dict) else {}
+        expected_reference_fingerprint = hashlib.sha256(_canonical_json(detail).encode("utf-8")).hexdigest()
+        if (
+            row.reference_check_status != "passed"
+            or detail.get("passed") is not True
+            or detail.get("contract_fingerprint") != row.contract_fingerprint
+            or row.reference_check_fingerprint != expected_reference_fingerprint
+        ):
+            raise SimpaAnalyticsError("methodology_reference_check_required")
+    else:
+        raise SimpaAnalyticsError("methodology_reference_evidence_mode_ineligible")
     for other in session.scalars(
         select(SimpaIndicatorMethodology).where(
             SimpaIndicatorMethodology.indicator_id == row.indicator_id,
@@ -681,17 +1043,18 @@ def compute_indicator(
     if len(matches) > 1:
         raise SimpaAnalyticsError("validated_observation_ambiguous")
     observation = matches[0]
-    numeric, value_text = _normalize_direct_observation_value(
-        observation.payload.get("value_numeric"), observation.payload.get("value_text")
-    )
+    try:
+        calculated = calculate_direct_observation(observation.payload, indicator_code=indicator.code)
+    except ReferenceCalculationError as exc:
+        raise SimpaAnalyticsError(str(exc)) from None
     result = SimpaIndicatorResult(
         organization_id=organization_id,
         workspace_id=workspace_id,
         analytics_run_id=analytics_run_id,
         indicator_id=indicator.id,
         methodology_id=methodology.id,
-        value_numeric=numeric,
-        value_text=value_text,
+        value_numeric=calculated["value_numeric"],
+        value_text=str(calculated["value_text"] or ""),
         unit=indicator.unit_hint,
         quality_score=1.0,
         source_observation_ids=[],
