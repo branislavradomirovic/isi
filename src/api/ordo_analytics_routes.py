@@ -10,6 +10,7 @@ from src.api.dependencies import AuthContext, get_auth_context, get_db
 from src.domains.ordo.analytics_schemas import (
     AnalyticsRunCreateRequest,
     DevelopmentGoalCreateRequest,
+    ForecastExecutionRequest,
     IndicatorComputeRequest,
     MethodologyCreateRequest,
     MethodologyProposeRequest,
@@ -32,8 +33,11 @@ from src.domains.ordo.analytics_service import (
     create_scenario,
     create_scenario_assessment,
     create_synthesis,
+    execute_forecast,
+    get_forecast_run,
     list_analytics_runs,
     list_goals,
+    list_forecast_runs,
     list_methodologies,
     list_scenario_assessments,
     list_scenarios,
@@ -78,7 +82,7 @@ def _require_scope(
 
 def _error(exc: Exception) -> HTTPException:
     code = str(exc)
-    if code.endswith("not_accessible") or code in {"methodology_not_found"}:
+    if code.endswith("not_accessible") or code in {"methodology_not_found", "time_series_spec_not_found", "forecast_run_not_found"}:
         return HTTPException(status_code=404, detail=code)
     if code in {
         "methodology_not_validated",
@@ -118,6 +122,50 @@ def _run_dict(row):
     }
 
 
+def _forecast_dict(row):
+    return {
+        "id": str(row.id),
+        "organization_id": str(row.organization_id),
+        "workspace_id": str(row.workspace_id),
+        "analytics_run_id": str(row.analytics_run_id),
+        "time_series_spec_id": str(row.time_series_spec_id),
+        "time_series_spec_version": row.time_series_spec_version,
+        "time_series_spec_fingerprint": row.time_series_spec_fingerprint,
+        "target_indicator_id": str(row.target_indicator_id),
+        "target_methodology_id": str(row.target_methodology_id),
+        "target_methodology_version": row.target_methodology_version,
+        "methodology_fingerprint": row.methodology_fingerprint,
+        "input_snapshot_sha256": row.input_snapshot_sha256,
+        "schema_version": row.schema_version,
+        "series_identity": row.series_identity,
+        "request_fingerprint": row.request_fingerprint,
+        "requested_family": row.requested_family,
+        "executed_family": row.executed_family,
+        "engine_key": row.engine_key,
+        "engine_version": row.engine_version,
+        "interval_method": row.interval_method,
+        "interval_level": row.interval_level,
+        "result_status": row.result_status,
+        "reason_code": row.reason_code,
+        "observation_window": row.observation_window,
+        "training_window": row.training_window,
+        "horizon": row.horizon,
+        "rolling_origin_plan": row.rolling_origin_plan,
+        "backtest_records": row.backtest_records,
+        "aggregate_backtest_metrics": row.aggregate_backtest_metrics,
+        "metric_availability": row.metric_availability,
+        "diagnostics": row.diagnostics,
+        "warnings": row.warnings,
+        "forecast_points": row.forecast_points,
+        "result_fingerprint": row.result_fingerprint,
+        "non_causal": row.non_causal,
+        "automatic_model_selection": row.automatic_model_selection,
+        "automatic_policy_recommendation": row.automatic_policy_recommendation,
+        "created_by_membership_id": str(row.created_by_membership_id) if row.created_by_membership_id else None,
+        "created_at": row.created_at,
+    }
+
+
 @router.get("/summary")
 def get_summary(
     organization_id: uuid.UUID = Query(...),
@@ -151,6 +199,64 @@ def get_runs(
 ):
     _require_scope(db, context, organization_id=organization_id, workspace_id=workspace_id, permission_code="analysis.read")
     return [_run_dict(row) for row in list_analytics_runs(db, organization_id=organization_id, workspace_id=workspace_id)]
+
+
+@router.post("/forecasts", status_code=status.HTTP_201_CREATED)
+def post_forecast(
+    payload: ForecastExecutionRequest,
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db, context, organization_id=payload.organization_id,
+        workspace_id=payload.workspace_id, permission_code="analysis.run",
+    )
+    try:
+        actor_id = actor_membership_id(db, user_id=context.user.id, organization_id=payload.organization_id)
+        row = execute_forecast(db, actor_id=actor_id, **payload.model_dump())
+        db.commit()
+        db.refresh(row)
+        return _forecast_dict(row)
+    except OrdoAnalyticsError as exc:
+        db.rollback()
+        raise _error(exc) from None
+
+
+@router.get("/forecasts")
+def get_forecasts(
+    organization_id: uuid.UUID = Query(...),
+    workspace_id: uuid.UUID = Query(...),
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db, context, organization_id=organization_id,
+        workspace_id=workspace_id, permission_code="analysis.read",
+    )
+    return [_forecast_dict(row) for row in list_forecast_runs(
+        db, organization_id=organization_id, workspace_id=workspace_id
+    )]
+
+
+@router.get("/forecasts/{forecast_run_id}")
+def get_forecast(
+    forecast_run_id: uuid.UUID,
+    organization_id: uuid.UUID = Query(...),
+    workspace_id: uuid.UUID = Query(...),
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db, context, organization_id=organization_id,
+        workspace_id=workspace_id, permission_code="analysis.read",
+    )
+    try:
+        return _forecast_dict(get_forecast_run(
+            db, forecast_run_id=forecast_run_id,
+            organization_id=organization_id, workspace_id=workspace_id,
+        ))
+    except OrdoAnalyticsError as exc:
+        raise _error(exc) from None
 
 
 @router.post("/runs", status_code=status.HTTP_201_CREATED)
@@ -413,6 +519,11 @@ def get_scenario_assessments(
         {
             "id": str(row.id), "scenario_id": str(row.scenario_id), "analytics_run_id": str(row.analytics_run_id),
             "assessment": row.assessment, "forecast_performed": row.forecast_performed, "status": row.status,
+            "impact": row.impact_estimation_status,
+            "impact_estimation_reason_code": row.impact_estimation_reason_code,
+            "impact_estimate_numeric": row.impact_estimate_numeric,
+            "impact_estimate_unit": row.impact_estimate_unit,
+            "impact_model_reference": row.impact_model_reference,
             "reviewer_note": row.reviewer_note, "created_at": row.created_at,
         }
         for row in list_scenario_assessments(db, organization_id=organization_id, workspace_id=workspace_id)
@@ -433,6 +544,11 @@ def post_scenario_assessment(
         return {
             "id": str(row.id), "scenario_id": str(row.scenario_id), "analytics_run_id": str(row.analytics_run_id),
             "assessment": row.assessment, "forecast_performed": row.forecast_performed, "status": row.status,
+            "impact": row.impact_estimation_status,
+            "impact_estimation_reason_code": row.impact_estimation_reason_code,
+            "impact_estimate_numeric": row.impact_estimate_numeric,
+            "impact_estimate_unit": row.impact_estimate_unit,
+            "impact_model_reference": row.impact_model_reference,
         }
     except (OrdoAnalyticsError, ValueError) as exc:
         db.rollback(); raise _error(exc) from None

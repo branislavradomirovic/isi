@@ -1,22 +1,18 @@
-import json
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_governance_and_inventory_are_synchronized():
+def test_24b_accepted_checkpoint_and_inventory_are_preserved():
     status = (ROOT / "automation/STATUS.md").read_text()
-    tasks = json.loads((ROOT / "automation/tasks.json").read_text())
     master = (ROOT / "docs/roadmap/ISI-AUTONOMOUS-INDUSTRIALIZATION-MASTER-PLAN.md").read_text()
-    assert "04b0738933030f1d69de52f9260c7b2f11042d0e" in status
-    assert "35138374174" in status and "Current slice is `ISI-24B" in status
-    task = next(item for item in tasks["tasks"] if item["id"] == "ISI-24-ORDO-PRODUCTION-METHODOLOGY")
-    assert task["status"] == "in_progress"
-    assert task["spec"].endswith("ISI-24B-ORDO-SPATIAL-STATISTICAL-TEMPORAL-CONTRACTS.md")
+    assert "0ad913db23cea44033e8adf693eb179edfa8fb5d" in status
+    assert "1008022ebe4cf95b4d45a12ff746188e6c8efa11" in status
+    assert "35147730914" in status and "ISI-24B is `COMPLETE / CI_VERIFIED`" in status
     for inventory_id in ("INV-C35", "INV-C36", "INV-C37"):
         assert inventory_id in master
-    assert "ISI-24A accepted checkpoint" in master and "ISI-24B current governed slice" in master
+    assert "ISI-24A accepted checkpoint" in master and "ISI-24B accepted checkpoint" in master
 
 
 def test_migration_and_scenario_no_forecast_boundary():

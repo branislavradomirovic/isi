@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import hashlib
 import json
+import calendar
+import math
 import uuid
-from datetime import datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
@@ -15,11 +17,23 @@ from src.domains.ordo.analytics_models import (
     OrdoDevelopmentGoal,
     OrdoIndicatorMethodology,
     OrdoIndicatorResult,
+    OrdoForecastRun,
     OrdoSpatialAggregationRun,
     OrdoStatisticalModelContract,
     OrdoTimeSeriesSpec,
     OrdoScenario,
     OrdoScenarioAssessment,
+)
+from src.domains.ordo.forecast_metrics import aggregate_point_metrics, mae, mase
+from src.domains.ordo.forecasting import (
+    ENGINE_KEY,
+    ENGINE_VERSION,
+    INTERVAL_METHOD,
+    ForecastNotEstimated,
+    clip_interval,
+    empirical_residual_interval,
+    forecast_family,
+    run_rolling_origin,
 )
 from src.domains.ordo.models import (
     OrdoDimension,
@@ -1023,6 +1037,426 @@ def retire_time_series_spec(
     )
 
 
+def _parse_series_date(value: object) -> date:
+    if not isinstance(value, str) or not value.strip():
+        raise ForecastNotEstimated("INVALID_SERIES_VALUE")
+    text = value.strip()
+    try:
+        if "T" in text or " " in text:
+            return datetime.fromisoformat(text.replace("Z", "+00:00")).date()
+        return date.fromisoformat(text)
+    except ValueError as exc:
+        raise ForecastNotEstimated("INVALID_SERIES_VALUE") from exc
+
+
+def _advance_period(value: date, frequency: str) -> date:
+    if frequency == "daily":
+        return value + timedelta(days=1)
+    if frequency == "weekly":
+        return value + timedelta(days=7)
+    months = {"monthly": 1, "quarterly": 3, "annual": 12}.get(frequency)
+    if months is None:
+        raise ValueError("unsupported_time_series_frequency")
+    month_index = (value.month - 1) + months
+    year = value.year + month_index // 12
+    month = month_index % 12 + 1
+    current_last_day = calendar.monthrange(value.year, value.month)[1]
+    day = calendar.monthrange(year, month)[1] if value.day == current_last_day else min(value.day, calendar.monthrange(year, month)[1])
+    return date(year, month, day)
+
+
+def _validate_target_value(value: object, target_semantic: str) -> float:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ForecastNotEstimated("INVALID_SERIES_VALUE")
+    numeric = float(value)
+    if not math.isfinite(numeric):
+        raise ForecastNotEstimated("INVALID_SERIES_VALUE")
+    if target_semantic == "count" and (numeric < 0 or not numeric.is_integer()):
+        raise ForecastNotEstimated("INVALID_SERIES_VALUE")
+    if target_semantic == "proportion_rate" and not 0 <= numeric <= 1:
+        raise ForecastNotEstimated("INVALID_SERIES_VALUE")
+    return numeric
+
+
+def _forecast_binding(
+    session: Session, *, organization_id: uuid.UUID, workspace_id: uuid.UUID,
+    time_series_spec_id: uuid.UUID,
+) -> tuple[OrdoTimeSeriesSpec, OrdoTimeSeriesSpecV1, OrdoAnalyticsRun, GovernedAnalyticalInput]:
+    _validate_scope(session, organization_id=organization_id, workspace_id=workspace_id)
+    row = session.scalar(select(OrdoTimeSeriesSpec).where(
+        OrdoTimeSeriesSpec.id == time_series_spec_id,
+        OrdoTimeSeriesSpec.organization_id == organization_id,
+        OrdoTimeSeriesSpec.workspace_id == workspace_id,
+    ))
+    if row is None:
+        raise OrdoAnalyticsError("time_series_spec_not_found")
+    if row.status != "validated":
+        raise OrdoAnalyticsError("time_series_spec_not_validated")
+    try:
+        spec = normalize_time_series_spec(row.contract_json)
+    except ValidationError as exc:
+        raise OrdoAnalyticsError("time_series_spec_binding_invalid") from exc
+    if time_series_contract_fingerprint(spec) != row.contract_fingerprint:
+        raise OrdoAnalyticsError("time_series_spec_binding_invalid")
+    if (
+        row.schema_version != spec.schema_version
+        or row.series_key != spec.series_key
+        or row.target_semantic != spec.target_semantic
+        or row.frequency != spec.frequency
+        or row.transformation != spec.transformation
+        or row.forecast_execution
+        or row.automatic_model_selection
+        or not row.non_causal
+    ):
+        raise OrdoAnalyticsError("time_series_spec_binding_invalid")
+    indicator = session.get(OrdoIndicatorDefinition, row.target_indicator_id)
+    methodology = session.get(OrdoIndicatorMethodology, row.target_methodology_id)
+    run = session.get(OrdoAnalyticsRun, row.analytics_run_id)
+    if indicator is None or methodology is None or run is None:
+        raise OrdoAnalyticsError("time_series_spec_binding_invalid")
+    current = session.scalar(select(OrdoIndicatorMethodology).where(
+        OrdoIndicatorMethodology.indicator_id == row.target_indicator_id,
+        OrdoIndicatorMethodology.status == "validated",
+    ).order_by(OrdoIndicatorMethodology.version_no.desc()))
+    if (
+        methodology.indicator_id != indicator.id
+        or methodology.status != "validated"
+        or methodology.version_no != row.target_methodology_version
+        or _methodology_fingerprint(methodology) != row.methodology_fingerprint
+        or current is None
+        or current.id != methodology.id
+        or spec.target_methodology_id != methodology.id
+        or spec.target_methodology_version != methodology.version_no
+        or spec.target_methodology_fingerprint != row.methodology_fingerprint
+        or spec.target_indicator_code != indicator.code
+    ):
+        raise OrdoAnalyticsError("time_series_spec_binding_invalid")
+    try:
+        governed = revalidate_analytics_run(
+            session, run=run, organization_id=organization_id, workspace_id=workspace_id
+        )
+    except OrdoAnalyticsError as exc:
+        raise OrdoAnalyticsError("time_series_spec_binding_invalid") from exc
+    if _input_snapshot_sha256(governed) != row.input_snapshot_sha256:
+        raise OrdoAnalyticsError("time_series_spec_binding_invalid")
+    return row, spec, run, governed
+
+
+def _extract_forecast_series(
+    governed: GovernedAnalyticalInput, spec: OrdoTimeSeriesSpecV1,
+    series_identity: dict[str, object],
+) -> tuple[list[date], list[float]]:
+    if set(series_identity) != set(spec.series_key_fields):
+        raise OrdoAnalyticsError("forecast_series_identity_invalid")
+    fields = {str(item.get("field_key")) for item in governed.field_contract}
+    required = {"indicator_code", "quality_status", "value_numeric", spec.time_index_field, *spec.series_key_fields}
+    if not required.issubset(fields):
+        raise OrdoAnalyticsError("time_series_spec_binding_invalid")
+    selected: list[tuple[date, float]] = []
+    for record in governed.records:
+        payload = record.payload
+        if payload.get("indicator_code") != spec.target_indicator_code or payload.get("quality_status") != "validated":
+            continue
+        if any(
+            key not in payload
+            or (isinstance(payload[key], bool) != isinstance(expected, bool))
+            or payload[key] != expected
+            for key, expected in series_identity.items()
+        ):
+            continue
+        observed_at = _parse_series_date(payload.get(spec.time_index_field))
+        if not (spec.observation_window_start <= observed_at <= spec.observation_window_end):
+            continue
+        if observed_at > spec.observation_as_of:
+            continue
+        selected.append((observed_at, _validate_target_value(payload.get("value_numeric"), spec.target_semantic)))
+    if not selected:
+        raise ForecastNotEstimated("SERIES_EVIDENCE_NOT_FOUND")
+    selected.sort(key=lambda item: item[0])
+    dates = [item[0] for item in selected]
+    if len(dates) != len(set(dates)):
+        raise ForecastNotEstimated("DUPLICATE_TIME_INDEX")
+    values = [item[1] for item in selected]
+    if dates[0] != spec.observation_window_start or dates[-1] != spec.observation_window_end:
+        raise ForecastNotEstimated("IRREGULAR_OR_MISSING_PERIODS")
+    for previous, current in zip(dates, dates[1:]):
+        if _advance_period(previous, spec.frequency) != current:
+            raise ForecastNotEstimated("IRREGULAR_OR_MISSING_PERIODS")
+    return dates, values
+
+
+def _metric_payload(
+    backtests: list[dict[str, object]], *, seasonality_period: int | None,
+    required_metrics: set[str], interval_level: float, target_semantic: str,
+) -> tuple[dict[str, float], dict[str, dict[str, object]], dict[str, object]]:
+    all_actual: list[float] = []
+    all_forecast: list[float] = []
+    origin_mase: list[float] = []
+    residual_history: dict[int, list[float]] = {}
+    eligible_intervals = 0
+    covered_intervals = 0
+    interval_widths: list[float] = []
+    for origin in backtests:
+        training = [float(value) for value in origin.pop("training")]
+        actual = [float(value) for value in origin["actual"]]
+        forecasts = [float(value) for value in origin["forecast"]]
+        all_actual.extend(actual)
+        all_forecast.extend(forecasts)
+        scale_lag = seasonality_period or 1
+        origin_mase_value = mase(actual, forecasts, training, scale_lag)
+        origin_metrics: dict[str, float | None] = aggregate_point_metrics(actual, forecasts)
+        origin_metrics["MASE"] = origin_mase_value
+        origin["metrics"] = origin_metrics
+        if origin_mase_value is not None:
+            origin_mase.append(origin_mase_value)
+        interval_points = []
+        for index, (observed, predicted, residual) in enumerate(
+            zip(actual, forecasts, origin["residuals"], strict=True), start=1
+        ):
+            prior = residual_history.setdefault(index, [])
+            interval_point: dict[str, object] = {"horizon_step": index, "available": False, "prior_residual_count": len(prior)}
+            if len(prior) >= 3:
+                lower, upper = empirical_residual_interval(predicted, prior, interval_level)
+                lower, upper = clip_interval(lower, upper, target_semantic)
+                interval_point.update({"available": True, "lower": lower, "upper": upper, "covered": lower <= observed <= upper})
+                eligible_intervals += 1
+                covered_intervals += int(lower <= observed <= upper)
+                interval_widths.append(upper - lower)
+            interval_points.append(interval_point)
+            prior.append(float(residual))
+        origin["interval_points"] = interval_points
+    metrics = aggregate_point_metrics(all_actual, all_forecast)
+    availability: dict[str, dict[str, object]] = {
+        name: {"available": True, "denominator_count": len(all_actual)} for name in ("MAE", "RMSE", "bias", "sMAPE")
+    }
+    if len(origin_mase) == len(backtests):
+        metrics["MASE"] = sum(origin_mase) / len(origin_mase)
+        availability["MASE"] = {"available": True, "denominator_count": len(origin_mase)}
+    else:
+        availability["MASE"] = {"available": False, "denominator_count": len(origin_mase)}
+    baseline_predictions: list[float] = []
+    baseline_available = seasonality_period is not None
+    # Each origin's seasonal baseline is retained during execution when it is eligible.
+    for origin in backtests:
+        baseline = origin.get("seasonal_baseline_forecast")
+        if baseline is None:
+            baseline_available = False
+            break
+        baseline_predictions.extend(float(value) for value in baseline)
+    if baseline_available and baseline_predictions:
+        baseline_mae = mae(all_actual, baseline_predictions)
+        if baseline_mae > 0 and math.isfinite(baseline_mae):
+            metrics["seasonal_baseline_comparison"] = metrics["MAE"] / baseline_mae
+            availability["seasonal_baseline_comparison"] = {"available": True, "denominator_count": len(all_actual)}
+        else:
+            availability["seasonal_baseline_comparison"] = {"available": False, "denominator_count": len(all_actual)}
+    else:
+        availability["seasonal_baseline_comparison"] = {"available": False, "denominator_count": 0}
+    if eligible_intervals:
+        metrics["interval_coverage"] = covered_intervals / eligible_intervals
+        metrics["interval_width_sharpness"] = sum(interval_widths) / eligible_intervals
+    availability["interval_coverage"] = {"available": bool(eligible_intervals), "denominator_count": eligible_intervals}
+    availability["interval_width_sharpness"] = {"available": bool(eligible_intervals), "denominator_count": eligible_intervals}
+    if any(not availability.get(metric, {"available": False})["available"] for metric in required_metrics):
+        raise ForecastNotEstimated("REQUIRED_BACKTEST_METRIC_UNAVAILABLE")
+    return metrics, availability, {
+        "backtest_point_count": len(all_actual),
+        "rolling_origin_count": len(backtests),
+        "eligible_interval_point_count": eligible_intervals,
+        "covered_interval_point_count": covered_intervals,
+    }
+
+
+def _forecast_result_data(
+    dates: list[date], values: list[float], spec: OrdoTimeSeriesSpecV1,
+    requested_family: str, interval_level: float,
+) -> dict[str, object]:
+    backtests = run_rolling_origin(
+        values, family=requested_family,
+        initial_train_periods=spec.temporal_validation.initial_train_periods,
+        step_size=spec.temporal_validation.step_size, horizon=spec.horizon,
+        minimum_origins=spec.temporal_validation.minimum_origins,
+        seasonality_period=spec.seasonality_period,
+    )
+    for origin in backtests:
+        training = [float(value) for value in origin["training"]]
+        if spec.seasonality_period is not None and len(training) >= spec.seasonality_period:
+            origin["seasonal_baseline_forecast"] = forecast_family(
+                training, spec.horizon, "seasonal_naive", spec.seasonality_period
+            )
+    metrics, availability, diagnostics = _metric_payload(
+        backtests, seasonality_period=spec.seasonality_period,
+        required_metrics=set(spec.temporal_validation.required_metrics),
+        interval_level=interval_level, target_semantic=spec.target_semantic,
+    )
+    residuals_by_horizon: dict[int, list[float]] = {step: [] for step in range(1, spec.horizon + 1)}
+    for origin in backtests:
+        for step, residual in enumerate(origin["residuals"], start=1):
+            residuals_by_horizon[step].append(float(residual))
+    if any(len(residuals) < 3 for residuals in residuals_by_horizon.values()):
+        raise ForecastNotEstimated("INSUFFICIENT_INTERVAL_CALIBRATION")
+    point_forecast = forecast_family(values, spec.horizon, requested_family, spec.seasonality_period)
+    forecast_points = []
+    forecast_date = dates[-1]
+    for step, point in enumerate(point_forecast, start=1):
+        forecast_date = _advance_period(forecast_date, spec.frequency)
+        lower, upper = empirical_residual_interval(point, residuals_by_horizon[step], interval_level)
+        lower, upper = clip_interval(lower, upper, spec.target_semantic)
+        forecast_points.append({
+            "horizon_step": step, "time": forecast_date.isoformat(), "point": point,
+            "lower": lower, "upper": upper, "calibration_residual_count": len(residuals_by_horizon[step]),
+        })
+    diagnostics["calibration_residual_count_by_horizon"] = {
+        str(step): len(residuals) for step, residuals in residuals_by_horizon.items()
+    }
+    return {
+        "executed_family": requested_family,
+        "backtest_records": backtests,
+        "aggregate_backtest_metrics": metrics,
+        "metric_availability": availability,
+        "diagnostics": diagnostics,
+        "warnings": [],
+        "forecast_points": forecast_points,
+    }
+
+
+def _persist_forecast_outcome(
+    session: Session, *, row: OrdoTimeSeriesSpec, spec: OrdoTimeSeriesSpecV1,
+    series_identity: dict[str, object], requested_family: str, interval_level: float,
+    actor_id: uuid.UUID | None, result_status: str, reason_code: str,
+    dates: list[date] | None = None, result_data: dict[str, object] | None = None,
+) -> OrdoForecastRun:
+    dates = dates or []
+    result_data = result_data or {
+        "executed_family": None, "backtest_records": [], "aggregate_backtest_metrics": {},
+        "metric_availability": {}, "diagnostics": {}, "warnings": [], "forecast_points": [],
+    }
+    request_payload = {
+        "organization_id": str(row.organization_id), "workspace_id": str(row.workspace_id),
+        "time_series_spec_id": str(row.id), "time_series_spec_fingerprint": row.contract_fingerprint,
+        "requested_family": requested_family, "series_identity": series_identity,
+        "interval_level": interval_level,
+    }
+    request_fingerprint = _canonical_sha256(request_payload)
+    result_payload = {
+        **request_payload, "schema_version": "ORDO-FORECAST-RUN-v1", "result_status": result_status,
+        "reason_code": reason_code, "engine_key": ENGINE_KEY, "engine_version": ENGINE_VERSION,
+        "interval_method": INTERVAL_METHOD, "analytics_run_id": str(row.analytics_run_id),
+        "time_series_spec_version": row.version_no, "target_indicator_id": str(row.target_indicator_id),
+        "target_methodology_id": str(row.target_methodology_id),
+        "target_methodology_version": row.target_methodology_version,
+        "methodology_fingerprint": row.methodology_fingerprint,
+        "input_snapshot_sha256": row.input_snapshot_sha256, **result_data,
+    }
+    forecast = OrdoForecastRun(
+        organization_id=row.organization_id, workspace_id=row.workspace_id,
+        analytics_run_id=row.analytics_run_id, time_series_spec_id=row.id,
+        time_series_spec_version=row.version_no, time_series_spec_fingerprint=row.contract_fingerprint,
+        target_indicator_id=row.target_indicator_id, target_methodology_id=row.target_methodology_id,
+        target_methodology_version=row.target_methodology_version,
+        methodology_fingerprint=row.methodology_fingerprint, input_snapshot_sha256=row.input_snapshot_sha256,
+        schema_version="ORDO-FORECAST-RUN-v1", series_identity=series_identity,
+        request_fingerprint=request_fingerprint, requested_family=requested_family,
+        executed_family=result_data["executed_family"], engine_key=ENGINE_KEY, engine_version=ENGINE_VERSION,
+        interval_method=INTERVAL_METHOD, interval_level=interval_level,
+        result_status=result_status, reason_code=reason_code,
+        observation_window={"start": spec.observation_window_start.isoformat(), "end": spec.observation_window_end.isoformat(), "as_of": spec.observation_as_of.isoformat()},
+        training_window={"start": dates[0].isoformat() if dates else None, "end": dates[-1].isoformat() if dates else None, "period_count": len(dates)},
+        horizon=spec.horizon, rolling_origin_plan=spec.temporal_validation.model_dump(mode="json"),
+        backtest_records=result_data["backtest_records"],
+        aggregate_backtest_metrics=result_data["aggregate_backtest_metrics"],
+        metric_availability=result_data["metric_availability"], diagnostics=result_data["diagnostics"],
+        warnings=result_data["warnings"], forecast_points=result_data["forecast_points"],
+        result_fingerprint=_canonical_sha256(result_payload), non_causal=True,
+        automatic_model_selection=False, automatic_policy_recommendation=False,
+        created_by_membership_id=actor_id,
+    )
+    session.add(forecast)
+    session.flush()
+    return forecast
+
+
+def execute_forecast(
+    session: Session, *, organization_id: uuid.UUID, workspace_id: uuid.UUID,
+    time_series_spec_id: uuid.UUID, requested_family: str,
+    series_identity: dict[str, object], interval_level: float, actor_id: uuid.UUID | None,
+) -> OrdoForecastRun:
+    if actor_id is None:
+        raise OrdoAnalyticsError("forecast_actor_required")
+    if interval_level not in {0.80, 0.90, 0.95}:
+        raise OrdoAnalyticsError("forecast_interval_level_invalid")
+    if any(
+        not isinstance(key, str)
+        or not key.strip()
+        or not isinstance(value, (str, int, float, bool, type(None)))
+        or (isinstance(value, float) and not math.isfinite(value))
+        for key, value in series_identity.items()
+    ):
+        raise OrdoAnalyticsError("forecast_series_identity_invalid")
+    row, spec, _run, governed = _forecast_binding(
+        session, organization_id=organization_id, workspace_id=workspace_id,
+        time_series_spec_id=time_series_spec_id,
+    )
+    if requested_family not in spec.candidate_families:
+        raise OrdoAnalyticsError("forecast_family_not_in_validated_spec")
+    if set(series_identity) != set(spec.series_key_fields):
+        raise OrdoAnalyticsError("forecast_series_identity_invalid")
+    if requested_family not in {"naive", "seasonal_naive"}:
+        return _persist_forecast_outcome(
+            session, row=row, spec=spec, series_identity=series_identity,
+            requested_family=requested_family, interval_level=interval_level, actor_id=actor_id,
+            result_status="NOT_ESTIMATED", reason_code="EXECUTABLE_FAMILY_NOT_DEFINED_24C",
+        )
+    if spec.transformation != "none":
+        return _persist_forecast_outcome(
+            session, row=row, spec=spec, series_identity=series_identity,
+            requested_family=requested_family, interval_level=interval_level, actor_id=actor_id,
+            result_status="NOT_ESTIMATED", reason_code="TRANSFORMATION_EXECUTION_NOT_DEFINED_24C",
+        )
+    dates: list[date] = []
+    try:
+        dates, values = _extract_forecast_series(governed, spec, series_identity)
+        if len(values) < spec.minimum_history_periods:
+            raise ForecastNotEstimated("INSUFFICIENT_HISTORY")
+        result_data = _forecast_result_data(dates, values, spec, requested_family, interval_level)
+    except ForecastNotEstimated as exc:
+        return _persist_forecast_outcome(
+            session, row=row, spec=spec, series_identity=series_identity,
+            requested_family=requested_family, interval_level=interval_level, actor_id=actor_id,
+            result_status="NOT_ESTIMATED", reason_code=exc.reason_code, dates=dates,
+        )
+    return _persist_forecast_outcome(
+        session, row=row, spec=spec, series_identity=series_identity,
+        requested_family=requested_family, interval_level=interval_level, actor_id=actor_id,
+        result_status="ESTIMATED", reason_code="", dates=dates, result_data=result_data,
+    )
+
+
+def list_forecast_runs(
+    session: Session, *, organization_id: uuid.UUID, workspace_id: uuid.UUID, limit: int = 50,
+) -> list[OrdoForecastRun]:
+    _validate_scope(session, organization_id=organization_id, workspace_id=workspace_id)
+    return list(session.scalars(select(OrdoForecastRun).where(
+        OrdoForecastRun.organization_id == organization_id,
+        OrdoForecastRun.workspace_id == workspace_id,
+    ).order_by(OrdoForecastRun.created_at.desc()).limit(max(1, min(limit, 100)))).all())
+
+
+def get_forecast_run(
+    session: Session, *, forecast_run_id: uuid.UUID,
+    organization_id: uuid.UUID, workspace_id: uuid.UUID,
+) -> OrdoForecastRun:
+    _validate_scope(session, organization_id=organization_id, workspace_id=workspace_id)
+    row = session.scalar(select(OrdoForecastRun).where(
+        OrdoForecastRun.id == forecast_run_id,
+        OrdoForecastRun.organization_id == organization_id,
+        OrdoForecastRun.workspace_id == workspace_id,
+    ))
+    if row is None:
+        raise OrdoAnalyticsError("forecast_run_not_found")
+    return row
+
+
 def create_goal(
     session: Session,
     *,
@@ -1133,8 +1567,10 @@ def set_scenario_status(
     return row
 
 
-def _canonical_sha256(value: dict) -> str:
-    payload = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+def _canonical_sha256(value) -> str:
+    payload = json.dumps(
+        value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False, default=str
+    ).encode("utf-8")
     return hashlib.sha256(payload).hexdigest()
 
 
@@ -1177,6 +1613,8 @@ def _scenario_assessment_payload(
     return {
         "assessment_mode": "evidence_readiness_only",
         "forecast_performed": False,
+        "impact": "NOT_ESTIMATED",
+        "impact_estimation_reason_code": "NO_APPROVED_RESPONSE_MODEL",
         "scenario_contract": {
             "scenario_contract_version": "ORDO-SCENARIO-CONTRACT-v1",
             "methodology_key": "ordo_evidence_readiness_v1",
@@ -1271,6 +1709,11 @@ def create_scenario_assessment(
         uncertainty_semantics=assessment["scenario_contract"]["uncertainty_semantics"],
         human_review_state="pending",
         forecast_performed=False,
+        impact_estimation_status="NOT_ESTIMATED",
+        impact_estimation_reason_code="NO_APPROVED_RESPONSE_MODEL",
+        impact_estimate_numeric=None,
+        impact_estimate_unit="",
+        impact_model_reference="",
         status="evidence_only",
         created_by_membership_id=actor_id,
     )

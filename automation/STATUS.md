@@ -6,9 +6,9 @@ Last status update: 2026-09-16.
 
 ## Current execution
 
-Last completed slice: `ISI-23E - SIMPA final closeout`.
+Last completed slice: `ISI-24B - Spatial Processing + Statistical/Time-Series Contracts`.
 
-ISI-23E closeout state: `COMPLETE / CI_VERIFIED`.
+ISI-24B checkpoint state: `COMPLETE / CI_VERIFIED`.
 
 Accepted ISI-23D implementation SHA: `a39caa8160f01dee4e30ab7912a732f0aa68c0d6`.
 
@@ -83,7 +83,13 @@ Accepted ISI-24A implementation tree: `6c688c698fb5bf9520e0a4437c5f372a9790df2c`
 
 Authoritative ISI-24A GitHub Actions: `ISI required acceptance` run #85, run ID `35138374174`, exact SHA `04b0738933030f1d69de52f9260c7b2f11042d0e`, conclusion `success`. ISI-24A is `COMPLETE / CI_VERIFIED`.
 
-Current slice is `ISI-24B - Spatial Processing + Statistical/Time-Series Contracts`. Overall `ISI-24-ORDO-PRODUCTION-METHODOLOGY` remains `IN PROGRESS`; ISI-24C/24D/24E remain later governed slices. Server/live-host verification is `DEFERRED_SERVER_VERIFICATION`, and server/DNS/ingress/production-data mutation remains frozen until owner-approved ISI-28.
+Accepted ISI-24B implementation SHA: `0ad913db23cea44033e8adf693eb179edfa8fb5d`.
+
+Accepted ISI-24B implementation tree: `1008022ebe4cf95b4d45a12ff746188e6c8efa11`.
+
+Authoritative ISI-24B GitHub Actions: `ISI required acceptance` run #86, run ID `35147730914`, exact SHA `0ad913db23cea44033e8adf693eb179edfa8fb5d`, conclusion `success`. ISI-24B is `COMPLETE / CI_VERIFIED`.
+
+Current slice is `ISI-24C - Forecast Engine + Rolling-Origin Backtesting + Uncertainty/Diagnostics + NOT_ESTIMATED Runtime Semantics`. Overall `ISI-24-ORDO-PRODUCTION-METHODOLOGY` remains `IN PROGRESS`; ISI-24D/24E remain later governed slices. Server/live-host verification is `DEFERRED_SERVER_VERIFICATION`, and server/DNS/ingress/production-data mutation remains frozen until owner-approved ISI-28.
 
 ## Mandatory bootstrap rule
 
@@ -106,7 +112,7 @@ A failed required gate returns the active task to implementation/fix state. Requ
 | 21 | Data Governance & Privacy Controls | **COMPLETE / CI_VERIFIED** |
 | 22 | Industrial Data Platform | **COMPLETE / CI_VERIFIED - 22A through 22G complete** |
 | 23 | SIMPA Production Methodology + Help/User Guide | **COMPLETE / CI_VERIFIED - 23A through 23E complete** |
-| 24 | ORDO Production Methodology + Help/User Guide | **IN PROGRESS - 24A accepted / 24B current** |
+| 24 | ORDO Production Methodology + Help/User Guide | **IN PROGRESS - 24A/24B accepted / 24C current** |
 | 25 | Industrial AI / MLOps | PLANNED |
 | 26 | Performance, Load & Resilience | PLANNED |
 | 27 | Industrial Release Candidate & Acceptance Pack | PLANNED |

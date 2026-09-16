@@ -243,9 +243,9 @@
       "depends_on": [
         "ISI-23-SIMPA-PRODUCTION-METHODOLOGY"
       ],
-      "note": "ISI-24A is COMPLETE / CI_VERIFIED on 04b0738933030f1d69de52f9260c7b2f11042d0e, tree 6c688c698fb5bf9520e0a4437c5f372a9790df2c, exact-main run #85 / 35138374174 success. ISI-24B is current and owns identity-based spatial aggregation plus statistical-model and time-series specification/readiness contracts without forecast execution. 24C owns forecasting/backtesting/intervals/runtime NOT_ESTIMATED, 24D ORDO Help/User Guide/XAI, and 24E final ORDO closeout. Overall ISI-24 remains in progress. No production-server mutation is authorized.",
+      "note": "ISI-24A is COMPLETE / CI_VERIFIED on 04b0738933030f1d69de52f9260c7b2f11042d0e, tree 6c688c698fb5bf9520e0a4437c5f372a9790df2c, exact-main run #85 / 35138374174 success. ISI-24B is COMPLETE / CI_VERIFIED on 0ad913db23cea44033e8adf693eb179edfa8fb5d, tree 1008022ebe4cf95b4d45a12ff746188e6c8efa11, exact-main run #86 / 35147730914 success. ISI-24C is current and owns explicitly requested naive/seasonal-naive forecast execution, rolling-origin backtesting, empirical residual intervals, diagnostics and runtime NOT_ESTIMATED semantics. 24D owns ORDO Help/User Guide/XAI, and 24E final ORDO closeout. Overall ISI-24 remains in progress. No production-server mutation is authorized.",
       "next": "ISI-25-INDUSTRIAL-AI-MLOPS",
-      "spec": "automation/specs/ISI-24B-ORDO-SPATIAL-STATISTICAL-TEMPORAL-CONTRACTS.md"
+      "spec": "automation/specs/ISI-24C-ORDO-FORECAST-BACKTEST-UNCERTAINTY-CONTRACTS.md"
     },
     {
       "id": "ISI-25-INDUSTRIAL-AI-MLOPS",

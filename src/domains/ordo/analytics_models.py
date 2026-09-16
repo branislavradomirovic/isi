@@ -236,6 +236,63 @@ class OrdoTimeSeriesSpec(Base):
     created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
 
 
+class OrdoForecastRun(Base):
+    __tablename__ = "ordo_forecast_runs"
+    __table_args__ = (
+        CheckConstraint("schema_version = 'ORDO-FORECAST-RUN-v1'", name="ck_ordo_forecast_run_schema"),
+        CheckConstraint("result_status IN ('ESTIMATED','NOT_ESTIMATED')", name="ck_ordo_forecast_run_status"),
+        CheckConstraint("requested_family IN ('naive','seasonal_naive','ets','sarima','sarimax','count_time_series')", name="ck_ordo_forecast_run_requested_family"),
+        CheckConstraint("executed_family IS NULL OR executed_family IN ('naive','seasonal_naive')", name="ck_ordo_forecast_run_executed_family"),
+        CheckConstraint("interval_level IN (0.80,0.90,0.95)", name="ck_ordo_forecast_run_interval_level"),
+        CheckConstraint("horizon >= 1", name="ck_ordo_forecast_run_horizon"),
+        CheckConstraint("length(time_series_spec_fingerprint) = 64 AND length(methodology_fingerprint) = 64 AND length(input_snapshot_sha256) = 64 AND length(request_fingerprint) = 64 AND length(result_fingerprint) = 64", name="ck_ordo_forecast_run_fingerprints"),
+        CheckConstraint("non_causal = true AND automatic_model_selection = false AND automatic_policy_recommendation = false", name="ck_ordo_forecast_run_locked_semantics"),
+        CheckConstraint("(result_status = 'ESTIMATED' AND executed_family IS NOT NULL AND reason_code = '' AND json_array_length(forecast_points) = horizon AND json_array_length(backtest_records) > 0) OR (result_status = 'NOT_ESTIMATED' AND executed_family IS NULL AND length(reason_code) > 0 AND json_array_length(forecast_points) = 0 AND json_array_length(backtest_records) = 0)", name="ck_ordo_forecast_run_result_state"),
+        Index("ix_ordo_forecast_run_scope_created", "organization_id", "workspace_id", "created_at"),
+        Index("ix_ordo_forecast_run_request_fingerprint", "request_fingerprint"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    organization_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False)
+    workspace_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False)
+    analytics_run_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("ordo_analytics_runs.id", ondelete="RESTRICT"), nullable=False)
+    time_series_spec_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("ordo_time_series_specs.id", ondelete="RESTRICT"), nullable=False)
+    time_series_spec_version: Mapped[int] = mapped_column(Integer, nullable=False)
+    time_series_spec_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    target_indicator_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("ordo_indicator_definitions.id", ondelete="RESTRICT"), nullable=False)
+    target_methodology_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("ordo_indicator_methodologies.id", ondelete="RESTRICT"), nullable=False)
+    target_methodology_version: Mapped[int] = mapped_column(Integer, nullable=False)
+    methodology_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    input_snapshot_sha256: Mapped[str] = mapped_column(String(64), nullable=False)
+    schema_version: Mapped[str] = mapped_column(String(64), nullable=False, default="ORDO-FORECAST-RUN-v1", server_default="ORDO-FORECAST-RUN-v1")
+    series_identity: Mapped[dict] = mapped_column(JSON, nullable=False)
+    request_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    requested_family: Mapped[str] = mapped_column(String(32), nullable=False)
+    executed_family: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    engine_key: Mapped[str] = mapped_column(String(80), nullable=False)
+    engine_version: Mapped[str] = mapped_column(String(32), nullable=False)
+    interval_method: Mapped[str] = mapped_column(String(80), nullable=False)
+    interval_level: Mapped[float] = mapped_column(Float, nullable=False)
+    result_status: Mapped[str] = mapped_column(String(24), nullable=False)
+    reason_code: Mapped[str] = mapped_column(String(80), nullable=False, default="", server_default="")
+    observation_window: Mapped[dict] = mapped_column(JSON, nullable=False)
+    training_window: Mapped[dict] = mapped_column(JSON, nullable=False)
+    horizon: Mapped[int] = mapped_column(Integer, nullable=False)
+    rolling_origin_plan: Mapped[dict] = mapped_column(JSON, nullable=False)
+    backtest_records: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    aggregate_backtest_metrics: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    metric_availability: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    diagnostics: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    warnings: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    forecast_points: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    result_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    non_causal: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, server_default="true")
+    automatic_model_selection: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default="false")
+    automatic_policy_recommendation: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default="false")
+    created_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+
+
 class OrdoDevelopmentGoal(Base):
     __tablename__ = "ordo_development_goals"
     __table_args__ = (
@@ -287,6 +344,8 @@ class OrdoScenarioAssessment(Base):
         CheckConstraint("input_snapshot_sha256 = '' OR length(input_snapshot_sha256) = 64", name="ck_ordo_scenario_assessment_snapshot_sha"),
         CheckConstraint("human_review_state IN ('pending','reviewed','rejected')", name="ck_ordo_scenario_assessment_human_review"),
         CheckConstraint("uncertainty_semantics = 'not_applicable_scenario_not_forecast'", name="ck_ordo_scenario_assessment_uncertainty"),
+        CheckConstraint("impact_estimation_status IN ('LEGACY_NOT_EVALUATED','NOT_ESTIMATED','ESTIMATED')", name="ck_ordo_scenario_assessment_impact_status"),
+        CheckConstraint("impact_estimation_status != 'NOT_ESTIMATED' OR (impact_estimation_reason_code = 'NO_APPROVED_RESPONSE_MODEL' AND impact_estimate_numeric IS NULL AND impact_model_reference = '')", name="ck_ordo_scenario_assessment_not_estimated_impact"),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
@@ -305,6 +364,11 @@ class OrdoScenarioAssessment(Base):
     uncertainty_semantics: Mapped[str] = mapped_column(String(80), nullable=False, default="not_applicable_scenario_not_forecast", server_default="not_applicable_scenario_not_forecast")
     human_review_state: Mapped[str] = mapped_column(String(24), nullable=False, default="pending", server_default="pending")
     forecast_performed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default="false")
+    impact_estimation_status: Mapped[str] = mapped_column(String(32), nullable=False, default="NOT_ESTIMATED", server_default="NOT_ESTIMATED")
+    impact_estimation_reason_code: Mapped[str] = mapped_column(String(80), nullable=False, default="NO_APPROVED_RESPONSE_MODEL", server_default="NO_APPROVED_RESPONSE_MODEL")
+    impact_estimate_numeric: Mapped[float | None] = mapped_column(Float, nullable=True)
+    impact_estimate_unit: Mapped[str] = mapped_column(String(80), nullable=False, default="", server_default="")
+    impact_model_reference: Mapped[str] = mapped_column(String(400), nullable=False, default="", server_default="")
     status: Mapped[str] = mapped_column(String(24), nullable=False, default="evidence_only", server_default="evidence_only")
     reviewer_note: Mapped[str] = mapped_column(Text, nullable=False, default="", server_default="")
     reviewed_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)

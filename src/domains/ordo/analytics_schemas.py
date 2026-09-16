@@ -4,7 +4,7 @@ import uuid
 from datetime import date
 from typing import Any, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class OrdoAnalyticsScope(BaseModel):
@@ -80,6 +80,24 @@ class ScenarioAssessmentCreateRequest(OrdoAnalyticsScope):
 class ScenarioAssessmentReviewRequest(OrdoAnalyticsScope):
     decision: Literal["reviewed", "rejected"]
     reviewer_note: str = Field(default="", max_length=5000)
+
+
+class ForecastExecutionRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", allow_inf_nan=False)
+
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    time_series_spec_id: uuid.UUID
+    requested_family: Literal["naive", "seasonal_naive", "ets", "sarima", "sarimax", "count_time_series"]
+    series_identity: dict[str, str | int | float | bool | None]
+    interval_level: Literal[0.80, 0.90, 0.95]
+
+    @field_validator("series_identity")
+    @classmethod
+    def validate_series_identity(cls, value):
+        if any(not isinstance(key, str) or not key.strip() for key in value):
+            raise ValueError("series_identity keys must be nonblank strings")
+        return value
 
 
 class SynthesisCreateRequest(OrdoAnalyticsScope):

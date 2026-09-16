@@ -114,7 +114,7 @@ def test_masterplan_bootstrap_and_legacy_governance_is_enforced() -> None:
         assert "HISTORICAL / SUPERSEDED - DO NOT EXECUTE" in (ROOT / rel).read_text()
 
 
-def test_live_status_records_current_24a_slice_and_verified_predecessors() -> None:
+def test_live_status_records_current_24c_slice_and_verified_predecessors() -> None:
     status = (ROOT / "automation/STATUS.md").read_text()
     assert "Accepted ISI-22G implementation SHA: `fd0e46631b5047c64b731d041645e528292f3664`." in status
     assert "Accepted ISI-22G implementation tree: `1a405a65a6fa67f2845ee0a10f2a6f44b11e355e`." in status
@@ -147,7 +147,10 @@ def test_live_status_records_current_24a_slice_and_verified_predecessors() -> No
     assert "Accepted ISI-23E closeout SHA: `3894f5d4ce9b78abc39f9a565fecf83bc2ce7a73`." in status
     assert "run #84" in status
     assert "run ID `35084716444`" in status
-    assert "Current slice is `ISI-24B" in status
+    assert "Accepted ISI-24B implementation SHA: `0ad913db23cea44033e8adf693eb179edfa8fb5d`." in status
+    assert "Accepted ISI-24B implementation tree: `1008022ebe4cf95b4d45a12ff746188e6c8efa11`." in status
+    assert "run #86" in status and "run ID `35147730914`" in status
+    assert "Current slice is `ISI-24C" in status
 
     tasks = json.loads((ROOT / "automation/tasks.json").read_text())["tasks"]
     by_id = {task["id"]: task for task in tasks}
@@ -169,7 +172,7 @@ def test_live_status_records_current_24a_slice_and_verified_predecessors() -> No
     assert "run #84 / 35084716444" in by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["note"]
     assert by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["next"] == "ISI-24-ORDO-PRODUCTION-METHODOLOGY"
     assert by_id["ISI-24-ORDO-PRODUCTION-METHODOLOGY"]["status"] == "in_progress"
-    assert by_id["ISI-24-ORDO-PRODUCTION-METHODOLOGY"]["spec"] == "automation/specs/ISI-24B-ORDO-SPATIAL-STATISTICAL-TEMPORAL-CONTRACTS.md"
+    assert by_id["ISI-24-ORDO-PRODUCTION-METHODOLOGY"]["spec"] == "automation/specs/ISI-24C-ORDO-FORECAST-BACKTEST-UNCERTAINTY-CONTRACTS.md"
 
 
 def test_canonical_system_inventory_is_complete_and_self_contained() -> None:
