@@ -6,15 +6,23 @@ Last status update: 2026-09-16.
 
 ## Current execution
 
-Last completed slice: `ISI-23C - Deterministic Statistical Model Contracts`.
+Last completed slice: `ISI-23D - SIMPA Help Coverage + User Guide + Statistical XAI`.
 
-ISI-23C implementation state: `COMPLETE / CI_VERIFIED`.
+ISI-23D implementation state: `COMPLETE / CI_VERIFIED`.
+
+Accepted ISI-23D implementation SHA: `a39caa8160f01dee4e30ab7912a732f0aa68c0d6`.
+
+Accepted ISI-23D implementation tree: `05384a755462790484794714e741f74762d6da0d`.
+
+Authoritative ISI-23D GitHub Actions: `ISI required acceptance` run #83, run ID `35081472982`, exact SHA `a39caa8160f01dee4e30ab7912a732f0aa68c0d6`, conclusion `success`; policy, quality, tests, architecture-security, migration, native-postgres, compose, supply-chain, build and aggregate `acceptance` all passed.
+
+Historical ISI-23C checkpoint retained for canonical traceability:
 
 Accepted final ISI-23C canonical main SHA: `a49b3faf171dfdbcf9306cfbe50fdc6ad1aabbff`.
 
 Accepted final ISI-23C tree: `1a48b09d0712fdee65dbb349ffc6f71ad46b99dd`.
 
-Authoritative GitHub Actions: `ISI required acceptance` run #82, run ID `35075352285`, exact SHA `a49b3faf171dfdbcf9306cfbe50fdc6ad1aabbff`, conclusion `success`; policy, quality, tests, architecture-security, migration, native-postgres, compose, supply-chain, build and aggregate `acceptance` all passed. Final SHA includes the narrow two-file runtime dependency-lock recovery after original ISI-23C commit `3210490be6678260604907c153c90a92ee19041a`.
+Authoritative ISI-23C GitHub Actions: `ISI required acceptance` run #82, run ID `35075352285`, exact SHA `a49b3faf171dfdbcf9306cfbe50fdc6ad1aabbff`, conclusion `success`; aggregate `acceptance` passed after the narrow runtime dependency-lock recovery.
 
 Historical ISI-23B checkpoint retained for canonical traceability:
 
@@ -61,7 +69,7 @@ Server/live-host verification: `DEFERRED_SERVER_VERIFICATION`. No production dep
 
 Overall `ISI-22-INDUSTRIAL-DATA-PLATFORM` is `COMPLETE / CI_VERIFIED`. The mandatory whole-phase gap/legacy audit and ISI-22G closeout are complete; no Phase-22 `REMOVE_BEFORE_NEXT_SLICE` finding remains open.
 
-Next action: **ISI-23D - SIMPA Help Coverage Matrix + in-app User Guide + methodological XAI**. ISI-23A/B/C are COMPLETE / CI_VERIFIED. 23D must verify every material SIMPA user action under MasterPlan 0.5A and add faithful four-family statistical interpretation without inventing causality, confidence, feature importance, thresholds, LISI semantics or ISI-25 model-promotion scope. Current/next is ISI-23D.
+Next action: **ISI-23E - SIMPA final closeout**. ISI-23A/B/C/D are COMPLETE / CI_VERIFIED. 23E is evidence/test/governance-only: whole-phase gap/legacy audit, SIMPA Help/XAI acceptance and synthetic end-to-end verification. Current/final closeout is ISI-23E; ISI-24 is the next implementation phase only after the exact 23E closeout commit passes required CI.
 
 ## Mandatory bootstrap rule
 
@@ -83,7 +91,7 @@ A failed required gate returns the active task to implementation/fix state. Requ
 | 20 | Enterprise Security Completion | **COMPLETE / CI_VERIFIED** |
 | 21 | Data Governance & Privacy Controls | **COMPLETE / CI_VERIFIED** |
 | 22 | Industrial Data Platform | **COMPLETE / CI_VERIFIED - 22A through 22G complete** |
-| 23 | SIMPA Production Methodology + Help/User Guide | **IN PROGRESS - 23A/23B/23C COMPLETE / CI_VERIFIED; 23D current/next** |
+| 23 | SIMPA Production Methodology + Help/User Guide | **CLOSEOUT - 23A/23B/23C/23D COMPLETE / CI_VERIFIED; 23E current/final** |
 | 24 | ORDO Production Methodology + Help/User Guide | PLANNED |
 | 25 | Industrial AI / MLOps | PLANNED |
 | 26 | Performance, Load & Resilience | PLANNED |

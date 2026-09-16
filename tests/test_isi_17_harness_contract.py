@@ -140,7 +140,11 @@ def test_live_status_records_current_slice_and_phase22_history() -> None:
     assert "Accepted final ISI-23C canonical main SHA: `a49b3faf171dfdbcf9306cfbe50fdc6ad1aabbff`." in status
     assert "run #82" in status
     assert "run ID `35075352285`" in status
-    assert "Current/next is ISI-23D" in status
+    assert "Accepted ISI-23D implementation SHA: `a39caa8160f01dee4e30ab7912a732f0aa68c0d6`." in status
+    assert "Accepted ISI-23D implementation tree: `05384a755462790484794714e741f74762d6da0d`." in status
+    assert "run #83" in status
+    assert "run ID `35081472982`" in status
+    assert "Current/final closeout is ISI-23E" in status
 
     tasks = json.loads((ROOT / "automation/tasks.json").read_text())["tasks"]
     by_id = {task["id"]: task for task in tasks}
@@ -152,11 +156,13 @@ def test_live_status_records_current_slice_and_phase22_history() -> None:
     assert "22G fd0e46631b5047c64b731d041645e528292f3664" in by_id["ISI-22-INDUSTRIAL-DATA-PLATFORM"]["note"]
     assert "run #75 (34856573722)" in by_id["ISI-22-INDUSTRIAL-DATA-PLATFORM"]["note"]
     assert by_id["ISI-22-INDUSTRIAL-DATA-PLATFORM"]["next"] == "ISI-23-SIMPA-PRODUCTION-METHODOLOGY"
-    assert by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["status"] == "in_progress"
+    assert by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["status"] == "done"
     assert "ISI-23B is COMPLETE / CI_VERIFIED on 088fe79904bd0cc85c4d52d5442218884501b538" in by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["note"]
-    assert "ISI-23C is COMPLETE / CI_VERIFIED on final canonical main SHA a49b3faf171dfdbcf9306cfbe50fdc6ad1aabbff" in by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["note"]
-    assert "run #82 / 35075352285 success" in by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["note"]
-    assert "Current/next is ISI-23D" in by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["note"]
+    assert "ISI-23C is COMPLETE / CI_VERIFIED on a49b3faf171dfdbcf9306cfbe50fdc6ad1aabbff" in by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["note"]
+    assert "ISI-23D is COMPLETE / CI_VERIFIED on a39caa8160f01dee4e30ab7912a732f0aa68c0d6" in by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["note"]
+    assert "run #83 / 35081472982" in by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["note"]
+    assert "ISI-23E is the final evidence/test/governance closeout" in by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["note"]
+    assert by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["next"] == "ISI-24-ORDO-PRODUCTION-METHODOLOGY"
 
 
 def test_canonical_system_inventory_is_complete_and_self_contained() -> None:

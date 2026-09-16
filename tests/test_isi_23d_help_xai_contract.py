@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
 from src.streamlit_app.simpa_help_workspace import HELP_REQUIRED_FIELDS, SIMPA_HELP_TOPICS
@@ -33,8 +32,6 @@ def test_help_matrix_user_guide_and_inventory_are_synchronized():
     matrix = Path("docs/help/ISI-HELP-COVERAGE-MATRIX.md").read_text()
     guide = Path("docs/help/SIMPA-USER-GUIDE.md").read_text()
     master = Path("docs/roadmap/ISI-AUTONOMOUS-INDUSTRIALIZATION-MASTER-PLAN.md").read_text()
-    status = Path("automation/STATUS.md").read_text()
-    tasks = json.loads(Path("automation/tasks.json").read_text())
     for index in range(1, 22):
         assert f"INV-A{index:02d}" in matrix
     for row_id in ("INV-A10", "INV-A11", "INV-A18"):
@@ -57,11 +54,7 @@ def test_help_matrix_user_guide_and_inventory_are_synchronized():
     a21 = next(line for line in master.splitlines() if line.startswith("| INV-A21 |"))
     assert "| CURRENT_AS_BUILT |" in a18
     assert "| CURRENT_AS_BUILT |" in a21
-    assert "Current/next is ISI-23D" in master
-    assert "Current/next is ISI-23D" in status
-    task = next(item for item in tasks["tasks"] if item["id"] == "ISI-23-SIMPA-PRODUCTION-METHODOLOGY")
-    assert task["status"] == "in_progress"
-    assert "ISI-23D" in task["note"]
+    assert "ISI-23D implementation boundary:" in master
 
 
 def test_simpa_analytics_ui_uses_deterministic_xai_and_exposes_ai_provenance():
