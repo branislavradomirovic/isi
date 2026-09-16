@@ -58,6 +58,8 @@ email-validator==2.3.0
     # via isi-platform (pyproject.toml)
 fastapi==0.141.1
     # via isi-platform (pyproject.toml)
+formulaic==1.2.2
+    # via statsmodels
 greenlet==3.5.5
     # via sqlalchemy
 h11==0.16.0
@@ -78,6 +80,8 @@ idna==3.19
     #   email-validator
     #   httpx
     #   requests
+interface-meta==2.0.1
+    # via formulaic
 itsdangerous==2.2.0
     # via streamlit
 jinja2==3.1.6
@@ -100,18 +104,31 @@ markupsafe==3.0.3
     #   jinja2
     #   mako
 narwhals==2.26.0
-    # via altair
+    # via
+    #   altair
+    #   formulaic
 numpy==2.4.6
     # via
+    #   formulaic
     #   pandas
+    #   patsy
     #   pydeck
+    #   scipy
+    #   statsmodels
     #   streamlit
 packaging==26.3
     # via
     #   altair
+    #   patsy
+    #   statsmodels
     #   streamlit
 pandas==3.0.5
-    # via streamlit
+    # via
+    #   formulaic
+    #   statsmodels
+    #   streamlit
+patsy==1.0.3
+    # via statsmodels
 pillow==12.3.0
     # via streamlit
 protobuf==7.36.1
@@ -165,6 +182,10 @@ rq==2.12.0
     # via isi-platform (pyproject.toml)
 s3transfer==0.19.2
     # via boto3
+scipy==1.17.1
+    # via
+    #   formulaic
+    #   statsmodels
 six==1.17.0
     # via python-dateutil
 soupsieve==2.9.2
@@ -177,6 +198,8 @@ starlette==1.6.0
     # via
     #   fastapi
     #   streamlit
+statsmodels==0.15.0
+    # via isi-platform (pyproject.toml)
 streamlit==1.63.0
     # via isi-platform (pyproject.toml)
 toml==0.10.2
@@ -188,6 +211,7 @@ typing-extensions==4.16.0
     #   anyio
     #   beautifulsoup4
     #   fastapi
+    #   formulaic
     #   psycopg
     #   pydantic
     #   pydantic-core
@@ -221,3 +245,5 @@ websockets==16.1.1
     # via
     #   streamlit
     #   uvicorn
+wrapt==2.4.1
+    # via formulaic
