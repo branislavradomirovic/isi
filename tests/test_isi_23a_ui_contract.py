@@ -2,6 +2,8 @@ from pathlib import Path
 
 
 UI = Path("src/streamlit_app/simpa_analytics_workspace.py")
+HELP = Path("src/streamlit_app/simpa_help_workspace.py")
+HELP_MATRIX = Path("docs/help/ISI-HELP-COVERAGE-MATRIX.md")
 
 
 def test_four_lifecycle_meanings_and_reference_state_are_visible():
@@ -26,9 +28,11 @@ def test_evidence_remains_before_methodology_and_ai():
     assert evidence < methodology < ai
 
 
-def test_help_is_not_falsely_completed_in_23a():
-    text = UI.read_text()
-    assert "Detailed SIMPA Help/User Guide remains planned for ISI-23E." in text
-    master = Path("docs/roadmap/ISI-AUTONOMOUS-INDUSTRIALIZATION-MASTER-PLAN.md").read_text()
-    help_row = next(line for line in master.splitlines() if line.startswith("| INV-A18 "))
-    assert "| PLANNED |" in help_row
+def test_23a_help_deferral_does_not_freeze_later_help_implementation():
+    assert HELP.is_file()
+    help_text = HELP.read_text()
+    assert "SIMPA-H11" in help_text
+    matrix = HELP_MATRIX.read_text()
+    help_row = next(line for line in matrix.splitlines() if line.startswith("| INV-A18 |"))
+    assert "| VERIFIED |" in help_row
+    assert "Detailed SIMPA Help/User Guide remains planned for ISI-23E." not in UI.read_text()

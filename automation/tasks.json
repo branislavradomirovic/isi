@@ -229,11 +229,11 @@
     {
       "id": "ISI-23-SIMPA-PRODUCTION-METHODOLOGY",
       "title": "SIMPA Production Methodology",
-      "status": "planned",
+      "status": "in_progress",
       "depends_on": [
         "ISI-22-INDUSTRIAL-DATA-PLATFORM"
       ],
-      "note": "Canonical design baseline: docs/roadmap/ISI-SIMPA-METHODOLOGY-v1.md plus ADR-0025. Deliver DRAFT/PROPOSED working methodology for controlled testing, deterministic statistical/ML models selected by target semantics, uncertainty/explainability, evidence-first presentation, detailed in-app Help and SIMPA User Guide. Do not mark formulas, weights, thresholds, citizen risk/eligibility logic or causal claims as validated before explicit human approval and supporting evidence. ISI-23A is COMPLETE / CI_VERIFIED on 238a881ef39906a2adebbb03fabe80a043017697 (tree 3778f29627100fb48ba369f0618250534870d0a8), exact-main acceptance run #77 / 34900812947 success. ISI-23B is COMPLETE / CI_VERIFIED on 088fe79904bd0cc85c4d52d5442218884501b538 (tree 5f8530f6fc7ca82afe7050f39a9f787b048fd8db), exact-main acceptance run #79 / 35018144968 success. Current/next is ISI-23C - deterministic statistical model contracts by target semantics plus uncertainty/diagnostics/calibration. The whole ISI-23 phase remains planned/in progress and is not complete; detailed Help/User Guide and later ISI-23 work remain open.",
+      "note": "Canonical design baseline: docs/roadmap/ISI-SIMPA-METHODOLOGY-v1.md plus ADR-0025. ISI-23A is COMPLETE / CI_VERIFIED on 238a881ef39906a2adebbb03fabe80a043017697; ISI-23B is COMPLETE / CI_VERIFIED on 088fe79904bd0cc85c4d52d5442218884501b538; ISI-23C is COMPLETE / CI_VERIFIED on final canonical main SHA a49b3faf171dfdbcf9306cfbe50fdc6ad1aabbff with exact-main acceptance run #82 / 35075352285 success after the narrow runtime-lock recovery. Current/next is ISI-23D - complete SIMPA Help Coverage Matrix, in-app Help/User Guide and faithful statistical XAI for OLS, Poisson GLM, Binomial/Logit and Fractional Logit. Do not invent formulas, LISI weights, thresholds, citizen risk/eligibility, causal claims, generic confidence, feature importance or ISI-25 champion/promotion scope. The whole ISI-23 phase remains in progress.",
       "next": "ISI-24-ORDO-PRODUCTION-METHODOLOGY"
     },
     {

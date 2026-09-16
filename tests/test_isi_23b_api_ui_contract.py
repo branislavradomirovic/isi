@@ -12,6 +12,8 @@ from src.domains.simpa.analytics_schemas import MethodologyReferenceSuiteCreateR
 ROUTES = Path("src/api/simpa_analytics_routes.py")
 API = Path("src/streamlit_app/simpa_analytics_api.py")
 UI = Path("src/streamlit_app/simpa_analytics_workspace.py")
+HELP_MATRIX = Path("docs/help/ISI-HELP-COVERAGE-MATRIX.md")
+USER_GUIDE = Path("docs/help/SIMPA-USER-GUIDE.md")
 
 
 def _payload():
@@ -91,15 +93,16 @@ def test_streamlit_client_and_ui_expose_suite_case_provenance_without_false_appr
         assert field in ui
     assert "PASSED reference suite nije institucionalno odobrenje" in ui
     assert "PROPOSED ostaje različit od VALIDATED" in ui
-    assert "Detailed SIMPA Help/User Guide remains planned" in ui
 
 
-def test_masterplan_inventory_is_synchronized_but_phase_and_help_remain_open():
+def test_masterplan_preserves_23b_scope_without_freezing_later_help_state():
     master = Path("docs/roadmap/ISI-AUTONOMOUS-INDUSTRIALIZATION-MASTER-PLAN.md").read_text()
     for row_id in ("INV-A11", "INV-B18", "INV-C26", "INV-C31", "INV-M07"):
         assert f"| {row_id} |" in master
     assert "tests/test_isi_23b*.py" in master
-    help_row = next(line for line in master.splitlines() if line.startswith("| INV-A18 "))
-    assert "| PLANNED |" in help_row
-    assert "The whole ISI-23 phase is not complete" in master
+    assert "Accepted ISI-23B as-built boundary" in master
     assert "ISI-25 evaluation-set/model-promotion scope" in master
+    matrix = HELP_MATRIX.read_text()
+    help_row = next(line for line in matrix.splitlines() if line.startswith("| INV-A18 |"))
+    assert "| VERIFIED |" in help_row
+    assert USER_GUIDE.is_file()

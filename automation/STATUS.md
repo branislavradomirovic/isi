@@ -2,19 +2,27 @@
 
 This is the human-facing live execution ledger. The MasterPlan is the canonical roadmap/architecture/governance authority; `automation/tasks.json`, accepted code, exact-main GitHub Actions and recorded evidence provide synchronized execution proof.
 
-Last status update: 2026-09-15.
+Last status update: 2026-09-16.
 
 ## Current execution
 
-Last completed slice: `ISI-23B - Versioned SIMPA Reference-Calculation Evidence`.
+Last completed slice: `ISI-23C - Deterministic Statistical Model Contracts`.
 
-ISI-23B implementation state: `COMPLETE / CI_VERIFIED`.
+ISI-23C implementation state: `COMPLETE / CI_VERIFIED`.
+
+Accepted final ISI-23C canonical main SHA: `a49b3faf171dfdbcf9306cfbe50fdc6ad1aabbff`.
+
+Accepted final ISI-23C tree: `1a48b09d0712fdee65dbb349ffc6f71ad46b99dd`.
+
+Authoritative GitHub Actions: `ISI required acceptance` run #82, run ID `35075352285`, exact SHA `a49b3faf171dfdbcf9306cfbe50fdc6ad1aabbff`, conclusion `success`; policy, quality, tests, architecture-security, migration, native-postgres, compose, supply-chain, build and aggregate `acceptance` all passed. Final SHA includes the narrow two-file runtime dependency-lock recovery after original ISI-23C commit `3210490be6678260604907c153c90a92ee19041a`.
+
+Historical ISI-23B checkpoint retained for canonical traceability:
 
 Accepted ISI-23B implementation SHA: `088fe79904bd0cc85c4d52d5442218884501b538`.
 
 Accepted ISI-23B implementation tree: `5f8530f6fc7ca82afe7050f39a9f787b048fd8db`.
 
-Authoritative GitHub Actions: `ISI required acceptance` run #79, run ID `35018144968`, exact SHA `088fe79904bd0cc85c4d52d5442218884501b538`, conclusion `success`; policy, quality, tests, architecture-security, migration, native-postgres, compose, supply-chain, build and aggregate `acceptance` all passed.
+Authoritative ISI-23B GitHub Actions: `ISI required acceptance` run #79, run ID `35018144968`, exact SHA `088fe79904bd0cc85c4d52d5442218884501b538`, conclusion `success`; aggregate `acceptance` passed.
 
 Historical ISI-23A checkpoint retained for canonical traceability:
 
@@ -53,7 +61,7 @@ Server/live-host verification: `DEFERRED_SERVER_VERIFICATION`. No production dep
 
 Overall `ISI-22-INDUSTRIAL-DATA-PLATFORM` is `COMPLETE / CI_VERIFIED`. The mandatory whole-phase gap/legacy audit and ISI-22G closeout are complete; no Phase-22 `REMOVE_BEFORE_NEXT_SLICE` finding remains open.
 
-Next action: **ISI-23C - deterministic statistical model contracts by target semantics + uncertainty/diagnostics/calibration**. ISI-23A lifecycle/contract authority and ISI-23B versioned reference-suite evidence are accepted. 23C must add deterministic model-family contracts and validated diagnostics/uncertainty rules without inventing LISI formulas/weights/thresholds, citizen risk/eligibility logic, causal claims or ISI-25 MLOps/model-promotion scope. Detailed SIMPA Help/User Guide remains a later ISI-23 deliverable.
+Next action: **ISI-23D - SIMPA Help Coverage Matrix + in-app User Guide + methodological XAI**. ISI-23A/B/C are COMPLETE / CI_VERIFIED. 23D must verify every material SIMPA user action under MasterPlan 0.5A and add faithful four-family statistical interpretation without inventing causality, confidence, feature importance, thresholds, LISI semantics or ISI-25 model-promotion scope. Current/next is ISI-23D.
 
 ## Mandatory bootstrap rule
 
@@ -75,7 +83,7 @@ A failed required gate returns the active task to implementation/fix state. Requ
 | 20 | Enterprise Security Completion | **COMPLETE / CI_VERIFIED** |
 | 21 | Data Governance & Privacy Controls | **COMPLETE / CI_VERIFIED** |
 | 22 | Industrial Data Platform | **COMPLETE / CI_VERIFIED - 22A through 22G complete** |
-| 23 | SIMPA Production Methodology + Help/User Guide | **IN PROGRESS - 23A and 23B COMPLETE / CI_VERIFIED; 23C current/next** |
+| 23 | SIMPA Production Methodology + Help/User Guide | **IN PROGRESS - 23A/23B/23C COMPLETE / CI_VERIFIED; 23D current/next** |
 | 24 | ORDO Production Methodology + Help/User Guide | PLANNED |
 | 25 | Industrial AI / MLOps | PLANNED |
 | 26 | Performance, Load & Resilience | PLANNED |

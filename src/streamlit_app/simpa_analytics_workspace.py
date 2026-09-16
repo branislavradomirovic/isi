@@ -5,6 +5,7 @@ from typing import Any
 import streamlit as st
 
 from src.streamlit_app import data_api, simpa_analytics_api
+from src.domains.simpa.statistical_xai import build_statistical_xai
 
 
 def _scope(shell: dict[str, Any]) -> tuple[str, str] | None:
@@ -221,7 +222,7 @@ def render_simpa_analytics(*, token: str, shell: dict[str, Any]) -> None:
         st.info(
             "Nema draft, proposed, validated ili retired metodologija u analytics registru. SIMPA ne izmišlja formule niti automatski validira konceptualne indikatore."
         )
-    st.caption("Detailed SIMPA Help/User Guide remains planned for ISI-23E.")
+    st.caption("Detaljno tumacenje lifecycle-a, reference evidence-a, statistike, ogranicenja i recovery koraka nalazi se u SIMPA Help sekciji.")
 
     st.markdown("### Monitoring snapshot-i")
     if snapshot and selected_artifact is not None and "analysis.run" in permissions:
@@ -333,33 +334,47 @@ def render_simpa_analytics(*, token: str, shell: dict[str, Any]) -> None:
 
     if statistical_results:
         for item in statistical_results:
+            xai = build_statistical_xai(item)
             detail = item.get("result_detail") or {}
+            identity = xai["model_identity"]
             with st.expander(
                 f"Rezultat {item['id'][:8]} · contract v{item.get('statistical_contract_version_no')} · "
                 f"production_eligible={item.get('production_eligible')}"
             ):
-                st.caption(
-                    f"sample={item.get('sample_size')} · dropped_missing={item.get('dropped_missing_count')} · "
-                    f"result_fingerprint={item.get('result_fingerprint')}"
-                )
-                st.dataframe(detail.get("coefficients") or [], use_container_width=True, hide_index=True)
+                st.markdown("**Model / cilj / uncertainty contract**")
+                st.json(identity)
+                st.caption(xai["coefficient_interpretation"])
+                st.dataframe(xai["coefficients"], use_container_width=True, hide_index=True)
+                st.caption(xai["p_value_interpretation"])
+                st.caption(xai["missing_data_interpretation"])
                 st.markdown("**Fit / error metrics**")
-                st.json(detail.get("metrics") or {})
+                st.json(xai["metrics"])
+                st.caption(xai["metrics_interpretation"])
                 st.markdown("**Diagnostics**")
-                st.json(detail.get("diagnostics") or {})
-                st.markdown("**Calibration**")
-                st.json(detail.get("calibration") or {"status": "not_applicable"})
-                st.caption(detail.get("semantic_notice", "Non-causal aggregate association only."))
-                st.caption(f"Limitations: {detail.get('limitations', '')}")
+                st.json(xai["diagnostics"])
+                st.caption(xai["diagnostics_interpretation"])
+                st.markdown("**Calibration / error summary**")
+                st.json(xai["calibration"])
+                st.caption(xai["calibration_interpretation"])
+                st.markdown("**Reproducibility / provenance**")
+                st.json(xai["provenance"])
+                st.caption(f"result_fingerprint={item.get('result_fingerprint') or '-'}")
+                st.caption(xai["production_eligibility"]["interpretation"])
+                st.markdown("**Unsupported / unavailable XAI states**")
+                st.json(xai["unsupported"])
+                st.warning(xai["non_causal_notice"])
+                st.caption(f"Limitations: {xai['limitations']}")
+                if not detail.get("coefficients"):
+                    st.info("Stored result nema coefficient rows za prikaz.")
     else:
-        st.info("Još nema nepromenljivih statističkih rezultata u aktivnom workspace-u.")
+        st.info("Jos nema nepromenljivih statistickih rezultata u aktivnom workspace-u.")
 
     st.markdown("### Lokalna AI podržana sinteza")
     st.warning(
-        "AI izlaz nije institucionalni zaključak. Za osetljive SIMPA podatke provider je prinudno local-only, a rezultat zahteva human review."
+        "AI izlaz nije institucionalni zakljucak. Za osetljive SIMPA podatke provider je prinudno local-only, a rezultat zahteva human review."
     )
     st.caption(
-        "Trenutni lokalni QA model: qwen2.5:7b-instruct preko shared ISI Ollama gateway-a. Produkcioni SIMPA model biće zaključan kasnije."
+        "23D prikazuje source/model/policy/prompt/failure/review provenance, ali ne menja shared AI champion/evaluation/promotion/fallback contract koji pripada ISI-25."
     )
     eligible_artifacts = {
         (("ANALYTICAL_SNAPSHOT" if item["type"] == "snapshot" else "ANALYTICAL_FEATURE_VERSION"), item["id"])
@@ -404,7 +419,10 @@ def render_simpa_analytics(*, token: str, shell: dict[str, Any]) -> None:
             st.caption(
                 f"provider={job.get('provider_name') or '-'} · model={job.get('model_name') or '-'} · policy={job.get('effective_provider_policy')} · prompt={job.get('prompt_key')} v{job.get('prompt_version')}"
             )
+            st.caption(f"source_snapshot_sha256={item.get('source_snapshot_sha256') or '-'} · request_sha256={job.get('request_sha256') or '-'}")
             structured = job.get("structured_output")
+            structured_output_state = "present" if structured else ("failed" if job.get("error_code") else "unavailable")
+            st.caption(f"structured_output_state={structured_output_state} · job_status={job.get('status')} · human_review_status={job.get('human_review_status')} · review={item.get('review_status')}")
             if structured:
                 st.markdown("**Sažetak**")
                 st.write(structured.get("executive_summary", ""))

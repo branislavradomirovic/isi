@@ -167,6 +167,7 @@ def _coefficient_rows(result: Any, terms: Sequence[str], confidence_level: float
                 "term": term,
                 "estimate": float(result.params[index]),
                 "standard_error": float(result.bse[index]),
+                "p_value": float(result.pvalues[index]),
                 "confidence_interval_low": float(intervals[index][0]),
                 "confidence_interval_high": float(intervals[index][1]),
             }

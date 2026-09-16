@@ -14,6 +14,7 @@ from src.streamlit_app.data_workspace import render_data_workspace
 from src.streamlit_app.ai_workspace import render_ai_workspace
 from src.streamlit_app.simpa_workspace import render_ordo_indicator_placeholder, render_simpa_indicators, render_simpa_overview
 from src.streamlit_app.simpa_analytics_workspace import render_simpa_analytics
+from src.streamlit_app.simpa_help_workspace import render_simpa_help
 from src.streamlit_app.ordo_analytics_workspace import render_ordo_analytics
 from src.streamlit_app.reporting_workspace import render_reporting
 from src.streamlit_app.administration_workspace import render_administration
@@ -277,6 +278,8 @@ def _sidebar_identity(context: dict[str, Any]) -> None:
 def _navigation(shell: dict[str, Any]) -> str:
     enabled = [item for item in shell.get("navigation", []) if item.get("enabled")]
     enabled.append({"code": "account_security", "label_sr": "Bezbednost naloga", "enabled": True})
+    if shell.get("product", {}).get("code") == "SIMPA":
+        enabled.append({"code": "simpa_help", "label_sr": "SIMPA Help", "enabled": True})
     codes = [item["code"] for item in enabled]
     current = st.session_state.get(NAV_KEY)
     if current not in codes:
@@ -361,6 +364,9 @@ def _render_future_section(shell: dict[str, Any], nav_code: str) -> None:
 
 
 def _render_shell(shell: dict[str, Any], nav_code: str) -> None:
+    if nav_code == "simpa_help":
+        render_simpa_help(shell=shell)
+        return
     if nav_code == "account_security":
         token = _token()
         if token:

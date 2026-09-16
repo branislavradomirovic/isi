@@ -137,7 +137,10 @@ def test_live_status_records_current_slice_and_phase22_history() -> None:
     assert "Accepted ISI-23B implementation tree: `5f8530f6fc7ca82afe7050f39a9f787b048fd8db`." in status
     assert "run #79" in status
     assert "run ID `35018144968`" in status
-    assert "ISI-23C - deterministic statistical model contracts" in status
+    assert "Accepted final ISI-23C canonical main SHA: `a49b3faf171dfdbcf9306cfbe50fdc6ad1aabbff`." in status
+    assert "run #82" in status
+    assert "run ID `35075352285`" in status
+    assert "Current/next is ISI-23D" in status
 
     tasks = json.loads((ROOT / "automation/tasks.json").read_text())["tasks"]
     by_id = {task["id"]: task for task in tasks}
@@ -149,10 +152,11 @@ def test_live_status_records_current_slice_and_phase22_history() -> None:
     assert "22G fd0e46631b5047c64b731d041645e528292f3664" in by_id["ISI-22-INDUSTRIAL-DATA-PLATFORM"]["note"]
     assert "run #75 (34856573722)" in by_id["ISI-22-INDUSTRIAL-DATA-PLATFORM"]["note"]
     assert by_id["ISI-22-INDUSTRIAL-DATA-PLATFORM"]["next"] == "ISI-23-SIMPA-PRODUCTION-METHODOLOGY"
-    assert by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["status"] == "planned"
+    assert by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["status"] == "in_progress"
     assert "ISI-23B is COMPLETE / CI_VERIFIED on 088fe79904bd0cc85c4d52d5442218884501b538" in by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["note"]
-    assert "run #79 / 35018144968 success" in by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["note"]
-    assert "Current/next is ISI-23C" in by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["note"]
+    assert "ISI-23C is COMPLETE / CI_VERIFIED on final canonical main SHA a49b3faf171dfdbcf9306cfbe50fdc6ad1aabbff" in by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["note"]
+    assert "run #82 / 35075352285 success" in by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["note"]
+    assert "Current/next is ISI-23D" in by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["note"]
 
 
 def test_canonical_system_inventory_is_complete_and_self_contained() -> None:
@@ -181,9 +185,10 @@ def test_canonical_system_inventory_is_complete_and_self_contained() -> None:
     assert by_id["INV-H04"][3] == "NOT_PRESENT"
     assert by_id["INV-H05"][3] == "CURRENT_AS_BUILT"
     assert by_id["INV-A17"][3] == "NOT_PRESENT"
-    assert by_id["INV-A18"][3] == "PLANNED"
+    assert by_id["INV-A18"][3] == "CURRENT_AS_BUILT"
     assert by_id["INV-A19"][3] == "PLANNED"
     assert by_id["INV-A20"][3] == "NOT_PRESENT"
+    assert by_id["INV-A21"][3] == "CURRENT_AS_BUILT"
     assert by_id["INV-J13"][3] == "TARGET"
     assert by_id["INV-J15"][3] == "TARGET"
     assert by_id["INV-J16"][3] == "DEVELOPMENT_ONLY"

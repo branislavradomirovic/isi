@@ -114,7 +114,6 @@ def test_streamlit_client_and_ui_preserve_evidence_first_noncausal_contract():
         assert text in section
     assert "predicted_class" not in section
     assert "risk_label" not in section
-    assert "Detailed SIMPA Help/User Guide remains planned for ISI-23E" in ui
 
 
 def test_statistical_outputs_are_not_added_to_existing_ai_synthesis_input():
@@ -126,13 +125,11 @@ def test_statistical_outputs_are_not_added_to_existing_ai_synthesis_input():
     assert "evidence-quality state" in synthesis
 
 
-def test_masterplan_inventory_is_synchronized_while_help_and_isi25_remain_open():
+def test_masterplan_inventory_is_synchronized_while_isi25_scope_remains_open():
     master = Path("docs/roadmap/ISI-AUTONOMOUS-INDUSTRIALIZATION-MASTER-PLAN.md").read_text()
     for row_id in ("INV-A11", "INV-B18", "INV-C26", "INV-C32", "INV-M07"):
         assert f"| {row_id} |" in master
     assert "tests/test_isi_23c*.py" in master
-    help_row = next(line for line in master.splitlines() if line.startswith("| INV-A18 "))
-    assert "| PLANNED |" in help_row
     assert "ISI-23C R1 implementation boundary" in master
     assert "champion/evaluation/promotion" in master
     assert "whole ISI-23 phase remains in progress" in master
