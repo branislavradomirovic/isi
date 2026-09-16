@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import re
 import uuid
+from datetime import datetime, timezone
 
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
@@ -16,6 +18,8 @@ from src.domains.ordo.models import (
     OrdoIndicatorObservation,
     OrdoMonitoringCycle,
     OrdoPillar,
+    OrdoReferenceEvidence,
+    OrdoSpatialUnit,
     OrdoSourceType,
     OrdoStakeholder,
 )
@@ -161,3 +165,106 @@ def create_observation(session: Session, *, organization_id: uuid.UUID, workspac
         if version is None: raise OrdoDomainError("source_version_not_accessible")
     row = OrdoIndicatorObservation(organization_id=organization_id, workspace_id=workspace_id, indicator_id=indicator.id, monitoring_cycle_id=monitoring_cycle_id, source_version_id=source_version_id, period_start=period_start, period_end=period_end, geography_code=geography_code.strip(), geography_label=geography_label.strip(), value_numeric=value_numeric, value_text=value_text.strip(), quality_status=quality_status, provenance_note=provenance_note.strip(), created_by_membership_id=actor_id)
     session.add(row); session.flush(); return row
+
+_SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
+_LIFECYCLE_NEXT = {"draft": "proposed", "proposed": "validated", "validated": "retired"}
+
+
+def _utcnow() -> datetime:
+    return datetime.now(timezone.utc)
+
+
+def _require_sha256(value: str, field: str) -> str:
+    normalized = value.strip().lower()
+    if not _SHA256_RE.fullmatch(normalized):
+        raise OrdoDomainError(f"{field}_must_be_sha256")
+    return normalized
+
+
+def _require_lifecycle_transition(current: str, target: str) -> None:
+    if _LIFECYCLE_NEXT.get(current) != target:
+        raise OrdoDomainError(f"invalid_lifecycle_transition:{current}->{target}")
+
+
+def _stamp_lifecycle(row, *, target: str, actor_id: uuid.UUID | None, note: str) -> None:
+    _require_lifecycle_transition(row.lifecycle_status, target)
+    if actor_id is None:
+        raise OrdoDomainError("lifecycle_actor_required")
+    now = _utcnow()
+    row.lifecycle_status = target
+    row.lifecycle_note = note.strip()
+    if target == "proposed":
+        row.proposed_by_membership_id = actor_id
+        row.proposed_at = now
+    elif target == "validated":
+        row.validated_by_membership_id = actor_id
+        row.validated_at = now
+    elif target == "retired":
+        row.retired_by_membership_id = actor_id
+        row.retired_at = now
+
+
+def _validate_reference_readiness(row: OrdoReferenceEvidence) -> None:
+    if not row.source_identity.strip() or not row.source_version.strip():
+        raise OrdoDomainError("reference_source_identity_version_required")
+    row.artifact_sha256 = _require_sha256(row.artifact_sha256, "artifact_sha256")
+    row.content_sha256 = _require_sha256(row.content_sha256, "content_sha256")
+    if not row.provenance_lineage:
+        raise OrdoDomainError("reference_provenance_lineage_required")
+
+
+def create_reference_evidence(session: Session, *, organization_id: uuid.UUID, workspace_id: uuid.UUID, evidence_key: str, indicator_id: uuid.UUID | None, source_version_id: uuid.UUID | None, source_identity: str, source_version: str, external_identity: str, artifact_sha256: str, content_sha256: str, valid_from, valid_to, provenance_lineage: dict, actor_id: uuid.UUID | None) -> OrdoReferenceEvidence:
+    validate_ordo_scope(session, organization_id=organization_id, workspace_id=workspace_id)
+    if source_version_id is not None:
+        version = session.scalar(select(DataSourceVersion).join(DataSource, DataSource.id == DataSourceVersion.data_source_id).where(DataSourceVersion.id == source_version_id, DataSource.organization_id == organization_id, DataSource.workspace_id == workspace_id, DataSource.product_code == "ORDO"))
+        if version is None:
+            raise OrdoDomainError("source_version_not_accessible")
+    row = OrdoReferenceEvidence(organization_id=organization_id, workspace_id=workspace_id, evidence_key=evidence_key.strip(), indicator_id=indicator_id, source_version_id=source_version_id, source_identity=source_identity.strip(), source_version=source_version.strip(), external_identity=external_identity.strip(), artifact_sha256=artifact_sha256.strip().lower(), content_sha256=content_sha256.strip().lower(), valid_from=valid_from, valid_to=valid_to, provenance_lineage=provenance_lineage, lifecycle_status="draft", created_by_membership_id=actor_id)
+    session.add(row); session.flush(); return row
+
+
+def list_reference_evidence(session: Session, *, organization_id: uuid.UUID, workspace_id: uuid.UUID) -> list[OrdoReferenceEvidence]:
+    validate_ordo_scope(session, organization_id=organization_id, workspace_id=workspace_id)
+    return list(session.scalars(select(OrdoReferenceEvidence).where(OrdoReferenceEvidence.organization_id == organization_id, OrdoReferenceEvidence.workspace_id == workspace_id).order_by(OrdoReferenceEvidence.created_at.desc())).all())
+
+
+def transition_reference_evidence(session: Session, *, evidence_id: uuid.UUID, organization_id: uuid.UUID, workspace_id: uuid.UUID, target_status: str, note: str, actor_id: uuid.UUID | None) -> OrdoReferenceEvidence:
+    validate_ordo_scope(session, organization_id=organization_id, workspace_id=workspace_id)
+    row = session.scalar(select(OrdoReferenceEvidence).where(OrdoReferenceEvidence.id == evidence_id, OrdoReferenceEvidence.organization_id == organization_id, OrdoReferenceEvidence.workspace_id == workspace_id))
+    if row is None:
+        raise OrdoDomainError("reference_evidence_not_accessible")
+    if target_status in {"proposed", "validated"}:
+        _validate_reference_readiness(row)
+    _stamp_lifecycle(row, target=target_status, actor_id=actor_id, note=note)
+    session.flush(); return row
+
+
+def _validate_spatial_readiness(row: OrdoSpatialUnit) -> None:
+    required = [row.boundary_source, row.boundary_version, row.geometry_id, row.crs]
+    if not all(str(value).strip() for value in required):
+        raise OrdoDomainError("spatial_boundary_identity_crs_required")
+    row.artifact_sha256 = _require_sha256(row.artifact_sha256, "artifact_sha256")
+    if not row.provenance:
+        raise OrdoDomainError("spatial_provenance_required")
+
+
+def create_spatial_unit(session: Session, *, organization_id: uuid.UUID, workspace_id: uuid.UUID, spatial_unit_key: str, spatial_unit_type: str, name: str, boundary_source: str, boundary_version: str, geometry_id: str, crs: str, artifact_sha256: str, valid_from, valid_to, provenance: dict, actor_id: uuid.UUID | None) -> OrdoSpatialUnit:
+    validate_ordo_scope(session, organization_id=organization_id, workspace_id=workspace_id)
+    row = OrdoSpatialUnit(organization_id=organization_id, workspace_id=workspace_id, spatial_unit_key=spatial_unit_key.strip(), spatial_unit_type=spatial_unit_type, name=name.strip(), boundary_source=boundary_source.strip(), boundary_version=boundary_version.strip(), geometry_id=geometry_id.strip(), crs=crs.strip(), artifact_sha256=artifact_sha256.strip().lower(), valid_from=valid_from, valid_to=valid_to, provenance=provenance, lifecycle_status="draft", created_by_membership_id=actor_id)
+    session.add(row); session.flush(); return row
+
+
+def list_spatial_units(session: Session, *, organization_id: uuid.UUID, workspace_id: uuid.UUID) -> list[OrdoSpatialUnit]:
+    validate_ordo_scope(session, organization_id=organization_id, workspace_id=workspace_id)
+    return list(session.scalars(select(OrdoSpatialUnit).where(OrdoSpatialUnit.organization_id == organization_id, OrdoSpatialUnit.workspace_id == workspace_id).order_by(OrdoSpatialUnit.name)).all())
+
+
+def transition_spatial_unit(session: Session, *, spatial_unit_id: uuid.UUID, organization_id: uuid.UUID, workspace_id: uuid.UUID, target_status: str, note: str, actor_id: uuid.UUID | None) -> OrdoSpatialUnit:
+    validate_ordo_scope(session, organization_id=organization_id, workspace_id=workspace_id)
+    row = session.scalar(select(OrdoSpatialUnit).where(OrdoSpatialUnit.id == spatial_unit_id, OrdoSpatialUnit.organization_id == organization_id, OrdoSpatialUnit.workspace_id == workspace_id))
+    if row is None:
+        raise OrdoDomainError("spatial_unit_not_accessible")
+    if target_status in {"proposed", "validated"}:
+        _validate_spatial_readiness(row)
+    _stamp_lifecycle(row, target=target_status, actor_id=actor_id, note=note)
+    session.flush(); return row

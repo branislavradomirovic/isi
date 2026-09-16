@@ -622,6 +622,34 @@ def set_scenario_status(
     return row
 
 
+def _canonical_sha256(value: dict) -> str:
+    payload = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
+
+def _scenario_input_reference_identities(run: OrdoAnalyticsRun) -> list[dict[str, str]]:
+    snapshot = run.snapshot or {}
+    analytical_source = snapshot.get("analytical_source") or {}
+    identities: list[dict[str, str]] = []
+    artifact_id = analytical_source.get("artifact_id")
+    if artifact_id:
+        identities.append({
+            "kind": str(analytical_source.get("artifact_type") or "analytical_artifact"),
+            "id": str(artifact_id),
+        })
+    dataset_contract_version_id = analytical_source.get("dataset_contract_version_id")
+    if dataset_contract_version_id:
+        identities.append({"kind": "dataset_contract_version", "id": str(dataset_contract_version_id)})
+    resolved_snapshot_id = analytical_source.get("resolved_snapshot_id")
+    if resolved_snapshot_id:
+        identities.append({"kind": "resolved_snapshot", "id": str(resolved_snapshot_id)})
+    if getattr(run, "analytical_artifact_fingerprint", ""):
+        identities.append({"kind": "analytical_artifact_fingerprint", "id": run.analytical_artifact_fingerprint})
+    if getattr(run, "dataset_contract_fingerprint", ""):
+        identities.append({"kind": "dataset_contract_fingerprint", "id": run.dataset_contract_fingerprint})
+    return identities
+
+
 def _scenario_assessment_payload(
     *,
     scenario: OrdoScenario,
@@ -629,9 +657,28 @@ def _scenario_assessment_payload(
     run: OrdoAnalyticsRun,
 ) -> dict:
     snapshot = run.snapshot or {}
+    input_snapshot_sha256 = _canonical_sha256(snapshot)
+    limitations = [
+        "No causal, predictive, financial, visitor-volume, employment, sustainability, inclusion, or quality-of-life effect is calculated by this assessment.",
+        "Scenario assumptions and measures are user-authored planning inputs, not verified outcomes.",
+        "A human expert must interpret the evidence before a scenario can inform a development decision.",
+    ]
     return {
         "assessment_mode": "evidence_readiness_only",
         "forecast_performed": False,
+        "scenario_contract": {
+            "scenario_contract_version": "ORDO-SCENARIO-CONTRACT-v1",
+            "methodology_key": "ordo_evidence_readiness_v1",
+            "methodology_version": "1",
+            "input_reference_identities": _scenario_input_reference_identities(run),
+            "input_snapshot_sha256": input_snapshot_sha256,
+            "limitations": limitations,
+            "uncertainty_semantics": "not_applicable_scenario_not_forecast",
+            "human_review_state": "pending",
+            "scenario_is_forecast": False,
+            "causal_claim": False,
+            "automatic_policy_recommendation": False,
+        },
         "goal": {
             "code": goal.code,
             "title": goal.title,
@@ -653,11 +700,7 @@ def _scenario_assessment_payload(
             "observed_dimensions": snapshot.get("observed_dimensions", []),
             "missing_dimensions": snapshot.get("missing_dimensions", []),
         },
-        "limitations": [
-            "No causal, predictive, financial, visitor-volume, employment, sustainability, inclusion, or quality-of-life effect is calculated by this assessment.",
-            "Scenario assumptions and measures are user-authored planning inputs, not verified outcomes.",
-            "A human expert must interpret the evidence before a scenario can inform a development decision.",
-        ],
+        "limitations": limitations,
     }
 
 
@@ -708,6 +751,14 @@ def create_scenario_assessment(
         analytics_run_id=run.id,
         evidence_snapshot=run.snapshot,
         assessment=assessment,
+        scenario_contract_version=assessment["scenario_contract"]["scenario_contract_version"],
+        methodology_key=assessment["scenario_contract"]["methodology_key"],
+        methodology_version=assessment["scenario_contract"]["methodology_version"],
+        input_reference_identities=assessment["scenario_contract"]["input_reference_identities"],
+        input_snapshot_sha256=assessment["scenario_contract"]["input_snapshot_sha256"],
+        limitations=assessment["limitations"],
+        uncertainty_semantics=assessment["scenario_contract"]["uncertainty_semantics"],
+        human_review_state="pending",
         forecast_performed=False,
         status="evidence_only",
         created_by_membership_id=actor_id,
@@ -767,6 +818,7 @@ def review_scenario_assessment(
     revalidate_analytics_run(
         session, run=run, organization_id=organization_id, workspace_id=workspace_id)
     row.status = decision
+    row.human_review_state = "reviewed" if decision == "reviewed" else "rejected"
     row.reviewer_note = reviewer_note.strip()
     row.reviewed_by_membership_id = actor_id
     row.reviewed_at = _utcnow()

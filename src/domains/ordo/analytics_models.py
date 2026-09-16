@@ -145,6 +145,9 @@ class OrdoScenarioAssessment(Base):
     __table_args__ = (
         CheckConstraint("status IN ('evidence_only','reviewed','rejected')", name="ck_ordo_scenario_assessment_status"),
         CheckConstraint("forecast_performed = false", name="ck_ordo_scenario_assessment_no_forecast"),
+        CheckConstraint("input_snapshot_sha256 = '' OR length(input_snapshot_sha256) = 64", name="ck_ordo_scenario_assessment_snapshot_sha"),
+        CheckConstraint("human_review_state IN ('pending','reviewed','rejected')", name="ck_ordo_scenario_assessment_human_review"),
+        CheckConstraint("uncertainty_semantics = 'not_applicable_scenario_not_forecast'", name="ck_ordo_scenario_assessment_uncertainty"),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
@@ -154,6 +157,14 @@ class OrdoScenarioAssessment(Base):
     analytics_run_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("ordo_analytics_runs.id", ondelete="CASCADE"), nullable=False, index=True)
     evidence_snapshot: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
     assessment: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    scenario_contract_version: Mapped[str] = mapped_column(String(64), nullable=False, default="ORDO-SCENARIO-CONTRACT-v1", server_default="ORDO-SCENARIO-CONTRACT-v1")
+    methodology_key: Mapped[str] = mapped_column(String(160), nullable=False, default="ordo_evidence_readiness_v1", server_default="ordo_evidence_readiness_v1")
+    methodology_version: Mapped[str] = mapped_column(String(80), nullable=False, default="1", server_default="1")
+    input_reference_identities: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    input_snapshot_sha256: Mapped[str] = mapped_column(String(64), nullable=False, default="", server_default="")
+    limitations: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    uncertainty_semantics: Mapped[str] = mapped_column(String(80), nullable=False, default="not_applicable_scenario_not_forecast", server_default="not_applicable_scenario_not_forecast")
+    human_review_state: Mapped[str] = mapped_column(String(24), nullable=False, default="pending", server_default="pending")
     forecast_performed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default="false")
     status: Mapped[str] = mapped_column(String(24), nullable=False, default="evidence_only", server_default="evidence_only")
     reviewer_note: Mapped[str] = mapped_column(Text, nullable=False, default="", server_default="")

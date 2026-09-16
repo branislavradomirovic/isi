@@ -29,10 +29,10 @@ def test_0029_exact_chain_simpa_only_tables_constraints_and_foreign_keys():
         assert family in text
 
 
-def test_0029_is_the_sole_alembic_head():
-    heads = subprocess.run(["alembic", "heads"], check=True, capture_output=True, text=True).stdout
-    assert "20260915_0029 (head)" in heads
-    assert heads.count("(head)") == 1
+def test_0029_preserves_historical_chain_without_freezing_future_global_head():
+    text = MIGRATION.read_text()
+    assert 'revision = "20260915_0029"' in text
+    assert 'down_revision = "20260915_0028"' in text
 
 
 def test_0029_offline_upgrade_and_downgrade_render():

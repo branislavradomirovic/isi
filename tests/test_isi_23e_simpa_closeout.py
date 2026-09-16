@@ -30,20 +30,22 @@ def test_closeout_records_exact_23d_acceptance_and_serial_transition():
     assert "Accepted ISI-23D implementation SHA: `a39caa8160f01dee4e30ab7912a732f0aa68c0d6`." in status
     assert "Accepted ISI-23D implementation tree: `05384a755462790484794714e741f74762d6da0d`." in status
     assert "run #83" in status and "run ID `35081472982`" in status
-    assert "Current/final closeout is ISI-23E" in status
+    assert "Accepted ISI-23E closeout SHA: `3894f5d4ce9b78abc39f9a565fecf83bc2ce7a73`." in status
+    assert "run #84" in status and "run ID `35084716444`" in status
     tasks = json.loads(TASKS.read_text(encoding="utf-8"))["tasks"]
     by_id = {item["id"]: item for item in tasks}
     phase = by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]
     assert phase["status"] == "done"
     assert phase["next"] == "ISI-24-ORDO-PRODUCTION-METHODOLOGY"
-    assert "ISI-23E is the final evidence/test/governance closeout" in phase["note"]
-    assert by_id["ISI-24-ORDO-PRODUCTION-METHODOLOGY"]["status"] == "planned"
+    assert "ISI-23E final closeout is COMPLETE / CI_VERIFIED on 3894f5d4ce9b78abc39f9a565fecf83bc2ce7a73" in phase["note"]
+    assert "run #84 / 35084716444" in phase["note"]
+    assert "ISI-23-SIMPA-PRODUCTION-METHODOLOGY" in by_id["ISI-24-ORDO-PRODUCTION-METHODOLOGY"]["depends_on"]
 
 
 def test_masterplan_and_evidence_close_phase_without_claiming_new_capability():
     master = MASTER.read_text(encoding="utf-8")
     evidence = EVIDENCE.read_text(encoding="utf-8")
-    assert "Status: **FINAL CLOSEOUT**" in master
+    assert "ISI-23E final closeout is COMPLETE / CI_VERIFIED" in master
     assert "ISI-23E closeout boundary: no new production feature." in master
     assert "a39caa8160f01dee4e30ab7912a732f0aa68c0d6" in evidence
     assert "35081472982" in evidence

@@ -114,7 +114,7 @@ def test_masterplan_bootstrap_and_legacy_governance_is_enforced() -> None:
         assert "HISTORICAL / SUPERSEDED - DO NOT EXECUTE" in (ROOT / rel).read_text()
 
 
-def test_live_status_records_current_slice_and_phase22_history() -> None:
+def test_live_status_records_current_24a_slice_and_verified_predecessors() -> None:
     status = (ROOT / "automation/STATUS.md").read_text()
     assert "Accepted ISI-22G implementation SHA: `fd0e46631b5047c64b731d041645e528292f3664`." in status
     assert "Accepted ISI-22G implementation tree: `1a405a65a6fa67f2845ee0a10f2a6f44b11e355e`." in status
@@ -144,7 +144,10 @@ def test_live_status_records_current_slice_and_phase22_history() -> None:
     assert "Accepted ISI-23D implementation tree: `05384a755462790484794714e741f74762d6da0d`." in status
     assert "run #83" in status
     assert "run ID `35081472982`" in status
-    assert "Current/final closeout is ISI-23E" in status
+    assert "Accepted ISI-23E closeout SHA: `3894f5d4ce9b78abc39f9a565fecf83bc2ce7a73`." in status
+    assert "run #84" in status
+    assert "run ID `35084716444`" in status
+    assert "Current slice is `ISI-24A" in status
 
     tasks = json.loads((ROOT / "automation/tasks.json").read_text())["tasks"]
     by_id = {task["id"]: task for task in tasks}
@@ -161,8 +164,12 @@ def test_live_status_records_current_slice_and_phase22_history() -> None:
     assert "ISI-23C is COMPLETE / CI_VERIFIED on a49b3faf171dfdbcf9306cfbe50fdc6ad1aabbff" in by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["note"]
     assert "ISI-23D is COMPLETE / CI_VERIFIED on a39caa8160f01dee4e30ab7912a732f0aa68c0d6" in by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["note"]
     assert "run #83 / 35081472982" in by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["note"]
-    assert "ISI-23E is the final evidence/test/governance closeout" in by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["note"]
+    assert "ISI-23 is COMPLETE / CI_VERIFIED" in by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["note"]
+    assert "3894f5d4ce9b78abc39f9a565fecf83bc2ce7a73" in by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["note"]
+    assert "run #84 / 35084716444" in by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["note"]
     assert by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["next"] == "ISI-24-ORDO-PRODUCTION-METHODOLOGY"
+    assert by_id["ISI-24-ORDO-PRODUCTION-METHODOLOGY"]["status"] == "in_progress"
+    assert by_id["ISI-24-ORDO-PRODUCTION-METHODOLOGY"]["spec"] == "automation/specs/ISI-24A-ORDO-GOVERNED-EVIDENCE-SCENARIO-GIS-CONTRACTS.md"
 
 
 def test_canonical_system_inventory_is_complete_and_self_contained() -> None:

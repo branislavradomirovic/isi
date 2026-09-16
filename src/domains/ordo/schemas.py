@@ -76,3 +76,52 @@ class ObservationCreateRequest(ScopeQuery):
         if self.period_start and self.period_end and self.period_end < self.period_start:
             raise ValueError("period_end_before_start")
         return self
+
+class ReferenceEvidenceCreateRequest(ScopeQuery):
+    evidence_key: str = Field(min_length=1, max_length=160)
+    indicator_id: uuid.UUID | None = None
+    source_version_id: uuid.UUID | None = None
+    source_identity: str = Field(default="", max_length=300)
+    source_version: str = Field(default="", max_length=160)
+    external_identity: str = Field(default="", max_length=300)
+    artifact_sha256: str = Field(default="", max_length=64)
+    content_sha256: str = Field(default="", max_length=64)
+    valid_from: date | None = None
+    valid_to: date | None = None
+    provenance_lineage: dict[str, Any] = Field(default_factory=dict)
+
+    @model_validator(mode="after")
+    def validate_validity(self):
+        if self.valid_from and self.valid_to and self.valid_to < self.valid_from:
+            raise ValueError("valid_to_before_valid_from")
+        return self
+
+
+class ReferenceEvidenceLifecycleTransitionRequest(ScopeQuery):
+    target_status: Literal["proposed", "validated", "retired"]
+    note: str = Field(default="", max_length=5000)
+
+
+class SpatialUnitCreateRequest(ScopeQuery):
+    spatial_unit_key: str = Field(min_length=1, max_length=160)
+    spatial_unit_type: Literal["national", "macro_region", "region", "local_government", "custom"]
+    name: str = Field(min_length=1, max_length=300)
+    boundary_source: str = Field(default="", max_length=300)
+    boundary_version: str = Field(default="", max_length=160)
+    geometry_id: str = Field(default="", max_length=300)
+    crs: str = Field(default="", max_length=80)
+    artifact_sha256: str = Field(default="", max_length=64)
+    valid_from: date | None = None
+    valid_to: date | None = None
+    provenance: dict[str, Any] = Field(default_factory=dict)
+
+    @model_validator(mode="after")
+    def validate_validity(self):
+        if self.valid_from and self.valid_to and self.valid_to < self.valid_from:
+            raise ValueError("valid_to_before_valid_from")
+        return self
+
+
+class SpatialUnitLifecycleTransitionRequest(ScopeQuery):
+    target_status: Literal["proposed", "validated", "retired"]
+    note: str = Field(default="", max_length=5000)

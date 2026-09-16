@@ -233,18 +233,19 @@
       "depends_on": [
         "ISI-22-INDUSTRIAL-DATA-PLATFORM"
       ],
-      "note": "Canonical design baseline: docs/roadmap/ISI-SIMPA-METHODOLOGY-v1.md plus ADR-0025. ISI-23A is COMPLETE / CI_VERIFIED on 238a881ef39906a2adebbb03fabe80a043017697 (run #77 / 34900812947); ISI-23B is COMPLETE / CI_VERIFIED on 088fe79904bd0cc85c4d52d5442218884501b538 (run #79 / 35018144968); ISI-23C is COMPLETE / CI_VERIFIED on a49b3faf171dfdbcf9306cfbe50fdc6ad1aabbff (run #82 / 35075352285); ISI-23D is COMPLETE / CI_VERIFIED on a39caa8160f01dee4e30ab7912a732f0aa68c0d6, tree 05384a755462790484794714e741f74762d6da0d (run #83 / 35081472982). ISI-23E is the final evidence/test/governance closeout: whole-phase gap/legacy audit, SIMPA Help/XAI acceptance and synthetic E2E. This done state is authoritative only after the exact ISI-23E closeout main commit passes required CI. No LISI formula/weights/thresholds, citizen scoring, causal claims, generic confidence, feature importance, ORDO scope, ISI-25 model promotion or server mutation is introduced. Next serial phase is ISI-24.",
+      "note": "Canonical design baseline: docs/roadmap/ISI-SIMPA-METHODOLOGY-v1.md plus ADR-0025. ISI-23A is COMPLETE / CI_VERIFIED on 238a881ef39906a2adebbb03fabe80a043017697 (run #77 / 34900812947); ISI-23B is COMPLETE / CI_VERIFIED on 088fe79904bd0cc85c4d52d5442218884501b538 (run #79 / 35018144968); ISI-23C is COMPLETE / CI_VERIFIED on a49b3faf171dfdbcf9306cfbe50fdc6ad1aabbff (run #82 / 35075352285); ISI-23D is COMPLETE / CI_VERIFIED on a39caa8160f01dee4e30ab7912a732f0aa68c0d6, tree 05384a755462790484794714e741f74762d6da0d (run #83 / 35081472982); ISI-23E final closeout is COMPLETE / CI_VERIFIED on 3894f5d4ce9b78abc39f9a565fecf83bc2ce7a73, tree 29c84c2bac1251af6e18c0a9dbccc6c52e69a97a (run #84 / 35084716444), completing the whole-phase gap/legacy audit, SIMPA Help/XAI acceptance and synthetic end-to-end verification. Overall ISI-23 is COMPLETE / CI_VERIFIED. No LISI formula/weights/thresholds, citizen scoring, causal claims, generic confidence, feature importance, ORDO scope, ISI-25 model promotion or production-server mutation is introduced by the closeout. Next serial phase is ISI-24.",
       "next": "ISI-24-ORDO-PRODUCTION-METHODOLOGY"
     },
     {
       "id": "ISI-24-ORDO-PRODUCTION-METHODOLOGY",
       "title": "ORDO Production Methodology",
-      "status": "planned",
+      "status": "in_progress",
       "depends_on": [
         "ISI-23-SIMPA-PRODUCTION-METHODOLOGY"
       ],
-      "note": "Canonical design baseline: docs/roadmap/ISI-ORDO-METHODOLOGY-v1.md plus ADR-0025. Deliver DRAFT/PROPOSED methodology, reference calculations, spatial/evidence contracts, temporal forecast backtesting, forecast/scenario separation, uncertainty, detailed in-app Help and ORDO User Guide. Unsupported scenario impact must remain NOT_ESTIMATED. Do not mark forecasting or causal claims validated before explicit human approval and supporting evidence.",
-      "next": "ISI-25-INDUSTRIAL-AI-MLOPS"
+      "note": "ISI-24A is the current governed slice: versioned reference evidence with human lifecycle, GIS boundary/version/geometry/CRS identity and provenance, and a versioned evidence-only non-forecast scenario contract with deterministic input fingerprinting. 24B owns spatial/statistical contracts, 24C forecasting/backtesting/intervals/NOT_ESTIMATED, 24D ORDO Help/User Guide/XAI, 24E final ORDO closeout. No production-server mutation is authorized.",
+      "next": "ISI-25-INDUSTRIAL-AI-MLOPS",
+      "spec": "automation/specs/ISI-24A-ORDO-GOVERNED-EVIDENCE-SCENARIO-GIS-CONTRACTS.md"
     },
     {
       "id": "ISI-25-INDUSTRIAL-AI-MLOPS",

@@ -6,15 +6,23 @@ Last status update: 2026-09-16.
 
 ## Current execution
 
-Last completed slice: `ISI-23D - SIMPA Help Coverage + User Guide + Statistical XAI`.
+Last completed slice: `ISI-23E - SIMPA final closeout`.
 
-ISI-23D implementation state: `COMPLETE / CI_VERIFIED`.
+ISI-23E closeout state: `COMPLETE / CI_VERIFIED`.
 
 Accepted ISI-23D implementation SHA: `a39caa8160f01dee4e30ab7912a732f0aa68c0d6`.
 
 Accepted ISI-23D implementation tree: `05384a755462790484794714e741f74762d6da0d`.
 
 Authoritative ISI-23D GitHub Actions: `ISI required acceptance` run #83, run ID `35081472982`, exact SHA `a39caa8160f01dee4e30ab7912a732f0aa68c0d6`, conclusion `success`; policy, quality, tests, architecture-security, migration, native-postgres, compose, supply-chain, build and aggregate `acceptance` all passed.
+
+Accepted ISI-23E closeout SHA: `3894f5d4ce9b78abc39f9a565fecf83bc2ce7a73`.
+
+Accepted ISI-23E closeout tree: `29c84c2bac1251af6e18c0a9dbccc6c52e69a97a`.
+
+Authoritative ISI-23E GitHub Actions: `ISI required acceptance` run #84, run ID `35084716444`, exact SHA `3894f5d4ce9b78abc39f9a565fecf83bc2ce7a73`, conclusion `success`; the exact-main closeout is accepted.
+
+Overall `ISI-23-SIMPA-PRODUCTION-METHODOLOGY` is `COMPLETE / CI_VERIFIED`.
 
 Historical ISI-23C checkpoint retained for canonical traceability:
 
@@ -69,7 +77,7 @@ Server/live-host verification: `DEFERRED_SERVER_VERIFICATION`. No production dep
 
 Overall `ISI-22-INDUSTRIAL-DATA-PLATFORM` is `COMPLETE / CI_VERIFIED`. The mandatory whole-phase gap/legacy audit and ISI-22G closeout are complete; no Phase-22 `REMOVE_BEFORE_NEXT_SLICE` finding remains open.
 
-Next action: **ISI-23E - SIMPA final closeout**. ISI-23A/B/C/D are COMPLETE / CI_VERIFIED. 23E is evidence/test/governance-only: whole-phase gap/legacy audit, SIMPA Help/XAI acceptance and synthetic end-to-end verification. Current/final closeout is ISI-23E; ISI-24 is the next implementation phase only after the exact 23E closeout commit passes required CI.
+Current slice is `ISI-24A - ORDO Governed Reference Evidence + Scenario/GIS Contracts`. ISI-23A/B/C/D/E are COMPLETE / CI_VERIFIED on the accepted closeout baseline. ISI-24B/24C/24D/24E remain later governed slices; server/DNS/ingress/production-data mutation remains deferred to owner-approved ISI-28.
 
 ## Mandatory bootstrap rule
 
@@ -91,8 +99,8 @@ A failed required gate returns the active task to implementation/fix state. Requ
 | 20 | Enterprise Security Completion | **COMPLETE / CI_VERIFIED** |
 | 21 | Data Governance & Privacy Controls | **COMPLETE / CI_VERIFIED** |
 | 22 | Industrial Data Platform | **COMPLETE / CI_VERIFIED - 22A through 22G complete** |
-| 23 | SIMPA Production Methodology + Help/User Guide | **CLOSEOUT - 23A/23B/23C/23D COMPLETE / CI_VERIFIED; 23E current/final** |
-| 24 | ORDO Production Methodology + Help/User Guide | PLANNED |
+| 23 | SIMPA Production Methodology + Help/User Guide | **COMPLETE / CI_VERIFIED - 23A through 23E complete** |
+| 24 | ORDO Production Methodology + Help/User Guide | **IN PROGRESS - 24A current** |
 | 25 | Industrial AI / MLOps | PLANNED |
 | 26 | Performance, Load & Resilience | PLANNED |
 | 27 | Industrial Release Candidate & Acceptance Pack | PLANNED |

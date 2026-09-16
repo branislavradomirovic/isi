@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import uuid
 
-from sqlalchemy import Boolean, CheckConstraint, Date, DateTime, Float, ForeignKey, Integer, JSON, String, Text, UniqueConstraint, func
+from sqlalchemy import Boolean, CheckConstraint, Date, DateTime, Float, ForeignKey, Index, Integer, JSON, String, Text, UniqueConstraint, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.core.database import Base
@@ -169,3 +169,76 @@ class OrdoIndicatorObservation(Base):
     provenance_note: Mapped[str] = mapped_column(Text, nullable=False, default="", server_default="")
     created_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
     created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+
+class OrdoReferenceEvidence(Base):
+    __tablename__ = "ordo_reference_evidence"
+    __table_args__ = (
+        UniqueConstraint("workspace_id", "evidence_key", name="uq_ordo_reference_evidence_workspace_key"),
+        CheckConstraint("lifecycle_status IN ('draft','proposed','validated','retired')", name="ck_ordo_reference_evidence_lifecycle"),
+        CheckConstraint("valid_to IS NULL OR valid_from IS NULL OR valid_to >= valid_from", name="ck_ordo_reference_evidence_validity"),
+        CheckConstraint("artifact_sha256 = '' OR length(artifact_sha256) = 64", name="ck_ordo_reference_evidence_artifact_sha"),
+        CheckConstraint("content_sha256 = '' OR length(content_sha256) = 64", name="ck_ordo_reference_evidence_content_sha"),
+        Index("ix_ordo_reference_evidence_scope_lifecycle", "organization_id", "workspace_id", "lifecycle_status"),
+    )
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    organization_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False, index=True)
+    workspace_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False, index=True)
+    evidence_key: Mapped[str] = mapped_column(String(160), nullable=False)
+    indicator_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("ordo_indicator_definitions.id", ondelete="SET NULL"), nullable=True, index=True)
+    source_version_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_data_source_versions.id", ondelete="SET NULL"), nullable=True, index=True)
+    source_identity: Mapped[str] = mapped_column(String(300), nullable=False, default="", server_default="")
+    source_version: Mapped[str] = mapped_column(String(160), nullable=False, default="", server_default="")
+    external_identity: Mapped[str] = mapped_column(String(300), nullable=False, default="", server_default="")
+    artifact_sha256: Mapped[str] = mapped_column(String(64), nullable=False, default="", server_default="")
+    content_sha256: Mapped[str] = mapped_column(String(64), nullable=False, default="", server_default="")
+    valid_from: Mapped[object | None] = mapped_column(Date, nullable=True)
+    valid_to: Mapped[object | None] = mapped_column(Date, nullable=True)
+    lifecycle_status: Mapped[str] = mapped_column(String(24), nullable=False, default="draft", server_default="draft")
+    provenance_lineage: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    lifecycle_note: Mapped[str] = mapped_column(Text, nullable=False, default="", server_default="")
+    proposed_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    proposed_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    validated_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    validated_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    retired_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    retired_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updated_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
+
+
+class OrdoSpatialUnit(Base):
+    __tablename__ = "ordo_spatial_units"
+    __table_args__ = (
+        UniqueConstraint("workspace_id", "spatial_unit_key", "boundary_version", name="uq_ordo_spatial_unit_boundary_version"),
+        CheckConstraint("spatial_unit_type IN ('national','macro_region','region','local_government','custom')", name="ck_ordo_spatial_unit_type"),
+        CheckConstraint("lifecycle_status IN ('draft','proposed','validated','retired')", name="ck_ordo_spatial_unit_lifecycle"),
+        CheckConstraint("valid_to IS NULL OR valid_from IS NULL OR valid_to >= valid_from", name="ck_ordo_spatial_unit_validity"),
+        CheckConstraint("artifact_sha256 = '' OR length(artifact_sha256) = 64", name="ck_ordo_spatial_unit_artifact_sha"),
+        Index("ix_ordo_spatial_unit_scope_lifecycle", "organization_id", "workspace_id", "lifecycle_status"),
+    )
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    organization_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False, index=True)
+    workspace_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False, index=True)
+    spatial_unit_key: Mapped[str] = mapped_column(String(160), nullable=False)
+    spatial_unit_type: Mapped[str] = mapped_column(String(40), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    boundary_source: Mapped[str] = mapped_column(String(300), nullable=False, default="", server_default="")
+    boundary_version: Mapped[str] = mapped_column(String(160), nullable=False, default="", server_default="")
+    geometry_id: Mapped[str] = mapped_column(String(300), nullable=False, default="", server_default="")
+    crs: Mapped[str] = mapped_column(String(80), nullable=False, default="", server_default="")
+    artifact_sha256: Mapped[str] = mapped_column(String(64), nullable=False, default="", server_default="")
+    valid_from: Mapped[object | None] = mapped_column(Date, nullable=True)
+    valid_to: Mapped[object | None] = mapped_column(Date, nullable=True)
+    provenance: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    lifecycle_status: Mapped[str] = mapped_column(String(24), nullable=False, default="draft", server_default="draft")
+    lifecycle_note: Mapped[str] = mapped_column(Text, nullable=False, default="", server_default="")
+    proposed_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    proposed_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    validated_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    validated_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    retired_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    retired_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updated_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
