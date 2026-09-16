@@ -147,7 +147,7 @@ def test_live_status_records_current_24a_slice_and_verified_predecessors() -> No
     assert "Accepted ISI-23E closeout SHA: `3894f5d4ce9b78abc39f9a565fecf83bc2ce7a73`." in status
     assert "run #84" in status
     assert "run ID `35084716444`" in status
-    assert "Current slice is `ISI-24A" in status
+    assert "Current slice is `ISI-24B" in status
 
     tasks = json.loads((ROOT / "automation/tasks.json").read_text())["tasks"]
     by_id = {task["id"]: task for task in tasks}
@@ -169,7 +169,7 @@ def test_live_status_records_current_24a_slice_and_verified_predecessors() -> No
     assert "run #84 / 35084716444" in by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["note"]
     assert by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["next"] == "ISI-24-ORDO-PRODUCTION-METHODOLOGY"
     assert by_id["ISI-24-ORDO-PRODUCTION-METHODOLOGY"]["status"] == "in_progress"
-    assert by_id["ISI-24-ORDO-PRODUCTION-METHODOLOGY"]["spec"] == "automation/specs/ISI-24A-ORDO-GOVERNED-EVIDENCE-SCENARIO-GIS-CONTRACTS.md"
+    assert by_id["ISI-24-ORDO-PRODUCTION-METHODOLOGY"]["spec"] == "automation/specs/ISI-24B-ORDO-SPATIAL-STATISTICAL-TEMPORAL-CONTRACTS.md"
 
 
 def test_canonical_system_inventory_is_complete_and_self_contained() -> None:

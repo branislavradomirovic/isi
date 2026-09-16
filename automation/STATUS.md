@@ -77,7 +77,13 @@ Server/live-host verification: `DEFERRED_SERVER_VERIFICATION`. No production dep
 
 Overall `ISI-22-INDUSTRIAL-DATA-PLATFORM` is `COMPLETE / CI_VERIFIED`. The mandatory whole-phase gap/legacy audit and ISI-22G closeout are complete; no Phase-22 `REMOVE_BEFORE_NEXT_SLICE` finding remains open.
 
-Current slice is `ISI-24A - ORDO Governed Reference Evidence + Scenario/GIS Contracts`. ISI-23A/B/C/D/E are COMPLETE / CI_VERIFIED on the accepted closeout baseline. ISI-24B/24C/24D/24E remain later governed slices; server/DNS/ingress/production-data mutation remains deferred to owner-approved ISI-28.
+Accepted ISI-24A implementation SHA: `04b0738933030f1d69de52f9260c7b2f11042d0e`.
+
+Accepted ISI-24A implementation tree: `6c688c698fb5bf9520e0a4437c5f372a9790df2c`.
+
+Authoritative ISI-24A GitHub Actions: `ISI required acceptance` run #85, run ID `35138374174`, exact SHA `04b0738933030f1d69de52f9260c7b2f11042d0e`, conclusion `success`. ISI-24A is `COMPLETE / CI_VERIFIED`.
+
+Current slice is `ISI-24B - Spatial Processing + Statistical/Time-Series Contracts`. Overall `ISI-24-ORDO-PRODUCTION-METHODOLOGY` remains `IN PROGRESS`; ISI-24C/24D/24E remain later governed slices. Server/live-host verification is `DEFERRED_SERVER_VERIFICATION`, and server/DNS/ingress/production-data mutation remains frozen until owner-approved ISI-28.
 
 ## Mandatory bootstrap rule
 
@@ -100,7 +106,7 @@ A failed required gate returns the active task to implementation/fix state. Requ
 | 21 | Data Governance & Privacy Controls | **COMPLETE / CI_VERIFIED** |
 | 22 | Industrial Data Platform | **COMPLETE / CI_VERIFIED - 22A through 22G complete** |
 | 23 | SIMPA Production Methodology + Help/User Guide | **COMPLETE / CI_VERIFIED - 23A through 23E complete** |
-| 24 | ORDO Production Methodology + Help/User Guide | **IN PROGRESS - 24A current** |
+| 24 | ORDO Production Methodology + Help/User Guide | **IN PROGRESS - 24A accepted / 24B current** |
 | 25 | Industrial AI / MLOps | PLANNED |
 | 26 | Performance, Load & Resilience | PLANNED |
 | 27 | Industrial Release Candidate & Acceptance Pack | PLANNED |

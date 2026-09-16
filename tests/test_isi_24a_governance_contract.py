@@ -9,14 +9,20 @@ def test_24a_governance_and_non_goals_are_explicit() -> None:
     tasks = json.loads((ROOT / "automation/tasks.json").read_text(encoding="utf-8"))
     spec = (ROOT / "automation/specs/ISI-24A-ORDO-GOVERNED-EVIDENCE-SCENARIO-GIS-CONTRACTS.md").read_text(encoding="utf-8")
     master = (ROOT / "docs/roadmap/ISI-AUTONOMOUS-INDUSTRIALIZATION-MASTER-PLAN.md").read_text(encoding="utf-8")
-    assert "3894f5d4ce9b78abc39f9a565fecf83bc2ce7a73" in status
-    assert "#84" in status and "35084716444" in status
-    assert "Current slice is `ISI-24A" in status
+
+    # Historical 24A authority is an accepted checkpoint, not the forever-current slice.
+    assert "Accepted ISI-24A implementation SHA: `04b0738933030f1d69de52f9260c7b2f11042d0e`." in status
+    assert "Accepted ISI-24A implementation tree: `6c688c698fb5bf9520e0a4437c5f372a9790df2c`." in status
+    assert "run #85" in status and "run ID `35138374174`" in status
+    assert "ISI-24A is `COMPLETE / CI_VERIFIED`" in status
+
     t24 = next(x for x in tasks["tasks"] if x["id"] == "ISI-24-ORDO-PRODUCTION-METHODOLOGY")
-    assert t24["status"] == "in_progress"
-    assert t24["spec"].endswith("ISI-24A-ORDO-GOVERNED-EVIDENCE-SCENARIO-GIS-CONTRACTS.md")
+    assert "ISI-24A is COMPLETE / CI_VERIFIED on 04b0738933030f1d69de52f9260c7b2f11042d0e" in t24["note"]
+
     for marker in ["no automatic policy recommendation", "No API", "No Codex", "production-server"]:
         assert marker.lower() in spec.lower()
+    assert "#### ISI-24A accepted checkpoint" in master
+    assert "04b0738933030f1d69de52f9260c7b2f11042d0e" in master
     assert "| INV-C33 | ORDO governed reference evidence |" in master
     assert "| INV-C34 | ORDO governed spatial-unit identity |" in master
     assert "tests/test_isi_24a*.py" in master

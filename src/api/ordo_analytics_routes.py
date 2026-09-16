@@ -12,6 +12,8 @@ from src.domains.ordo.analytics_schemas import (
     DevelopmentGoalCreateRequest,
     IndicatorComputeRequest,
     MethodologyCreateRequest,
+    MethodologyProposeRequest,
+    MethodologyRetireRequest,
     MethodologyValidateRequest,
     ScenarioAssessmentCreateRequest,
     ScenarioAssessmentReviewRequest,
@@ -36,6 +38,8 @@ from src.domains.ordo.analytics_service import (
     list_scenario_assessments,
     list_scenarios,
     list_syntheses,
+    propose_methodology,
+    retire_methodology,
     review_scenario_assessment,
     review_synthesis,
     set_scenario_status,
@@ -78,6 +82,8 @@ def _error(exc: Exception) -> HTTPException:
         return HTTPException(status_code=404, detail=code)
     if code in {
         "methodology_not_validated",
+        "methodology_not_draft",
+        "methodology_not_proposed",
         "validated_observation_required",
         "synthesis_not_reviewable",
         "scenario_required",
@@ -188,7 +194,11 @@ def get_methodologies(
             "status": method.status,
             "computation_type": method.computation_type,
             "methodology_note": method.methodology_note,
+            "proposed_at": method.proposed_at,
             "validation_note": method.validation_note,
+            "approved_at": method.approved_at,
+            "retired_at": method.retired_at,
+            "retirement_note": method.retirement_note,
         }
         for method, indicator in list_methodologies(db)
     ]
@@ -230,6 +240,42 @@ def post_validate_methodology(
         row = validate_methodology(db, methodology_id=methodology_id, validation_note=payload.validation_note, actor_id=actor_id)
         db.commit(); db.refresh(row)
         return {"id": str(row.id), "status": row.status, "approved_at": row.approved_at}
+    except OrdoAnalyticsError as exc:
+        db.rollback(); raise _error(exc) from None
+
+
+@router.post("/methodologies/{methodology_id}/propose")
+def post_propose_methodology(
+    methodology_id: uuid.UUID,
+    payload: MethodologyProposeRequest,
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(db, context, organization_id=payload.organization_id, workspace_id=payload.workspace_id, permission_code="indicator.manage")
+    try:
+        actor_id = actor_membership_id(db, user_id=context.user.id, organization_id=payload.organization_id)
+        row = propose_methodology(db, methodology_id=methodology_id, actor_id=actor_id)
+        db.commit(); db.refresh(row)
+        return {"id": str(row.id), "status": row.status, "proposed_at": row.proposed_at}
+    except OrdoAnalyticsError as exc:
+        db.rollback(); raise _error(exc) from None
+
+
+@router.post("/methodologies/{methodology_id}/retire")
+def post_retire_methodology(
+    methodology_id: uuid.UUID,
+    payload: MethodologyRetireRequest,
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(db, context, organization_id=payload.organization_id, workspace_id=payload.workspace_id, permission_code="indicator.manage")
+    try:
+        actor_id = actor_membership_id(db, user_id=context.user.id, organization_id=payload.organization_id)
+        row = retire_methodology(
+            db, methodology_id=methodology_id, retirement_note=payload.retirement_note, actor_id=actor_id
+        )
+        db.commit(); db.refresh(row)
+        return {"id": str(row.id), "status": row.status, "retired_at": row.retired_at}
     except OrdoAnalyticsError as exc:
         db.rollback(); raise _error(exc) from None
 

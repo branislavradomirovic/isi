@@ -7,6 +7,7 @@ from datetime import datetime, timezone
 
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
+from pydantic import ValidationError
 
 from src.domains.ordo.analytics_models import (
     OrdoAISynthesis,
@@ -14,6 +15,9 @@ from src.domains.ordo.analytics_models import (
     OrdoDevelopmentGoal,
     OrdoIndicatorMethodology,
     OrdoIndicatorResult,
+    OrdoSpatialAggregationRun,
+    OrdoStatisticalModelContract,
+    OrdoTimeSeriesSpec,
     OrdoScenario,
     OrdoScenarioAssessment,
 )
@@ -22,6 +26,22 @@ from src.domains.ordo.models import (
     OrdoIndicatorDefinition,
     OrdoMonitoringCycle,
     OrdoPillar,
+    OrdoSpatialUnit,
+)
+from src.domains.ordo.spatial_processing import (
+    OrdoSpatialAggregationContractV1,
+    aggregate_numeric_values,
+    canonical_sha256,
+)
+from src.domains.ordo.statistical_contracts import (
+    OrdoStatisticalModelContractV1,
+    contract_fingerprint as statistical_contract_fingerprint,
+    normalize_statistical_model_contract,
+)
+from src.domains.ordo.time_series_contracts import (
+    OrdoTimeSeriesSpecV1,
+    contract_fingerprint as time_series_contract_fingerprint,
+    normalize_time_series_spec,
 )
 from src.domains.ordo.service import validate_ordo_scope
 from src.platform.ai.models import AIJob
@@ -44,6 +64,61 @@ def _validate_scope(session: Session, *, organization_id: uuid.UUID, workspace_i
 
 def _utcnow():
     return datetime.now(timezone.utc)
+
+
+def _require_methodology_actor(actor_id: uuid.UUID | None) -> uuid.UUID:
+    if actor_id is None:
+        raise OrdoAnalyticsError("methodology_actor_required")
+    return actor_id
+
+
+def _methodology_fingerprint(row: OrdoIndicatorMethodology) -> str:
+    return canonical_sha256({
+        "indicator_id": str(row.indicator_id),
+        "version_no": row.version_no,
+        "computation_type": row.computation_type,
+        "computation_spec": row.computation_spec,
+        "source_requirements": row.source_requirements,
+        "methodology_note": row.methodology_note,
+    })
+
+
+def _input_snapshot_sha256(value: GovernedAnalyticalInput) -> str:
+    return canonical_sha256({
+        "artifact_type": value.artifact_type,
+        "artifact_id": str(value.artifact_id),
+        "artifact_fingerprint": value.artifact_fingerprint,
+        "records": sorted(
+            ({"identity": row.identity_fingerprint, "content": row.content_fingerprint} for row in value.records),
+            key=lambda item: (item["identity"], item["content"]),
+        ),
+    })
+
+
+def _sync_indicator_methodology_summary(
+    session: Session, indicator: OrdoIndicatorDefinition
+) -> None:
+    active = session.scalar(
+        select(OrdoIndicatorMethodology)
+        .where(
+            OrdoIndicatorMethodology.indicator_id == indicator.id,
+            OrdoIndicatorMethodology.status == "validated",
+        )
+        .order_by(OrdoIndicatorMethodology.version_no.desc())
+    )
+    if active is None:
+        any_retired = session.scalar(
+            select(OrdoIndicatorMethodology.id).where(
+                OrdoIndicatorMethodology.indicator_id == indicator.id,
+                OrdoIndicatorMethodology.status == "retired",
+            )
+        )
+        indicator.methodology_status = "retired" if any_retired is not None else "conceptual"
+        if any_retired is None:
+            indicator.methodology_note = ""
+    else:
+        indicator.methodology_status = "validated"
+        indicator.methodology_note = active.methodology_note
 
 
 def _ratio(num: int, den: int) -> float:
@@ -362,6 +437,27 @@ def create_methodology(
     return row
 
 
+def propose_methodology(
+    session: Session, *, methodology_id: uuid.UUID, actor_id: uuid.UUID | None
+) -> OrdoIndicatorMethodology:
+    actor = _require_methodology_actor(actor_id)
+    row = session.get(OrdoIndicatorMethodology, methodology_id)
+    if row is None:
+        raise OrdoAnalyticsError("methodology_not_found")
+    if row.status != "draft":
+        raise OrdoAnalyticsError("methodology_not_draft")
+    indicator = session.get(OrdoIndicatorDefinition, row.indicator_id)
+    if indicator is None or not indicator.active:
+        raise OrdoAnalyticsError("indicator_unknown")
+    if not row.methodology_note.strip():
+        raise OrdoAnalyticsError("methodology_note_required")
+    row.status = "proposed"
+    row.proposed_by_membership_id = actor
+    row.proposed_at = _utcnow()
+    session.flush()
+    return row
+
+
 def validate_methodology(
     session: Session,
     *,
@@ -369,12 +465,18 @@ def validate_methodology(
     validation_note: str,
     actor_id: uuid.UUID | None,
 ) -> OrdoIndicatorMethodology:
+    actor = _require_methodology_actor(actor_id)
     row = session.get(OrdoIndicatorMethodology, methodology_id)
     if row is None:
         raise OrdoAnalyticsError("methodology_not_found")
     indicator = session.get(OrdoIndicatorDefinition, row.indicator_id)
     if indicator is None or not indicator.active:
         raise OrdoAnalyticsError("indicator_unknown")
+    if row.status != "proposed":
+        raise OrdoAnalyticsError("methodology_not_proposed")
+    note = validation_note.strip()
+    if not note:
+        raise OrdoAnalyticsError("validation_note_required")
     if not row.methodology_note.strip():
         raise OrdoAnalyticsError("methodology_note_required")
     if row.computation_type != "direct_observation":
@@ -387,12 +489,44 @@ def validate_methodology(
         )
     ).all():
         other.status = "retired"
+        other.retired_by_membership_id = actor
+        other.retired_at = _utcnow()
+        other.retirement_note = f"Superseded by validated methodology version {row.version_no}."
     row.status = "validated"
-    row.validation_note = validation_note.strip()
-    row.approved_by_membership_id = actor_id
+    row.validation_note = note
+    row.approved_by_membership_id = actor
     row.approved_at = _utcnow()
-    indicator.methodology_status = "validated"
-    indicator.methodology_note = row.methodology_note
+    session.flush()
+    _sync_indicator_methodology_summary(session, indicator)
+    session.flush()
+    return row
+
+
+def retire_methodology(
+    session: Session,
+    *,
+    methodology_id: uuid.UUID,
+    retirement_note: str,
+    actor_id: uuid.UUID | None,
+) -> OrdoIndicatorMethodology:
+    actor = _require_methodology_actor(actor_id)
+    row = session.get(OrdoIndicatorMethodology, methodology_id)
+    if row is None:
+        raise OrdoAnalyticsError("methodology_not_found")
+    if row.status != "validated":
+        raise OrdoAnalyticsError("methodology_not_validated")
+    note = retirement_note.strip()
+    if not note:
+        raise OrdoAnalyticsError("retirement_note_required")
+    indicator = session.get(OrdoIndicatorDefinition, row.indicator_id)
+    if indicator is None:
+        raise OrdoAnalyticsError("indicator_unknown")
+    row.status = "retired"
+    row.retired_by_membership_id = actor
+    row.retired_at = _utcnow()
+    row.retirement_note = note
+    session.flush()
+    _sync_indicator_methodology_summary(session, indicator)
     session.flush()
     return row
 
@@ -509,6 +643,383 @@ def list_goals(
             )
             .order_by(OrdoDevelopmentGoal.created_at.desc())
         ).all()
+    )
+
+
+def create_spatial_aggregation_run(
+    session: Session,
+    *,
+    organization_id: uuid.UUID,
+    workspace_id: uuid.UUID,
+    analytics_run_id: uuid.UUID,
+    indicator_code: str,
+    target_spatial_unit_id: uuid.UUID,
+    actor_id: uuid.UUID | None,
+) -> OrdoSpatialAggregationRun:
+    _validate_scope(session, organization_id=organization_id, workspace_id=workspace_id)
+    indicator = session.scalar(select(OrdoIndicatorDefinition).where(
+        OrdoIndicatorDefinition.code == indicator_code,
+        OrdoIndicatorDefinition.active.is_(True),
+    ))
+    if indicator is None:
+        raise OrdoAnalyticsError("indicator_unknown")
+    methodology = session.scalar(
+        select(OrdoIndicatorMethodology)
+        .where(
+            OrdoIndicatorMethodology.indicator_id == indicator.id,
+            OrdoIndicatorMethodology.status == "validated",
+        )
+        .order_by(OrdoIndicatorMethodology.version_no.desc())
+    )
+    if methodology is None:
+        raise OrdoAnalyticsError("methodology_not_validated")
+    block = (methodology.source_requirements or {}).get("spatial_aggregation")
+    try:
+        contract = OrdoSpatialAggregationContractV1.model_validate(block)
+    except (ValidationError, TypeError) as exc:
+        raise OrdoAnalyticsError("spatial_aggregation_not_authorized") from exc
+    target = session.scalar(select(OrdoSpatialUnit).where(
+        OrdoSpatialUnit.id == target_spatial_unit_id,
+        OrdoSpatialUnit.organization_id == organization_id,
+        OrdoSpatialUnit.workspace_id == workspace_id,
+    ))
+    if target is None:
+        raise OrdoAnalyticsError("spatial_unit_not_accessible")
+    if target.lifecycle_status != "validated":
+        raise OrdoAnalyticsError("spatial_unit_not_validated")
+    run = session.scalar(select(OrdoAnalyticsRun).where(
+        OrdoAnalyticsRun.id == analytics_run_id,
+        OrdoAnalyticsRun.organization_id == organization_id,
+        OrdoAnalyticsRun.workspace_id == workspace_id,
+    ))
+    if run is None:
+        raise OrdoAnalyticsError("analytics_run_not_accessible")
+    analytical_input = revalidate_analytics_run(
+        session, run=run, organization_id=organization_id, workspace_id=workspace_id
+    )
+    fields = {str(item.get("field_key")): item for item in analytical_input.field_contract}
+    expected_types = {
+        "indicator_code": "STRING", "quality_status": "STRING", "spatial_unit_key": "STRING",
+        "spatial_unit_type": "STRING", "boundary_version": "STRING", "crs": "STRING",
+        "value_numeric": "NUMBER",
+    }
+    for field_name in contract.required_source_fields:
+        field = fields.get(field_name)
+        required = contract.aggregation_rule != "count" or field_name != "value_numeric"
+        if field is None or field.get("logical_type") != expected_types[field_name] or (required and not bool(field.get("required"))):
+            raise OrdoAnalyticsError("spatial_source_contract_invalid")
+    candidates = [row for row in analytical_input.records if row.payload.get("indicator_code") == indicator.code]
+    if not candidates:
+        raise OrdoAnalyticsError("spatial_evidence_required")
+    normalized_records = []
+    values: list[int | float | None] = []
+    for record in candidates:
+        payload = record.payload
+        if payload.get("quality_status") != "validated":
+            raise OrdoAnalyticsError("spatial_record_quality_not_validated")
+        identity = {
+            "spatial_unit_key": payload.get("spatial_unit_key"),
+            "spatial_unit_type": payload.get("spatial_unit_type"),
+            "boundary_version": payload.get("boundary_version"),
+            "crs": payload.get("crs"),
+        }
+        expected_identity = {
+            "spatial_unit_key": target.spatial_unit_key,
+            "spatial_unit_type": target.spatial_unit_type,
+            "boundary_version": target.boundary_version,
+            "crs": target.crs,
+        }
+        if identity != expected_identity:
+            raise OrdoAnalyticsError("spatial_identity_mismatch")
+        value = payload.get("value_numeric")
+        values.append(value if isinstance(value, (int, float)) and not isinstance(value, bool) else value)  # type: ignore[arg-type]
+        normalized_records.append({
+            "identity_fingerprint": record.identity_fingerprint,
+            "content_fingerprint": record.content_fingerprint,
+            **identity,
+            "value_numeric": value,
+        })
+    calculation = aggregate_numeric_values(values, contract.aggregation_rule)
+    normalized_records.sort(key=lambda item: (item["identity_fingerprint"], item["content_fingerprint"]))
+    input_sha = canonical_sha256(normalized_records)
+    methodology_sha = _methodology_fingerprint(methodology)
+    trace = {
+        "schema_version": contract.schema_version,
+        "aggregation_rule": contract.aggregation_rule,
+        "methodology_id": str(methodology.id),
+        "methodology_version": methodology.version_no,
+        "methodology_fingerprint": methodology_sha,
+        "target_spatial_unit_id": str(target.id),
+        "target_identity": expected_identity,
+        "input_snapshot_sha256": input_sha,
+        "input_record_count": calculation.input_record_count,
+        "matched_record_count": calculation.matched_record_count,
+        "dropped_missing_numeric_count": calculation.dropped_missing_numeric_count,
+        "aggregate_numeric_value": calculation.aggregate_numeric_value,
+        "weighted": False,
+        "spatial_join_performed": False,
+        "forecast_performed": False,
+        "causal_claim": False,
+        "automatic_policy_recommendation": False,
+    }
+    row = OrdoSpatialAggregationRun(
+        organization_id=organization_id, workspace_id=workspace_id, analytics_run_id=run.id,
+        indicator_id=indicator.id, methodology_id=methodology.id,
+        methodology_version=methodology.version_no, methodology_fingerprint=methodology_sha,
+        target_spatial_unit_id=target.id, schema_version=contract.schema_version,
+        aggregation_rule=contract.aggregation_rule, boundary_version=target.boundary_version,
+        crs=target.crs, spatial_unit_type=target.spatial_unit_type,
+        input_snapshot_sha256=input_sha, input_record_count=calculation.input_record_count,
+        matched_record_count=calculation.matched_record_count,
+        dropped_missing_numeric_count=calculation.dropped_missing_numeric_count,
+        aggregate_numeric_value=calculation.aggregate_numeric_value, unit=indicator.unit_hint,
+        computation_trace=trace, run_fingerprint=canonical_sha256(trace),
+        created_by_membership_id=actor_id,
+    )
+    session.add(row)
+    session.flush()
+    return row
+
+
+def _validated_methodology_and_run(
+    session: Session, *, organization_id: uuid.UUID, workspace_id: uuid.UUID,
+    analytics_run_id: uuid.UUID, indicator_code: str,
+) -> tuple[OrdoIndicatorDefinition, OrdoIndicatorMethodology, OrdoAnalyticsRun, GovernedAnalyticalInput]:
+    _validate_scope(session, organization_id=organization_id, workspace_id=workspace_id)
+    indicator = session.scalar(select(OrdoIndicatorDefinition).where(
+        OrdoIndicatorDefinition.code == indicator_code, OrdoIndicatorDefinition.active.is_(True)))
+    if indicator is None:
+        raise OrdoAnalyticsError("indicator_unknown")
+    methodology = session.scalar(select(OrdoIndicatorMethodology).where(
+        OrdoIndicatorMethodology.indicator_id == indicator.id,
+        OrdoIndicatorMethodology.status == "validated").order_by(OrdoIndicatorMethodology.version_no.desc()))
+    if methodology is None:
+        raise OrdoAnalyticsError("methodology_not_validated")
+    run = session.scalar(select(OrdoAnalyticsRun).where(
+        OrdoAnalyticsRun.id == analytics_run_id, OrdoAnalyticsRun.organization_id == organization_id,
+        OrdoAnalyticsRun.workspace_id == workspace_id))
+    if run is None:
+        raise OrdoAnalyticsError("analytics_run_not_accessible")
+    value = revalidate_analytics_run(session, run=run, organization_id=organization_id, workspace_id=workspace_id)
+    return indicator, methodology, run, value
+
+
+def create_statistical_model_contract(
+    session: Session, *, organization_id: uuid.UUID, workspace_id: uuid.UUID,
+    analytics_run_id: uuid.UUID, contract_value: OrdoStatisticalModelContractV1 | dict,
+    actor_id: uuid.UUID | None,
+) -> OrdoStatisticalModelContract:
+    try:
+        contract = normalize_statistical_model_contract(contract_value)
+    except ValidationError as exc:
+        raise OrdoAnalyticsError("statistical_contract_invalid") from exc
+    indicator, methodology, run, value = _validated_methodology_and_run(
+        session, organization_id=organization_id, workspace_id=workspace_id,
+        analytics_run_id=analytics_run_id, indicator_code=contract.target_indicator_code)
+    method_sha = _methodology_fingerprint(methodology)
+    if (contract.target_methodology_id != methodology.id or
+            contract.target_methodology_version != methodology.version_no or
+            contract.target_methodology_fingerprint != method_sha):
+        raise OrdoAnalyticsError("statistical_contract_methodology_mismatch")
+    latest = session.scalar(select(func.max(OrdoStatisticalModelContract.version_no)).where(
+        OrdoStatisticalModelContract.workspace_id == workspace_id,
+        OrdoStatisticalModelContract.analysis_key == contract.analysis_key))
+    row = OrdoStatisticalModelContract(
+        organization_id=organization_id, workspace_id=workspace_id, analytics_run_id=run.id,
+        target_indicator_id=indicator.id, target_methodology_id=methodology.id,
+        target_methodology_version=methodology.version_no, methodology_fingerprint=method_sha,
+        input_snapshot_sha256=_input_snapshot_sha256(value), analysis_key=contract.analysis_key,
+        version_no=int(latest or 0) + 1, schema_version=contract.schema_version,
+        target_semantic=contract.target_semantic, analysis_structure=contract.analysis_structure,
+        model_family=contract.model_family, response_family=contract.response_family,
+        contract_json=contract.model_dump(mode="json"), contract_fingerprint=statistical_contract_fingerprint(contract),
+        created_by_membership_id=actor_id,
+    )
+    session.add(row); session.flush(); return row
+
+
+def create_time_series_spec(
+    session: Session, *, organization_id: uuid.UUID, workspace_id: uuid.UUID,
+    analytics_run_id: uuid.UUID, spec_value: OrdoTimeSeriesSpecV1 | dict,
+    actor_id: uuid.UUID | None,
+) -> OrdoTimeSeriesSpec:
+    try:
+        spec = normalize_time_series_spec(spec_value)
+    except ValidationError as exc:
+        raise OrdoAnalyticsError("time_series_spec_invalid") from exc
+    indicator, methodology, run, value = _validated_methodology_and_run(
+        session, organization_id=organization_id, workspace_id=workspace_id,
+        analytics_run_id=analytics_run_id, indicator_code=spec.target_indicator_code)
+    method_sha = _methodology_fingerprint(methodology)
+    if (spec.target_methodology_id != methodology.id or spec.target_methodology_version != methodology.version_no
+            or spec.target_methodology_fingerprint != method_sha):
+        raise OrdoAnalyticsError("time_series_spec_methodology_mismatch")
+    latest = session.scalar(select(func.max(OrdoTimeSeriesSpec.version_no)).where(
+        OrdoTimeSeriesSpec.workspace_id == workspace_id, OrdoTimeSeriesSpec.series_key == spec.series_key))
+    row = OrdoTimeSeriesSpec(
+        organization_id=organization_id, workspace_id=workspace_id, analytics_run_id=run.id,
+        target_indicator_id=indicator.id, target_methodology_id=methodology.id,
+        target_methodology_version=methodology.version_no, methodology_fingerprint=method_sha,
+        input_snapshot_sha256=_input_snapshot_sha256(value), series_key=spec.series_key,
+        version_no=int(latest or 0) + 1, schema_version=spec.schema_version,
+        target_semantic=spec.target_semantic, frequency=spec.frequency, transformation=spec.transformation,
+        contract_json=spec.model_dump(mode="json"), contract_fingerprint=time_series_contract_fingerprint(spec),
+        forecast_execution=False, automatic_model_selection=False, non_causal=True,
+        created_by_membership_id=actor_id,
+    )
+    session.add(row); session.flush(); return row
+
+
+def _transition_specification(
+    session: Session, *, row, action: str, actor_id: uuid.UUID | None,
+    validation_note: str = "", validation_evidence_reference: str = "", retirement_note: str = "",
+):
+    if actor_id is None:
+        raise OrdoAnalyticsError("contract_actor_required")
+    if action == "propose":
+        if row.status != "draft":
+            raise OrdoAnalyticsError("contract_not_draft")
+        row.status = "proposed"; row.proposed_by_membership_id = actor_id; row.proposed_at = _utcnow()
+    elif action == "validate":
+        if row.status != "proposed":
+            raise OrdoAnalyticsError("contract_not_proposed")
+        if not validation_note.strip() or not validation_evidence_reference.strip():
+            raise OrdoAnalyticsError("contract_validation_evidence_required")
+        row.status = "validated"; row.validation_note = validation_note.strip()
+        row.validation_evidence_reference = validation_evidence_reference.strip()
+        row.approved_by_membership_id = actor_id; row.approved_at = _utcnow()
+    elif action == "retire":
+        if row.status != "validated":
+            raise OrdoAnalyticsError("contract_not_validated")
+        if not retirement_note.strip():
+            raise OrdoAnalyticsError("retirement_note_required")
+        row.status = "retired"; row.retirement_note = retirement_note.strip()
+        row.retired_by_membership_id = actor_id; row.retired_at = _utcnow()
+    session.flush()
+    return row
+
+
+def _revalidate_specification_binding(session: Session, row) -> None:
+    indicator = session.get(OrdoIndicatorDefinition, row.target_indicator_id)
+    methodology = session.get(OrdoIndicatorMethodology, row.target_methodology_id)
+    run = session.get(OrdoAnalyticsRun, row.analytics_run_id)
+    if indicator is None or methodology is None or run is None:
+        raise OrdoAnalyticsError("contract_binding_invalid")
+    if (
+        methodology.indicator_id != indicator.id
+        or methodology.status != "validated"
+        or methodology.version_no != row.target_methodology_version
+        or _methodology_fingerprint(methodology) != row.methodology_fingerprint
+    ):
+        raise OrdoAnalyticsError("contract_methodology_changed")
+    current = session.scalar(
+        select(OrdoIndicatorMethodology)
+        .where(
+            OrdoIndicatorMethodology.indicator_id == indicator.id,
+            OrdoIndicatorMethodology.status == "validated",
+        )
+        .order_by(OrdoIndicatorMethodology.version_no.desc())
+    )
+    if current is None or current.id != methodology.id:
+        raise OrdoAnalyticsError("contract_methodology_changed")
+    value = revalidate_analytics_run(
+        session, run=run, organization_id=row.organization_id, workspace_id=row.workspace_id
+    )
+    if _input_snapshot_sha256(value) != row.input_snapshot_sha256:
+        raise OrdoAnalyticsError("contract_input_snapshot_changed")
+    try:
+        if isinstance(row, OrdoStatisticalModelContract):
+            contract = normalize_statistical_model_contract(row.contract_json)
+            fingerprint = statistical_contract_fingerprint(contract)
+        else:
+            contract = normalize_time_series_spec(row.contract_json)
+            fingerprint = time_series_contract_fingerprint(contract)
+    except ValidationError as exc:
+        raise OrdoAnalyticsError("contract_content_invalid") from exc
+    if row.contract_fingerprint != fingerprint:
+        raise OrdoAnalyticsError("contract_fingerprint_mismatch")
+
+
+def _specification_row(session: Session, model, row_id: uuid.UUID):
+    row = session.get(model, row_id)
+    if row is None:
+        raise OrdoAnalyticsError("contract_not_found")
+    return row
+
+
+def propose_statistical_model_contract(session: Session, *, contract_id: uuid.UUID, actor_id: uuid.UUID | None):
+    row = _specification_row(session, OrdoStatisticalModelContract, contract_id)
+    _revalidate_specification_binding(session, row)
+    return _transition_specification(session, row=row, action="propose", actor_id=actor_id)
+
+
+def validate_statistical_model_contract(
+    session: Session, *, contract_id: uuid.UUID, validation_note: str,
+    validation_evidence_reference: str, actor_id: uuid.UUID | None,
+):
+    row = _specification_row(session, OrdoStatisticalModelContract, contract_id)
+    _revalidate_specification_binding(session, row)
+    result = _transition_specification(
+        session, row=row, action="validate", actor_id=actor_id,
+        validation_note=validation_note, validation_evidence_reference=validation_evidence_reference,
+    )
+    for other in session.scalars(select(OrdoStatisticalModelContract).where(
+        OrdoStatisticalModelContract.workspace_id == row.workspace_id,
+        OrdoStatisticalModelContract.analysis_key == row.analysis_key,
+        OrdoStatisticalModelContract.status == "validated",
+        OrdoStatisticalModelContract.id != row.id,
+    )).all():
+        _transition_specification(
+            session, row=other, action="retire", actor_id=actor_id,
+            retirement_note=f"Superseded by validated statistical contract version {row.version_no}.",
+        )
+    return result
+
+
+def retire_statistical_model_contract(
+    session: Session, *, contract_id: uuid.UUID, retirement_note: str, actor_id: uuid.UUID | None,
+):
+    row = _specification_row(session, OrdoStatisticalModelContract, contract_id)
+    return _transition_specification(
+        session, row=row, action="retire", actor_id=actor_id, retirement_note=retirement_note
+    )
+
+
+def propose_time_series_spec(session: Session, *, spec_id: uuid.UUID, actor_id: uuid.UUID | None):
+    row = _specification_row(session, OrdoTimeSeriesSpec, spec_id)
+    _revalidate_specification_binding(session, row)
+    return _transition_specification(session, row=row, action="propose", actor_id=actor_id)
+
+
+def validate_time_series_spec(
+    session: Session, *, spec_id: uuid.UUID, validation_note: str,
+    validation_evidence_reference: str, actor_id: uuid.UUID | None,
+):
+    row = _specification_row(session, OrdoTimeSeriesSpec, spec_id)
+    _revalidate_specification_binding(session, row)
+    result = _transition_specification(
+        session, row=row, action="validate", actor_id=actor_id,
+        validation_note=validation_note, validation_evidence_reference=validation_evidence_reference,
+    )
+    for other in session.scalars(select(OrdoTimeSeriesSpec).where(
+        OrdoTimeSeriesSpec.workspace_id == row.workspace_id,
+        OrdoTimeSeriesSpec.series_key == row.series_key,
+        OrdoTimeSeriesSpec.status == "validated",
+        OrdoTimeSeriesSpec.id != row.id,
+    )).all():
+        _transition_specification(
+            session, row=other, action="retire", actor_id=actor_id,
+            retirement_note=f"Superseded by validated time-series specification version {row.version_no}.",
+        )
+    return result
+
+
+def retire_time_series_spec(
+    session: Session, *, spec_id: uuid.UUID, retirement_note: str, actor_id: uuid.UUID | None,
+):
+    row = _specification_row(session, OrdoTimeSeriesSpec, spec_id)
+    return _transition_specification(
+        session, row=row, action="retire", actor_id=actor_id, retirement_note=retirement_note
     )
 
 

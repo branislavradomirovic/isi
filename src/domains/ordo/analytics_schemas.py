@@ -29,6 +29,14 @@ class MethodologyValidateRequest(OrdoAnalyticsScope):
     validation_note: str = Field(min_length=8, max_length=5000)
 
 
+class MethodologyProposeRequest(OrdoAnalyticsScope):
+    pass
+
+
+class MethodologyRetireRequest(OrdoAnalyticsScope):
+    retirement_note: str = Field(min_length=1, max_length=5000)
+
+
 class IndicatorComputeRequest(OrdoAnalyticsScope):
     indicator_code: str = Field(min_length=1, max_length=140)
     monitoring_cycle_id: uuid.UUID | None = None

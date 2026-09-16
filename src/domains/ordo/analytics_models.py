@@ -12,7 +12,7 @@ class OrdoIndicatorMethodology(Base):
     __tablename__ = "ordo_indicator_methodologies"
     __table_args__ = (
         UniqueConstraint("indicator_id", "version_no", name="uq_ordo_indicator_methodology_version"),
-        CheckConstraint("status IN ('draft','validated','retired')", name="ck_ordo_indicator_methodology_status"),
+        CheckConstraint("status IN ('draft','proposed','validated','retired')", name="ck_ordo_indicator_methodology_status"),
         CheckConstraint("computation_type IN ('direct_observation')", name="ck_ordo_indicator_methodology_computation"),
     )
 
@@ -25,8 +25,13 @@ class OrdoIndicatorMethodology(Base):
     source_requirements: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
     methodology_note: Mapped[str] = mapped_column(Text, nullable=False, default="", server_default="")
     validation_note: Mapped[str] = mapped_column(Text, nullable=False, default="", server_default="")
+    proposed_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    proposed_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
     approved_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
     approved_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    retired_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    retired_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    retirement_note: Mapped[str] = mapped_column(Text, nullable=False, default="", server_default="")
     created_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
     created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
     updated_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
@@ -94,6 +99,140 @@ class OrdoIndicatorResult(Base):
     computation_trace: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
     status: Mapped[str] = mapped_column(String(24), nullable=False, default="computed", server_default="computed")
     created_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+
+
+class OrdoSpatialAggregationRun(Base):
+    __tablename__ = "ordo_spatial_aggregation_runs"
+    __table_args__ = (
+        CheckConstraint("schema_version = 'ORDO-SPATIAL-AGGREGATION-v1'", name="ck_ordo_spatial_run_schema"),
+        CheckConstraint("aggregation_rule IN ('count','sum','mean','min','max')", name="ck_ordo_spatial_run_rule"),
+        CheckConstraint("input_record_count >= 0 AND matched_record_count >= 0 AND dropped_missing_numeric_count >= 0", name="ck_ordo_spatial_run_counts"),
+        CheckConstraint("spatial_join_performed = false AND weighted = false AND forecast_performed = false AND causal_claim = false AND automatic_policy_recommendation = false", name="ck_ordo_spatial_run_locked_semantics"),
+        CheckConstraint("length(methodology_fingerprint) = 64 AND length(input_snapshot_sha256) = 64 AND length(run_fingerprint) = 64", name="ck_ordo_spatial_run_fingerprints"),
+        UniqueConstraint("analytics_run_id", "indicator_id", "target_spatial_unit_id", "methodology_id", name="uq_ordo_spatial_run_identity"),
+        Index("ix_ordo_spatial_run_scope_created", "organization_id", "workspace_id", "created_at"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    organization_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False)
+    workspace_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False)
+    analytics_run_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("ordo_analytics_runs.id", ondelete="RESTRICT"), nullable=False)
+    indicator_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("ordo_indicator_definitions.id", ondelete="RESTRICT"), nullable=False)
+    methodology_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("ordo_indicator_methodologies.id", ondelete="RESTRICT"), nullable=False)
+    methodology_version: Mapped[int] = mapped_column(Integer, nullable=False)
+    methodology_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    target_spatial_unit_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("ordo_spatial_units.id", ondelete="RESTRICT"), nullable=False)
+    schema_version: Mapped[str] = mapped_column(String(64), nullable=False, default="ORDO-SPATIAL-AGGREGATION-v1", server_default="ORDO-SPATIAL-AGGREGATION-v1")
+    aggregation_rule: Mapped[str] = mapped_column(String(16), nullable=False)
+    boundary_version: Mapped[str] = mapped_column(String(160), nullable=False)
+    crs: Mapped[str] = mapped_column(String(80), nullable=False)
+    spatial_unit_type: Mapped[str] = mapped_column(String(40), nullable=False)
+    input_snapshot_sha256: Mapped[str] = mapped_column(String(64), nullable=False)
+    input_record_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    matched_record_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    dropped_missing_numeric_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    aggregate_numeric_value: Mapped[float] = mapped_column(Float, nullable=False)
+    unit: Mapped[str] = mapped_column(String(80), nullable=False, default="", server_default="")
+    computation_trace: Mapped[dict] = mapped_column(JSON, nullable=False)
+    run_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    weighted: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default="false")
+    spatial_join_performed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default="false")
+    forecast_performed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default="false")
+    causal_claim: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default="false")
+    automatic_policy_recommendation: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default="false")
+    created_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+
+
+class OrdoStatisticalModelContract(Base):
+    __tablename__ = "ordo_statistical_model_contracts"
+    __table_args__ = (
+        UniqueConstraint("workspace_id", "analysis_key", "version_no", name="uq_ordo_statistical_contract_version"),
+        CheckConstraint("status IN ('draft','proposed','validated','retired')", name="ck_ordo_statistical_contract_status"),
+        CheckConstraint("schema_version = 'ORDO-STATISTICAL-MODEL-CONTRACT-v1'", name="ck_ordo_statistical_contract_schema"),
+        CheckConstraint("version_no >= 1 AND target_methodology_version >= 1", name="ck_ordo_statistical_contract_versions"),
+        CheckConstraint("length(methodology_fingerprint) = 64 AND length(input_snapshot_sha256) = 64 AND length(contract_fingerprint) = 64", name="ck_ordo_statistical_contract_fingerprints"),
+        CheckConstraint("status != 'validated' OR (length(validation_note) > 0 AND length(validation_evidence_reference) > 0 AND approved_by_membership_id IS NOT NULL AND approved_at IS NOT NULL)", name="ck_ordo_statistical_contract_validation_trace"),
+        Index("ix_ordo_statistical_contract_scope_status", "organization_id", "workspace_id", "status"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    organization_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False)
+    workspace_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False)
+    analytics_run_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("ordo_analytics_runs.id", ondelete="RESTRICT"), nullable=False)
+    target_indicator_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("ordo_indicator_definitions.id", ondelete="RESTRICT"), nullable=False)
+    target_methodology_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("ordo_indicator_methodologies.id", ondelete="RESTRICT"), nullable=False)
+    target_methodology_version: Mapped[int] = mapped_column(Integer, nullable=False)
+    methodology_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    input_snapshot_sha256: Mapped[str] = mapped_column(String(64), nullable=False)
+    analysis_key: Mapped[str] = mapped_column(String(140), nullable=False)
+    version_no: Mapped[int] = mapped_column(Integer, nullable=False)
+    schema_version: Mapped[str] = mapped_column(String(64), nullable=False)
+    target_semantic: Mapped[str] = mapped_column(String(40), nullable=False)
+    analysis_structure: Mapped[str] = mapped_column(String(32), nullable=False)
+    model_family: Mapped[str] = mapped_column(String(40), nullable=False)
+    response_family: Mapped[str] = mapped_column(String(40), nullable=False)
+    contract_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    contract_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    status: Mapped[str] = mapped_column(String(24), nullable=False, default="draft", server_default="draft")
+    created_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    proposed_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    proposed_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    approved_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    approved_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    validation_note: Mapped[str] = mapped_column(Text, nullable=False, default="", server_default="")
+    validation_evidence_reference: Mapped[str] = mapped_column(Text, nullable=False, default="", server_default="")
+    retired_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    retired_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    retirement_note: Mapped[str] = mapped_column(Text, nullable=False, default="", server_default="")
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+
+
+class OrdoTimeSeriesSpec(Base):
+    __tablename__ = "ordo_time_series_specs"
+    __table_args__ = (
+        UniqueConstraint("workspace_id", "series_key", "version_no", name="uq_ordo_time_series_spec_version"),
+        CheckConstraint("status IN ('draft','proposed','validated','retired')", name="ck_ordo_time_series_spec_status"),
+        CheckConstraint("schema_version = 'ORDO-TIME-SERIES-SPEC-v1'", name="ck_ordo_time_series_spec_schema"),
+        CheckConstraint("version_no >= 1 AND target_methodology_version >= 1", name="ck_ordo_time_series_spec_versions"),
+        CheckConstraint("length(methodology_fingerprint) = 64 AND length(input_snapshot_sha256) = 64 AND length(contract_fingerprint) = 64", name="ck_ordo_time_series_spec_fingerprints"),
+        CheckConstraint("forecast_execution = false AND automatic_model_selection = false AND non_causal = true", name="ck_ordo_time_series_spec_locked_semantics"),
+        CheckConstraint("status != 'validated' OR (length(validation_note) > 0 AND length(validation_evidence_reference) > 0 AND approved_by_membership_id IS NOT NULL AND approved_at IS NOT NULL)", name="ck_ordo_time_series_spec_validation_trace"),
+        Index("ix_ordo_time_series_spec_scope_status", "organization_id", "workspace_id", "status"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    organization_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False)
+    workspace_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False)
+    analytics_run_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("ordo_analytics_runs.id", ondelete="RESTRICT"), nullable=False)
+    target_indicator_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("ordo_indicator_definitions.id", ondelete="RESTRICT"), nullable=False)
+    target_methodology_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("ordo_indicator_methodologies.id", ondelete="RESTRICT"), nullable=False)
+    target_methodology_version: Mapped[int] = mapped_column(Integer, nullable=False)
+    methodology_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    input_snapshot_sha256: Mapped[str] = mapped_column(String(64), nullable=False)
+    series_key: Mapped[str] = mapped_column(String(140), nullable=False)
+    version_no: Mapped[int] = mapped_column(Integer, nullable=False)
+    schema_version: Mapped[str] = mapped_column(String(64), nullable=False)
+    target_semantic: Mapped[str] = mapped_column(String(40), nullable=False)
+    frequency: Mapped[str] = mapped_column(String(24), nullable=False)
+    transformation: Mapped[str] = mapped_column(String(32), nullable=False)
+    contract_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    contract_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    forecast_execution: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default="false")
+    automatic_model_selection: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default="false")
+    non_causal: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, server_default="true")
+    status: Mapped[str] = mapped_column(String(24), nullable=False, default="draft", server_default="draft")
+    created_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    proposed_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    proposed_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    approved_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    approved_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    validation_note: Mapped[str] = mapped_column(Text, nullable=False, default="", server_default="")
+    validation_evidence_reference: Mapped[str] = mapped_column(Text, nullable=False, default="", server_default="")
+    retired_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True)
+    retired_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    retirement_note: Mapped[str] = mapped_column(Text, nullable=False, default="", server_default="")
     created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
 
 
