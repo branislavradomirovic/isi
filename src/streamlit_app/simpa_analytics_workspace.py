@@ -256,6 +256,104 @@ def render_simpa_analytics(*, token: str, shell: dict[str, Any]) -> None:
     else:
         st.info("Još nema sačuvanih analitičkih snapshot-a.")
 
+    st.markdown("### Statistički metodološki ugovori i rezultati")
+    st.caption("Statistički izlazi slede dokaze i indikatore, a prikazuju se pre AI interpretacije.")
+    st.caption("PROPOSED = samo kontrolisano testiranje; VALIDATED = ljudski odobrena metodologija, ne champion niti automatska potvrda performansi.")
+    st.warning("Statistical association or feature contribution does not by itself establish causal effect.")
+    contracts = (
+        _safe(simpa_analytics_api.statistical_model_contracts, token, organization_id, workspace_id) or []
+    )
+    statistical_results = (
+        _safe(simpa_analytics_api.statistical_model_results, token, organization_id, workspace_id) or []
+    )
+    if contracts:
+        contract_rows = []
+        for item in contracts:
+            specification = item.get("contract") or {}
+            contract_rows.append(
+                {
+                    "analysis_key": item.get("analysis_key"),
+                    "target_indicator": item.get("target_indicator_code"),
+                    "target_methodology_version": item.get("target_methodology_version"),
+                    "target_methodology_fingerprint": item.get("target_methodology_contract_fingerprint"),
+                    "lifecycle": item.get("status"),
+                    "target_semantic": item.get("target_semantic"),
+                    "model_family": item.get("model_family"),
+                    "features": ", ".join(specification.get("feature_fields") or []),
+                    "confidence_level": specification.get("confidence_level"),
+                    "covariance_type": specification.get("covariance_type"),
+                    "contract_fingerprint": item.get("contract_fingerprint"),
+                    "validation_evidence_reference": item.get("validation_evidence_reference"),
+                }
+            )
+        st.dataframe(contract_rows, use_container_width=True, hide_index=True)
+    else:
+        st.info("Nema statističkih metodoloških ugovora.")
+
+    executable_contracts = [item for item in contracts if item.get("status") in {"proposed", "validated"}]
+    if executable_contracts and runs and "analysis.run" in permissions:
+        selected_contract = st.selectbox(
+            "Statistički ugovor za izvršenje",
+            executable_contracts,
+            format_func=lambda item: (
+                f"{item.get('analysis_key')} · {item.get('target_indicator_code')} · "
+                f"{item.get('status')} · v{item.get('version_no')}"
+            ),
+        )
+        selected_statistical_run = st.selectbox(
+            "Governed monitoring snapshot za statističko izvršenje",
+            runs,
+            format_func=lambda item: f"Snapshot {item['id'][:8]} · {item.get('analytical_artifact_type')}",
+            key="simpa_statistical_run",
+        )
+        proposed = selected_contract.get("status") == "proposed"
+        controlled_testing_ack = False
+        if proposed:
+            controlled_testing_ack = st.checkbox(
+                "Potvrđujem da je ovo eksplicitno kontrolisano testiranje PROPOSED ugovora.",
+                key="simpa_statistical_controlled_testing_ack",
+            )
+        if st.button(
+            "Izvrši deterministički statistički model",
+            use_container_width=True,
+            disabled=proposed and not controlled_testing_ack,
+        ):
+            created = _safe(
+                simpa_analytics_api.run_statistical_model,
+                token,
+                organization_id=organization_id,
+                workspace_id=workspace_id,
+                analytics_run_id=selected_statistical_run["id"],
+                statistical_model_contract_id=selected_contract["id"],
+                controlled_testing_ack=controlled_testing_ack,
+            )
+            if created is not None:
+                st.success("Deterministički statistički rezultat je sačuvan kao nepromenljiv dokaz.")
+                st.rerun()
+
+    if statistical_results:
+        for item in statistical_results:
+            detail = item.get("result_detail") or {}
+            with st.expander(
+                f"Rezultat {item['id'][:8]} · contract v{item.get('statistical_contract_version_no')} · "
+                f"production_eligible={item.get('production_eligible')}"
+            ):
+                st.caption(
+                    f"sample={item.get('sample_size')} · dropped_missing={item.get('dropped_missing_count')} · "
+                    f"result_fingerprint={item.get('result_fingerprint')}"
+                )
+                st.dataframe(detail.get("coefficients") or [], use_container_width=True, hide_index=True)
+                st.markdown("**Fit / error metrics**")
+                st.json(detail.get("metrics") or {})
+                st.markdown("**Diagnostics**")
+                st.json(detail.get("diagnostics") or {})
+                st.markdown("**Calibration**")
+                st.json(detail.get("calibration") or {"status": "not_applicable"})
+                st.caption(detail.get("semantic_notice", "Non-causal aggregate association only."))
+                st.caption(f"Limitations: {detail.get('limitations', '')}")
+    else:
+        st.info("Još nema nepromenljivih statističkih rezultata u aktivnom workspace-u.")
+
     st.markdown("### Lokalna AI podržana sinteza")
     st.warning(
         "AI izlaz nije institucionalni zaključak. Za osetljive SIMPA podatke provider je prinudno local-only, a rezultat zahteva human review."

@@ -3,6 +3,7 @@ from __future__ import annotations
 import uuid
 
 from sqlalchemy import (
+    Boolean,
     CheckConstraint,
     DateTime,
     Float,
@@ -168,6 +169,173 @@ class SimpaMethodologyReferenceCase(Base):
     status: Mapped[str] = mapped_column(String(24), nullable=False, default="not_run", server_default="not_run")
     result_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False, default="", server_default="")
     result_detail: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+
+
+class SimpaStatisticalModelContract(Base):
+    __tablename__ = "simpa_statistical_model_contracts"
+    __table_args__ = (
+        UniqueConstraint(
+            "target_indicator_id",
+            "analysis_key",
+            "version_no",
+            name="uq_simpa_statistical_contract_version",
+        ),
+        CheckConstraint("version_no >= 1", name="ck_simpa_statistical_contract_version"),
+        CheckConstraint("length(analysis_key) > 0", name="ck_simpa_statistical_contract_analysis_key"),
+        CheckConstraint(
+            "status IN ('draft','proposed','validated','retired')",
+            name="ck_simpa_statistical_contract_status",
+        ),
+        CheckConstraint(
+            "schema_version = 'SIMPA-STATISTICAL-MODEL-CONTRACT-v1'",
+            name="ck_simpa_statistical_contract_schema_version",
+        ),
+        CheckConstraint(
+            "(target_semantic = 'continuous' AND model_family = 'ols') OR "
+            "(target_semantic = 'count' AND model_family = 'poisson_glm') OR "
+            "(target_semantic = 'binary_system_state' AND model_family = 'binomial_logit') OR "
+            "(target_semantic = 'proportion_rate' AND model_family = 'fractional_logit')",
+            name="ck_simpa_statistical_contract_family",
+        ),
+        CheckConstraint(
+            "length(target_methodology_contract_fingerprint) = 64",
+            name="ck_simpa_statistical_contract_target_fingerprint",
+        ),
+        CheckConstraint(
+            "length(contract_fingerprint) = 64",
+            name="ck_simpa_statistical_contract_fingerprint",
+        ),
+        CheckConstraint(
+            "status != 'validated' OR (length(validation_note) > 0 AND length(validation_evidence_reference) > 0 "
+            "AND approved_by_membership_id IS NOT NULL AND approved_at IS NOT NULL)",
+            name="ck_simpa_statistical_contract_validation_trace",
+        ),
+        Index(
+            "ix_simpa_statistical_contract_target_analysis_status",
+            "target_indicator_id",
+            "analysis_key",
+            "status",
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    target_indicator_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("simpa_indicator_definitions.id", ondelete="RESTRICT"), nullable=False
+    )
+    target_methodology_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("simpa_indicator_methodologies.id", ondelete="RESTRICT"), nullable=False
+    )
+    target_methodology_contract_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    analysis_key: Mapped[str] = mapped_column(String(140), nullable=False)
+    version_no: Mapped[int] = mapped_column(Integer, nullable=False)
+    status: Mapped[str] = mapped_column(String(24), nullable=False, default="draft", server_default="draft")
+    schema_version: Mapped[str] = mapped_column(
+        String(64),
+        nullable=False,
+        default="SIMPA-STATISTICAL-MODEL-CONTRACT-v1",
+        server_default="SIMPA-STATISTICAL-MODEL-CONTRACT-v1",
+    )
+    target_semantic: Mapped[str] = mapped_column(String(40), nullable=False)
+    model_family: Mapped[str] = mapped_column(String(40), nullable=False)
+    contract_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    contract_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    created_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True
+    )
+    proposed_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True
+    )
+    proposed_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    approved_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True
+    )
+    approved_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    validation_note: Mapped[str] = mapped_column(Text, nullable=False, default="", server_default="")
+    validation_evidence_reference: Mapped[str] = mapped_column(Text, nullable=False, default="", server_default="")
+    retired_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True
+    )
+    retired_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    retirement_note: Mapped[str] = mapped_column(Text, nullable=False, default="", server_default="")
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+
+
+class SimpaStatisticalModelResult(Base):
+    __tablename__ = "simpa_statistical_model_results"
+    __table_args__ = (
+        UniqueConstraint(
+            "analytics_run_id",
+            "statistical_model_contract_id",
+            name="uq_simpa_statistical_result_run_contract",
+        ),
+        CheckConstraint("sample_size >= 1", name="ck_simpa_statistical_result_sample_size"),
+        CheckConstraint("dropped_missing_count >= 0", name="ck_simpa_statistical_result_dropped"),
+        CheckConstraint(
+            "statistical_contract_version_no >= 1",
+            name="ck_simpa_statistical_result_contract_version",
+        ),
+        CheckConstraint(
+            "statistical_contract_status IN ('proposed','validated')",
+            name="ck_simpa_statistical_result_contract_status",
+        ),
+        CheckConstraint(
+            "(production_eligible AND statistical_contract_status = 'validated') OR "
+            "(NOT production_eligible AND statistical_contract_status = 'proposed')",
+            name="ck_simpa_statistical_result_production_eligible",
+        ),
+        CheckConstraint(
+            "engine_schema_version = 'SIMPA-STATISTICAL-MODEL-v1'",
+            name="ck_simpa_statistical_result_engine_schema",
+        ),
+        CheckConstraint(
+            "length(target_methodology_contract_fingerprint) = 64 AND "
+            "length(statistical_contract_fingerprint) = 64 AND "
+            "length(analytical_artifact_fingerprint) = 64 AND "
+            "length(dataset_contract_fingerprint) = 64 AND "
+            "length(input_content_fingerprint) = 64 AND length(result_fingerprint) = 64",
+            name="ck_simpa_statistical_result_fingerprints",
+        ),
+        Index("ix_simpa_statistical_result_scope_created", "organization_id", "workspace_id", "created_at"),
+        Index("ix_simpa_statistical_result_contract", "statistical_model_contract_id"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    organization_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False
+    )
+    workspace_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False
+    )
+    analytics_run_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("simpa_analytics_runs.id", ondelete="RESTRICT"), nullable=False
+    )
+    statistical_model_contract_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("simpa_statistical_model_contracts.id", ondelete="RESTRICT"), nullable=False
+    )
+    target_indicator_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("simpa_indicator_definitions.id", ondelete="RESTRICT"), nullable=False
+    )
+    target_methodology_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("simpa_indicator_methodologies.id", ondelete="RESTRICT"), nullable=False
+    )
+    target_methodology_contract_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    statistical_contract_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    statistical_contract_version_no: Mapped[int] = mapped_column(Integer, nullable=False)
+    statistical_contract_status: Mapped[str] = mapped_column(String(24), nullable=False)
+    analytical_artifact_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    dataset_contract_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    input_content_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    engine_schema_version: Mapped[str] = mapped_column(String(64), nullable=False)
+    statsmodels_version: Mapped[str] = mapped_column(String(64), nullable=False)
+    sample_size: Mapped[int] = mapped_column(Integer, nullable=False)
+    dropped_missing_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    result_detail: Mapped[dict] = mapped_column(JSON, nullable=False)
+    result_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    production_eligible: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    created_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True
+    )
     created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
 
 

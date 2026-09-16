@@ -23,7 +23,8 @@ dependencies = [
   "email-validator>=2.2,<3",
   "beautifulsoup4>=4.12,<5",
   "bleach>=6.1,<7",
-  "boto3>=1.40,<2"
+  "boto3>=1.40,<2",
+  "statsmodels>=0.14.6,<0.16"
 ]
 
 [project.optional-dependencies]

@@ -18,6 +18,11 @@ from src.domains.simpa.analytics_schemas import (
     MethodologyReferenceSuiteRunRequest,
     MethodologyRetireRequest,
     MethodologyValidateRequest,
+    StatisticalModelContractCreateRequest,
+    StatisticalModelContractProposeRequest,
+    StatisticalModelContractRetireRequest,
+    StatisticalModelContractValidateRequest,
+    StatisticalModelRunRequest,
     SynthesisCreateRequest,
     SynthesisReviewRequest,
 )
@@ -33,13 +38,21 @@ from src.domains.simpa.analytics_service import (
     list_methodologies,
     list_methodology_reference_suites,
     list_syntheses,
+    list_statistical_model_contracts,
+    list_statistical_model_results,
     propose_methodology,
+    propose_statistical_model_contract,
     retire_methodology,
+    retire_statistical_model_contract,
     review_synthesis,
     run_methodology_reference_check,
     run_methodology_reference_suite,
+    run_statistical_model,
     validate_methodology,
+    validate_statistical_model_contract,
+    create_statistical_model_contract,
 )
+from src.domains.simpa.models import SimpaIndicatorDefinition
 from src.platform.access.service import has_permission
 from src.platform.ai.queue import AIQueueError, dispatch_ai_job
 from src.platform.ai.service import AIServiceError, actor_membership_id, job_response
@@ -71,6 +84,8 @@ def _error(exc: Exception) -> HTTPException:
     if code.endswith("not_accessible") or code in {
         "methodology_not_found",
         "methodology_reference_suite_not_found",
+        "statistical_model_contract_not_found",
+        "statistical_model_target_not_found",
     }:
         return HTTPException(status_code=404, detail=code)
     if code in {
@@ -86,6 +101,12 @@ def _error(exc: Exception) -> HTTPException:
         "methodology_reference_suite_terminal",
         "methodology_reference_suite_evidence_invalid",
         "methodology_reference_evidence_mode_ineligible",
+        "statistical_model_transition_forbidden",
+        "statistical_model_contract_not_executable",
+        "statistical_model_controlled_testing_ack_required",
+        "statistical_model_result_already_exists",
+        "statistical_model_target_methodology_changed",
+        "statistical_model_target_methodology_not_validated",
     }:
         return HTTPException(status_code=409, detail=code)
     if code in {"provider_unavailable", "timeout", "provider_http_error", "external_provider_not_configured"}:
@@ -180,6 +201,71 @@ def _reference_suite_dict(suite, cases):
             }
             for case in cases
         ],
+    }
+
+
+def _statistical_contract_dict(contract, indicator, methodology):
+    return {
+        "id": str(contract.id),
+        "analysis_key": contract.analysis_key,
+        "version_no": contract.version_no,
+        "status": contract.status,
+        "schema_version": contract.schema_version,
+        "target_indicator_id": str(indicator.id),
+        "target_indicator_code": indicator.code,
+        "target_indicator_name_sr": indicator.name_sr,
+        "target_methodology_id": str(methodology.id),
+        "target_methodology_version": methodology.version_no,
+        "target_methodology_contract_fingerprint": contract.target_methodology_contract_fingerprint,
+        "target_semantic": contract.target_semantic,
+        "model_family": contract.model_family,
+        "contract": contract.contract_json,
+        "contract_fingerprint": contract.contract_fingerprint,
+        "created_by_membership_id": str(contract.created_by_membership_id)
+        if contract.created_by_membership_id
+        else None,
+        "proposed_by_membership_id": str(contract.proposed_by_membership_id)
+        if contract.proposed_by_membership_id
+        else None,
+        "proposed_at": contract.proposed_at,
+        "approved_by_membership_id": str(contract.approved_by_membership_id)
+        if contract.approved_by_membership_id
+        else None,
+        "approved_at": contract.approved_at,
+        "validation_note": contract.validation_note,
+        "validation_evidence_reference": contract.validation_evidence_reference,
+        "retired_by_membership_id": str(contract.retired_by_membership_id)
+        if contract.retired_by_membership_id
+        else None,
+        "retired_at": contract.retired_at,
+        "retirement_note": contract.retirement_note,
+        "created_at": contract.created_at,
+    }
+
+
+def _statistical_result_dict(row):
+    return {
+        "id": str(row.id),
+        "analytics_run_id": str(row.analytics_run_id),
+        "statistical_model_contract_id": str(row.statistical_model_contract_id),
+        "target_indicator_id": str(row.target_indicator_id),
+        "target_methodology_id": str(row.target_methodology_id),
+        "target_methodology_contract_fingerprint": row.target_methodology_contract_fingerprint,
+        "statistical_contract_fingerprint": row.statistical_contract_fingerprint,
+        "statistical_contract_version_no": row.statistical_contract_version_no,
+        "statistical_contract_status": row.statistical_contract_status,
+        "analytical_artifact_fingerprint": row.analytical_artifact_fingerprint,
+        "dataset_contract_fingerprint": row.dataset_contract_fingerprint,
+        "input_content_fingerprint": row.input_content_fingerprint,
+        "engine_schema_version": row.engine_schema_version,
+        "statsmodels_version": row.statsmodels_version,
+        "sample_size": row.sample_size,
+        "dropped_missing_count": row.dropped_missing_count,
+        "result_detail": row.result_detail,
+        "result_fingerprint": row.result_fingerprint,
+        "production_eligible": row.production_eligible,
+        "created_by_membership_id": str(row.created_by_membership_id) if row.created_by_membership_id else None,
+        "created_at": row.created_at,
     }
 
 
@@ -534,6 +620,214 @@ def post_compute(
             "source_observation_ids": row.source_observation_ids,
             "computation_trace": row.computation_trace,
         }
+    except SimpaAnalyticsError as exc:
+        db.rollback()
+        raise _error(exc) from None
+
+
+@router.get("/statistical-model-contracts")
+def get_statistical_model_contracts(
+    organization_id: uuid.UUID = Query(...),
+    workspace_id: uuid.UUID = Query(...),
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db,
+        context,
+        organization_id=organization_id,
+        workspace_id=workspace_id,
+        permission_code="analysis.read",
+    )
+    return [
+        _statistical_contract_dict(contract, indicator, methodology)
+        for contract, indicator, methodology in list_statistical_model_contracts(db)
+    ]
+
+
+@router.post("/statistical-model-contracts", status_code=status.HTTP_201_CREATED)
+def post_statistical_model_contract(
+    payload: StatisticalModelContractCreateRequest,
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db,
+        context,
+        organization_id=payload.organization_id,
+        workspace_id=payload.workspace_id,
+        permission_code="indicator.manage",
+    )
+    try:
+        actor_id = actor_membership_id(db, user_id=context.user.id, organization_id=payload.organization_id)
+        row = create_statistical_model_contract(
+            db,
+            indicator_code=payload.indicator_code,
+            specification=payload.model_dump(
+                mode="json",
+                exclude={"organization_id", "workspace_id", "indicator_code"},
+            ),
+            actor_id=actor_id,
+        )
+        db.commit()
+        db.refresh(row)
+        indicator = db.get(SimpaIndicatorDefinition, row.target_indicator_id)
+        methodology = db.get(SimpaIndicatorMethodology, row.target_methodology_id)
+        return _statistical_contract_dict(row, indicator, methodology)
+    except SimpaAnalyticsError as exc:
+        db.rollback()
+        raise _error(exc) from None
+
+
+@router.post("/statistical-model-contracts/{contract_id}/propose")
+def post_propose_statistical_model_contract(
+    contract_id: uuid.UUID,
+    payload: StatisticalModelContractProposeRequest,
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db,
+        context,
+        organization_id=payload.organization_id,
+        workspace_id=payload.workspace_id,
+        permission_code="indicator.manage",
+    )
+    try:
+        actor_id = actor_membership_id(db, user_id=context.user.id, organization_id=payload.organization_id)
+        row = propose_statistical_model_contract(db, contract_id=contract_id, actor_id=actor_id)
+        db.commit()
+        db.refresh(row)
+        return _statistical_contract_dict(
+            row,
+            db.get(SimpaIndicatorDefinition, row.target_indicator_id),
+            db.get(SimpaIndicatorMethodology, row.target_methodology_id),
+        )
+    except SimpaAnalyticsError as exc:
+        db.rollback()
+        raise _error(exc) from None
+
+
+@router.post("/statistical-model-contracts/{contract_id}/validate")
+def post_validate_statistical_model_contract(
+    contract_id: uuid.UUID,
+    payload: StatisticalModelContractValidateRequest,
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db,
+        context,
+        organization_id=payload.organization_id,
+        workspace_id=payload.workspace_id,
+        permission_code="indicator.manage",
+    )
+    try:
+        actor_id = actor_membership_id(db, user_id=context.user.id, organization_id=payload.organization_id)
+        row = validate_statistical_model_contract(
+            db,
+            contract_id=contract_id,
+            validation_note=payload.validation_note,
+            validation_evidence_reference=payload.validation_evidence_reference,
+            actor_id=actor_id,
+        )
+        db.commit()
+        db.refresh(row)
+        return _statistical_contract_dict(
+            row,
+            db.get(SimpaIndicatorDefinition, row.target_indicator_id),
+            db.get(SimpaIndicatorMethodology, row.target_methodology_id),
+        )
+    except SimpaAnalyticsError as exc:
+        db.rollback()
+        raise _error(exc) from None
+
+
+@router.post("/statistical-model-contracts/{contract_id}/retire")
+def post_retire_statistical_model_contract(
+    contract_id: uuid.UUID,
+    payload: StatisticalModelContractRetireRequest,
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db,
+        context,
+        organization_id=payload.organization_id,
+        workspace_id=payload.workspace_id,
+        permission_code="indicator.manage",
+    )
+    try:
+        actor_id = actor_membership_id(db, user_id=context.user.id, organization_id=payload.organization_id)
+        row = retire_statistical_model_contract(
+            db,
+            contract_id=contract_id,
+            retirement_note=payload.retirement_note,
+            actor_id=actor_id,
+        )
+        db.commit()
+        db.refresh(row)
+        return _statistical_contract_dict(
+            row,
+            db.get(SimpaIndicatorDefinition, row.target_indicator_id),
+            db.get(SimpaIndicatorMethodology, row.target_methodology_id),
+        )
+    except SimpaAnalyticsError as exc:
+        db.rollback()
+        raise _error(exc) from None
+
+
+@router.get("/statistical-model-results")
+def get_statistical_model_results(
+    organization_id: uuid.UUID = Query(...),
+    workspace_id: uuid.UUID = Query(...),
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db,
+        context,
+        organization_id=organization_id,
+        workspace_id=workspace_id,
+        permission_code="analysis.read",
+    )
+    return [
+        _statistical_result_dict(row)
+        for row in list_statistical_model_results(
+            db,
+            organization_id=organization_id,
+            workspace_id=workspace_id,
+        )
+    ]
+
+
+@router.post("/statistical-model-results/run", status_code=status.HTTP_201_CREATED)
+def post_run_statistical_model(
+    payload: StatisticalModelRunRequest,
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db,
+        context,
+        organization_id=payload.organization_id,
+        workspace_id=payload.workspace_id,
+        permission_code="analysis.run",
+    )
+    try:
+        actor_id = actor_membership_id(db, user_id=context.user.id, organization_id=payload.organization_id)
+        row = run_statistical_model(
+            db,
+            organization_id=payload.organization_id,
+            workspace_id=payload.workspace_id,
+            analytics_run_id=payload.analytics_run_id,
+            statistical_model_contract_id=payload.statistical_model_contract_id,
+            controlled_testing_ack=payload.controlled_testing_ack,
+            actor_id=actor_id,
+        )
+        db.commit()
+        db.refresh(row)
+        return _statistical_result_dict(row)
     except SimpaAnalyticsError as exc:
         db.rollback()
         raise _error(exc) from None

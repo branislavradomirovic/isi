@@ -16,6 +16,8 @@ from src.domains.simpa.analytics_models import (
     SimpaIndicatorResult,
     SimpaMethodologyReferenceCase,
     SimpaMethodologyReferenceSuite,
+    SimpaStatisticalModelContract,
+    SimpaStatisticalModelResult,
 )
 from src.domains.simpa.methodology_contracts import (
     contract_fingerprint,
@@ -32,6 +34,19 @@ from src.domains.simpa.reference_calculations import (
     reference_case_result_fingerprint,
     reference_suite_fingerprint,
     reference_suite_result_fingerprint,
+)
+from src.domains.simpa.statistical_contracts import (
+    STATISTICAL_MODEL_CONTRACT_SCHEMA_VERSION,
+    SimpaStatisticalModelContractV1,
+    contract_fingerprint as statistical_contract_fingerprint,
+    normalize_statistical_model_contract,
+)
+from src.domains.simpa.statistical_models import (
+    STATISTICAL_MODEL_ENGINE_SCHEMA_VERSION,
+    StatisticalModelError,
+    normalize_result as normalize_statistical_result,
+    result_fingerprint as statistical_result_fingerprint,
+    run_statistical_model as execute_statistical_model,
 )
 from src.domains.simpa.models import SimpaIndicatorDefinition, SimpaMonitoringCycle
 from src.platform.ai.models import AIJob
@@ -1075,6 +1090,396 @@ def compute_indicator(
         },
         status="computed",
         created_by_membership_id=actor_id,
+    )
+    session.add(result)
+    session.flush()
+    return result
+
+
+def _require_statistical_actor(session: Session, actor_id: uuid.UUID | None) -> uuid.UUID:
+    membership = session.get(Membership, actor_id) if actor_id is not None else None
+    if membership is None or membership.status != "active":
+        raise SimpaAnalyticsError("statistical_model_actor_required")
+    return membership.id
+
+
+def _current_validated_target_methodology(
+    session: Session, *, indicator_code: str
+) -> tuple[SimpaIndicatorDefinition, SimpaIndicatorMethodology]:
+    code = indicator_code.strip().casefold()
+    indicator = session.scalar(
+        select(SimpaIndicatorDefinition).where(
+            func.lower(SimpaIndicatorDefinition.code) == code,
+            SimpaIndicatorDefinition.active.is_(True),
+        )
+    )
+    if indicator is None:
+        raise SimpaAnalyticsError("statistical_model_target_not_found")
+    methodologies = list(
+        session.scalars(
+            select(SimpaIndicatorMethodology)
+            .where(
+                SimpaIndicatorMethodology.indicator_id == indicator.id,
+                SimpaIndicatorMethodology.status == "validated",
+            )
+            .order_by(SimpaIndicatorMethodology.version_no.desc())
+        ).all()
+    )
+    if indicator.methodology_status != "validated" or len(methodologies) != 1:
+        raise SimpaAnalyticsError("statistical_model_target_methodology_not_validated")
+    methodology = methodologies[0]
+    try:
+        target_contract = normalize_methodology_contract(
+            methodology.computation_spec,
+            indicator_unit_hint=indicator.unit_hint,
+        )
+    except (ValidationError, ValueError) as exc:
+        raise SimpaAnalyticsError("statistical_model_target_methodology_invalid") from exc
+    if (
+        len(methodology.contract_fingerprint) != 64
+        or methodology.contract_fingerprint != contract_fingerprint(target_contract)
+    ):
+        raise SimpaAnalyticsError("statistical_model_target_methodology_invalid")
+    return indicator, methodology
+
+
+def _verified_statistical_contract(
+    session: Session,
+    *,
+    contract_id: uuid.UUID,
+    require_current_target: bool = True,
+) -> tuple[
+    SimpaStatisticalModelContract,
+    SimpaIndicatorDefinition,
+    SimpaIndicatorMethodology,
+    SimpaStatisticalModelContractV1,
+]:
+    row = session.get(SimpaStatisticalModelContract, contract_id)
+    if row is None:
+        raise SimpaAnalyticsError("statistical_model_contract_not_found")
+    indicator = session.get(SimpaIndicatorDefinition, row.target_indicator_id)
+    methodology = session.get(SimpaIndicatorMethodology, row.target_methodology_id)
+    if indicator is None or methodology is None:
+        raise SimpaAnalyticsError("statistical_model_contract_binding_invalid")
+    try:
+        contract = normalize_statistical_model_contract(row.contract_json)
+    except (ValidationError, ValueError) as exc:
+        raise SimpaAnalyticsError("statistical_model_contract_invalid") from exc
+    fingerprint = statistical_contract_fingerprint(contract)
+    if (
+        contract.target_indicator_code != indicator.code.strip().casefold()
+        or contract.target_methodology_id != methodology.id
+        or contract.target_methodology_version != methodology.version_no
+        or contract.target_methodology_contract_fingerprint != row.target_methodology_contract_fingerprint
+        or methodology.contract_fingerprint != row.target_methodology_contract_fingerprint
+        or row.analysis_key != contract.analysis_key
+        or row.schema_version != contract.schema_version
+        or row.target_semantic != contract.target_semantic
+        or row.model_family != contract.model_family
+        or row.contract_fingerprint != fingerprint
+    ):
+        raise SimpaAnalyticsError("statistical_model_contract_fingerprint_mismatch")
+    if require_current_target:
+        current_indicator, current_methodology = _current_validated_target_methodology(
+            session, indicator_code=indicator.code
+        )
+        if (
+            current_indicator.id != indicator.id
+            or current_methodology.id != methodology.id
+            or current_methodology.contract_fingerprint != row.target_methodology_contract_fingerprint
+        ):
+            raise SimpaAnalyticsError("statistical_model_target_methodology_changed")
+    return row, indicator, methodology, contract
+
+
+def list_statistical_model_contracts(
+    session: Session,
+) -> list[tuple[SimpaStatisticalModelContract, SimpaIndicatorDefinition, SimpaIndicatorMethodology]]:
+    return list(
+        session.execute(
+            select(
+                SimpaStatisticalModelContract,
+                SimpaIndicatorDefinition,
+                SimpaIndicatorMethodology,
+            )
+            .join(
+                SimpaIndicatorDefinition,
+                SimpaIndicatorDefinition.id == SimpaStatisticalModelContract.target_indicator_id,
+            )
+            .join(
+                SimpaIndicatorMethodology,
+                SimpaIndicatorMethodology.id == SimpaStatisticalModelContract.target_methodology_id,
+            )
+            .order_by(
+                SimpaIndicatorDefinition.code,
+                SimpaStatisticalModelContract.analysis_key,
+                SimpaStatisticalModelContract.version_no.desc(),
+            )
+        ).all()
+    )
+
+
+def create_statistical_model_contract(
+    session: Session,
+    *,
+    indicator_code: str,
+    specification: dict,
+    actor_id: uuid.UUID | None,
+) -> SimpaStatisticalModelContract:
+    actor = _require_statistical_actor(session, actor_id)
+    indicator, methodology = _current_validated_target_methodology(session, indicator_code=indicator_code)
+    raw = {
+        **specification,
+        "schema_version": STATISTICAL_MODEL_CONTRACT_SCHEMA_VERSION,
+        "target_indicator_code": indicator.code,
+        "target_methodology_id": methodology.id,
+        "target_methodology_version": methodology.version_no,
+        "target_methodology_contract_fingerprint": methodology.contract_fingerprint,
+    }
+    try:
+        contract = normalize_statistical_model_contract(raw)
+    except (ValidationError, ValueError) as exc:
+        raise SimpaAnalyticsError("statistical_model_contract_invalid") from exc
+    latest = session.scalar(
+        select(func.max(SimpaStatisticalModelContract.version_no)).where(
+            SimpaStatisticalModelContract.target_indicator_id == indicator.id,
+            SimpaStatisticalModelContract.analysis_key == contract.analysis_key,
+        )
+    )
+    row = SimpaStatisticalModelContract(
+        target_indicator_id=indicator.id,
+        target_methodology_id=methodology.id,
+        target_methodology_contract_fingerprint=methodology.contract_fingerprint,
+        analysis_key=contract.analysis_key,
+        version_no=int(latest or 0) + 1,
+        status="draft",
+        schema_version=contract.schema_version,
+        target_semantic=contract.target_semantic,
+        model_family=contract.model_family,
+        contract_json=contract.model_dump(mode="json"),
+        contract_fingerprint=statistical_contract_fingerprint(contract),
+        created_by_membership_id=actor,
+    )
+    session.add(row)
+    session.flush()
+    return row
+
+
+def propose_statistical_model_contract(
+    session: Session, *, contract_id: uuid.UUID, actor_id: uuid.UUID | None
+) -> SimpaStatisticalModelContract:
+    actor = _require_statistical_actor(session, actor_id)
+    row, _indicator, _methodology, _contract = _verified_statistical_contract(
+        session, contract_id=contract_id
+    )
+    if row.status != "draft":
+        raise SimpaAnalyticsError("statistical_model_transition_forbidden")
+    row.status = "proposed"
+    row.proposed_by_membership_id = actor
+    row.proposed_at = _utcnow()
+    session.flush()
+    return row
+
+
+def validate_statistical_model_contract(
+    session: Session,
+    *,
+    contract_id: uuid.UUID,
+    validation_note: str,
+    validation_evidence_reference: str,
+    actor_id: uuid.UUID | None,
+) -> SimpaStatisticalModelContract:
+    actor = _require_statistical_actor(session, actor_id)
+    row, _indicator, _methodology, _contract = _verified_statistical_contract(
+        session, contract_id=contract_id
+    )
+    if row.status != "proposed":
+        raise SimpaAnalyticsError("statistical_model_transition_forbidden")
+    note = validation_note.strip()
+    evidence = validation_evidence_reference.strip()
+    if not note:
+        raise SimpaAnalyticsError("statistical_model_validation_note_required")
+    if not evidence:
+        raise SimpaAnalyticsError("statistical_model_validation_evidence_required")
+    for predecessor in session.scalars(
+        select(SimpaStatisticalModelContract).where(
+            SimpaStatisticalModelContract.target_indicator_id == row.target_indicator_id,
+            SimpaStatisticalModelContract.analysis_key == row.analysis_key,
+            SimpaStatisticalModelContract.status == "validated",
+            SimpaStatisticalModelContract.id != row.id,
+        )
+    ).all():
+        predecessor.status = "retired"
+        predecessor.retired_by_membership_id = actor
+        predecessor.retired_at = _utcnow()
+        predecessor.retirement_note = f"Superseded by validated statistical contract version {row.version_no}."
+    row.status = "validated"
+    row.validation_note = note
+    row.validation_evidence_reference = evidence
+    row.approved_by_membership_id = actor
+    row.approved_at = _utcnow()
+    session.flush()
+    return row
+
+
+def retire_statistical_model_contract(
+    session: Session,
+    *,
+    contract_id: uuid.UUID,
+    retirement_note: str,
+    actor_id: uuid.UUID | None,
+) -> SimpaStatisticalModelContract:
+    actor = _require_statistical_actor(session, actor_id)
+    row, _indicator, _methodology, _contract = _verified_statistical_contract(
+        session,
+        contract_id=contract_id,
+        require_current_target=False,
+    )
+    if row.status not in {"draft", "proposed", "validated"}:
+        raise SimpaAnalyticsError("statistical_model_transition_forbidden")
+    note = retirement_note.strip()
+    if not note:
+        raise SimpaAnalyticsError("statistical_model_retirement_note_required")
+    row.status = "retired"
+    row.retired_by_membership_id = actor
+    row.retired_at = _utcnow()
+    row.retirement_note = note
+    session.flush()
+    return row
+
+
+def list_statistical_model_results(
+    session: Session,
+    *,
+    organization_id: uuid.UUID,
+    workspace_id: uuid.UUID,
+    limit: int = 50,
+) -> list[SimpaStatisticalModelResult]:
+    return list(
+        session.scalars(
+            select(SimpaStatisticalModelResult)
+            .where(
+                SimpaStatisticalModelResult.organization_id == organization_id,
+                SimpaStatisticalModelResult.workspace_id == workspace_id,
+            )
+            .order_by(SimpaStatisticalModelResult.created_at.desc())
+            .limit(max(1, min(limit, 100)))
+        ).all()
+    )
+
+
+def run_statistical_model(
+    session: Session,
+    *,
+    organization_id: uuid.UUID,
+    workspace_id: uuid.UUID,
+    analytics_run_id: uuid.UUID,
+    statistical_model_contract_id: uuid.UUID,
+    controlled_testing_ack: bool,
+    actor_id: uuid.UUID | None,
+) -> SimpaStatisticalModelResult:
+    actor = _require_statistical_actor(session, actor_id)
+    row, indicator, methodology, contract = _verified_statistical_contract(
+        session,
+        contract_id=statistical_model_contract_id,
+    )
+    if row.status not in {"proposed", "validated"}:
+        raise SimpaAnalyticsError("statistical_model_contract_not_executable")
+    if row.status == "proposed" and controlled_testing_ack is not True:
+        raise SimpaAnalyticsError("statistical_model_controlled_testing_ack_required")
+    run = session.scalar(
+        select(SimpaAnalyticsRun).where(
+            SimpaAnalyticsRun.id == analytics_run_id,
+            SimpaAnalyticsRun.organization_id == organization_id,
+            SimpaAnalyticsRun.workspace_id == workspace_id,
+        )
+    )
+    if run is None:
+        raise SimpaAnalyticsError("analytics_run_not_accessible")
+    analytical_input = revalidate_analytics_run(
+        session,
+        run=run,
+        organization_id=organization_id,
+        workspace_id=workspace_id,
+    )
+    matches = [
+        record
+        for record in _records(analytical_input, run.monitoring_cycle_id)
+        if record.payload["indicator_code"] == indicator.code
+        and record.payload["quality_status"] == "validated"
+    ]
+    if not matches:
+        raise SimpaAnalyticsError("statistical_model_validated_target_records_required")
+    existing = session.scalar(
+        select(SimpaStatisticalModelResult.id).where(
+            SimpaStatisticalModelResult.analytics_run_id == analytics_run_id,
+            SimpaStatisticalModelResult.statistical_model_contract_id == row.id,
+        )
+    )
+    if existing is not None:
+        raise SimpaAnalyticsError("statistical_model_result_already_exists")
+    try:
+        detail = execute_statistical_model(
+            contract,
+            [dict(record.payload) for record in matches],
+            analytical_input.field_contract,
+        )
+    except StatisticalModelError as exc:
+        code = str(exc)
+        if code in {
+            "target_not_estimable",
+            "positive_residual_degrees_of_freedom_required",
+            "rank_deficient_design",
+            "count_target_invalid",
+            "binary_target_invalid",
+            "proportion_target_invalid",
+        }:
+            raise SimpaAnalyticsError("statistical_model_not_estimable") from None
+        if code in {"perfect_separation", "non_convergence", "numerical_failure"}:
+            raise SimpaAnalyticsError("statistical_model_numerical_failure") from None
+        raise SimpaAnalyticsError("statistical_model_input_invalid") from None
+    input_content_fingerprint = hashlib.sha256(
+        _canonical_json({"content_fingerprints": [record.content_fingerprint for record in matches]}).encode(
+            "utf-8"
+        )
+    ).hexdigest()
+    detail["reproducibility_trace"] = {
+        "statistical_contract_id": str(row.id),
+        "statistical_contract_version_no": row.version_no,
+        "statistical_contract_status": row.status,
+        "statistical_contract_fingerprint": row.contract_fingerprint,
+        "target_indicator_id": str(indicator.id),
+        "target_indicator_code": indicator.code,
+        "target_methodology_id": str(methodology.id),
+        "target_methodology_version": methodology.version_no,
+        "target_methodology_contract_fingerprint": methodology.contract_fingerprint,
+        "analytical_artifact_fingerprint": analytical_input.artifact_fingerprint,
+        "dataset_contract_fingerprint": analytical_input.dataset_contract_fingerprint,
+        "input_content_fingerprint": input_content_fingerprint,
+    }
+    detail = normalize_statistical_result(detail)
+    result = SimpaStatisticalModelResult(
+        organization_id=organization_id,
+        workspace_id=workspace_id,
+        analytics_run_id=run.id,
+        statistical_model_contract_id=row.id,
+        target_indicator_id=indicator.id,
+        target_methodology_id=methodology.id,
+        target_methodology_contract_fingerprint=methodology.contract_fingerprint,
+        statistical_contract_fingerprint=row.contract_fingerprint,
+        statistical_contract_version_no=row.version_no,
+        statistical_contract_status=row.status,
+        analytical_artifact_fingerprint=analytical_input.artifact_fingerprint,
+        dataset_contract_fingerprint=analytical_input.dataset_contract_fingerprint,
+        input_content_fingerprint=input_content_fingerprint,
+        engine_schema_version=STATISTICAL_MODEL_ENGINE_SCHEMA_VERSION,
+        statsmodels_version=detail["statsmodels_version"],
+        sample_size=detail["sample_size"],
+        dropped_missing_count=detail["dropped_missing_count"],
+        result_detail=detail,
+        result_fingerprint=statistical_result_fingerprint(detail),
+        production_eligible=row.status == "validated",
+        created_by_membership_id=actor,
     )
     session.add(result)
     session.flush()

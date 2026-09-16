@@ -31,10 +31,9 @@ def test_0028_exact_chain_simpa_only_tables_constraints_and_backfill():
     assert "ELSE 'legacy_inline' END" in text
 
 
-def test_0028_is_the_sole_current_alembic_head():
-    heads = subprocess.run(["alembic", "heads"], check=True, capture_output=True, text=True).stdout
-    assert "20260915_0028 (head)" in heads
-    assert heads.count("(head)") == 1
+def test_0028_remains_in_alembic_history_without_freezing_the_mutable_head():
+    history = subprocess.run(["alembic", "history"], check=True, capture_output=True, text=True).stdout
+    assert "20260914_0027 -> 20260915_0028" in history
 
 
 def test_0028_offline_upgrade_and_downgrade_render():

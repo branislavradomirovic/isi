@@ -74,6 +74,8 @@ fastapi==0.141.1
     # via isi-platform (pyproject.toml)
 filelock==3.32.6
     # via cachecontrol
+formulaic==1.2.2
+    # via statsmodels
 greenlet==3.5.5
     # via sqlalchemy
 h11==0.16.0
@@ -96,6 +98,8 @@ idna==3.19
     #   requests
 iniconfig==2.3.0
     # via pytest
+interface-meta==2.0.1
+    # via formulaic
 itsdangerous==2.2.0
     # via streamlit
 jinja2==3.1.6
@@ -132,25 +136,38 @@ mypy==1.20.2
 mypy-extensions==1.1.0
     # via mypy
 narwhals==2.26.0
-    # via altair
+    # via
+    #   altair
+    #   formulaic
 numpy==2.4.6
     # via
+    #   formulaic
     #   pandas
+    #   patsy
     #   pydeck
+    #   scipy
+    #   statsmodels
     #   streamlit
 packageurl-python==0.17.6
     # via cyclonedx-python-lib
 packaging==26.3
     # via
     #   altair
+    #   patsy
     #   pip-audit
     #   pip-requirements-parser
     #   pytest
+    #   statsmodels
     #   streamlit
 pandas==3.0.5
-    # via streamlit
+    # via
+    #   formulaic
+    #   statsmodels
+    #   streamlit
 pathspec==1.1.1
     # via mypy
+patsy==1.0.3
+    # via statsmodels
 pillow==12.3.0
     # via streamlit
 pip-api==0.0.35
@@ -241,6 +258,10 @@ ruff==0.16.6
     # via isi-platform (pyproject.toml)
 s3transfer==0.19.2
     # via boto3
+scipy==1.17.1
+    # via
+    #   formulaic
+    #   statsmodels
 six==1.17.0
     # via python-dateutil
 sortedcontainers==2.4.0
@@ -255,6 +276,8 @@ starlette==1.6.0
     # via
     #   fastapi
     #   streamlit
+statsmodels==0.15.0
+    # via isi-platform (pyproject.toml)
 stevedore==5.9.1
     # via bandit
 streamlit==1.63.0
@@ -273,6 +296,7 @@ typing-extensions==4.16.0
     #   beautifulsoup4
     #   cyclonedx-python-lib
     #   fastapi
+    #   formulaic
     #   mypy
     #   psycopg
     #   pydantic
@@ -307,6 +331,8 @@ websockets==16.1.1
     # via
     #   streamlit
     #   uvicorn
+wrapt==2.4.1
+    # via formulaic
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip

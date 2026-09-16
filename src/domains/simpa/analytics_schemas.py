@@ -4,7 +4,7 @@ import math
 import uuid
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, StrictBool, field_validator, model_validator
 
 
 class SimpaAnalyticsScope(BaseModel):
@@ -133,6 +133,52 @@ class IndicatorComputeRequest(SimpaAnalyticsScope):
     indicator_code: str = Field(min_length=1, max_length=140)
     monitoring_cycle_id: uuid.UUID | None = None
     analytics_run_id: uuid.UUID
+
+
+class StatisticalModelContractCreateRequest(SimpaAnalyticsScope):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True, allow_inf_nan=False)
+
+    indicator_code: str = Field(min_length=1, max_length=140)
+    analysis_key: str = Field(min_length=1, max_length=140)
+    target_semantic: Literal["continuous", "count", "binary_system_state", "proportion_rate"]
+    model_family: Literal["ols", "poisson_glm", "binomial_logit", "fractional_logit"]
+    feature_fields: list[str] = Field(min_length=1)
+    confidence_level: float = Field(gt=0, lt=1)
+    covariance_type: Literal["nonrobust", "HC3"]
+    target_field: Literal["value_numeric"] = "value_numeric"
+    missing_data_rule: Literal["complete_case"] = "complete_case"
+    feature_scaling: Literal["none"] = "none"
+    include_intercept: Literal[True] = True
+    aggregate_only: Literal[True] = True
+    non_causal: Literal[True] = True
+    purpose: str = Field(min_length=1, max_length=5000)
+    limitations: str = Field(min_length=1, max_length=5000)
+    positive_outcome_definition: str | None = Field(default=None, max_length=1000)
+
+
+class StatisticalModelContractProposeRequest(SimpaAnalyticsScope):
+    model_config = ConfigDict(extra="forbid")
+
+
+class StatisticalModelContractValidateRequest(SimpaAnalyticsScope):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    validation_note: str = Field(min_length=1, max_length=5000)
+    validation_evidence_reference: str = Field(min_length=1, max_length=2000)
+
+
+class StatisticalModelContractRetireRequest(SimpaAnalyticsScope):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    retirement_note: str = Field(min_length=1, max_length=5000)
+
+
+class StatisticalModelRunRequest(SimpaAnalyticsScope):
+    model_config = ConfigDict(extra="forbid")
+
+    analytics_run_id: uuid.UUID
+    statistical_model_contract_id: uuid.UUID
+    controlled_testing_ack: StrictBool = False
 
 
 class SynthesisCreateRequest(SimpaAnalyticsScope):

@@ -150,6 +150,125 @@ def run_reference_suite(
     )
 
 
+def statistical_model_contracts(token: str, organization_id: str, workspace_id: str):
+    return _checked(
+        request(
+            "GET",
+            "/api/v1/simpa/analytics/statistical-model-contracts",
+            token=token,
+            params={"organization_id": organization_id, "workspace_id": workspace_id},
+        ),
+        unavailable="Nije moguće učitati SIMPA statističke metodološke ugovore.",
+    )
+
+
+def create_statistical_model_contract(token: str, *, organization_id: str, workspace_id: str, payload: dict):
+    return _checked(
+        request(
+            "POST",
+            "/api/v1/simpa/analytics/statistical-model-contracts",
+            token=token,
+            json={"organization_id": organization_id, "workspace_id": workspace_id, **payload},
+        ),
+        unavailable="Nije moguće kreirati SIMPA statistički metodološki ugovor.",
+    )
+
+
+def propose_statistical_model_contract(
+    token: str, *, contract_id: str, organization_id: str, workspace_id: str
+):
+    return _checked(
+        request(
+            "POST",
+            f"/api/v1/simpa/analytics/statistical-model-contracts/{contract_id}/propose",
+            token=token,
+            json={"organization_id": organization_id, "workspace_id": workspace_id},
+        ),
+        unavailable="Nije moguće predložiti SIMPA statistički metodološki ugovor.",
+    )
+
+
+def validate_statistical_model_contract(
+    token: str,
+    *,
+    contract_id: str,
+    organization_id: str,
+    workspace_id: str,
+    validation_note: str,
+    validation_evidence_reference: str,
+):
+    return _checked(
+        request(
+            "POST",
+            f"/api/v1/simpa/analytics/statistical-model-contracts/{contract_id}/validate",
+            token=token,
+            json={
+                "organization_id": organization_id,
+                "workspace_id": workspace_id,
+                "validation_note": validation_note,
+                "validation_evidence_reference": validation_evidence_reference,
+            },
+        ),
+        unavailable="Nije moguće validirati SIMPA statistički metodološki ugovor.",
+    )
+
+
+def retire_statistical_model_contract(
+    token: str, *, contract_id: str, organization_id: str, workspace_id: str, retirement_note: str
+):
+    return _checked(
+        request(
+            "POST",
+            f"/api/v1/simpa/analytics/statistical-model-contracts/{contract_id}/retire",
+            token=token,
+            json={
+                "organization_id": organization_id,
+                "workspace_id": workspace_id,
+                "retirement_note": retirement_note,
+            },
+        ),
+        unavailable="Nije moguće povući SIMPA statistički metodološki ugovor.",
+    )
+
+
+def statistical_model_results(token: str, organization_id: str, workspace_id: str):
+    return _checked(
+        request(
+            "GET",
+            "/api/v1/simpa/analytics/statistical-model-results",
+            token=token,
+            params={"organization_id": organization_id, "workspace_id": workspace_id},
+        ),
+        unavailable="Nije moguće učitati SIMPA statističke rezultate.",
+    )
+
+
+def run_statistical_model(
+    token: str,
+    *,
+    organization_id: str,
+    workspace_id: str,
+    analytics_run_id: str,
+    statistical_model_contract_id: str,
+    controlled_testing_ack: bool = False,
+):
+    return _checked(
+        request(
+            "POST",
+            "/api/v1/simpa/analytics/statistical-model-results/run",
+            token=token,
+            json={
+                "organization_id": organization_id,
+                "workspace_id": workspace_id,
+                "analytics_run_id": analytics_run_id,
+                "statistical_model_contract_id": statistical_model_contract_id,
+                "controlled_testing_ack": controlled_testing_ack,
+            },
+        ),
+        unavailable="Nije moguće izvršiti SIMPA statistički model.",
+    )
+
+
 def syntheses(token: str, organization_id: str, workspace_id: str):
     return _checked(
         request(
