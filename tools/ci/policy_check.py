@@ -199,7 +199,7 @@ def main() -> None:
         "INV-H05": "CURRENT_AS_BUILT",
         "INV-A17": "NOT_PRESENT",
         "INV-A18": "CURRENT_AS_BUILT",
-        "INV-A19": "PLANNED",
+        "INV-A19": "CURRENT_AS_BUILT",
         "INV-A20": "NOT_PRESENT",
         "INV-A21": "CURRENT_AS_BUILT",
         "INV-J13": "TARGET",

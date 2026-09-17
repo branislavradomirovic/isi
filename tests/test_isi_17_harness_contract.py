@@ -150,7 +150,10 @@ def test_live_status_records_current_24c_slice_and_verified_predecessors() -> No
     assert "Accepted ISI-24B implementation SHA: `0ad913db23cea44033e8adf693eb179edfa8fb5d`." in status
     assert "Accepted ISI-24B implementation tree: `1008022ebe4cf95b4d45a12ff746188e6c8efa11`." in status
     assert "run #86" in status and "run ID `35147730914`" in status
-    assert "Current slice is `ISI-24C" in status
+    assert "Accepted ISI-24C implementation SHA: `76e4ca5265f48a096d2253c88898e1aaedbff991`." in status
+    assert "Accepted ISI-24C implementation tree: `0a6ec7b7ab4db5d43c570c714c065f8fef7093f4`." in status
+    assert "run #87" in status and "run ID `35153774409`" in status
+    assert "Current slice is `ISI-24D" in status
 
     tasks = json.loads((ROOT / "automation/tasks.json").read_text())["tasks"]
     by_id = {task["id"]: task for task in tasks}
@@ -172,7 +175,7 @@ def test_live_status_records_current_24c_slice_and_verified_predecessors() -> No
     assert "run #84 / 35084716444" in by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["note"]
     assert by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["next"] == "ISI-24-ORDO-PRODUCTION-METHODOLOGY"
     assert by_id["ISI-24-ORDO-PRODUCTION-METHODOLOGY"]["status"] == "in_progress"
-    assert by_id["ISI-24-ORDO-PRODUCTION-METHODOLOGY"]["spec"] == "automation/specs/ISI-24C-ORDO-FORECAST-BACKTEST-UNCERTAINTY-CONTRACTS.md"
+    assert by_id["ISI-24-ORDO-PRODUCTION-METHODOLOGY"]["spec"] == "automation/specs/ISI-24D-ORDO-HELP-XAI.md"
 
 
 def test_canonical_system_inventory_is_complete_and_self_contained() -> None:
@@ -202,7 +205,7 @@ def test_canonical_system_inventory_is_complete_and_self_contained() -> None:
     assert by_id["INV-H05"][3] == "CURRENT_AS_BUILT"
     assert by_id["INV-A17"][3] == "NOT_PRESENT"
     assert by_id["INV-A18"][3] == "CURRENT_AS_BUILT"
-    assert by_id["INV-A19"][3] == "PLANNED"
+    assert by_id["INV-A19"][3] == "CURRENT_AS_BUILT"
     assert by_id["INV-A20"][3] == "NOT_PRESENT"
     assert by_id["INV-A21"][3] == "CURRENT_AS_BUILT"
     assert by_id["INV-J13"][3] == "TARGET"

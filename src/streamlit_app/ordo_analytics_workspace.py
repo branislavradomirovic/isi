@@ -4,6 +4,7 @@ from typing import Any
 
 import streamlit as st
 
+from src.domains.ordo.analytics_xai import build_forecast_xai, build_scenario_xai
 from src.streamlit_app import data_api, ordo_analytics_api
 
 
@@ -55,6 +56,137 @@ def _eligible_artifacts(token: str, organization_id: str, workspace_id: str) -> 
                      and not row.get("invalidated") and len(row.get("snapshot_inputs") or []) == 1
                      and row["snapshot_inputs"][0].get("snapshot_id") in eligible_snapshot_ids)
     return items
+
+
+def _render_forecast_results(
+    *, token: str, organization_id: str, workspace_id: str
+) -> None:
+    st.markdown("### Persistirani forecast rezultati")
+    st.caption(
+        "Read-only prikaz prihvacenih 24C rezultata. Ovaj ekran nema forecast execution formu "
+        "niti time-series-spec authoring/discovery workflow."
+    )
+    items = _safe(ordo_analytics_api.forecasts, token, organization_id, workspace_id) or []
+    if not items:
+        st.info("Nema persistiranih forecast rezultata u aktivnom ORDO workspace-u.")
+        return
+    st.dataframe(
+        [
+            {
+                "id": item.get("id"),
+                "status": item.get("result_status"),
+                "reason_code": item.get("reason_code") or "—",
+                "requested_family": item.get("requested_family"),
+                "executed_family": item.get("executed_family") or "—",
+                "horizon": item.get("horizon"),
+                "created_at": item.get("created_at"),
+            }
+            for item in items
+        ],
+        use_container_width=True,
+        hide_index=True,
+    )
+    by_id = {str(item["id"]): item for item in items if item.get("id")}
+    selected_id = st.selectbox(
+        "Forecast rezultat za detaljan pregled",
+        list(by_id),
+        format_func=lambda value: (
+            f"{value[:8]} · {by_id[value].get('result_status')} · "
+            f"{by_id[value].get('requested_family')}"
+        ),
+        key="ordo_forecast_result_detail",
+    )
+    detail = _safe(
+        ordo_analytics_api.forecast_detail,
+        token,
+        forecast_run_id=selected_id,
+        organization_id=organization_id,
+        workspace_id=workspace_id,
+    )
+    if not detail:
+        return
+    xai = build_forecast_xai(detail)
+    status = xai["result_status"]
+    if status == "ESTIMATED":
+        st.success("ESTIMATED · prikazane su samo persistirane tacke i intervali.")
+    else:
+        st.warning(
+            f"{status or 'UNKNOWN'} · reason_code={xai['reason_code'] or '—'} · "
+            f"{xai['reason_interpretation']}"
+        )
+    identity = xai["model_identity"]
+    cols = st.columns(4)
+    cols[0].metric("Status", status or "—")
+    cols[1].metric("Requested family", identity.get("requested_family") or "—")
+    cols[2].metric("Executed family", identity.get("executed_family") or "—")
+    cols[3].metric("Horizon", xai["coverage"].get("horizon") or "—")
+    st.caption(identity["interpretation"])
+
+    if status == "ESTIMATED":
+        points = xai["forecast_points"]
+        if points:
+            st.markdown("#### Forecast tacke i intervali")
+            st.dataframe(points, use_container_width=True, hide_index=True)
+        else:
+            st.warning("Persistirani ESTIMATED rezultat nema tacke za prikaz; nije kreirana zamenska serija.")
+    else:
+        st.info("NOT_ESTIMATED nema point/interval vrednosti; UI ne prikazuje nule ili praznu zamensku seriju.")
+
+    st.markdown("#### Interval i rolling-origin/backtest dokaz")
+    st.write(xai["interval"])
+    st.caption(xai["interval"]["interpretation"])
+    st.write("**Observation/training window i rolling-origin plan**")
+    st.json({"coverage": xai["coverage"], "rolling_origin_plan": xai["rolling_origin_plan"]})
+    if status == "ESTIMATED":
+        st.write("**Aggregate backtest metrics**")
+        st.json(xai["aggregate_backtest_metrics"])
+        st.write("**Metric availability**")
+        st.json(xai["metric_availability"])
+        with st.expander("Per-origin backtest evidence"):
+            st.json(xai["backtest_records"])
+    else:
+        st.write("**Metric availability**")
+        st.json(xai["metric_availability"])
+    st.caption(xai["backtest_interpretation"])
+
+    st.markdown("#### Dijagnostika i upozorenja")
+    st.json({"diagnostics": xai["diagnostics"], "warnings": xai["warnings"]})
+    st.caption(xai["diagnostics_interpretation"])
+    st.markdown("#### Provenance i metodoloske granice")
+    st.json(xai["provenance"])
+    st.write(xai["safety"]["interpretation"])
+    st.write("**Eksplicitno nepodrzano**")
+    st.json(xai["unsupported"])
+
+
+def _render_scenario_assessments(assessments: list[dict]) -> None:
+    if not assessments:
+        return
+    st.markdown("#### Sacuvane scenario procene")
+    for item in assessments:
+        xai = build_scenario_xai(item)
+        with st.expander(
+            f"{str(item.get('id') or '')[:8]} · impact={xai['impact'] or '—'} · "
+            f"forecast_performed={xai['forecast_performed']}"
+        ):
+            st.warning(xai["scenario_interpretation"])
+            st.write(
+                f"**Impact:** {xai['impact'] or '—'}  \n"
+                f"**Reason:** {xai['impact_estimation_reason_code'] or '—'}  \n"
+                f"**Forecast performed:** {xai['forecast_performed']}"
+            )
+            st.write(xai["forecast_boundary"])
+            st.write(xai["reason_interpretation"])
+            if xai["impact_estimate_numeric"] is None:
+                st.info("Numericki impact nije persistiran i nije zamenjen nulom.")
+            else:
+                st.metric(
+                    "Persistirani impact",
+                    f"{xai['impact_estimate_numeric']} {xai['impact_estimate_unit'] or ''}",
+                )
+            st.json({"provenance": xai["provenance"], "limitations": xai["limitations"]})
+            st.write("**Eksplicitno nepodrzano**")
+            st.json(xai["unsupported"])
 
 
 def render_ordo_analytics(*, token: str, shell: dict[str, Any]) -> None:
@@ -157,6 +289,12 @@ def render_ordo_analytics(*, token: str, shell: dict[str, Any]) -> None:
         ) in eligible_artifacts
     ]
 
+    _render_forecast_results(
+        token=token,
+        organization_id=organization_id,
+        workspace_id=workspace_id,
+    )
+
     st.markdown("### Razvojni ciljevi i scenariji")
     st.caption("Scenario je korisnički definisan razvojni pravac. Sistem ne predstavlja pretpostavke kao činjenice niti računa predviđene efekte bez validiranog modela.")
     goals = _safe(ordo_analytics_api.goals, token, organization_id, workspace_id) or []
@@ -235,8 +373,7 @@ def render_ordo_analytics(*, token: str, shell: dict[str, Any]) -> None:
             if result is not None:
                 st.success("Procena je sačuvana bez prediktivnog izračunavanja.")
                 st.rerun()
-    if assessments:
-        st.dataframe(assessments, use_container_width=True, hide_index=True)
+    _render_scenario_assessments(assessments)
 
     st.markdown("### Lokalna ORDO AI podrška")
     st.warning(
@@ -281,6 +418,11 @@ def render_ordo_analytics(*, token: str, shell: dict[str, Any]) -> None:
         with st.expander(f"{item.get('synthesis_type')} · {item['id'][:8]} · {job.get('status', 'unknown')} · review: {item.get('review_status')}"):
             st.caption(
                 f"provider={job.get('provider_name') or '-'} · model={job.get('model_name') or '-'} · policy={job.get('effective_provider_policy')} · prompt={job.get('prompt_key')} v{job.get('prompt_version')}"
+            )
+            st.caption(
+                f"source_snapshot_sha256={item.get('source_snapshot_sha256') or '-'} · "
+                f"structured_output_state={'present' if job.get('structured_output') else 'unavailable'} · "
+                f"human_review_status={job.get('human_review_status') or item.get('review_status') or '-'}"
             )
             structured = job.get("structured_output")
             if structured:

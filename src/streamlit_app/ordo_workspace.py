@@ -110,7 +110,7 @@ def render_ordo_indicators(*, token: str, shell: dict[str, Any]) -> None:
     scope = _scope(shell)
     st.markdown('<div class="isi-eyebrow">ORDO · Indikatori</div>', unsafe_allow_html=True)
     st.markdown('<h1 class="isi-shell-title">ORDO conceptual indicator registry</h1>', unsafe_allow_html=True)
-    st.caption("ISI-10 registruje indikatorske koncepte i provenance-ready opservacije. Formule, scenariji i analitički modeli dolaze u ISI-11.")
+    st.caption("ORDO registruje indikatorske koncepte i provenance-ready opservacije. Metodologije, analitika, scenariji i forecast runtime postoje kao odvojeni governed slojevi; ovaj ekran ne izmišlja formule, modele ni vrednosti.")
     if scope is None: st.info("ORDO workspace nije izabran."); return
     organization_id, workspace_id = scope
     cat = _safe(ordo_api.catalog, token, organization_id, workspace_id)

@@ -32,6 +32,36 @@ def runs(token: str, organization_id: str, workspace_id: str):
     return _checked(request("GET", "/api/v1/ordo/analytics/runs", token=token, params={"organization_id": organization_id, "workspace_id": workspace_id}), unavailable="Nije moguće učitati ORDO analitičke snapshot-e.")
 
 
+def forecasts(token: str, organization_id: str, workspace_id: str):
+    return _checked(
+        request(
+            "GET",
+            "/api/v1/ordo/analytics/forecasts",
+            token=token,
+            params={"organization_id": organization_id, "workspace_id": workspace_id},
+        ),
+        unavailable="Nije moguće učitati persistirane ORDO forecast rezultate.",
+    )
+
+
+def forecast_detail(
+    token: str,
+    *,
+    forecast_run_id: str,
+    organization_id: str,
+    workspace_id: str,
+):
+    return _checked(
+        request(
+            "GET",
+            f"/api/v1/ordo/analytics/forecasts/{forecast_run_id}",
+            token=token,
+            params={"organization_id": organization_id, "workspace_id": workspace_id},
+        ),
+        unavailable="Nije moguće učitati detalj ORDO forecast rezultata.",
+    )
+
+
 def create_run(token: str, *, organization_id: str, workspace_id: str, analytical_artifact_type: str, analytical_artifact_id: str, monitoring_cycle_id: str | None = None):
     return _checked(request("POST", "/api/v1/ordo/analytics/runs", token=token, json={"organization_id": organization_id, "workspace_id": workspace_id, "analytical_artifact_type": analytical_artifact_type, "analytical_artifact_id": analytical_artifact_id, "monitoring_cycle_id": monitoring_cycle_id}), unavailable="Nije moguće kreirati ORDO monitoring snapshot.")
 

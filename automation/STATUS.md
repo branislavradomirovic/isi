@@ -2,13 +2,13 @@
 
 This is the human-facing live execution ledger. The MasterPlan is the canonical roadmap/architecture/governance authority; `automation/tasks.json`, accepted code, exact-main GitHub Actions and recorded evidence provide synchronized execution proof.
 
-Last status update: 2026-09-16.
+Last status update: 2026-09-17.
 
 ## Current execution
 
-Last completed slice: `ISI-24B - Spatial Processing + Statistical/Time-Series Contracts`.
+Last completed slice: `ISI-24C - Forecast Engine + Rolling-Origin Backtesting + Uncertainty/Diagnostics + NOT_ESTIMATED Runtime Semantics`.
 
-ISI-24B checkpoint state: `COMPLETE / CI_VERIFIED`.
+ISI-24C checkpoint state: `COMPLETE / CI_VERIFIED`.
 
 Accepted ISI-23D implementation SHA: `a39caa8160f01dee4e30ab7912a732f0aa68c0d6`.
 
@@ -89,7 +89,13 @@ Accepted ISI-24B implementation tree: `1008022ebe4cf95b4d45a12ff746188e6c8efa11`
 
 Authoritative ISI-24B GitHub Actions: `ISI required acceptance` run #86, run ID `35147730914`, exact SHA `0ad913db23cea44033e8adf693eb179edfa8fb5d`, conclusion `success`. ISI-24B is `COMPLETE / CI_VERIFIED`.
 
-Current slice is `ISI-24C - Forecast Engine + Rolling-Origin Backtesting + Uncertainty/Diagnostics + NOT_ESTIMATED Runtime Semantics`. Overall `ISI-24-ORDO-PRODUCTION-METHODOLOGY` remains `IN PROGRESS`; ISI-24D/24E remain later governed slices. Server/live-host verification is `DEFERRED_SERVER_VERIFICATION`, and server/DNS/ingress/production-data mutation remains frozen until owner-approved ISI-28.
+Accepted ISI-24C implementation SHA: `76e4ca5265f48a096d2253c88898e1aaedbff991`.
+
+Accepted ISI-24C implementation tree: `0a6ec7b7ab4db5d43c570c714c065f8fef7093f4`.
+
+Authoritative ISI-24C GitHub Actions: `ISI required acceptance` run #87, run ID `35153774409`, exact SHA `76e4ca5265f48a096d2253c88898e1aaedbff991`, conclusion `success`. ISI-24C is `COMPLETE / CI_VERIFIED`.
+
+Current slice is `ISI-24D - ORDO Help Coverage + In-App User Guide + Forecast/Scenario XAI Presentation`. Overall `ISI-24-ORDO-PRODUCTION-METHODOLOGY` remains `IN PROGRESS`; ISI-24E remains the later final ORDO closeout. Server/live-host verification is `DEFERRED_SERVER_VERIFICATION`, and server/DNS/ingress/production-data mutation remains frozen until owner-approved ISI-28.
 
 ## Mandatory bootstrap rule
 
@@ -112,7 +118,7 @@ A failed required gate returns the active task to implementation/fix state. Requ
 | 21 | Data Governance & Privacy Controls | **COMPLETE / CI_VERIFIED** |
 | 22 | Industrial Data Platform | **COMPLETE / CI_VERIFIED - 22A through 22G complete** |
 | 23 | SIMPA Production Methodology + Help/User Guide | **COMPLETE / CI_VERIFIED - 23A through 23E complete** |
-| 24 | ORDO Production Methodology + Help/User Guide | **IN PROGRESS - 24A/24B accepted / 24C current** |
+| 24 | ORDO Production Methodology + Help/User Guide | **IN PROGRESS - 24A/24B/24C accepted / 24D current** |
 | 25 | Industrial AI / MLOps | PLANNED |
 | 26 | Performance, Load & Resilience | PLANNED |
 | 27 | Industrial Release Candidate & Acceptance Pack | PLANNED |
