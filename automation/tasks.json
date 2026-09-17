@@ -243,9 +243,9 @@
       "depends_on": [
         "ISI-23-SIMPA-PRODUCTION-METHODOLOGY"
       ],
-      "note": "ISI-24A is COMPLETE / CI_VERIFIED on 04b0738933030f1d69de52f9260c7b2f11042d0e, tree 6c688c698fb5bf9520e0a4437c5f372a9790df2c, exact-main run #85 / 35138374174 success. ISI-24B is COMPLETE / CI_VERIFIED on 0ad913db23cea44033e8adf693eb179edfa8fb5d, tree 1008022ebe4cf95b4d45a12ff746188e6c8efa11, exact-main run #86 / 35147730914 success. ISI-24C is COMPLETE / CI_VERIFIED on 76e4ca5265f48a096d2253c88898e1aaedbff991, tree 0a6ec7b7ab4db5d43c570c714c065f8fef7093f4, exact-main run #87 / 35153774409 success. ISI-24D is current and owns ORDO Help Coverage, in-app/repository User Guide, faithful forecast/scenario XAI and read-only presentation of persisted accepted 24C forecast results. ISI-24E remains final ORDO closeout. Overall ISI-24 remains in progress. No production-server mutation is authorized.",
+      "note": "ISI-24A is COMPLETE / CI_VERIFIED on 04b0738933030f1d69de52f9260c7b2f11042d0e, tree 6c688c698fb5bf9520e0a4437c5f372a9790df2c, exact-main run #85 / 35138374174 success. ISI-24B is COMPLETE / CI_VERIFIED on 0ad913db23cea44033e8adf693eb179edfa8fb5d, tree 1008022ebe4cf95b4d45a12ff746188e6c8efa11, exact-main run #86 / 35147730914 success. ISI-24C is COMPLETE / CI_VERIFIED on 76e4ca5265f48a096d2253c88898e1aaedbff991, tree 0a6ec7b7ab4db5d43c570c714c065f8fef7093f4, exact-main run #87 / 35153774409 success. ISI-24D is COMPLETE / CI_VERIFIED on 49377e808845fc8746f0484ea7b452954c9e83b4, tree c8ea52299d80551ee303dbeef95d343b59448892, exact-main run #88 / 35220908672 success. ISI-24E is current and owns the final ORDO whole-phase gap/legacy audit and closeout. Overall ISI-24 remains in progress until 24E is accepted. No production-server mutation is authorized.",
       "next": "ISI-25-INDUSTRIAL-AI-MLOPS",
-      "spec": "automation/specs/ISI-24D-ORDO-HELP-XAI.md"
+      "spec": "automation/specs/ISI-24E-ORDO-FINAL-CLOSEOUT.md"
     },
     {
       "id": "ISI-25-INDUSTRIAL-AI-MLOPS",

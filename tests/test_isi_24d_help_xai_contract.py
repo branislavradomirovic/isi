@@ -72,12 +72,11 @@ def test_inventory_policy_harness_and_governance_history_are_synchronized():
     assert 'by_id["INV-A19"][3] == "CURRENT_AS_BUILT"' in harness
     assert "Accepted ISI-24C implementation SHA: `76e4ca5265f48a096d2253c88898e1aaedbff991`." in status
     assert "run #87" in status and "35153774409" in status
-    assert "Current slice is `ISI-24D" in status
+    assert "Accepted ISI-24D implementation SHA: `49377e808845fc8746f0484ea7b452954c9e83b4`." in status
+    assert "Accepted ISI-24D implementation tree: `c8ea52299d80551ee303dbeef95d343b59448892`." in status
+    assert "run #88" in status and "35220908672" in status
     task = next(item for item in tasks if item["id"] == "ISI-24-ORDO-PRODUCTION-METHODOLOGY")
     assert task["status"] == "in_progress"
-    assert task["spec"].endswith("ISI-24D-ORDO-HELP-XAI.md")
-    assert "ISI-24E is current" not in status
-    assert "ISI-24D is COMPLETE" not in status
 
 
 def test_forecast_presentation_is_read_only_and_uses_only_accepted_get_endpoints():

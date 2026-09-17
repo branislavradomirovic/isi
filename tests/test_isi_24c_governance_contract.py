@@ -5,18 +5,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_24c_is_an_accepted_checkpoint_and_24d_is_current():
+def test_24c_is_an_accepted_checkpoint_in_history():
     status = (ROOT / "automation/STATUS.md").read_text()
-    tasks = json.loads((ROOT / "automation/tasks.json").read_text())
     master = (ROOT / "docs/roadmap/ISI-AUTONOMOUS-INDUSTRIALIZATION-MASTER-PLAN.md").read_text()
-    task = next(item for item in tasks["tasks"] if item["id"] == "ISI-24-ORDO-PRODUCTION-METHODOLOGY")
-    assert task["status"] == "in_progress"
-    assert task["spec"].endswith("ISI-24D-ORDO-HELP-XAI.md")
     assert "Accepted ISI-24C implementation SHA: `76e4ca5265f48a096d2253c88898e1aaedbff991`." in status
     assert "Accepted ISI-24C implementation tree: `0a6ec7b7ab4db5d43c570c714c065f8fef7093f4`." in status
     assert "run #87" in status and "run ID `35153774409`" in status
-    assert "Current slice is `ISI-24D" in status
-    assert "ISI-24C accepted checkpoint" in master and "ISI-24D current governed slice" in master
+    assert "ISI-24C accepted checkpoint" in master
     assert "76e4ca5265f48a096d2253c88898e1aaedbff991" in master
     assert "35153774409" in master
     assert "INV-C38" in master and "INV-C39" in master
@@ -38,6 +33,5 @@ def test_24d_scope_lock_and_candidate_as_built_inventory_are_synchronized():
     inv_a19 = next(line for line in master.splitlines() if line.startswith("| INV-A19 |"))
     assert "| CURRENT_AS_BUILT |" in inv_a19
     assert "tests/test_isi_24d_help_xai_contract.py" in inv_a19
-    assert "COMPLETE / CI_VERIFIED" not in next(
-        line for line in status.splitlines() if line.startswith("Current slice is `ISI-24D")
-    )
+    assert "Accepted ISI-24D implementation SHA: `49377e808845fc8746f0484ea7b452954c9e83b4`." in status
+    assert "run #88" in status and "run ID `35220908672`" in status

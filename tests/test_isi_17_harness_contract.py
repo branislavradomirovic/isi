@@ -114,7 +114,7 @@ def test_masterplan_bootstrap_and_legacy_governance_is_enforced() -> None:
         assert "HISTORICAL / SUPERSEDED - DO NOT EXECUTE" in (ROOT / rel).read_text()
 
 
-def test_live_status_records_current_24c_slice_and_verified_predecessors() -> None:
+def test_live_status_records_current_24e_slice_and_verified_predecessors() -> None:
     status = (ROOT / "automation/STATUS.md").read_text()
     assert "Accepted ISI-22G implementation SHA: `fd0e46631b5047c64b731d041645e528292f3664`." in status
     assert "Accepted ISI-22G implementation tree: `1a405a65a6fa67f2845ee0a10f2a6f44b11e355e`." in status
@@ -153,7 +153,10 @@ def test_live_status_records_current_24c_slice_and_verified_predecessors() -> No
     assert "Accepted ISI-24C implementation SHA: `76e4ca5265f48a096d2253c88898e1aaedbff991`." in status
     assert "Accepted ISI-24C implementation tree: `0a6ec7b7ab4db5d43c570c714c065f8fef7093f4`." in status
     assert "run #87" in status and "run ID `35153774409`" in status
-    assert "Current slice is `ISI-24D" in status
+    assert "Accepted ISI-24D implementation SHA: `49377e808845fc8746f0484ea7b452954c9e83b4`." in status
+    assert "Accepted ISI-24D implementation tree: `c8ea52299d80551ee303dbeef95d343b59448892`." in status
+    assert "run #88" in status and "run ID `35220908672`" in status
+    assert "Current slice is `ISI-24E" in status
 
     tasks = json.loads((ROOT / "automation/tasks.json").read_text())["tasks"]
     by_id = {task["id"]: task for task in tasks}
@@ -175,7 +178,9 @@ def test_live_status_records_current_24c_slice_and_verified_predecessors() -> No
     assert "run #84 / 35084716444" in by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["note"]
     assert by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["next"] == "ISI-24-ORDO-PRODUCTION-METHODOLOGY"
     assert by_id["ISI-24-ORDO-PRODUCTION-METHODOLOGY"]["status"] == "in_progress"
-    assert by_id["ISI-24-ORDO-PRODUCTION-METHODOLOGY"]["spec"] == "automation/specs/ISI-24D-ORDO-HELP-XAI.md"
+    assert "ISI-24D is COMPLETE / CI_VERIFIED on 49377e808845fc8746f0484ea7b452954c9e83b4" in by_id["ISI-24-ORDO-PRODUCTION-METHODOLOGY"]["note"]
+    assert "run #88 / 35220908672" in by_id["ISI-24-ORDO-PRODUCTION-METHODOLOGY"]["note"]
+    assert by_id["ISI-24-ORDO-PRODUCTION-METHODOLOGY"]["spec"] == "automation/specs/ISI-24E-ORDO-FINAL-CLOSEOUT.md"
 
 
 def test_canonical_system_inventory_is_complete_and_self_contained() -> None:
