@@ -884,6 +884,84 @@ def create_time_series_spec(
     session.add(row); session.flush(); return row
 
 
+def author_time_series_spec(
+    session: Session, *, organization_id: uuid.UUID, workspace_id: uuid.UUID,
+    analytics_run_id: uuid.UUID, customer_value: dict, actor_id: uuid.UUID | None,
+) -> OrdoTimeSeriesSpec:
+    """Resolve methodology authority server-side and persist the accepted strict spec."""
+    if actor_id is None:
+        raise OrdoAnalyticsError("contract_actor_required")
+    indicator_code = str(customer_value.get("target_indicator_code") or "")
+    _indicator, methodology, _run, _value = _validated_methodology_and_run(
+        session,
+        organization_id=organization_id,
+        workspace_id=workspace_id,
+        analytics_run_id=analytics_run_id,
+        indicator_code=indicator_code,
+    )
+    spec_value = {
+        **customer_value,
+        "target_methodology_id": methodology.id,
+        "target_methodology_version": methodology.version_no,
+        "target_methodology_fingerprint": _methodology_fingerprint(methodology),
+        "uncertainty_output_required": True,
+        "temporal_validation": {
+            "backtest_strategy": "rolling_origin_plan_only",
+            "initial_train_periods": customer_value["initial_train_periods"],
+            "step_size": customer_value["step_size"],
+            "horizon": customer_value["horizon"],
+            "minimum_origins": customer_value["minimum_origins"],
+            "required_metrics": customer_value["required_metrics"],
+        },
+        "forecast_execution": False,
+        "automatic_model_selection": False,
+        "non_causal": True,
+    }
+    for field in (
+        "initial_train_periods", "step_size", "minimum_origins", "required_metrics"
+    ):
+        spec_value.pop(field, None)
+    return create_time_series_spec(
+        session,
+        organization_id=organization_id,
+        workspace_id=workspace_id,
+        analytics_run_id=analytics_run_id,
+        spec_value=spec_value,
+        actor_id=actor_id,
+    )
+
+
+def list_time_series_specs(
+    session: Session, *, organization_id: uuid.UUID, workspace_id: uuid.UUID,
+    limit: int = 100,
+) -> list[OrdoTimeSeriesSpec]:
+    _validate_scope(session, organization_id=organization_id, workspace_id=workspace_id)
+    return list(session.scalars(
+        select(OrdoTimeSeriesSpec).where(
+            OrdoTimeSeriesSpec.organization_id == organization_id,
+            OrdoTimeSeriesSpec.workspace_id == workspace_id,
+        ).order_by(
+            OrdoTimeSeriesSpec.series_key,
+            OrdoTimeSeriesSpec.version_no.desc(),
+        ).limit(max(1, min(limit, 100)))
+    ).all())
+
+
+def get_time_series_spec(
+    session: Session, *, time_series_spec_id: uuid.UUID,
+    organization_id: uuid.UUID, workspace_id: uuid.UUID,
+) -> OrdoTimeSeriesSpec:
+    _validate_scope(session, organization_id=organization_id, workspace_id=workspace_id)
+    row = session.scalar(select(OrdoTimeSeriesSpec).where(
+        OrdoTimeSeriesSpec.id == time_series_spec_id,
+        OrdoTimeSeriesSpec.organization_id == organization_id,
+        OrdoTimeSeriesSpec.workspace_id == workspace_id,
+    ))
+    if row is None:
+        raise OrdoAnalyticsError("time_series_spec_not_found")
+    return row
+
+
 def _transition_specification(
     session: Session, *, row, action: str, actor_id: uuid.UUID | None,
     validation_note: str = "", validation_evidence_reference: str = "", retirement_note: str = "",
@@ -1140,6 +1218,62 @@ def _forecast_binding(
     if _input_snapshot_sha256(governed) != row.input_snapshot_sha256:
         raise OrdoAnalyticsError("time_series_spec_binding_invalid")
     return row, spec, run, governed
+
+
+def list_time_series_identities(
+    session: Session, *, time_series_spec_id: uuid.UUID,
+    organization_id: uuid.UUID, workspace_id: uuid.UUID,
+) -> list[dict[str, object]]:
+    """Return deterministic unique series keys from the exact executable binding."""
+    _row, spec, _run, governed = _forecast_binding(
+        session,
+        organization_id=organization_id,
+        workspace_id=workspace_id,
+        time_series_spec_id=time_series_spec_id,
+    )
+    fields = {str(item.get("field_key")) for item in governed.field_contract}
+    required = {
+        "indicator_code", "quality_status", "value_numeric",
+        spec.time_index_field, *spec.series_key_fields,
+    }
+    if not required.issubset(fields):
+        raise OrdoAnalyticsError("time_series_spec_binding_invalid")
+    identities: dict[str, dict[str, object]] = {}
+    for record in governed.records:
+        payload = record.payload
+        if payload.get("indicator_code") != spec.target_indicator_code:
+            continue
+        if payload.get("quality_status") != "validated":
+            continue
+        try:
+            observed_at = _parse_series_date(payload.get(spec.time_index_field))
+        except ForecastNotEstimated:
+            continue
+        if not (spec.observation_window_start <= observed_at <= spec.observation_window_end):
+            continue
+        if observed_at > spec.observation_as_of:
+            continue
+        try:
+            _validate_target_value(payload.get("value_numeric"), spec.target_semantic)
+        except ForecastNotEstimated:
+            continue
+        identity: dict[str, object] = {}
+        eligible = True
+        for key in spec.series_key_fields:
+            value = payload.get(key)
+            if (
+                key not in payload
+                or not isinstance(value, (str, int, float, bool, type(None)))
+                or (isinstance(value, float) and not math.isfinite(value))
+            ):
+                eligible = False
+                break
+            identity[key] = value
+        if not eligible:
+            continue
+        canonical = json.dumps(identity, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        identities[canonical] = identity
+    return [identities[key] for key in sorted(identities)]
 
 
 def _extract_forecast_series(

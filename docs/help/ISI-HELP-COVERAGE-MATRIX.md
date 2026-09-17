@@ -20,13 +20,13 @@ Coverage vocabulary: MISSING, PARTIAL, COMPLETE, VERIFIED. Only VERIFIED satisfi
 | INV-A10 | SIMPA indicators | VERIFIED | ISI-23 | SIMPA-H02/H03/H04 plus SIMPA User Guide; tests/test_isi_23d_help_xai_contract.py. |
 | INV-A11 | SIMPA analytics | VERIFIED | ISI-23 | SIMPA-H05 through H12 plus deterministic statistical XAI; ISI-23D tests. |
 | INV-A12 | ORDO indicators | VERIFIED | ISI-24 | ORDO-H01 through H06 plus ORDO User Guide; tests/test_isi_24d_help_xai_contract.py. |
-| INV-A13 | ORDO analytics and scenarios | VERIFIED | ISI-24 | ORDO-H05 through H11, read-only persisted forecast presentation and deterministic forecast/scenario XAI; ISI-24D tests. |
+| INV-A13 | ORDO analytics and scenarios | VERIFIED | ISI-24 | ORDO-H05 through H11, governed time-series-spec lifecycle, series discovery, explicit forecast execution, persisted-result presentation and deterministic forecast/scenario XAI; ISI-24D/24E tests. |
 | INV-A14 | Reporting workspace | MISSING | ISI-27 | Shared reporting Help remains open. |
 | INV-A15 | Administration workspace | MISSING | ISI-20 / ISI-27 | Shared administration Help remains open. |
 | INV-A16 | Account security workspace | MISSING | ISI-20 | Shared security Help remains open. |
 | INV-A17 | Public self-registration | MISSING | ISI-20 | Surface is intentionally NOT_PRESENT; cross-product absence/help wording remains outside ISI-23D. |
 | INV-A18 | SIMPA Help, User Guide and XAI interpretation | VERIFIED | ISI-23 / ISI-25 / ISI-27 | In-app SIMPA Help + docs/help/SIMPA-USER-GUIDE.md + statistical XAI are implemented; shared AI evaluation remains ISI-25. |
-| INV-A19 | ORDO Help, User Guide and XAI interpretation | VERIFIED | ISI-24 / ISI-25 / ISI-27 | In-app ORDO Help + docs/help/ORDO-USER-GUIDE.md + forecast/scenario XAI are implemented; shared AI evaluation remains ISI-25. |
+| INV-A19 | ORDO Help, User Guide and XAI interpretation | VERIFIED | ISI-24 / ISI-25 / ISI-27 | In-app ORDO Help + docs/help/ORDO-USER-GUIDE.md + forecast/scenario XAI and governed forecast workflow guidance are implemented; tests/test_isi_24d_help_xai_contract.py and tests/test_isi_24e_forecast_workflow_ui.py; shared AI evaluation remains ISI-25. |
 | INV-A20 | Commercial checkout/payment surface | MISSING | OUT_OF_SCOPE | Surface is NOT_PRESENT; no ISI commercial payment architecture exists. |
 | INV-A21 | Cross-product Help Coverage Matrix | PARTIAL | ISI-23 / ISI-24 / ISI-25 / ISI-27 | Matrix artifact is CURRENT_AS_BUILT; SIMPA domain coverage is VERIFIED but global cross-product coverage remains open. |
 
@@ -50,7 +50,7 @@ Every action below satisfies the ten-point MasterPlan checklist through the matc
 | INV-A11 | Run/review bounded local AI synthesis | SIMPA-H12 | VERIFIED | tests/test_isi_23d_help_xai_contract.py |
 | INV-A18 | Open/use SIMPA Help/User Guide | SIMPA-H01..H12 | VERIFIED | tests/test_isi_23d_help_xai_contract.py |
 
-## ISI-24D ORDO material actions
+## ISI-24D/24E ORDO material actions
 
 Every action below satisfies the ten-point MasterPlan checklist through the matching in-app ORDO topic and `docs/help/ORDO-USER-GUIDE.md`.
 
@@ -61,13 +61,13 @@ Every action below satisfies the ten-point MasterPlan checklist through the matc
 | INV-A12 | Create/read monitoring cycles | ORDO-H03 | VERIFIED | tests/test_isi_24d_help_xai_contract.py |
 | INV-A12 | Read/filter indicator registry, observations and methodology state | ORDO-H04 | VERIFIED | tests/test_isi_24d_help_xai_contract.py |
 | INV-A13 | Select/review governed analytical artifact and evidence quality | ORDO-H05 | VERIFIED | tests/test_isi_24d_help_xai_contract.py |
-| INV-A13 | Interpret methodology/specification lifecycle and human approval | ORDO-H06 | VERIFIED | tests/test_isi_24d_help_xai_contract.py |
+| INV-A13 | Author/review time-series specification and perform status-aware human lifecycle | ORDO-H06 | VERIFIED | tests/test_isi_24d_help_xai_contract.py; tests/test_isi_24e_forecast_workflow_api.py; tests/test_isi_24e_forecast_workflow_ui.py |
 | INV-A13 | Create/review analytical snapshot and provenance | ORDO-H07 | VERIFIED | tests/test_isi_24d_help_xai_contract.py |
 | INV-A13 | Create/review development goals and scenarios | ORDO-H08 | VERIFIED | tests/test_isi_24d_help_xai_contract.py |
 | INV-A13 | Create/interpret evidence-only scenario assessment | ORDO-H09 | VERIFIED | tests/test_isi_24d_forecast_xai.py |
-| INV-A13 | Review persisted ESTIMATED/NOT_ESTIMATED forecast results | ORDO-H10 | VERIFIED | tests/test_isi_24d_forecast_xai.py |
+| INV-A13 | Discover eligible series identity, explicitly execute from a VALIDATED spec and review persisted ESTIMATED/NOT_ESTIMATED results | ORDO-H10 | VERIFIED | tests/test_isi_24d_forecast_xai.py; tests/test_isi_24e_forecast_workflow_api.py; tests/test_isi_24e_forecast_workflow_ui.py |
 | INV-A13 | Run/review bounded local ORDO AI synthesis | ORDO-H11 | VERIFIED | tests/test_isi_24d_help_xai_contract.py |
-| INV-A19 | Open/use ORDO Help/User Guide | ORDO-H01..H12 | VERIFIED | tests/test_isi_24d_help_xai_contract.py |
+| INV-A19 | Open/use ORDO Help/User Guide | ORDO-H01..H12 | VERIFIED | tests/test_isi_24d_help_xai_contract.py; tests/test_isi_24e_forecast_workflow_ui.py |
 
 ## Hard boundaries
 

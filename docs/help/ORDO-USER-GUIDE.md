@@ -1,8 +1,8 @@
 # ORDO User Guide
 
-Status: ISI-24D as-built guide for the authenticated ORDO product.
+Status: ISI-24E F01/F02 remediation candidate guide for the authenticated ORDO product.
 
-This guide explains the implemented ORDO destination-intelligence workflow. It does not grant access, validate a methodology, execute a forecast, replace expert review or certify a production deployment. Backend organization, product, workspace and permission checks remain authoritative.
+This guide explains the implemented ORDO destination-intelligence workflow. It does not grant access, validate a methodology by itself, replace expert review or certify a production deployment. Backend organization, product, workspace and permission checks remain authoritative.
 
 ## 1. Access and workspace context (ORDO-H01)
 
@@ -47,9 +47,11 @@ Example: full provenance coverage alongside missing dimensions means the present
 
 ## 6. Methodology and specification lifecycle (ORDO-H06)
 
-Indicator methodologies, statistical contracts and time-series specifications retain exact IDs, versions, contract content and fingerprints. Human evidence and approval are required before `VALIDATED`. A change to methodology, inputs or contract meaning requires a new version rather than rebinding history.
+With `analysis.read`, review time-series specifications and their exact governed-run, indicator, methodology, input SHA-256, contract, version/fingerprint and lifecycle evidence. With `indicator.manage`, create a `DRAFT`, propose it, validate it with a nonblank human validation note and evidence reference, or retire a `VALIDATED` version with a retirement note. The backend resolves the current validated indicator-methodology ID/version/fingerprint and locked semantics; users do not enter those authority fields.
 
-A validated time-series specification defines the exact series, frequency, observation window, target semantics, rolling-origin plan, candidate families, horizon, uncertainty requirement, diagnostics and limitations. Validation does not imply automatic family selection, champion status, future accuracy or causal validity. The accepted 24B specification keeps `forecast_execution=false` and `automatic_model_selection=false`; the separate 24C runtime consumes that immutable specification without rewriting it.
+Authoring selects an existing governed analytics run and records the series key, target indicator/semantic, time index/frequency/key fields, observation window/as-of, minimum history, maximum missing ratio and rule, outlier/revision/comparability policies, transformation/trend/optional seasonality, candidate families, horizon/unit, diagnostic requirements, limitations and rolling-origin plan. If the run is inaccessible, legacy, changed, or lacks a current validated methodology, creation fails closed.
+
+Indicator methodologies, statistical contracts and time-series specifications retain exact IDs, versions, contract content and fingerprints. A change to methodology, inputs or contract meaning requires a new version rather than rebinding history. The accepted 24B specification keeps `forecast_execution=false`, `automatic_model_selection=false` and `non_causal=true`; the separate 24C runtime consumes that immutable specification without rewriting it. Validation approves the specification, not a champion/model promotion, future-performance guarantee or causal claim.
 
 ## 7. Analytical snapshots and provenance (ORDO-H07)
 
@@ -76,24 +78,27 @@ Select a scenario and eligible analytical snapshot, then create an evidence-only
 
 The assessment may present evidence coverage and missing dimensions. It does not produce a causal effect, predictive confidence, feature importance, rank or automatic recommendation. The scenario contract version, methodology key/version, input snapshot SHA-256, reference identities, limitations and human-review state support review and reproduction.
 
-## 10. Persisted forecasts, backtesting and uncertainty (ORDO-H10)
+## 10. Governed forecast execution, backtesting and uncertainty (ORDO-H10)
 
-The “Persistirani forecast rezultati” section is read-only. It lists the active organization/workspace’s accepted persisted runs through:
+The Analytics workspace exposes the complete governed workflow. With `analysis.read`, list and inspect specifications, discover eligible series identities and review persisted runs. With `analysis.run`, execute only from an existing `VALIDATED` specification:
 
-- `GET /api/v1/ordo/analytics/forecasts`
-- `GET /api/v1/ordo/analytics/forecasts/{forecast_run_id}`
+1. Select a specification by human-readable series key, version and indicator; do not paste a specification UUID.
+2. Select one deterministic series identity discovered by the backend from the exact revalidated governed binding. Discovery returns only unique key/value identities, never raw source records.
+3. Explicitly select one family from that specification’s `candidate_families`.
+4. Select interval level `0.80`, `0.90` or `0.95`.
+5. Execute and review the newly persisted result plus XAI/provenance.
 
-There is no raw-UUID execution form, time-series-spec authoring/discovery workflow or silent backend expansion in 24D.
+There is no automatic family selection, ranking, winner or fallback. Only accepted 24C `naive` and `seasonal_naive` families can produce `ESTIMATED`; an allowed family without accepted execution semantics persists `NOT_ESTIMATED` with its bounded reason. A family outside the validated specification is rejected.
 
 ### Result states
 
 `ESTIMATED` means the accepted deterministic runtime produced and persisted output for the exact validated specification, governed input, explicit series identity, explicitly requested family and interval level. Only this state displays persisted point/lower/upper values.
 
-`NOT_ESTIMATED` is a successful bounded outcome, not zero, a fabricated empty series or a hidden failure. The stable reason code explains why the runtime intentionally did not produce forecast points. Unsupported family, transformation, missing/invalid/irregular evidence, insufficient history/origins/seasonal evidence/interval calibration, or unavailable required metrics must remain explicit. No fallback family is selected.
+`NOT_ESTIMATED` is a successful bounded outcome, not zero, a fabricated empty series or a hidden failure. The stable reason code explains why the runtime intentionally did not produce forecast points. Unsupported family, transformation, missing/invalid/irregular evidence, insufficient history/origins/seasonal evidence/interval calibration, or unavailable required metrics must remain explicit. Safe recovery is to correct governed evidence or author a new specification version through the approval lifecycle; never mutate historical contract/result truth or substitute a fallback.
 
 ### Requested and executed family
 
-The request identifies one family. An `ESTIMATED` run records the executed family. A `NOT_ESTIMATED` run has no executed family. `automatic_model_selection=false` means the system did not compare candidates and choose a winner, and it did not automatically fall back. Accepted 24C execution supports only explicitly requested naive and seasonal-naive families.
+The request identifies one family. An `ESTIMATED` run records the executed family. A `NOT_ESTIMATED` run has no executed family. `automatic_model_selection=false` means the system did not compare candidates and choose a winner, and it did not automatically fall back. Validation of a candidate-family list is specification approval, not model promotion.
 
 ### Intervals
 

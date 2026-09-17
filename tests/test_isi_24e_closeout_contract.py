@@ -23,22 +23,31 @@ def test_24d_is_accepted_and_24e_is_current_without_closing_phase():
     assert "Overall ISI-24 remains `IN PROGRESS`" in master
 
 
-def test_24e_activation_contract_preserves_boundaries():
+def test_24e_remediation_contract_preserves_boundaries():
     spec = (ROOT / "automation/specs/ISI-24E-ORDO-FINAL-CLOSEOUT.md").read_text()
     for phrase in (
-        "DONE / PARTIAL / MISSING / DRIFT",
+        "dac9f488ad650330ce258d44617d4b897a31f6aa",
+        "bb78978298cd5232cf402c03c9949e20804bd7bc",
+        "run #89 / `35227300000`",
+        "F01: `DRIFT / REMOVE_BEFORE_NEXT_SLICE`",
+        "F02: `PARTIAL / REMOVE_BEFORE_NEXT_SLICE`",
+        "F08: `PARTIAL / REMOVE_IN_NAMED_PHASE(ISI-25/ISI-27)`",
         "REMOVE_BEFORE_NEXT_SLICE",
-        "REMOVE_IN_NAMED_PHASE(<phase>)",
         "overall ISI-24 stays `IN PROGRESS`",
         "ISI-25 stays `PLANNED`",
         "no server/DNS/ingress/production mutation",
-        "This is NOT the remediation surface",
+        "Exact mutable surface - FROZEN 12",
+        "analysis.read",
+        "indicator.manage",
+        "analysis.run",
+        "There is no `analysis.review` permission",
+        "NOT COMPLETE / NOT CI_VERIFIED",
     ):
         assert phrase in spec
 
 
-def test_known_stale_isi11_caption_is_audit_seed_not_silently_removed():
+def test_f01_stale_isi11_caption_is_removed_as_remediation_truth():
     ui = (ROOT / "src/streamlit_app/ordo_analytics_workspace.py").read_text()
     spec = (ROOT / "automation/specs/ISI-24E-ORDO-FINAL-CLOSEOUT.md").read_text()
-    assert "ISI-11 povezuje" in ui
-    assert "accepted-main `ISI-11` caption seed finding" in spec
+    assert "ISI-11 povezuje" not in ui
+    assert "F01 and F02 are the only remediation targets" in spec

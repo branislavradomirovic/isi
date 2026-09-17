@@ -100,6 +100,56 @@ class ForecastExecutionRequest(BaseModel):
         return value
 
 
+class TimeSeriesSpecCreateRequest(OrdoAnalyticsScope):
+    """Customer-controlled fields for an authoritative server-bound specification."""
+
+    model_config = ConfigDict(extra="forbid", allow_inf_nan=False)
+
+    analytics_run_id: uuid.UUID
+    series_key: str = Field(min_length=1, max_length=140)
+    target_indicator_code: str = Field(min_length=1, max_length=140)
+    target_semantic: Literal["continuous", "count", "proportion_rate"]
+    time_index_field: str = Field(min_length=1, max_length=140)
+    frequency: Literal["daily", "weekly", "monthly", "quarterly", "annual"]
+    series_key_fields: tuple[str, ...]
+    observation_window_start: date
+    observation_window_end: date
+    observation_as_of: date
+    minimum_history_periods: int = Field(ge=2)
+    maximum_missing_ratio: float = Field(ge=0, le=1)
+    missing_data_rule: Literal["fail", "exclude_periods", "explicit_gap"]
+    outlier_policy: str = Field(min_length=1, max_length=1000)
+    revision_policy: str = Field(min_length=1, max_length=1000)
+    comparability_policy: str = Field(min_length=1, max_length=1000)
+    transformation: Literal["none", "log1p", "difference", "seasonal_difference"] = "none"
+    trend_requirement: Literal["none", "allowed", "required"]
+    seasonality_period: int | None = Field(default=None, ge=2)
+    candidate_families: tuple[
+        Literal["naive", "seasonal_naive", "ets", "sarima", "sarimax", "count_time_series"], ...
+    ]
+    horizon: int = Field(ge=1)
+    horizon_unit: Literal["days", "weeks", "months", "quarters", "years"]
+    diagnostic_requirements: tuple[str, ...]
+    limitations: tuple[str, ...]
+    initial_train_periods: int = Field(ge=2)
+    step_size: int = Field(ge=1)
+    minimum_origins: int = Field(ge=2)
+    required_metrics: tuple[str, ...]
+
+
+class TimeSeriesSpecScopeRequest(OrdoAnalyticsScope):
+    model_config = ConfigDict(extra="forbid")
+
+
+class TimeSeriesSpecValidateRequest(TimeSeriesSpecScopeRequest):
+    validation_note: str = Field(min_length=1, max_length=5000)
+    validation_evidence_reference: str = Field(min_length=1, max_length=5000)
+
+
+class TimeSeriesSpecRetireRequest(TimeSeriesSpecScopeRequest):
+    retirement_note: str = Field(min_length=1, max_length=5000)
+
+
 class SynthesisCreateRequest(OrdoAnalyticsScope):
     analytics_run_id: uuid.UUID
     scenario_id: uuid.UUID | None = None

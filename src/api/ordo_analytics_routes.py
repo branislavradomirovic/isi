@@ -22,9 +22,14 @@ from src.domains.ordo.analytics_schemas import (
     ScenarioStatusRequest,
     SynthesisCreateRequest,
     SynthesisReviewRequest,
+    TimeSeriesSpecCreateRequest,
+    TimeSeriesSpecRetireRequest,
+    TimeSeriesSpecScopeRequest,
+    TimeSeriesSpecValidateRequest,
 )
 from src.domains.ordo.analytics_service import (
     OrdoAnalyticsError,
+    author_time_series_spec,
     build_destination_snapshot,
     compute_indicator,
     create_analytics_run,
@@ -35,6 +40,7 @@ from src.domains.ordo.analytics_service import (
     create_synthesis,
     execute_forecast,
     get_forecast_run,
+    get_time_series_spec,
     list_analytics_runs,
     list_goals,
     list_forecast_runs,
@@ -42,12 +48,17 @@ from src.domains.ordo.analytics_service import (
     list_scenario_assessments,
     list_scenarios,
     list_syntheses,
+    list_time_series_identities,
+    list_time_series_specs,
     propose_methodology,
     retire_methodology,
+    retire_time_series_spec,
     review_scenario_assessment,
     review_synthesis,
     set_scenario_status,
     validate_methodology,
+    validate_time_series_spec,
+    propose_time_series_spec,
 )
 from src.platform.access.service import has_permission
 from src.platform.ai.queue import AIQueueError, dispatch_ai_job
@@ -166,6 +177,45 @@ def _forecast_dict(row):
     }
 
 
+def _time_series_spec_dict(row):
+    contract = dict(row.contract_json or {})
+    return {
+        "id": str(row.id),
+        "organization_id": str(row.organization_id),
+        "workspace_id": str(row.workspace_id),
+        "analytics_run_id": str(row.analytics_run_id),
+        "target_indicator_id": str(row.target_indicator_id),
+        "target_indicator_code": contract.get("target_indicator_code"),
+        "target_methodology_id": str(row.target_methodology_id),
+        "target_methodology_version": row.target_methodology_version,
+        "methodology_fingerprint": row.methodology_fingerprint,
+        "input_snapshot_sha256": row.input_snapshot_sha256,
+        "series_key": row.series_key,
+        "version_no": row.version_no,
+        "status": row.status,
+        "schema_version": row.schema_version,
+        "target_semantic": row.target_semantic,
+        "frequency": row.frequency,
+        "transformation": row.transformation,
+        "contract_json": contract,
+        "contract_fingerprint": row.contract_fingerprint,
+        "forecast_execution": row.forecast_execution,
+        "automatic_model_selection": row.automatic_model_selection,
+        "non_causal": row.non_causal,
+        "created_by_membership_id": str(row.created_by_membership_id) if row.created_by_membership_id else None,
+        "proposed_by_membership_id": str(row.proposed_by_membership_id) if row.proposed_by_membership_id else None,
+        "proposed_at": row.proposed_at,
+        "approved_by_membership_id": str(row.approved_by_membership_id) if row.approved_by_membership_id else None,
+        "approved_at": row.approved_at,
+        "validation_note": row.validation_note,
+        "validation_evidence_reference": row.validation_evidence_reference,
+        "retired_by_membership_id": str(row.retired_by_membership_id) if row.retired_by_membership_id else None,
+        "retired_at": row.retired_at,
+        "retirement_note": row.retirement_note,
+        "created_at": row.created_at,
+    }
+
+
 @router.get("/summary")
 def get_summary(
     organization_id: uuid.UUID = Query(...),
@@ -199,6 +249,181 @@ def get_runs(
 ):
     _require_scope(db, context, organization_id=organization_id, workspace_id=workspace_id, permission_code="analysis.read")
     return [_run_dict(row) for row in list_analytics_runs(db, organization_id=organization_id, workspace_id=workspace_id)]
+
+
+@router.get("/time-series-specs")
+def get_time_series_specs(
+    organization_id: uuid.UUID = Query(...),
+    workspace_id: uuid.UUID = Query(...),
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db, context, organization_id=organization_id,
+        workspace_id=workspace_id, permission_code="analysis.read",
+    )
+    return [_time_series_spec_dict(row) for row in list_time_series_specs(
+        db, organization_id=organization_id, workspace_id=workspace_id
+    )]
+
+
+@router.get("/time-series-specs/{time_series_spec_id}")
+def get_time_series_spec_detail(
+    time_series_spec_id: uuid.UUID,
+    organization_id: uuid.UUID = Query(...),
+    workspace_id: uuid.UUID = Query(...),
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db, context, organization_id=organization_id,
+        workspace_id=workspace_id, permission_code="analysis.read",
+    )
+    try:
+        return _time_series_spec_dict(get_time_series_spec(
+            db, time_series_spec_id=time_series_spec_id,
+            organization_id=organization_id, workspace_id=workspace_id,
+        ))
+    except OrdoAnalyticsError as exc:
+        raise _error(exc) from None
+
+
+@router.post("/time-series-specs", status_code=status.HTTP_201_CREATED)
+def post_time_series_spec(
+    payload: TimeSeriesSpecCreateRequest,
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db, context, organization_id=payload.organization_id,
+        workspace_id=payload.workspace_id, permission_code="indicator.manage",
+    )
+    try:
+        actor_id = actor_membership_id(db, user_id=context.user.id, organization_id=payload.organization_id)
+        customer_value = payload.model_dump(exclude={
+            "organization_id", "workspace_id", "analytics_run_id",
+        })
+        row = author_time_series_spec(
+            db,
+            organization_id=payload.organization_id,
+            workspace_id=payload.workspace_id,
+            analytics_run_id=payload.analytics_run_id,
+            customer_value=customer_value,
+            actor_id=actor_id,
+        )
+        db.commit()
+        db.refresh(row)
+        return _time_series_spec_dict(row)
+    except OrdoAnalyticsError as exc:
+        db.rollback()
+        raise _error(exc) from None
+
+
+@router.post("/time-series-specs/{time_series_spec_id}/propose")
+def post_propose_time_series_spec(
+    time_series_spec_id: uuid.UUID,
+    payload: TimeSeriesSpecScopeRequest,
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db, context, organization_id=payload.organization_id,
+        workspace_id=payload.workspace_id, permission_code="indicator.manage",
+    )
+    try:
+        get_time_series_spec(
+            db, time_series_spec_id=time_series_spec_id,
+            organization_id=payload.organization_id, workspace_id=payload.workspace_id,
+        )
+        actor_id = actor_membership_id(db, user_id=context.user.id, organization_id=payload.organization_id)
+        row = propose_time_series_spec(db, spec_id=time_series_spec_id, actor_id=actor_id)
+        db.commit()
+        db.refresh(row)
+        return _time_series_spec_dict(row)
+    except OrdoAnalyticsError as exc:
+        db.rollback()
+        raise _error(exc) from None
+
+
+@router.post("/time-series-specs/{time_series_spec_id}/validate")
+def post_validate_time_series_spec(
+    time_series_spec_id: uuid.UUID,
+    payload: TimeSeriesSpecValidateRequest,
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db, context, organization_id=payload.organization_id,
+        workspace_id=payload.workspace_id, permission_code="indicator.manage",
+    )
+    try:
+        get_time_series_spec(
+            db, time_series_spec_id=time_series_spec_id,
+            organization_id=payload.organization_id, workspace_id=payload.workspace_id,
+        )
+        actor_id = actor_membership_id(db, user_id=context.user.id, organization_id=payload.organization_id)
+        row = validate_time_series_spec(
+            db, spec_id=time_series_spec_id,
+            validation_note=payload.validation_note,
+            validation_evidence_reference=payload.validation_evidence_reference,
+            actor_id=actor_id,
+        )
+        db.commit()
+        db.refresh(row)
+        return _time_series_spec_dict(row)
+    except OrdoAnalyticsError as exc:
+        db.rollback()
+        raise _error(exc) from None
+
+
+@router.post("/time-series-specs/{time_series_spec_id}/retire")
+def post_retire_time_series_spec(
+    time_series_spec_id: uuid.UUID,
+    payload: TimeSeriesSpecRetireRequest,
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db, context, organization_id=payload.organization_id,
+        workspace_id=payload.workspace_id, permission_code="indicator.manage",
+    )
+    try:
+        get_time_series_spec(
+            db, time_series_spec_id=time_series_spec_id,
+            organization_id=payload.organization_id, workspace_id=payload.workspace_id,
+        )
+        actor_id = actor_membership_id(db, user_id=context.user.id, organization_id=payload.organization_id)
+        row = retire_time_series_spec(
+            db, spec_id=time_series_spec_id,
+            retirement_note=payload.retirement_note, actor_id=actor_id,
+        )
+        db.commit()
+        db.refresh(row)
+        return _time_series_spec_dict(row)
+    except OrdoAnalyticsError as exc:
+        db.rollback()
+        raise _error(exc) from None
+
+
+@router.get("/time-series-specs/{time_series_spec_id}/series-identities")
+def get_time_series_spec_identities(
+    time_series_spec_id: uuid.UUID,
+    organization_id: uuid.UUID = Query(...),
+    workspace_id: uuid.UUID = Query(...),
+    context: AuthContext = Depends(get_auth_context),
+    db: Session = Depends(get_db),
+):
+    _require_scope(
+        db, context, organization_id=organization_id,
+        workspace_id=workspace_id, permission_code="analysis.read",
+    )
+    try:
+        return list_time_series_identities(
+            db, time_series_spec_id=time_series_spec_id,
+            organization_id=organization_id, workspace_id=workspace_id,
+        )
+    except OrdoAnalyticsError as exc:
+        raise _error(exc) from None
 
 
 @router.post("/forecasts", status_code=status.HTTP_201_CREATED)
