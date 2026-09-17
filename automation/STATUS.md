@@ -6,9 +6,9 @@ Last status update: 2026-09-17.
 
 ## Current execution
 
-Last completed slice: `ISI-24D - ORDO Help Coverage + In-App User Guide + Forecast/Scenario XAI Presentation`.
+Last completed slice: `ISI-24E - ORDO Final Whole-Phase Gap/Legacy Audit + Closeout`.
 
-ISI-24D checkpoint state: `COMPLETE / CI_VERIFIED`.
+ISI-24E remediation/closeout implementation state: `COMPLETE / CI_VERIFIED`.
 
 Accepted ISI-23D implementation SHA: `a39caa8160f01dee4e30ab7912a732f0aa68c0d6`.
 
@@ -101,7 +101,15 @@ Accepted ISI-24D implementation tree: `c8ea52299d80551ee303dbeef95d343b59448892`
 
 Authoritative ISI-24D GitHub Actions: `ISI required acceptance` run #88, run ID `35220908672`, exact SHA `49377e808845fc8746f0484ea7b452954c9e83b4`, conclusion `success`. ISI-24D is `COMPLETE / CI_VERIFIED`.
 
-Current slice is `ISI-24E - ORDO Final Whole-Phase Gap/Legacy Audit + Closeout`. Overall `ISI-24-ORDO-PRODUCTION-METHODOLOGY` remains `IN PROGRESS` until the mandatory whole-phase audit resolves or classifies every finding. Server/live-host verification is `DEFERRED_SERVER_VERIFICATION`, and server/DNS/ingress/production-data mutation remains frozen until owner-approved ISI-28.
+Accepted ISI-24E remediation/closeout implementation SHA: `5937daa2ea7ff9c476bd6a05a04841d1534aefe2`.
+
+Accepted ISI-24E remediation/closeout implementation tree: `6e75bf1cd13b95e23f9189b9e94453dd130eaa19`.
+
+Authoritative ISI-24E GitHub Actions: `ISI required acceptance` run #90, run ID `35238623960`, attempt 2, exact SHA `5937daa2ea7ff9c476bd6a05a04841d1534aefe2`, conclusion `success`; `native-postgres`, ISI-19 recovery rehearsal and aggregate `acceptance` are green.
+
+Overall `ISI-24-ORDO-PRODUCTION-METHODOLOGY` is `COMPLETE / CI_VERIFIED`. The mandatory whole-phase audit is closed: F01 and F02 are resolved, no Phase-24 `REMOVE_BEFORE_NEXT_SLICE` finding remains, and F08 remains explicitly deferred as `REMOVE_IN_NAMED_PHASE(ISI-25/ISI-27)`.
+
+Next action: **ISI-25 bootstrap/audit - Industrial AI / MLOps** against the complete MasterPlan, `docs/roadmap/ISI-AI-MODEL-EVALUATION-PROTOCOL-v1.md`, ADR-0025 and accepted as-built code. ISI-25 remains PLANNED until its own bootstrap, `DONE / PARTIAL / MISSING / DRIFT` matrix, legacy/drift audit and exact scope lock are complete. Server/live-host verification remains `DEFERRED_SERVER_VERIFICATION`; server/DNS/ingress/real SMTP/production secrets/data/server Ollama remain frozen until owner-approved ISI-28.
 
 ## Mandatory bootstrap rule
 
@@ -124,8 +132,8 @@ A failed required gate returns the active task to implementation/fix state. Requ
 | 21 | Data Governance & Privacy Controls | **COMPLETE / CI_VERIFIED** |
 | 22 | Industrial Data Platform | **COMPLETE / CI_VERIFIED - 22A through 22G complete** |
 | 23 | SIMPA Production Methodology + Help/User Guide | **COMPLETE / CI_VERIFIED - 23A through 23E complete** |
-| 24 | ORDO Production Methodology + Help/User Guide | **IN PROGRESS - 24A/24B/24C/24D accepted / 24E current** |
-| 25 | Industrial AI / MLOps | PLANNED |
+| 24 | ORDO Production Methodology + Help/User Guide | **COMPLETE / CI_VERIFIED - 24A through 24E complete** |
+| 25 | Industrial AI / MLOps | **PLANNED - current/next bootstrap** |
 | 26 | Performance, Load & Resilience | PLANNED |
 | 27 | Industrial Release Candidate & Acceptance Pack | PLANNED |
 | 28 | Current Server Controlled Upgrade | **DEFERRED - fresh explicit owner approval required** |

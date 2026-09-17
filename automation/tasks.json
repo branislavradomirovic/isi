@@ -239,11 +239,11 @@
     {
       "id": "ISI-24-ORDO-PRODUCTION-METHODOLOGY",
       "title": "ORDO Production Methodology",
-      "status": "in_progress",
+      "status": "done",
       "depends_on": [
         "ISI-23-SIMPA-PRODUCTION-METHODOLOGY"
       ],
-      "note": "ISI-24A is COMPLETE / CI_VERIFIED on 04b0738933030f1d69de52f9260c7b2f11042d0e, tree 6c688c698fb5bf9520e0a4437c5f372a9790df2c, exact-main run #85 / 35138374174 success. ISI-24B is COMPLETE / CI_VERIFIED on 0ad913db23cea44033e8adf693eb179edfa8fb5d, tree 1008022ebe4cf95b4d45a12ff746188e6c8efa11, exact-main run #86 / 35147730914 success. ISI-24C is COMPLETE / CI_VERIFIED on 76e4ca5265f48a096d2253c88898e1aaedbff991, tree 0a6ec7b7ab4db5d43c570c714c065f8fef7093f4, exact-main run #87 / 35153774409 success. ISI-24D is COMPLETE / CI_VERIFIED on 49377e808845fc8746f0484ea7b452954c9e83b4, tree c8ea52299d80551ee303dbeef95d343b59448892, exact-main run #88 / 35220908672 success. ISI-24E is current and owns the final ORDO whole-phase gap/legacy audit and closeout. Overall ISI-24 remains in progress until 24E is accepted. No production-server mutation is authorized.",
+      "note": "ISI-24 is COMPLETE / CI_VERIFIED. ISI-24A is COMPLETE / CI_VERIFIED on 04b0738933030f1d69de52f9260c7b2f11042d0e, tree 6c688c698fb5bf9520e0a4437c5f372a9790df2c, exact-main run #85 / 35138374174 success. ISI-24B is COMPLETE / CI_VERIFIED on 0ad913db23cea44033e8adf693eb179edfa8fb5d, tree 1008022ebe4cf95b4d45a12ff746188e6c8efa11, exact-main run #86 / 35147730914 success. ISI-24C is COMPLETE / CI_VERIFIED on 76e4ca5265f48a096d2253c88898e1aaedbff991, tree 0a6ec7b7ab4db5d43c570c714c065f8fef7093f4, exact-main run #87 / 35153774409 success. ISI-24D is COMPLETE / CI_VERIFIED on 49377e808845fc8746f0484ea7b452954c9e83b4, tree c8ea52299d80551ee303dbeef95d343b59448892, exact-main run #88 / 35220908672 success. ISI-24E F01/F02 remediation/closeout implementation is COMPLETE / CI_VERIFIED on 5937daa2ea7ff9c476bd6a05a04841d1534aefe2, tree 6e75bf1cd13b95e23f9189b9e94453dd130eaa19, exact-main run #90 / 35238623960 attempt 2 completed success. F01 and F02 are resolved; no Phase-24 REMOVE_BEFORE_NEXT_SLICE finding remains. F08 global Help completion remains REMOVE_IN_NAMED_PHASE(ISI-25/ISI-27). Scenario/forecast/NOT_ESTIMATED, non-causal and explicit-human-authority boundaries remain locked. Current/next is ISI-25 bootstrap/audit. No production-server mutation is authorized.",
       "next": "ISI-25-INDUSTRIAL-AI-MLOPS",
       "spec": "automation/specs/ISI-24E-ORDO-FINAL-CLOSEOUT.md"
     },
@@ -255,7 +255,7 @@
         "ISI-24-ORDO-PRODUCTION-METHODOLOGY"
       ],
       "next": "ISI-26-PERFORMANCE-LOAD-RESILIENCE",
-      "note": "Canonical evaluation baseline: docs/roadmap/ISI-AI-MODEL-EVALUATION-PROTOCOL-v1.md plus ADR-0025. Implement champion/challenger governance, SIMPA-EVAL-v1 and ORDO-EVAL-v1 contracts, dedicated embedding/RAG evaluation, LLM/VLM structured output/provenance/safety tests, model and prompt versioning, promotion/rollback and human-review traceability. No model name is a permanent production champion before internal evaluation."
+      "note": "CURRENT/NEXT BOOTSTRAP, IMPLEMENTATION NOT YET SCOPE-LOCKED. Canonical evaluation baseline: docs/roadmap/ISI-AI-MODEL-EVALUATION-PROTOCOL-v1.md plus ADR-0025. Before implementation, perform the full MasterPlan-first bootstrap, DONE / PARTIAL / MISSING / DRIFT matrix and legacy/drift audit, then freeze an exact mutable surface. Planned scope includes champion/challenger governance, SIMPA-EVAL-v1 and ORDO-EVAL-v1 contracts, dedicated embedding/RAG evaluation, LLM/VLM structured output/provenance/safety tests, model and prompt versioning, promotion/rollback, fallback governance and human-review traceability. No model name is a permanent production champion before internal evaluation; server/model runtime mutation remains deferred to ISI-28."
     },
     {
       "id": "ISI-26-PERFORMANCE-LOAD-RESILIENCE",

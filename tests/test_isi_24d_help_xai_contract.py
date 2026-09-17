@@ -76,7 +76,8 @@ def test_inventory_policy_harness_and_governance_history_are_synchronized():
     assert "Accepted ISI-24D implementation tree: `c8ea52299d80551ee303dbeef95d343b59448892`." in status
     assert "run #88" in status and "35220908672" in status
     task = next(item for item in tasks if item["id"] == "ISI-24-ORDO-PRODUCTION-METHODOLOGY")
-    assert task["status"] == "in_progress"
+    assert task["status"] == "done"
+    assert "5937daa2ea7ff9c476bd6a05a04841d1534aefe2" in task["note"]
 
 
 def test_forecast_presentation_is_read_only_and_uses_only_accepted_get_endpoints():

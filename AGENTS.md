@@ -40,7 +40,11 @@ The MasterPlan `Canonical SYSTEM INVENTORY - complete product map` is the mandat
 
 ## GitHub acceptance authority
 
-Normal development is direct on canonical local `main`; branches/PRs require an explicit owner exception. After deterministic validation, independent analysis and assistant human review, exact-file staging requires explicit owner approval. Commit/push then goes directly to `main`. `CI_VERIFIED` and `COMPLETE` require the blocking `ISI required acceptance` workflow to finish `completed / success` on the exact committed `main` SHA.
+Normal development is direct on canonical local `main`; branches/PRs require an explicit owner exception. Local tests, deterministic package runners and independent analyzers are the development validation lane. After deterministic validation, independent analysis and assistant human review, exact-file staging requires explicit owner approval and commit/push goes directly to `main`. A development push does not authorize GitHub-hosted full acceptance CI.
+
+**DO NOT enable or introduce automatic GitHub-hosted Actions triggers for full CI during development. Do not add `push:`, `pull_request:`, `schedule:` or equivalent billable triggers to full acceptance workflows unless the task explicitly authorizes it. Default full acceptance/release workflows to manual `workflow_dispatch`.**
+
+GitHub-hosted full CI is reserved for an explicitly owner-approved acceptance, release-candidate or production checkpoint. Before manual dispatch, GitHub Actions usage must be checked; usage must be checked again after the acceptance/release cycle. `CI_VERIFIED` and `COMPLETE` require the blocking `ISI required acceptance` workflow to finish `completed / success` on the exact committed `main` SHA after explicit checkpoint approval.
 
 GitHub is source-control/CI evidence during industrialization, not a production deployment plane. Server mutation remains deferred to owner-approved ISI-28.
 
@@ -80,7 +84,7 @@ For every task:
 13. Record required evidence under `automation/evidence/<TASK-ID>/` or the location defined by the task.
 14. Do not create additional worktrees, clones, repositories, or checkout workspaces for task isolation unless the owner explicitly authorizes an exception.
 15. Keep task changes unstaged and uncommitted on `main` until deterministic validation succeeds and the owner approves the exact candidate. Codex must never stage, commit, or push unless the owner explicitly authorizes that action.
-16. After owner approval, the repository workflow is a direct commit and push to `main`, followed by GitHub Actions verification of that exact `main` commit. A pull request or merge is not part of the normal owner-driven workflow.
+16. After owner approval, the repository workflow is a direct commit and push to `main`. Full GitHub-hosted acceptance is then run only for a separately explicit approved acceptance/release checkpoint, after an Actions-usage pre-check, by manual `workflow_dispatch` against the exact `main` SHA; usage is checked again after the run. A pull request or merge is not part of the normal owner-driven workflow.
 17. A task is not complete because the agent says it is complete; the deterministic acceptance gates must pass.
 
 ## Security and privacy invariants

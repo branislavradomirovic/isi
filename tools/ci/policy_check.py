@@ -33,6 +33,9 @@ REQUIRED_TASK_SECTIONS = (
 )
 AGENTS_REQUIRED_SNIPPETS = (
     "The platform contains two domain products only: SIMPA and ORDO.",
+    "DO NOT enable or introduce automatic GitHub-hosted Actions triggers for full CI during development.",
+    "Default full acceptance/release workflows to manual `workflow_dispatch`.",
+    "GitHub Actions usage must be checked",
     "Do not introduce COSMOS as an application, domain, menu, product, tenant, database namespace, or user-visible layer.",
     "The existing ISI server is a deployment target, not a development environment.",
     "Do not SSH to the server",
@@ -77,6 +80,21 @@ def validate_agents_text(text: str) -> list[str]:
 def validate_automation_text(path: Path, text: str) -> list[str]:
     """Return fail-closed policy violations for one executable automation file."""
     return [f"{path}: forbidden {label}" for label, pattern in FORBIDDEN_AUTOMATION_PATTERNS.items() if pattern.search(text)]
+
+def validate_full_acceptance_workflow_text(text: str) -> list[str]:
+    """Return violations when full hosted acceptance is not manual-only."""
+    violations: list[str] = []
+    if not re.search(r"(?m)^  workflow_dispatch:\s*$", text):
+        violations.append("full acceptance workflow must declare manual workflow_dispatch")
+    for trigger in ("push", "pull_request", "pull_request_target", "schedule", "workflow_run", "merge_group"):
+        escaped = re.escape(trigger)
+        if re.search(rf"(?m)^  {escaped}:\s*$", text):
+            violations.append(f"full acceptance workflow has unauthorized automatic trigger: {trigger}")
+        if re.search(rf"(?m)^on:\s*\[[^]]*\b{escaped}\b", text):
+            violations.append(f"full acceptance workflow has unauthorized inline automatic trigger: {trigger}")
+        if re.search(rf"(?m)^on:\s*{escaped}\s*$", text):
+            violations.append(f"full acceptance workflow has unauthorized scalar automatic trigger: {trigger}")
+    return violations
 
 
 def iter_automation_files() -> list[Path]:
@@ -247,6 +265,13 @@ def main() -> None:
     workflows = sorted((ROOT / ".github/workflows").glob("*.y*ml"))
     if not workflows:
         fail("no GitHub Actions workflows found")
+
+    full_acceptance_workflow = ROOT / ".github/workflows/ci.yml"
+    if not full_acceptance_workflow.is_file():
+        fail("canonical full acceptance workflow is missing")
+    full_ci_violations = validate_full_acceptance_workflow_text(full_acceptance_workflow.read_text(encoding="utf-8"))
+    if full_ci_violations:
+        fail("; ".join(full_ci_violations))
 
     violations: list[str] = []
     automation_files = iter_automation_files()

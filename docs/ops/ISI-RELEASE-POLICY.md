@@ -6,7 +6,11 @@ This policy is subordinate to the canonical MasterPlan.
 
 Normal industrialization development uses one canonical local repository, one worktree and direct `main`; a feature branch or pull request is not required and must not be introduced without an explicit owner exception.
 
-Every change still requires a locked specification/scope, deterministic acceptance, independent analysis where defined, assistant human review, explicit owner approval before exact-file staging, direct commit/push to `main`, and `ISI required acceptance` completed/success on the exact main SHA. Required checks are blocking and may not be weakened to accept a defect.
+Every change still requires a locked specification/scope, deterministic local acceptance, independent analysis where defined, assistant human review and explicit owner approval before exact-file staging and direct commit/push to `main`. Development pushes do not automatically start full GitHub-hosted CI. For an explicitly approved acceptance/release checkpoint, GitHub Actions usage is checked, `ISI required acceptance` is manually dispatched with `workflow_dispatch` against the exact main SHA, every required check remains blocking, and Actions usage is checked again after the cycle. Required checks may not be weakened to accept a defect.
+
+## GitHub Actions cost and acceptance policy
+
+Full GitHub-hosted CI is reserved for explicitly approved acceptance, release-candidate or production checkpoints. Local tests, deterministic package runners and analyzers are the development validation lane. The canonical full acceptance workflow defaults to manual `workflow_dispatch`; automatic `push:`, `pull_request:`, `schedule:` or equivalent billable triggers require fresh explicit owner approval. GitHub Actions usage is checked before and after every approved acceptance/release cycle.
 
 ## Release-candidate policy
 

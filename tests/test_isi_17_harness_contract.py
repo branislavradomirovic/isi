@@ -3,7 +3,11 @@ import subprocess
 import sys
 from pathlib import Path
 
-from tools.ci.policy_check import validate_agents_text, validate_automation_text
+from tools.ci.policy_check import (
+    validate_agents_text,
+    validate_automation_text,
+    validate_full_acceptance_workflow_text,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -23,6 +27,9 @@ def test_agents_policy_contract_is_fail_closed() -> None:
     weakened = agents.replace("The platform contains two domain products only: SIMPA and ORDO.", "")
     missing = validate_agents_text(weakened)
     assert "The platform contains two domain products only: SIMPA and ORDO." in missing
+    weakened_ci = agents.replace("DO NOT enable or introduce automatic GitHub-hosted Actions triggers for full CI during development.", "")
+    missing_ci = validate_agents_text(weakened_ci)
+    assert "DO NOT enable or introduce automatic GitHub-hosted Actions triggers for full CI during development." in missing_ci
 
 
 def test_automation_policy_rejects_server_contact_and_deploy_tooling() -> None:
@@ -59,6 +66,12 @@ def test_required_ci_jobs_and_fail_closed_runner_exist() -> None:
     ):
         assert f"  {job}:" in workflow
     assert "needs: [policy, quality, tests, architecture-security, migration, native-postgres, compose, supply-chain, build]" in workflow
+    assert "  workflow_dispatch:" in workflow
+    for forbidden_trigger in ("push", "pull_request", "pull_request_target", "schedule", "workflow_run", "merge_group"):
+        assert f"  {forbidden_trigger}:" not in workflow
+    assert validate_full_acceptance_workflow_text(workflow) == []
+    weakened_workflow = workflow.replace("  workflow_dispatch:", "  push:", 1)
+    assert any("unauthorized automatic trigger: push" in item for item in validate_full_acceptance_workflow_text(weakened_workflow))
     runner = (ROOT / "tools/ci/run_isi17_acceptance.sh").read_text()
     assert "set -Eeuo pipefail" in runner
     assert "tools/ci/native_postgres_tests.sh" in runner
@@ -86,6 +99,7 @@ def test_masterplan_bootstrap_and_legacy_governance_is_enforced() -> None:
         "Canonical Git/GitHub development contract",
         "Canonical platform architecture map",
         "Canonical SYSTEM INVENTORY - complete product map",
+        "CI / GitHub Actions Cost & Acceptance Policy",
         "Accepted ISI-22E implementation checkpoint - 2026-09-13",
     ):
         assert required in master
@@ -104,6 +118,8 @@ def test_masterplan_bootstrap_and_legacy_governance_is_enforced() -> None:
     release = (ROOT / "docs/ops/ISI-RELEASE-POLICY.md").read_text()
     assert "direct `main`" in release
     assert "feature branch or pull request is not required" in release
+    assert "manual `workflow_dispatch`" in release
+    assert "GitHub Actions usage is checked before and after" in release
 
     for rel in (
         "docs/ops/ISI-PRODUCTION-WORKFLOW-LOCK.md",
@@ -114,7 +130,7 @@ def test_masterplan_bootstrap_and_legacy_governance_is_enforced() -> None:
         assert "HISTORICAL / SUPERSEDED - DO NOT EXECUTE" in (ROOT / rel).read_text()
 
 
-def test_live_status_records_current_24e_slice_and_verified_predecessors() -> None:
+def test_live_status_records_phase24_closeout_and_verified_predecessors() -> None:
     status = (ROOT / "automation/STATUS.md").read_text()
     assert "Accepted ISI-22G implementation SHA: `fd0e46631b5047c64b731d041645e528292f3664`." in status
     assert "Accepted ISI-22G implementation tree: `1a405a65a6fa67f2845ee0a10f2a6f44b11e355e`." in status
@@ -156,7 +172,10 @@ def test_live_status_records_current_24e_slice_and_verified_predecessors() -> No
     assert "Accepted ISI-24D implementation SHA: `49377e808845fc8746f0484ea7b452954c9e83b4`." in status
     assert "Accepted ISI-24D implementation tree: `c8ea52299d80551ee303dbeef95d343b59448892`." in status
     assert "run #88" in status and "run ID `35220908672`" in status
-    assert "Current slice is `ISI-24E" in status
+    assert "Accepted ISI-24E remediation/closeout implementation SHA: `5937daa2ea7ff9c476bd6a05a04841d1534aefe2`." in status
+    assert "run #90" in status and "run ID `35238623960`" in status
+    assert "Overall `ISI-24-ORDO-PRODUCTION-METHODOLOGY` is `COMPLETE / CI_VERIFIED`." in status
+    assert "ISI-25 bootstrap/audit - Industrial AI / MLOps" in status
 
     tasks = json.loads((ROOT / "automation/tasks.json").read_text())["tasks"]
     by_id = {task["id"]: task for task in tasks}
@@ -177,10 +196,14 @@ def test_live_status_records_current_24e_slice_and_verified_predecessors() -> No
     assert "3894f5d4ce9b78abc39f9a565fecf83bc2ce7a73" in by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["note"]
     assert "run #84 / 35084716444" in by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["note"]
     assert by_id["ISI-23-SIMPA-PRODUCTION-METHODOLOGY"]["next"] == "ISI-24-ORDO-PRODUCTION-METHODOLOGY"
-    assert by_id["ISI-24-ORDO-PRODUCTION-METHODOLOGY"]["status"] == "in_progress"
+    assert by_id["ISI-24-ORDO-PRODUCTION-METHODOLOGY"]["status"] == "done"
     assert "ISI-24D is COMPLETE / CI_VERIFIED on 49377e808845fc8746f0484ea7b452954c9e83b4" in by_id["ISI-24-ORDO-PRODUCTION-METHODOLOGY"]["note"]
     assert "run #88 / 35220908672" in by_id["ISI-24-ORDO-PRODUCTION-METHODOLOGY"]["note"]
+    assert "5937daa2ea7ff9c476bd6a05a04841d1534aefe2" in by_id["ISI-24-ORDO-PRODUCTION-METHODOLOGY"]["note"]
+    assert "run #90 / 35238623960 attempt 2 completed success" in by_id["ISI-24-ORDO-PRODUCTION-METHODOLOGY"]["note"]
     assert by_id["ISI-24-ORDO-PRODUCTION-METHODOLOGY"]["spec"] == "automation/specs/ISI-24E-ORDO-FINAL-CLOSEOUT.md"
+    assert by_id["ISI-25-INDUSTRIAL-AI-MLOPS"]["status"] == "planned"
+    assert "CURRENT/NEXT BOOTSTRAP" in by_id["ISI-25-INDUSTRIAL-AI-MLOPS"]["note"]
 
 
 def test_canonical_system_inventory_is_complete_and_self_contained() -> None:
