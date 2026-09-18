@@ -4,8 +4,6 @@ import hashlib
 import json
 import uuid
 from datetime import datetime, timezone
-from typing import Iterable
-
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -318,16 +316,18 @@ def _candidate_models(
     purpose: str,
     policy: EffectivePolicy,
 ) -> list[AIModel]:
-    candidates = list_models(session, product_code=product_code, purpose=purpose)
-    allowed = [model for model in candidates if provider_allowed(policy=policy, local_provider=model.local_provider)]
-    ordered: list[AIModel] = [selected] if selected in allowed else []
-    rest = [model for model in allowed if model.id != selected.id]
-    if policy.provider_policy == "local_preferred":
-        rest.sort(key=lambda item: (not item.local_provider, item.model_key))
-    else:
-        rest.sort(key=lambda item: item.model_key)
-    ordered.extend(rest)
-    return ordered[: policy.max_attempts]
+    if (
+        not selected.enabled
+        or selected.purpose != purpose
+        or not _product_matches(selected.product_scope, product_code)
+        or not provider_allowed(policy=policy, local_provider=selected.local_provider)
+    ):
+        return []
+    # ISI-25A fails closed to the explicitly selected/default runtime model.
+    # Persisted fallback edges are governance evidence only until ISI-25B binds
+    # execution to an unambiguous capability/registration and enforces every
+    # edge review and semantic-equivalence gate.
+    return [selected]
 
 
 def create_ai_job(

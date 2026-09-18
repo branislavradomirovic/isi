@@ -8,6 +8,14 @@ Last status update: 2026-09-17.
 
 Last completed slice: `ISI-24E - ORDO Final Whole-Phase Gap/Legacy Audit + Closeout`.
 
+Active phase: `ISI-25 - Industrial AI / MLOps` (`IN PROGRESS`).
+
+Historical accepted transition marker retained for ISI-24E compatibility: `ISI-25 bootstrap/audit - Industrial AI / MLOps`. That bootstrap is complete and no longer the current action.
+
+Current implementation checkpoint: `ISI-25A - AI/MLOps Governance + Evaluation Foundation` is an unstaged/uncommitted R4 human-review remediation candidate on the exact approved baseline. It adds capability/model lifecycle identity, persisted fallback-graph evidence, prompt rollback-target identity, deterministic synthetic `SIMPA-EVAL-v1` / `ORDO-EVAL-v1` CONTRACT/FIXTURE manifests and evaluation dataset/run/result/review persistence. Runtime execution in 25A fails closed to the explicitly selected/default model only; capability-bound cross-model fallback activation and enforcement of edge review/semantic gates remain required in ISI-25B. Shared governance/dataset mutations are platform-admin-only after normal scope resolution, and evaluation review writes require existing `report.publish` sign-off authority while reads remain `analysis.read`. No new permission taxonomy is introduced. Local focused validation and the outer deterministic acceptance runner remain authoritative; no GitHub-hosted acceptance, production promotion or deployment is claimed.
+
+Required next slice after 25A acceptance: `ISI-25B` evaluator engines, comparison/promotion governance, circuit breaker, drift jobs and dashboards. Overall ISI-25 remains `IN PROGRESS` until 25B is accepted.
+
 ISI-24E remediation/closeout implementation state: `COMPLETE / CI_VERIFIED`.
 
 Accepted ISI-23D implementation SHA: `a39caa8160f01dee4e30ab7912a732f0aa68c0d6`.
@@ -109,7 +117,7 @@ Authoritative ISI-24E GitHub Actions: `ISI required acceptance` run #90, run ID 
 
 Overall `ISI-24-ORDO-PRODUCTION-METHODOLOGY` is `COMPLETE / CI_VERIFIED`. The mandatory whole-phase audit is closed: F01 and F02 are resolved, no Phase-24 `REMOVE_BEFORE_NEXT_SLICE` finding remains, and F08 remains explicitly deferred as `REMOVE_IN_NAMED_PHASE(ISI-25/ISI-27)`.
 
-Next action: **ISI-25 bootstrap/audit - Industrial AI / MLOps** against the complete MasterPlan, `docs/roadmap/ISI-AI-MODEL-EVALUATION-PROTOCOL-v1.md`, ADR-0025 and accepted as-built code. ISI-25 remains PLANNED until its own bootstrap, `DONE / PARTIAL / MISSING / DRIFT` matrix, legacy/drift audit and exact scope lock are complete. Server/live-host verification remains `DEFERRED_SERVER_VERIFICATION`; server/DNS/ingress/real SMTP/production secrets/data/server Ollama remain frozen until owner-approved ISI-28.
+Next action: complete deterministic local validation and final assistant human review of the exact ISI-25A R4 candidate; after separate owner-approved commit/push, continue with required ISI-25B capability-bound fallback execution, evaluator and promotion scope. GitHub-hosted full acceptance remains deferred to the controlled ISI-27 release-candidate checkpoint. Server/live-host verification remains `DEFERRED_SERVER_VERIFICATION`; server/DNS/ingress/real SMTP/production secrets/data/server Ollama remain frozen until owner-approved ISI-28.
 
 ## Mandatory bootstrap rule
 
@@ -133,7 +141,7 @@ A failed required gate returns the active task to implementation/fix state. Requ
 | 22 | Industrial Data Platform | **COMPLETE / CI_VERIFIED - 22A through 22G complete** |
 | 23 | SIMPA Production Methodology + Help/User Guide | **COMPLETE / CI_VERIFIED - 23A through 23E complete** |
 | 24 | ORDO Production Methodology + Help/User Guide | **COMPLETE / CI_VERIFIED - 24A through 24E complete** |
-| 25 | Industrial AI / MLOps | **PLANNED - current/next bootstrap** |
+| 25 | Industrial AI / MLOps | **IN PROGRESS - 25A foundation candidate; 25B required next** |
 | 26 | Performance, Load & Resilience | PLANNED |
 | 27 | Industrial Release Candidate & Acceptance Pack | PLANNED |
 | 28 | Current Server Controlled Upgrade | **DEFERRED - fresh explicit owner approval required** |
