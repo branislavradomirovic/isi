@@ -70,8 +70,9 @@ Canonical precedent: ISI-22E R1/R2 removed historical ISI-22D tests that incorre
 
 ### 0.4 Canonical Codex execution contract
 
-- ISI Codex runs only through `$HOME/bin/codex-isi` / `codex-isi`, authenticated with ChatGPT.
-- Generic `codex` is forbidden for ISI implementation.
+- ISI uses the standard `codex` CLI authenticated with Branislav's single canonical Outlook Codex account `branislav.radomirovic@outlook.com`.
+- Project-specific Codex wrappers and project-specific `CODEX_HOME` authentication profiles are legacy and are not active execution authority.
+- Codex credentials are machine-local and must never be committed, embedded in task packages or synchronized through GitHub.
 - Codex operates only in the canonical repository/worktree and only inside a reviewer/owner-locked mutable surface.
 - The normal implementation handoff is a locked MD contract + deterministic runner + independent analyzer, not an ad-hoc conversational prompt.
 - Codex must not stage, commit, push, deploy, use production secrets, create alternate workspaces, or independently redefine architecture, scope or acceptance.
@@ -81,6 +82,12 @@ Canonical precedent: ISI-22E R1/R2 removed historical ISI-22D tests that incorre
 ### 0.5 Canonical Git/GitHub development contract
 
 - Normal development is serial and directly on canonical local `main` with exactly one worktree.
+- Supported owner development workstations are MacBook Air and iMac; only one is active for ISI development at a time.
+- GitHub `origin/main` is the only source-code handoff authority between workstations.
+- A source workstation may hand off only when it is on `main`, `HEAD == origin/main`, index/worktree are clean, stash is empty and exactly one development worktree exists.
+- The destination workstation must fetch and fast-forward to the exact accepted `origin/main` SHA before development starts.
+- Virtual environments, `.env` files, PostgreSQL/Redis/Docker state, logs, caches and machine-local credentials are never copied between Macs.
+- Any new workstation/system dependency must be documented first in this Master Plan and `docs/ops/ISI-DEVELOPMENT-WORKSTATION-REQUIREMENTS.md`.
 - Feature/review/automation/temporary branches, pull requests, extra clones and extra worktrees are not part of the normal workflow and require an explicit owner exception.
 - Candidates remain unstaged/uncommitted through implementation, deterministic validation, independent analysis and human review.
 - Exact-file staging requires explicit owner approval of the reviewed candidate.
@@ -1118,3 +1125,13 @@ Owner approvals now binding in this master plan include:
 This governance-only synchronization records accepted Phase-24 truth; it changes no production runtime behavior and authorizes no deployment.
 
 Material changes to these points require a new explicit owner approval and, where architectural, a new or superseding ADR.
+
+
+### 2026-09-19 unified Codex and dual-Mac governance
+
+- Branislav explicitly superseded the previous multi-account/project-specific Codex execution policy as active authority.
+- Krcuga, OralScanXAI and ISI now use the standard `codex` CLI authenticated with the single canonical Outlook account `branislav.radomirovic@outlook.com`.
+- `codex-isi`, project-specific wrappers and project-specific `CODEX_HOME` profiles are legacy and are not required by active ISI development; historical evidence remains legitimate history.
+- MacBook Air and iMac use GitHub `origin/main` as the only source handoff mechanism and only from a clean synchronized source state.
+- The same project is never actively developed on both Macs simultaneously.
+- New workstation/system dependencies must be documented in this Master Plan and workstation requirements before installation.

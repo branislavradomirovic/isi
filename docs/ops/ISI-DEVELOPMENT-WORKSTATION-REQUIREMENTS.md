@@ -1,0 +1,87 @@
+# ISI Development Workstation Requirements
+
+## Authority
+
+This document is the machine-level dependency authority for local ISI development. Any new system/workstation dependency must be documented here and in `docs/roadmap/ISI-AUTONOMOUS-INDUSTRIALIZATION-MASTER-PLAN.md` before installation.
+
+## Supported owner workstations
+
+- MacBook Air
+- iMac
+- macOS
+- exactly one active ISI development workstation at a time
+
+## Source handoff contract
+
+GitHub `origin/main` is the only source-code handoff authority between Macs.
+
+Source handoff requires:
+
+- branch `main`;
+- local `HEAD == origin/main`;
+- clean staged/unstaged/untracked state;
+- empty stash;
+- exactly one development worktree.
+
+The destination fetches and fast-forwards to the exact accepted `origin/main` SHA before development.
+
+Never copy between Macs:
+
+- `.venv` or another virtual environment;
+- `.env` or secrets;
+- PostgreSQL/Redis/Docker state;
+- logs or caches;
+- Codex/GitHub/SSH credentials.
+
+## Required tools
+
+- Git
+- GitHub CLI with repository access
+- Python 3.11 (project supports >=3.11,<3.13; canonical development/CI baseline is 3.11)
+- PostgreSQL 17 for native PostgreSQL development/acceptance
+- standard `codex` CLI for Codex-backed implementation, authenticated by the operator to `branislav.radomirovic@outlook.com`
+
+## Conditional tools
+
+- Docker/Compose for container/compose acceptance and explicitly requested container workflows.
+- Redis when exercising runtime paths that require the configured Redis/RQ infrastructure locally.
+
+## Python environment
+
+Use the repository lock authority:
+
+```bash
+make install
+```
+
+This creates `.venv`, installs `requirements.lock`, and installs the project without resolving a second dependency graph. Do not copy an environment from another Mac.
+
+## Codex
+
+Active policy:
+
+```text
+CLI: codex
+Account: branislav.radomirovic@outlook.com
+codex-isi wrapper: legacy / not required
+Project-specific CODEX_HOME: legacy / not required
+```
+
+Project boundaries remain enforced by the Master Plan, AGENTS.md, locked task MD, runner, independent analyzer, exact mutable surface and human review. Codex credentials remain machine-local.
+
+## Hosted CI
+
+The full `ISI required acceptance` workflow remains manual `workflow_dispatch` only during active development. Ordinary development pushes do not authorize full hosted acceptance.
+
+## Current iMac audited baseline — 2026-09-19
+
+- macOS 15.8, x86_64
+- MacPorts 2.12.6
+- Git 2.55.0
+- GitHub CLI 2.100.0 with SSH Git access
+- Python 3.11.16
+- Docker 29.8.0
+- Docker Compose 5.5.1
+- PostgreSQL 17.11
+- standard Codex CLI 0.154.0
+- native Redis not installed at audit time; install only after a concrete ISI local-runtime requirement is approved and documented

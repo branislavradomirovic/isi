@@ -47,7 +47,7 @@ AGENTS_REQUIRED_SNIPPETS = (
     "Sensitive SIMPA data must follow the existing local-only AI policy",
     "Read the complete MasterPlan before any task design or implementation.",
     "perform the mandatory legacy/drift audit",
-    "Generic `codex` is forbidden for ISI implementation.",
+    "ISI uses the standard `codex` CLI authenticated with Branislav's single canonical Outlook Codex account `branislav.radomirovic@outlook.com`.",
     "exact committed `main` SHA",
     "Canonical System Inventory maintenance",
 )

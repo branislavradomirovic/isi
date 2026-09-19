@@ -31,12 +31,22 @@ The MasterPlan `Canonical SYSTEM INVENTORY - complete product map` is the mandat
 
 ## Codex execution authority
 
-- ISI Codex may run only through `$HOME/bin/codex-isi` / `codex-isi`, authenticated with ChatGPT.
-- Generic `codex` is forbidden for ISI implementation.
+- ISI uses the standard `codex` CLI authenticated with Branislav's single canonical Outlook Codex account `branislav.radomirovic@outlook.com`.
+- Project-specific Codex wrappers and project-specific `CODEX_HOME` profiles are legacy and must not be required by active ISI development.
+- Codex credentials are machine-local and must never be committed or synchronized through GitHub.
 - Codex is not invoked until bootstrap, architecture review and exact scope lock are complete.
 - Normal implementation handoff is a locked MD contract plus runner and independent analyzer, not an ad-hoc conversational prompt.
 - Codex must not stage, commit, push, deploy, use production secrets, create alternate workspaces or redefine architecture/scope/acceptance.
 - The independent analyzer does not invoke Codex and does not mutate repository content/control state.
+
+## Dual-Mac workstation handoff
+
+- MacBook Air and iMac are supported owner development workstations.
+- GitHub `origin/main` is the only source-code handoff authority between them.
+- A handoff source must be on `main`, have `HEAD == origin/main`, a clean index/worktree, empty stash and exactly one development worktree.
+- The same ISI project must not be actively developed on both workstations at the same time.
+- Do not copy virtual environments, `.env` files, PostgreSQL/Redis/Docker state, logs, caches or machine-local credentials between Macs.
+- Any new workstation/system dependency must be recorded first in the Master Plan and `docs/ops/ISI-DEVELOPMENT-WORKSTATION-REQUIREMENTS.md`.
 
 ## GitHub acceptance authority
 
