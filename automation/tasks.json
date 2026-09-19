@@ -252,34 +252,35 @@
       "title": "Industrial AI / MLOps",
       "status": "planned",
       "phase_status": "in_progress",
-      "active_checkpoint": "ISI-25A-AI-MLOPS-GOVERNANCE-EVALUATION-FOUNDATION",
+      "active_checkpoint": "ISI-25B-EVALUATION-PROMOTION-RUNTIME",
       "depends_on": [
         "ISI-24-ORDO-PRODUCTION-METHODOLOGY"
       ],
       "next": "ISI-26-PERFORMANCE-LOAD-RESILIENCE",
-      "spec": "automation/specs/ISI-25A-AI-MLOPS-GOVERNANCE-EVALUATION-FOUNDATION.md",
-      "note": "CURRENT/NEXT BOOTSTRAP is retained as a REQUIRED_COMPATIBILITY marker for the accepted ISI-24E transition test; the bootstrap is now complete. Global ISI-25 is active and IN PROGRESS through child task ISI-25A. ISI-25A is the current exact-surface unstaged R4 remediation candidate: shared statistical_ml/embedding/llm/vlm registration identity, candidate/challenger/retired lifecycle with champion mutation fail-closed, persisted fallback-graph evidence without 25A cross-model runtime activation, prompt rollback-target identity, synthetic frozen SIMPA-EVAL-v1 and ORDO-EVAL-v1 CONTRACT/FIXTURE manifests, and evaluation dataset/run/result/review persistence. Shared governance/dataset mutation is platform-admin-only after normal scope resolution; evaluation review writes require report.publish while reads retain analysis.read. No permission taxonomy is added. No GitHub-hosted acceptance, production promotion, server/model activation or deployment is claimed. ISI-25B remains required for capability-bound fallback execution and evaluator/promotion runtime; overall ISI-25 cannot close before 25B acceptance."
+      "spec": "automation/specs/ISI-25B-EVALUATION-PROMOTION-RUNTIME.md",
+      "note": "CURRENT/NEXT BOOTSTRAP is retained only as REQUIRED_COMPATIBILITY for the accepted ISI-24E transition test; it is not current execution authority. Global ISI-25 remains IN PROGRESS. ISI-25A is accepted on main SHA f0047321ee4410522697144ecfa464087f1b83bc, tree 06e419ec656ee2fb0bfb74b4a6b10d42ef275f25, after local deterministic acceptance and assistant human review; no hosted acceptance ran and CI_VERIFIED is not claimed. ISI-25B is the active unstaged candidate for exact-registration fallback, deterministic evaluators, promotion benchmarks/thresholds, evidence-gated promotion/rollback, circuit state, on-demand drift and shared AI XAI. No model installation, deployment or server mutation is authorized."
     },
     {
       "id": "ISI-25A-AI-MLOPS-GOVERNANCE-EVALUATION-FOUNDATION",
       "title": "AI/MLOps Governance + Evaluation Foundation",
-      "status": "in_progress",
+      "status": "done",
       "spec": "automation/specs/ISI-25A-AI-MLOPS-GOVERNANCE-EVALUATION-FOUNDATION.md",
       "depends_on": [
         "ISI-24-ORDO-PRODUCTION-METHODOLOGY"
       ],
       "next": "ISI-25B-EVALUATION-PROMOTION-RUNTIME",
-      "note": "Current unstaged/uncommitted R4 human-review remediation candidate. Runtime is selected/default-model-only; persisted fallback-edge review and semantic declarations are foundation metadata until ISI-25B capability-bound activation. Global governance/dataset writes require platform-admin authority after normal scope resolution, and evaluation review writes require report.publish. Local deterministic validation and final human review are required; no hosted CI, champion promotion, commit/push or server mutation is claimed."
+      "note": "Accepted on main SHA f0047321ee4410522697144ecfa464087f1b83bc, tree 06e419ec656ee2fb0bfb74b4a6b10d42ef275f25, after local deterministic acceptance and assistant human review. No hosted GitHub acceptance ran under current owner policy, so CI_VERIFIED is not claimed. Historical runtime truth is selected/default-model-only for jobs without an explicit registration binding."
     },
     {
       "id": "ISI-25B-EVALUATION-PROMOTION-RUNTIME",
       "title": "AI Evaluators + Evidence-Gated Promotion Runtime",
-      "status": "planned",
+      "status": "in_progress",
       "depends_on": [
         "ISI-25A-AI-MLOPS-GOVERNANCE-EVALUATION-FOUNDATION"
       ],
       "next": "ISI-26-PERFORMANCE-LOAD-RESILIENCE",
-      "note": "Required next slice for unambiguous capability/registration-bound fallback execution with enforced edge review/semantic gates, evaluator engines, comparison/winner selection, promotion, circuit breaker, drift jobs and dashboards. Not implemented by ISI-25A."
+      "spec": "automation/specs/ISI-25B-EVALUATION-PROMOTION-RUNTIME.md",
+      "note": "Active owner-approved unstaged implementation candidate. Overall ISI-25 remains IN PROGRESS until deterministic acceptance, independent analysis and human review. Promotion is registry/runtime governance only; no permanent winner, generic winner score, hosted CI, deployment, model installation or server mutation is claimed."
     },
     {
       "id": "ISI-26-PERFORMANCE-LOAD-RESILIENCE",

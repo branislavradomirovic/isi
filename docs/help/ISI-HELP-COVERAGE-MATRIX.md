@@ -16,7 +16,7 @@ Coverage vocabulary: MISSING, PARTIAL, COMPLETE, VERIFIED. Only VERIFIED satisfi
 | INV-A06 | Authenticated app shell | PARTIAL | FOUNDATION / ISI-23 / ISI-24 | SIMPA access/workspace context covered by SIMPA-H01; cross-product shell Help remains open. |
 | INV-A07 | Overview workspace | MISSING | FOUNDATION | Shared overview Help remains open. |
 | INV-A08 | Data workspace | PARTIAL | ISI-22 | SIMPA governed analytical prerequisite covered by SIMPA-H05; full Data workspace Help remains open. |
-| INV-A09 | AI workspace | PARTIAL | ISI-25 | SIMPA bounded synthesis covered by SIMPA-H12; shared AI workspace Help/XAI remains ISI-25. |
+| INV-A09 | AI workspace | VERIFIED | ISI-25 | Shared registry/evaluation/promotion/fallback/circuit/drift/XAI actions are covered by docs/help/ISI-AI-USER-GUIDE.md and tests/test_isi_25b_monitoring_xai_help.py; non-AI shared Help remains separately owned. |
 | INV-A10 | SIMPA indicators | VERIFIED | ISI-23 | SIMPA-H02/H03/H04 plus SIMPA User Guide; tests/test_isi_23d_help_xai_contract.py. |
 | INV-A11 | SIMPA analytics | VERIFIED | ISI-23 | SIMPA-H05 through H12 plus deterministic statistical XAI; ISI-23D tests. |
 | INV-A12 | ORDO indicators | VERIFIED | ISI-24 | ORDO-H01 through H06 plus ORDO User Guide; tests/test_isi_24d_help_xai_contract.py. |
@@ -25,10 +25,24 @@ Coverage vocabulary: MISSING, PARTIAL, COMPLETE, VERIFIED. Only VERIFIED satisfi
 | INV-A15 | Administration workspace | MISSING | ISI-20 / ISI-27 | Shared administration Help remains open. |
 | INV-A16 | Account security workspace | MISSING | ISI-20 | Shared security Help remains open. |
 | INV-A17 | Public self-registration | MISSING | ISI-20 | Surface is intentionally NOT_PRESENT; cross-product absence/help wording remains outside ISI-23D. |
-| INV-A18 | SIMPA Help, User Guide and XAI interpretation | VERIFIED | ISI-23 / ISI-25 / ISI-27 | In-app SIMPA Help + docs/help/SIMPA-USER-GUIDE.md + statistical XAI are implemented; shared AI evaluation remains ISI-25. |
-| INV-A19 | ORDO Help, User Guide and XAI interpretation | VERIFIED | ISI-24 / ISI-25 / ISI-27 | In-app ORDO Help + docs/help/ORDO-USER-GUIDE.md + forecast/scenario XAI and governed forecast workflow guidance are implemented; tests/test_isi_24d_help_xai_contract.py and tests/test_isi_24e_forecast_workflow_ui.py; shared AI evaluation remains ISI-25. |
+| INV-A18 | SIMPA Help, User Guide and XAI interpretation | VERIFIED | ISI-23 / ISI-25 / ISI-27 | SIMPA domain Help/statistical XAI plus ISI-25 shared AI evaluation/provenance/promotion/fallback interpretation are verified; remaining global release Help remains ISI-27. |
+| INV-A19 | ORDO Help, User Guide and XAI interpretation | VERIFIED | ISI-24 / ISI-25 / ISI-27 | ORDO forecast/scenario Help/XAI plus ISI-25 shared AI evaluation/provenance/promotion/fallback interpretation are verified; remaining global release Help remains ISI-27. |
 | INV-A20 | Commercial checkout/payment surface | MISSING | OUT_OF_SCOPE | Surface is NOT_PRESENT; no ISI commercial payment architecture exists. |
-| INV-A21 | Cross-product Help Coverage Matrix | PARTIAL | ISI-23 / ISI-24 / ISI-25 / ISI-27 | Matrix artifact is CURRENT_AS_BUILT; SIMPA domain coverage is VERIFIED but global cross-product coverage remains open. |
+| INV-A21 | Cross-product Help Coverage Matrix | PARTIAL | ISI-23 / ISI-24 / ISI-25 / ISI-27 | ISI-25-owned shared AI guidance is VERIFIED; Login/Reporting/Administration/Security/shared release coverage remains REMOVE_IN_NAMED_PHASE(ISI-27), so the global matrix honestly remains PARTIAL. |
+
+## ISI-25B shared AI material actions
+
+Every action below satisfies the MasterPlan ten-point checklist through `docs/help/ISI-AI-USER-GUIDE.md`.
+
+| Inventory | Material user action | Coverage | Test/evidence authority |
+| --- | --- | --- | --- |
+| INV-A09 | Register/inspect governed model capability identity | VERIFIED | tests/test_isi_25b_monitoring_xai_help.py |
+| INV-A09 | Register/inspect frozen promotion benchmark and thresholds | VERIFIED | tests/test_isi_25b_promotion.py; tests/test_isi_25b_monitoring_xai_help.py |
+| INV-A09 | Execute/interpret deterministic evaluation and final review | VERIFIED | tests/test_isi_25b_evaluation_engines.py |
+| INV-A09 | Preview/execute explicit promotion and rollback | VERIFIED | tests/test_isi_25b_promotion.py |
+| INV-A09 | Interpret fallback review-required, circuit and drift states | VERIFIED | tests/test_isi_25b_capability_runtime.py; tests/test_isi_25b_monitoring_xai_help.py |
+| INV-A18/INV-A19 | Interpret shared AI provenance/XAI and unsupported states | VERIFIED | tests/test_isi_25b_monitoring_xai_help.py |
+| INV-A21 | Open/use ISI shared AI User Guide | VERIFIED for ISI-25 ownership | tests/test_isi_25b_monitoring_xai_help.py |
 
 ## ISI-23D SIMPA material actions
 

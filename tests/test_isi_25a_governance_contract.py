@@ -20,23 +20,23 @@ def test_r4_contract_and_docs_define_runtime_and_authority_boundary():
     assert "SIMPA-EVAL-v1" in registry and "ORDO-EVAL-v1" in registry
     assert "CONTRACT/FIXTURE" in registry and "foundation_only_not_production_promotion_evidence=true" in registry
     assert "No permanent or hard-coded champion exists" in registry
-    assert "selected/default runtime model only" in registry
+    assert "selected/default-model-only" in registry
     assert "platform-admin-only" in registry
     assert "report.publish" in registry
     assert "Capability-bound registered fallback execution" in contract
-    assert "PROMOTION EXECUTION / WINNER SELECTION NOT IMPLEMENTED IN ISI-25A" in promotion
-    for deferred in ("evaluator engines", "circuit-breaker", "drift", "dashboards"):
-        assert deferred in (registry + promotion)
+    assert "registry/runtime-governance transaction only" in promotion
+    for current in ("deterministic evaluator engines", "circuit state", "drift", "shared AI XAI"):
+        assert current in (registry + promotion)
 
 
 def test_system_inventory_records_25a_as_built_and_future_boundary():
     master = _text("docs/roadmap/ISI-AUTONOMOUS-INDUSTRIALIZATION-MASTER-PLAN.md")
     assert "INV-C40 | AI capability/model registration + fallback + prompt rollback" in master
     assert "INV-C41 | AI evaluation dataset/run/result/review foundation" in master
-    assert "INV-E05 | Selected-model-only runtime + persisted fallback policy" in master
+    assert "INV-E05 | Legacy selected-only plus exact-registration-bound fallback runtime" in master
     assert "INV-E06 | AI runtime model/prompt/policy + capability governance registry" in master
     assert "Status: **IN PROGRESS**" in master
-    assert "ISI-25B remains required" in master
+    assert "ISI-25B is the active unstaged candidate" in master
     assert "Dedicated Vision provider/service | AI modality | NOT_PRESENT" in master
     assert "Dedicated Audio provider/service | AI modality | NOT_PRESENT" in master
 
@@ -51,7 +51,7 @@ def test_eval_manifests_are_explicit_non_production_foundation_contracts():
         assert manifest["frozen"] is True and manifest["approval_state"] == "approved"
 
 
-def test_no_permanent_champion_or_promotion_execution_exists():
+def test_25a_historical_champion_guard_coexists_with_25b_evidence_gate():
     governance = _text("src/platform/ai/governance.py")
     service = _text("src/platform/ai/service.py")
     routes = _text("src/api/ai_routes.py")
@@ -59,10 +59,9 @@ def test_no_permanent_champion_or_promotion_execution_exists():
     assert "champion_promotion_requires_isi_25b_evaluation_and_approval_evidence" in governance
     assert "authorized_runtime_fallbacks" in governance
     assert "runtime_fallback_allows_error" in governance
-    assert "authorized_runtime_fallbacks" not in service
-    assert "runtime_fallback_allows_error" not in service
+    assert "authorized_runtime_fallbacks" in service
+    assert "source_registration_id=source_registration.id" in service
     assert "return [selected]" in service
-    assert "promote_to_champion" not in governance + service + routes
     assert "select_winner" not in governance + service + routes
     assert "deployment" not in routes.lower()
 
@@ -89,7 +88,7 @@ def test_ci_and_server_boundaries_remain_frozen():
     for automatic in ("push:", "pull_request:", "schedule:", "workflow_run:", "merge_group:"):
         assert automatic not in on_block
     status = _text("automation/STATUS.md")
-    assert "no GitHub-hosted acceptance" in status
+    assert "No GitHub-hosted acceptance ran" in status
     assert "DEFERRED_SERVER_VERIFICATION" in status
     assert "server/DNS/ingress/real SMTP/production secrets/data/server Ollama remain frozen" in status
 

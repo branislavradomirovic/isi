@@ -38,7 +38,7 @@ def test_governance_and_evaluation_routes_stay_inside_existing_ai_boundary():
     }
     assert required <= paths
     assert all(path.startswith("/api/v1/ai") for path, _method in paths)
-    assert not any(any(word in path for word in ("promote", "champion", "winner", "deploy", "server")) for path, _ in paths)
+    assert not any(any(word in path for word in ("deploy", "server")) for path, _ in paths)
 
 
 def test_api_uses_existing_permissions_for_each_authority():
@@ -178,7 +178,7 @@ def test_champion_request_is_parsed_but_service_must_fail_closed():
     assert "champion_promotion_requires_isi_25b_evaluation_and_approval_evidence" in source
 
 
-def test_api_exposes_foundation_lifecycle_without_evaluator_or_promotion_engine():
+def test_api_preserves_25a_foundation_lifecycle_operations():
     source = open("src/api/ai_routes.py", encoding="utf-8").read()
     for operation in (
         "register_fallback",
@@ -190,5 +190,5 @@ def test_api_exposes_foundation_lifecycle_without_evaluator_or_promotion_engine(
         "append_evaluation_review",
     ):
         assert operation in source
-    for forbidden in ("select_winner", "promote_to_champion", "deploy_model", "execute_forecast"):
+    for forbidden in ("select_winner", "deploy_model", "execute_forecast"):
         assert forbidden not in source

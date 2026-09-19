@@ -384,12 +384,13 @@ def test_prompt_rollback_is_prior_same_prompt_and_checksum_bound(registry_case):
     assert v2.status == "active" and len(row.fingerprint) == 64
 
 
-def test_attempt_and_audit_evidence_paths_are_preserved():
+def test_25a_unbound_attempt_and_audit_compatibility_is_preserved():
     source = open("src/platform/ai/service.py", encoding="utf-8").read()
     assert "AIJobAttempt(" in source
     assert 'event_type="ai.job.completed"' in source
     assert 'event_type="ai.job.failed"' in source
-    assert "authorized_runtime_fallbacks" not in source
-    assert "runtime_fallback_allows_error" not in source
+    assert "if source_registration is None" in source
+    assert "authorized_runtime_fallbacks" in source
+    assert "source_registration_id=source_registration.id" in source
     assert "return [selected]" in source
     assert "rest.sort" not in source

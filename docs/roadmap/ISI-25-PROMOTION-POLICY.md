@@ -1,12 +1,10 @@
 # ISI-25 Promotion Policy
 
-Status: **FUTURE GATE DOCUMENTED; PROMOTION EXECUTION / WINNER SELECTION NOT IMPLEMENTED IN ISI-25A**
+Status: **ISI-25B EVIDENCE-GATED REGISTRY/RUNTIME PROMOTION CANDIDATE**
 
 ## Fail-closed rule
 
-ISI-25A provides lifecycle vocabulary and evidence persistence but exposes no operation that selects a winner or promotes a registration to `champion`. Candidate/challenger registration and retirement do not change production deployment. A human review record cannot promote a model. No runtime/server model is installed, activated, replaced or rolled back by this foundation.
-
-Promotion belongs to ISI-25B and may be considered only after a separate owner-approved implementation defines capability-specific evaluator behavior and acceptance thresholds.
+Promotion is a registry/runtime-governance transaction only. It never installs, downloads, deploys or enables provider software, never rewrites the legacy default runtime model, and never mutates server configuration. There is no preselected or permanent champion and no generic aggregate winner score.
 
 ## Mandatory future promotion evidence
 
@@ -38,6 +36,8 @@ The ISI-25A fallback graph is persistence/contract evidence only. Its `requires_
 
 Before a future promotion can be executed, the candidate must have a governed rollback target whose identity/checksum is immutable and whose compatibility has been evaluated. The prompt registry similarly records rollback targets without changing the active prompt. ISI-25A registration of rollback identity is evidence only; production rollback execution is not implemented.
 
-## Deferred ISI-25B implementation
+## 25B execution and rollback
 
-ISI-25B must define capability-bound fallback execution and its review/semantic gates, evaluator engines, comparison logic, deterministic promotion criteria, approval transaction/audit behavior, circuit-breaker and drift behavior, and the exact rollback execution contract. Until that slice is accepted, `champion_promotion_requires_isi_25b_evaluation_and_approval_evidence` is the stable fail-closed outcome and no current permanent champion exists.
+Preview persists deterministic per-metric comparisons and non-compensable blockers. Execution additionally requires platform-admin authority, `report.publish`, an eligible immutable decision and an explicit owner-approval reference. The candidate becomes the sole enabled champion for its exact product scope/capability, the prior champion becomes challenger, and runtime state pins champion, rollback and circuit policy atomically.
+
+Rollback is explicit, reasoned, evidence-referenced and audited under the same authority. It restores only the recorded compatible enabled registration. It is never silent and never installs or deploys a model. Circuit and on-demand drift evidence may block use or promotion, but never causes online training, silent replacement or automatic rollback.

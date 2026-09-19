@@ -107,6 +107,67 @@ def registration_identity(
     }
 
 
+def registration_fingerprint(registration: AIModelRegistration) -> str:
+    return fingerprint(registration_identity(
+        capability_key=registration.capability_key,
+        product_scope=registration.product_scope,
+        model_family=registration.model_family,
+        model_key=registration.model_key,
+        runtime_model_id=registration.runtime_model_id,
+        provider_name=registration.provider_name,
+        runtime_name=registration.runtime_name,
+        version=registration.version,
+        revision=registration.revision,
+        artifact_uri=registration.artifact_uri,
+        artifact_checksum=registration.artifact_checksum,
+        provenance=registration.provenance,
+    ))
+
+
+def registration_fingerprint_matches(registration: AIModelRegistration) -> bool:
+    return registration_fingerprint(registration) == registration.registry_fingerprint
+
+
+def fallback_identity(
+    edge: AIModelFallback, source: AIModelRegistration, target: AIModelRegistration
+) -> dict[str, Any]:
+    return {
+        "priority": edge.priority,
+        "requires_human_review": bool(edge.requires_human_review),
+        "semantically_equivalent": bool(edge.semantically_equivalent),
+        "source_fingerprint": source.registry_fingerprint,
+        "target_fingerprint": target.registry_fingerprint,
+        "trigger_codes": sorted(set(edge.trigger_codes)),
+    }
+
+
+def fallback_fingerprint_matches(
+    edge: AIModelFallback, source: AIModelRegistration, target: AIModelRegistration
+) -> bool:
+    return bool(
+        registration_fingerprint_matches(source)
+        and registration_fingerprint_matches(target)
+        and fingerprint(fallback_identity(edge, source, target)) == edge.fingerprint
+    )
+
+
+def drift_snapshot_fingerprint_from_row(snapshot: Any, *, threshold_fingerprint: str) -> str:
+    identity = {
+        "organization_id": str(snapshot.organization_id),
+        "workspace_id": str(snapshot.workspace_id),
+        "product_code": snapshot.product_code,
+        "capability_key": snapshot.capability_key,
+        "model_registration_id": str(snapshot.model_registration_id),
+        "threshold_fingerprint": threshold_fingerprint,
+        "window_start": snapshot.window_start.isoformat(),
+        "window_end": snapshot.window_end.isoformat(),
+        "metrics": snapshot.metrics,
+        "provenance": snapshot.provenance,
+        "status": snapshot.status,
+    }
+    return fingerprint(identity)
+
+
 def register_model(
     session: Session,
     *,
@@ -337,14 +398,18 @@ def register_fallback(
     ):
         raise AIGovernanceError("fallback_cycle_forbidden")
     normalized_triggers = sorted(set(trigger_codes))
-    identity = {
-        "priority": priority,
-        "requires_human_review": bool(requires_human_review),
-        "semantically_equivalent": bool(semantically_equivalent),
-        "source_fingerprint": source.registry_fingerprint,
-        "target_fingerprint": target.registry_fingerprint,
-        "trigger_codes": normalized_triggers,
-    }
+    provisional = AIModelFallback(
+        source_registration_id=source.id,
+        target_registration_id=target.id,
+        priority=priority,
+        trigger_codes=normalized_triggers,
+        semantically_equivalent=semantically_equivalent,
+        requires_human_review=requires_human_review,
+        fingerprint="",
+        provenance=provenance,
+        created_by_membership_id=actor_id,
+    )
+    identity = fallback_identity(provisional, source, target)
     row = AIModelFallback(
         source_registration_id=source.id,
         target_registration_id=target.id,
@@ -383,8 +448,12 @@ def list_fallbacks(
     for row in session.scalars(statement).all():
         source = session.get(AIModelRegistration, row.source_registration_id)
         target = session.get(AIModelRegistration, row.target_registration_id)
-        if source and target and _visible_in_product(source.product_scope, product_code) and _visible_in_product(
-            target.product_scope, product_code
+        if (
+            source
+            and target
+            and fallback_fingerprint_matches(row, source, target)
+            and _visible_in_product(source.product_scope, product_code)
+            and _visible_in_product(target.product_scope, product_code)
         ):
             result.append(row)
     return result
@@ -393,25 +462,26 @@ def list_fallbacks(
 def authorized_runtime_fallbacks(
     session: Session,
     *,
-    selected: AIModel,
+    source_registration_id: uuid.UUID,
     product_code: str,
     policy: EffectivePolicy,
-) -> list[AIModel]:
-    """Return only explicitly registered runtime fallbacks, in deterministic priority order."""
+    error_code: str,
+) -> list[tuple[AIModelFallback, AIModelRegistration, AIModel]]:
+    """Resolve executable edges from the exact bound source registration only."""
 
-    source = session.scalar(
-        select(AIModelRegistration)
-        .where(
-            AIModelRegistration.runtime_model_id == selected.id,
-            AIModelRegistration.enabled.is_(True),
-            AIModelRegistration.lifecycle_state != "retired",
-        )
-        .order_by(AIModelRegistration.created_at, AIModelRegistration.id)
-        .limit(1)
-    )
-    if source is None or not _visible_in_product(source.product_scope, product_code):
+    source = session.get(AIModelRegistration, source_registration_id)
+    if (
+        source is None
+        or not _visible_in_product(source.product_scope, product_code)
+        or not registration_fingerprint_matches(source)
+    ):
         return []
-    result: list[AIModel] = []
+    if not source.enabled or source.lifecycle_state == "retired" or source.runtime_model_id is None:
+        return []
+    selected = session.get(AIModel, source.runtime_model_id)
+    if selected is None or not selected.enabled:
+        return []
+    result: list[tuple[AIModelFallback, AIModelRegistration, AIModel]] = []
     for edge in session.scalars(
         select(AIModelFallback)
         .where(AIModelFallback.source_registration_id == source.id)
@@ -420,9 +490,14 @@ def authorized_runtime_fallbacks(
         target = session.get(AIModelRegistration, edge.target_registration_id)
         if (
             target is None
+            or not fallback_fingerprint_matches(edge, source, target)
+            or not edge.semantically_equivalent
+            or not ("*" in edge.trigger_codes or error_code in edge.trigger_codes)
             or not target.enabled
             or target.lifecycle_state == "retired"
             or target.capability_key != source.capability_key
+            or target.model_family != source.model_family
+            or not _scope_compatible(source.product_scope, target.product_scope)
             or not _visible_in_product(target.product_scope, product_code)
             or target.runtime_model_id is None
         ):
@@ -434,42 +509,35 @@ def authorized_runtime_fallbacks(
             continue
         if not provider_allowed(policy=policy, local_provider=runtime.local_provider):
             continue
-        result.append(runtime)
+        result.append((edge, target, runtime))
     return result
 
 
 def runtime_fallback_allows_error(
     session: Session,
     *,
-    selected: AIModel,
-    target: AIModel,
+    source_registration_id: uuid.UUID,
+    target_registration_id: uuid.UUID,
     product_code: str,
     error_code: str,
 ) -> bool:
-    source_registration = session.scalar(
-        select(AIModelRegistration)
-        .where(
-            AIModelRegistration.runtime_model_id == selected.id,
-            AIModelRegistration.enabled.is_(True),
-            AIModelRegistration.lifecycle_state != "retired",
-        )
-        .order_by(AIModelRegistration.created_at, AIModelRegistration.id)
-        .limit(1)
-    )
-    if source_registration is None or not _visible_in_product(source_registration.product_scope, product_code):
+    source_registration = session.get(AIModelRegistration, source_registration_id)
+    if (
+        source_registration is None
+        or not _visible_in_product(source_registration.product_scope, product_code)
+        or not registration_fingerprint_matches(source_registration)
+    ):
         return False
-    target_registration = session.scalar(
-        select(AIModelRegistration)
-        .where(
-            AIModelRegistration.runtime_model_id == target.id,
-            AIModelRegistration.enabled.is_(True),
-            AIModelRegistration.lifecycle_state != "retired",
-            AIModelRegistration.capability_key == source_registration.capability_key,
-        )
-        .order_by(AIModelRegistration.created_at, AIModelRegistration.id)
-        .limit(1)
-    )
-    if target_registration is None:
+    target_registration = session.get(AIModelRegistration, target_registration_id)
+    if (
+        target_registration is None
+        or not registration_fingerprint_matches(target_registration)
+        or not target_registration.enabled
+        or target_registration.lifecycle_state == "retired"
+        or target_registration.capability_key != source_registration.capability_key
+        or target_registration.model_family != source_registration.model_family
+        or not _visible_in_product(target_registration.product_scope, product_code)
+    ):
         return False
     edge = session.scalar(
         select(AIModelFallback).where(
@@ -477,7 +545,42 @@ def runtime_fallback_allows_error(
             AIModelFallback.target_registration_id == target_registration.id,
         )
     )
-    return edge is not None and ("*" in edge.trigger_codes or error_code in edge.trigger_codes)
+    return bool(
+        edge is not None
+        and fallback_fingerprint_matches(edge, source_registration, target_registration)
+        and edge.semantically_equivalent
+        and ("*" in edge.trigger_codes or error_code in edge.trigger_codes)
+    )
+
+
+def resolve_bound_runtime_registration(
+    session: Session, *, registration_id: uuid.UUID, product_code: str,
+    selected_model_id: uuid.UUID | None = None,
+) -> tuple[AIModelRegistration, AIModel]:
+    registration = session.get(AIModelRegistration, registration_id)
+    if (
+        registration is None
+        or not registration_fingerprint_matches(registration)
+        or not registration.enabled
+        or registration.lifecycle_state == "retired"
+        or not _visible_in_product(registration.product_scope, product_code)
+    ):
+        raise AIGovernanceError("bound_model_registration_not_accessible")
+    if registration.model_family not in {"llm", "vlm", "embedding"} or registration.runtime_model_id is None:
+        raise AIGovernanceError("bound_registration_has_no_provider_runtime")
+    runtime = session.get(AIModel, registration.runtime_model_id)
+    if (
+        runtime is None
+        or not runtime.enabled
+        or not _visible_in_product(runtime.product_scope, product_code)
+    ):
+        raise AIGovernanceError("bound_registration_runtime_not_accessible")
+    if selected_model_id is not None and runtime.id != selected_model_id:
+        raise AIGovernanceError("bound_registration_selected_model_mismatch")
+    expected_purpose = "embedding" if registration.model_family == "embedding" else "chat"
+    if runtime.purpose != expected_purpose:
+        raise AIGovernanceError("bound_registration_runtime_family_mismatch")
+    return registration, runtime
 
 
 def register_prompt_rollback(

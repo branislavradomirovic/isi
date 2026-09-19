@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import uuid
 
-from sqlalchemy import Boolean, CheckConstraint, DateTime, ForeignKey, Integer, JSON, String, Text, UniqueConstraint, func
+from sqlalchemy import Boolean, CheckConstraint, DateTime, ForeignKey, Index, Integer, JSON, String, Text, UniqueConstraint, func, text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.core.database import Base
@@ -137,6 +137,9 @@ class AIJob(Base):
     workspace_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False, index=True)
     product_code: Mapped[str] = mapped_column(ForeignKey("core_products.code"), nullable=False, index=True)
     model_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_ai_models.id"), nullable=False)
+    model_registration_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_ai_model_registrations.id", ondelete="RESTRICT"), nullable=True, index=True
+    )
     prompt_version_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_ai_prompt_versions.id"), nullable=False)
     policy_profile_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_ai_policy_profiles.id"), nullable=False)
     job_type: Mapped[str] = mapped_column(String(24), nullable=False, default="chat", server_default="chat")
@@ -177,6 +180,16 @@ class AIJobAttempt(Base):
     attempt_no: Mapped[int] = mapped_column(Integer, nullable=False)
     provider_name: Mapped[str] = mapped_column(String(120), nullable=False)
     model_name: Mapped[str] = mapped_column(String(300), nullable=False)
+    model_registration_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_ai_model_registrations.id", ondelete="RESTRICT"), nullable=True, index=True
+    )
+    fallback_edge_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_ai_model_fallbacks.id", ondelete="RESTRICT"), nullable=True, index=True
+    )
+    is_fallback: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default="false")
+    requires_human_review: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=False, server_default="false"
+    )
     status: Mapped[str] = mapped_column(String(24), nullable=False, default="running", server_default="running")
     latency_ms: Mapped[int | None] = mapped_column(Integer, nullable=True)
     error_code: Mapped[str] = mapped_column(String(120), nullable=False, default="", server_default="")
@@ -239,6 +252,14 @@ class AIModelRegistration(Base):
     __tablename__ = "core_ai_model_registrations"
     __table_args__ = (
         UniqueConstraint("registry_fingerprint", name="uq_core_ai_model_registration_fingerprint"),
+        Index(
+            "uq_core_ai_model_registration_enabled_champion",
+            "product_scope",
+            "capability_key",
+            unique=True,
+            postgresql_where=text("lifecycle_state = 'champion' AND enabled = true"),
+            sqlite_where=text("lifecycle_state = 'champion' AND enabled = 1"),
+        ),
         CheckConstraint("product_scope IN ('SHARED', 'SIMPA', 'ORDO')", name="ck_core_ai_model_registration_scope"),
         CheckConstraint(
             "model_family IN ('statistical_ml', 'embedding', 'llm', 'vlm')",
@@ -396,6 +417,9 @@ class AIEvaluationRun(Base):
     dataset_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("core_ai_evaluation_datasets.id", ondelete="RESTRICT"), nullable=False, index=True
     )
+    benchmark_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_ai_evaluation_benchmarks.id", ondelete="RESTRICT"), nullable=True, index=True
+    )
     model_registration_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("core_ai_model_registrations.id", ondelete="RESTRICT"), nullable=False, index=True
     )
@@ -476,4 +500,217 @@ class AIEvaluationReview(Base):
     evidence_reference: Mapped[str] = mapped_column(String(500), nullable=False, default="", server_default="")
     fingerprint: Mapped[str] = mapped_column(String(64), nullable=False, unique=True)
     reviewed_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False)
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+
+
+class AIEvaluationBenchmark(Base):
+    """Frozen promotion evidence, deliberately separate from 25A foundation fixtures."""
+
+    __tablename__ = "core_ai_evaluation_benchmarks"
+    __table_args__ = (
+        UniqueConstraint("dataset_key", "version", name="uq_core_ai_evaluation_benchmark_version"),
+        UniqueConstraint("manifest_fingerprint", name="uq_core_ai_evaluation_benchmark_fingerprint"),
+        CheckConstraint("product_code IN ('SIMPA', 'ORDO')", name="ck_core_ai_evaluation_benchmark_product"),
+        CheckConstraint(
+            "model_family IN ('statistical_ml', 'embedding', 'llm', 'vlm')",
+            name="ck_core_ai_evaluation_benchmark_family",
+        ),
+        CheckConstraint("approval_state IN ('draft', 'approved')", name="ck_core_ai_evaluation_benchmark_approval"),
+        CheckConstraint("case_count >= 1", name="ck_core_ai_evaluation_benchmark_case_count"),
+        CheckConstraint(
+            "length(cases_sha256) = 64 AND length(manifest_fingerprint) = 64",
+            name="ck_core_ai_evaluation_benchmark_fingerprints",
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    dataset_key: Mapped[str] = mapped_column(String(180), nullable=False, index=True)
+    version: Mapped[str] = mapped_column(String(80), nullable=False)
+    product_code: Mapped[str] = mapped_column(ForeignKey("core_products.code"), nullable=False, index=True)
+    capability_key: Mapped[str] = mapped_column(String(180), nullable=False, index=True)
+    model_family: Mapped[str] = mapped_column(String(32), nullable=False)
+    schema_version: Mapped[str] = mapped_column(String(80), nullable=False)
+    case_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    cases_sha256: Mapped[str] = mapped_column(String(64), nullable=False)
+    manifest_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    source_provenance: Mapped[str] = mapped_column(Text, nullable=False)
+    sensitivity_class: Mapped[str] = mapped_column(String(32), nullable=False)
+    methodology_version: Mapped[str | None] = mapped_column(String(180), nullable=True)
+    frozen: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, server_default="true")
+    approval_state: Mapped[str] = mapped_column(String(24), nullable=False)
+    owner: Mapped[str] = mapped_column(String(180), nullable=False)
+    manifest_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    created_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True
+    )
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+
+
+class AICapabilityThreshold(Base):
+    __tablename__ = "core_ai_capability_thresholds"
+    __table_args__ = (
+        UniqueConstraint(
+            "product_scope", "capability_key", "model_family", "version",
+            name="uq_core_ai_capability_threshold_version",
+        ),
+        UniqueConstraint("fingerprint", name="uq_core_ai_capability_threshold_fingerprint"),
+        CheckConstraint("product_scope IN ('SHARED', 'SIMPA', 'ORDO')", name="ck_core_ai_capability_threshold_scope"),
+        CheckConstraint(
+            "model_family IN ('statistical_ml', 'embedding', 'llm', 'vlm')",
+            name="ck_core_ai_capability_threshold_family",
+        ),
+        CheckConstraint("failure_threshold >= 1", name="ck_core_ai_capability_threshold_failures"),
+        CheckConstraint("cooldown_seconds >= 0", name="ck_core_ai_capability_threshold_cooldown"),
+        CheckConstraint("length(fingerprint) = 64", name="ck_core_ai_capability_threshold_fingerprint"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    product_scope: Mapped[str] = mapped_column(String(16), nullable=False)
+    capability_key: Mapped[str] = mapped_column(String(180), nullable=False, index=True)
+    model_family: Mapped[str] = mapped_column(String(32), nullable=False)
+    version: Mapped[str] = mapped_column(String(80), nullable=False)
+    metric_definitions: Mapped[dict] = mapped_column(JSON, nullable=False)
+    minimum_thresholds: Mapped[dict] = mapped_column(JSON, nullable=False)
+    minimum_deltas: Mapped[dict] = mapped_column(JSON, nullable=False)
+    hard_gates: Mapped[dict] = mapped_column(JSON, nullable=False)
+    resource_limits: Mapped[dict] = mapped_column(JSON, nullable=False)
+    failure_threshold: Mapped[int] = mapped_column(Integer, nullable=False)
+    cooldown_seconds: Mapped[int] = mapped_column(Integer, nullable=False)
+    fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, server_default="true")
+    provenance: Mapped[str] = mapped_column(Text, nullable=False)
+    created_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True
+    )
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+
+
+class AIPromotionDecision(Base):
+    __tablename__ = "core_ai_promotion_decisions"
+    __table_args__ = (
+        CheckConstraint("product_code IN ('SIMPA', 'ORDO')", name="ck_core_ai_promotion_decision_product"),
+        CheckConstraint(
+            "decision_status IN ('eligible', 'blocked', 'promoted', 'rolled_back')",
+            name="ck_core_ai_promotion_decision_status",
+        ),
+        CheckConstraint("length(evidence_fingerprint) = 64", name="ck_core_ai_promotion_decision_fingerprint"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    product_code: Mapped[str] = mapped_column(ForeignKey("core_products.code"), nullable=False, index=True)
+    capability_key: Mapped[str] = mapped_column(String(180), nullable=False, index=True)
+    model_family: Mapped[str] = mapped_column(String(32), nullable=False)
+    candidate_registration_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_ai_model_registrations.id", ondelete="RESTRICT"), nullable=False
+    )
+    baseline_registration_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_ai_model_registrations.id", ondelete="RESTRICT"), nullable=False
+    )
+    candidate_run_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_ai_evaluation_runs.id", ondelete="RESTRICT"), nullable=False
+    )
+    baseline_run_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_ai_evaluation_runs.id", ondelete="RESTRICT"), nullable=False
+    )
+    benchmark_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_ai_evaluation_benchmarks.id", ondelete="RESTRICT"), nullable=False
+    )
+    threshold_profile_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_ai_capability_thresholds.id", ondelete="RESTRICT"), nullable=False
+    )
+    rollback_registration_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_ai_model_registrations.id", ondelete="RESTRICT"), nullable=False
+    )
+    comparison_evidence: Mapped[dict] = mapped_column(JSON, nullable=False)
+    evidence_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False, unique=True)
+    decision_status: Mapped[str] = mapped_column(String(24), nullable=False)
+    blocker_reasons: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    final_review_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_ai_evaluation_reviews.id", ondelete="RESTRICT"), nullable=True
+    )
+    owner_approval_reference: Mapped[str] = mapped_column(String(500), nullable=False, default="", server_default="")
+    created_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True
+    )
+    executed_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True
+    )
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    executed_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class AICapabilityRuntimeState(Base):
+    __tablename__ = "core_ai_capability_runtime_states"
+    __table_args__ = (
+        UniqueConstraint("product_scope", "capability_key", name="uq_core_ai_capability_runtime_scope"),
+        CheckConstraint("product_scope IN ('SHARED', 'SIMPA', 'ORDO')", name="ck_core_ai_capability_runtime_scope"),
+        CheckConstraint("circuit_state IN ('closed', 'open', 'half_open')", name="ck_core_ai_capability_runtime_circuit"),
+        CheckConstraint("failure_threshold >= 1", name="ck_core_ai_capability_runtime_failures"),
+        CheckConstraint("cooldown_seconds >= 0", name="ck_core_ai_capability_runtime_cooldown"),
+        CheckConstraint("consecutive_failures >= 0", name="ck_core_ai_capability_runtime_count"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    product_scope: Mapped[str] = mapped_column(String(16), nullable=False)
+    capability_key: Mapped[str] = mapped_column(String(180), nullable=False, index=True)
+    model_family: Mapped[str] = mapped_column(String(32), nullable=False)
+    champion_registration_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_ai_model_registrations.id", ondelete="RESTRICT"), nullable=True
+    )
+    rollback_registration_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_ai_model_registrations.id", ondelete="RESTRICT"), nullable=True
+    )
+    threshold_profile_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_ai_capability_thresholds.id", ondelete="RESTRICT"), nullable=False
+    )
+    circuit_state: Mapped[str] = mapped_column(String(16), nullable=False, default="closed", server_default="closed")
+    consecutive_failures: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
+    failure_threshold: Mapped[int] = mapped_column(Integer, nullable=False)
+    cooldown_seconds: Mapped[int] = mapped_column(Integer, nullable=False)
+    opened_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    last_failure_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    last_success_at: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    version: Mapped[int] = mapped_column(Integer, nullable=False, default=1, server_default="1")
+    updated_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True
+    )
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updated_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
+
+
+class AIDriftSnapshot(Base):
+    __tablename__ = "core_ai_drift_snapshots"
+    __table_args__ = (
+        CheckConstraint("product_code IN ('SIMPA', 'ORDO')", name="ck_core_ai_drift_snapshot_product"),
+        CheckConstraint(
+            "status IN ('ok', 'warning', 'blocker', 'insufficient_evidence')",
+            name="ck_core_ai_drift_snapshot_status",
+        ),
+        CheckConstraint("length(fingerprint) = 64", name="ck_core_ai_drift_snapshot_fingerprint"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    organization_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_organizations.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    workspace_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_workspaces.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    product_code: Mapped[str] = mapped_column(ForeignKey("core_products.code"), nullable=False, index=True)
+    capability_key: Mapped[str] = mapped_column(String(180), nullable=False, index=True)
+    model_registration_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_ai_model_registrations.id", ondelete="RESTRICT"), nullable=False
+    )
+    threshold_profile_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("core_ai_capability_thresholds.id", ondelete="RESTRICT"), nullable=False
+    )
+    window_start: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False)
+    window_end: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False)
+    metrics: Mapped[dict] = mapped_column(JSON, nullable=False)
+    provenance: Mapped[dict] = mapped_column(JSON, nullable=False)
+    fingerprint: Mapped[str] = mapped_column(String(64), nullable=False, unique=True)
+    status: Mapped[str] = mapped_column(String(32), nullable=False)
+    created_by_membership_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True
+    )
     created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())

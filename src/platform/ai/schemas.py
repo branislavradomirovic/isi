@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import uuid
+from datetime import datetime
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -63,6 +64,7 @@ class AIJobCreateRequest(AIScope):
     input_text: str = Field(min_length=1, max_length=20000)
     prompt_key: str = "foundation.diagnostic"
     model_key: str | None = None
+    model_registration_id: uuid.UUID | None = None
     policy_key: str | None = None
     sensitivity: SensitivityValue = "internal"
 
@@ -92,6 +94,7 @@ class AIJobResponse(BaseModel):
     prompt_version: int
     policy_key: str
     model_key: str
+    model_registration_id: uuid.UUID | None = None
 
 
 class AIEmbeddingCreateRequest(AIScope):
@@ -236,6 +239,7 @@ class AIEvaluationDatasetResponse(BaseModel):
 
 class AIEvaluationRunCreateRequest(AIScope):
     dataset_id: uuid.UUID
+    benchmark_id: uuid.UUID | None = None
     model_registration_id: uuid.UUID
     baseline_registration_id: uuid.UUID | None = None
     prompt_version_id: uuid.UUID | None = None
@@ -253,6 +257,7 @@ class AIEvaluationRunResponse(BaseModel):
     workspace_id: uuid.UUID
     product_code: str
     dataset_id: uuid.UUID
+    benchmark_id: uuid.UUID | None
     model_registration_id: uuid.UUID
     baseline_registration_id: uuid.UUID | None
     prompt_version_id: uuid.UUID | None
@@ -311,3 +316,104 @@ class AIEvaluationReviewResponse(BaseModel):
     evidence_reference: str
     fingerprint: str
     reviewed_at: Any
+
+
+class AIEvaluationBenchmarkCreateRequest(AIScope):
+    manifest: dict[str, Any]
+
+
+class AIEvaluationBenchmarkResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: uuid.UUID
+    dataset_key: str
+    version: str
+    product_code: str
+    capability_key: str
+    model_family: str
+    schema_version: str
+    case_count: int
+    cases_sha256: str
+    manifest_fingerprint: str
+    source_provenance: str
+    sensitivity_class: str
+    methodology_version: str | None
+    frozen: bool
+    approval_state: str
+    owner: str
+    created_at: Any
+
+
+class AICapabilityThresholdCreateRequest(AIScope):
+    capability_key: str = Field(min_length=1, max_length=180)
+    product_scope: Literal["SHARED", "SIMPA", "ORDO"]
+    model_family: Literal["statistical_ml", "embedding", "llm", "vlm"]
+    version: str = Field(min_length=1, max_length=80)
+    metric_definitions: dict[str, Any]
+    minimum_thresholds: dict[str, Any] = Field(default_factory=dict)
+    minimum_deltas: dict[str, Any] = Field(default_factory=dict)
+    hard_gates: dict[str, Any] = Field(default_factory=dict)
+    resource_limits: dict[str, Any] = Field(default_factory=dict)
+    failure_threshold: int = Field(ge=1)
+    cooldown_seconds: int = Field(ge=0)
+    provenance: str = Field(min_length=1, max_length=2000)
+
+
+class AICapabilityThresholdResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: uuid.UUID
+    product_scope: str
+    capability_key: str
+    model_family: str
+    version: str
+    metric_definitions: dict[str, Any]
+    minimum_thresholds: dict[str, Any]
+    minimum_deltas: dict[str, Any]
+    hard_gates: dict[str, Any]
+    resource_limits: dict[str, Any]
+    failure_threshold: int
+    cooldown_seconds: int
+    fingerprint: str
+    enabled: bool
+    provenance: str
+    created_at: Any
+
+
+class AIEvaluationExecuteRequest(AIScope):
+    evaluator: Literal["statistical_ml", "embedding", "llm", "vlm", "safety"]
+    cases: list[dict[str, Any]] = Field(min_length=1)
+
+
+class AIPromotionPreviewRequest(AIScope):
+    candidate_run_id: uuid.UUID
+    baseline_run_id: uuid.UUID
+    threshold_profile_id: uuid.UUID
+    rollback_registration_id: uuid.UUID
+
+
+class AIPromotionExecuteRequest(AIScope):
+    promotion_decision_id: uuid.UUID
+    owner_approval_reference: str = Field(min_length=1, max_length=500)
+
+
+class AIRollbackExecuteRequest(AIScope):
+    capability_key: str = Field(min_length=1, max_length=180)
+    reason: str = Field(min_length=1, max_length=2000)
+    evidence_reference: str = Field(min_length=1, max_length=500)
+
+
+class AIDriftSnapshotCreateRequest(AIScope):
+    capability_key: str = Field(min_length=1, max_length=180)
+    model_registration_id: uuid.UUID
+    threshold_profile_id: uuid.UUID
+    window_start: datetime
+    window_end: datetime
+    observed_metrics: dict[str, Any]
+    reference_metrics: dict[str, Any]
+    provenance: dict[str, Any]
+
+
+class AICircuitResetRequest(AIScope):
+    capability_key: str = Field(min_length=1, max_length=180)
+    reason: str = Field(min_length=1, max_length=500)

@@ -3,19 +3,27 @@ from __future__ import annotations
 import hashlib
 import json
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from src.core.config import get_settings
 from src.platform.ai.embeddings import persist_native_vector
 from src.platform.ai.gateway import GatewayError, provider_for_model
+from src.platform.ai.governance import (
+    AIGovernanceError,
+    authorized_runtime_fallbacks,
+    resolve_bound_runtime_registration,
+)
 from src.platform.ai.models import (
     AIAuditEvent,
     AIEmbedding,
     AIJob,
     AIJobAttempt,
+    AICapabilityRuntimeState,
     AIModel,
+    AIModelFallback,
+    AIModelRegistration,
     AIPolicyProfile,
     AIPrompt,
     AIPromptVersion,
@@ -342,10 +350,30 @@ def create_ai_job(
     policy_key: str | None,
     sensitivity: str,
     actor_id: uuid.UUID | None,
+    model_registration_id: uuid.UUID | None = None,
 ) -> AIJob:
     prompt, prompt_version = _resolve_prompt_version(session, prompt_key=prompt_key, product_code=product_code)
     profile, effective = _resolve_policy(session, product_code=product_code, sensitivity=sensitivity, policy_key=policy_key)
-    model = _resolve_model(session, model_key=model_key, product_code=product_code, purpose="chat")
+    registration: AIModelRegistration | None = None
+    if model_registration_id is not None:
+        selected = (
+            _resolve_model(session, model_key=model_key, product_code=product_code, purpose="chat")
+            if model_key is not None
+            else None
+        )
+        try:
+            registration, model = resolve_bound_runtime_registration(
+                session,
+                registration_id=model_registration_id,
+                product_code=product_code,
+                selected_model_id=selected.id if selected is not None else None,
+            )
+        except AIGovernanceError as exc:
+            raise AIServiceError(str(exc)) from exc
+        if registration.model_family not in {"llm", "vlm"}:
+            raise AIServiceError("bound_registration_not_chat_capable")
+    else:
+        model = _resolve_model(session, model_key=model_key, product_code=product_code, purpose="chat")
     if not provider_allowed(policy=effective, local_provider=model.local_provider):
         raise AIServiceError("provider_blocked_by_policy")
     job = AIJob(
@@ -353,6 +381,7 @@ def create_ai_job(
         workspace_id=workspace_id,
         product_code=product_code,
         model_id=model.id,
+        model_registration_id=registration.id if registration else None,
         prompt_version_id=prompt_version.id,
         policy_profile_id=profile.id,
         job_type="structured" if prompt_version.output_schema else "chat",
@@ -382,7 +411,55 @@ def create_ai_job(
     return job
 
 
-def execute_ai_job(session: Session, *, job_id: uuid.UUID) -> AIJob:
+def _runtime_state_for_registration(
+    session: Session, registration: AIModelRegistration
+) -> AICapabilityRuntimeState | None:
+    return session.scalar(select(AICapabilityRuntimeState).where(
+        AICapabilityRuntimeState.product_scope == registration.product_scope,
+        AICapabilityRuntimeState.capability_key == registration.capability_key,
+    ))
+
+
+def circuit_allows_direct(
+    state: AICapabilityRuntimeState | None, *, now: datetime
+) -> bool:
+    if state is None or state.circuit_state == "closed":
+        return True
+    if state.circuit_state == "half_open":
+        return True
+    if state.opened_at is not None and now >= state.opened_at + timedelta(seconds=state.cooldown_seconds):
+        state.circuit_state = "half_open"
+        state.version += 1
+        return True
+    return False
+
+
+def record_circuit_failure(
+    state: AICapabilityRuntimeState | None, *, now: datetime
+) -> None:
+    if state is None:
+        return
+    state.consecutive_failures += 1
+    state.last_failure_at = now
+    if state.circuit_state == "half_open" or state.consecutive_failures >= state.failure_threshold:
+        state.circuit_state = "open"
+        state.opened_at = now
+    state.version += 1
+
+
+def record_circuit_success(
+    state: AICapabilityRuntimeState | None, *, now: datetime
+) -> None:
+    if state is None:
+        return
+    state.circuit_state = "closed"
+    state.consecutive_failures = 0
+    state.opened_at = None
+    state.last_success_at = now
+    state.version += 1
+
+
+def execute_ai_job(session: Session, *, job_id: uuid.UUID, now: datetime | None = None) -> AIJob:
     job = session.get(AIJob, job_id)
     if job is None:
         raise AIServiceError("ai_job_missing")
@@ -399,14 +476,30 @@ def execute_ai_job(session: Session, *, job_id: uuid.UUID) -> AIJob:
         require_human_review=profile.require_human_review,
         max_attempts=profile.max_attempts,
     )
-    candidates = _candidate_models(
-        session,
-        selected=model,
-        product_code=job.product_code,
-        purpose="chat",
-        policy=effective,
-    )
-    if not candidates:
+    current_time = now or _utcnow()
+    source_registration = session.get(AIModelRegistration, job.model_registration_id) if job.model_registration_id else None
+    runtime_state = _runtime_state_for_registration(session, source_registration) if source_registration else None
+    direct_allowed = circuit_allows_direct(runtime_state, now=current_time)
+    if source_registration is None:
+        candidates: list[tuple[AIModel, AIModelRegistration | None, AIModelFallback | None]] = [
+            (candidate, None, None) for candidate in _candidate_models(
+                session, selected=model, product_code=job.product_code, purpose="chat", policy=effective
+            )
+        ]
+    elif direct_allowed:
+        try:
+            source_registration, bound_runtime = resolve_bound_runtime_registration(
+                session, registration_id=source_registration.id, product_code=job.product_code,
+                selected_model_id=job.model_id,
+            )
+        except AIGovernanceError as exc:
+            raise AIServiceError(str(exc)) from exc
+        if not provider_allowed(policy=effective, local_provider=bound_runtime.local_provider):
+            raise AIServiceError("provider_blocked_by_policy")
+        candidates = [(bound_runtime, source_registration, None)]
+    else:
+        candidates = []
+    if not candidates and source_registration is None:
         raise AIServiceError("no_provider_candidate")
 
     job.status = "running"
@@ -415,14 +508,27 @@ def execute_ai_job(session: Session, *, job_id: uuid.UUID) -> AIJob:
     job.error_message = ""
     session.flush()
 
-    last_error_code = "unknown_error"
+    last_error_code = "circuit_open" if source_registration is not None and not direct_allowed else "unknown_error"
     last_error_message = "AI job failed"
-    for attempt_no, candidate in enumerate(candidates, start=1):
+    if source_registration is not None and not direct_allowed:
+        for edge, target_registration, fallback_model in authorized_runtime_fallbacks(
+            session, source_registration_id=source_registration.id, product_code=job.product_code,
+            policy=effective, error_code="circuit_open",
+        ):
+            candidates.append((fallback_model, target_registration, edge))
+    attempt_no = 0
+    while candidates and attempt_no < effective.max_attempts:
+        candidate, candidate_registration, fallback_edge = candidates.pop(0)
+        attempt_no += 1
         attempt = AIJobAttempt(
             job_id=job.id,
             attempt_no=attempt_no,
             provider_name=candidate.provider_name,
             model_name=candidate.model_name,
+            model_registration_id=candidate_registration.id if candidate_registration else None,
+            fallback_edge_id=fallback_edge.id if fallback_edge else None,
+            is_fallback=fallback_edge is not None,
+            requires_human_review=bool(fallback_edge and fallback_edge.requires_human_review),
             status="running",
         )
         session.add(attempt)
@@ -451,9 +557,14 @@ def execute_ai_job(session: Session, *, job_id: uuid.UUID) -> AIJob:
             job.output_tokens = result.output_tokens
             job.output_text = result.text
             job.structured_output = structured
-            job.status = "review_required" if effective.require_human_review else "succeeded"
-            job.human_review_status = "pending" if effective.require_human_review else "not_required"
+            review_required = effective.require_human_review or bool(
+                fallback_edge and fallback_edge.requires_human_review
+            )
+            job.status = "review_required" if review_required else "succeeded"
+            job.human_review_status = "pending" if review_required else "not_required"
             job.finished_at = _utcnow()
+            if fallback_edge is None:
+                record_circuit_success(runtime_state, now=current_time)
             if not bool(getattr(get_settings(), "ai_store_request_text", True)):
                 job.request_text = ""
             session.add(
@@ -485,6 +596,14 @@ def execute_ai_job(session: Session, *, job_id: uuid.UUID) -> AIJob:
             job.attempts = attempt_no
             last_error_code = code
             last_error_message = message
+            if fallback_edge is None and source_registration is not None:
+                record_circuit_failure(runtime_state, now=current_time)
+                for edge, target_registration, fallback_model in authorized_runtime_fallbacks(
+                    session, source_registration_id=source_registration.id, product_code=job.product_code,
+                    policy=effective, error_code=code,
+                ):
+                    if all(existing[1] is None or existing[1].id != target_registration.id for existing in candidates):
+                        candidates.append((fallback_model, target_registration, edge))
             session.flush()
 
     job.status = "failed"
@@ -584,6 +703,7 @@ def job_response(session: Session, job: AIJob) -> AIJobResponse:
         prompt_version=prompt_version.version_no,
         policy_key=policy.policy_key,
         model_key=model.model_key,
+        model_registration_id=job.model_registration_id,
     )
 
 

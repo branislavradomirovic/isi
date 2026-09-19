@@ -1,6 +1,6 @@
 # ISI-25 Model Registry Contract
 
-Status: **ISI-25A FOUNDATION IMPLEMENTED CANDIDATE; ISI-25B REQUIRED**
+Status: **ISI-25A ACCEPTED ON `f0047321ee4410522697144ecfa464087f1b83bc`; ISI-25B ACTIVE CANDIDATE**
 
 ## Purpose and authority
 
@@ -24,7 +24,7 @@ The lifecycle vocabulary is `candidate`, `challenger`, `champion`, `retired`. IS
 
 ## Persisted fallback graph and 25A runtime boundary
 
-Model substitution is not inferred by scanning enabled runtime models. ISI-25A runtime execution fails closed to the explicitly selected/default runtime model only, even when a persisted fallback edge exists. No different runtime model is attempted in 25A.
+Model substitution is never inferred by scanning enabled runtime models. Jobs without an explicit registration binding retain the accepted 25A selected/default-model-only behavior (`REQUIRED_COMPATIBILITY`). A 25B-bound job pins one exact source registration; executable fallback resolves edges from that identity only, in priority order, and enforces trigger, semantic-equivalence, capability/family/product, provider/data-policy, runtime-enabled, circuit and human-review gates. The earlier helper that selected a first-created registration from `runtime_model_id` is `REMOVE_BEFORE_NEXT_SLICE` and is no longer used or exposed.
 
 The fallback graph remains governed foundation evidence: edges require valid compatible registrations, forbid self-reference/cycles and persist deterministic priority, trigger codes, semantic-equivalence declaration, human-review requirement, provenance, actor, timestamp and fingerprint. The `semantically_equivalent` and `requires_human_review` declarations are contract metadata, not executable 25A gates, and no route or runtime path treats an edge as production-executable.
 
@@ -59,4 +59,6 @@ The registry is not numerical or methodology authority. It cannot alter SIMPA ca
 
 ISI-25A implements identity, provenance, persisted fallback-graph evidence, rollback-target identity, frozen fixture contracts and evaluation persistence only. Runtime remains selected/default-model-only.
 
-ISI-25B remains required for capability/registration-bound fallback activation with enforced edge review/semantic gates, evaluator engines, nDCG/MRR/Recall and other scoring, factuality/Serbian/VLM/adversarial evaluation, threshold definition, baseline comparison, winner selection, champion promotion, circuit breaker, drift jobs, operational dashboards and production rollback execution. No model is production-promoted in ISI-25A.
+ISI-25B adds capability/registration-bound fallback activation, deterministic evaluator engines, separate promotion benchmarks, capability thresholds, evidence-gated promotion and rollback, circuit state, on-demand drift snapshots and shared AI XAI/read models. It installs or deploys no model and preselects no winner. `SIMPA-EVAL-v1` and `ORDO-EVAL-v1` remain `REQUIRED_COMPATIBILITY` foundation fixtures forever and cannot satisfy promotion evidence. No application scheduler is added (`REQUIRED_COMPATIBILITY`).
+
+Historical 25A tests that froze current-global selected-only behavior are `REMOVE_BEFORE_NEXT_SLICE`; they now assert the historical unbound-job contract while 25B tests own current bound execution. F08/global shared Help beyond AI evaluation/provenance/promotion/fallback remains `REMOVE_IN_NAMED_PHASE(ISI-27)`.

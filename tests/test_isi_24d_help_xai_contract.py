@@ -55,7 +55,16 @@ def test_user_guide_and_matrix_cover_ordo_without_promoting_shared_surfaces():
     assert "| PARTIAL |" in next(
         line for line in matrix.splitlines() if line.startswith("| INV-A21 |")
     )
-    for row_id in ("INV-A02", "INV-A08", "INV-A09", "INV-A14", "INV-A15", "INV-A16"):
+    # INV-A09 was intentionally PARTIAL during ISI-24D, but ISI-25 owns the
+    # shared AI workspace Help/XAI contract and may legitimately promote it later.
+    # Preserve ownership/isolation rather than freezing the historical coverage state.
+    ai_workspace_row = next(
+        line for line in matrix.splitlines() if line.startswith("| INV-A09 |")
+    )
+    assert "| VERIFIED |" in ai_workspace_row
+    assert "| ISI-25 |" in ai_workspace_row
+    assert "ISI-AI-USER-GUIDE.md" in ai_workspace_row
+    for row_id in ("INV-A02", "INV-A08", "INV-A14", "INV-A15", "INV-A16"):
         row = next(line for line in matrix.splitlines() if line.startswith(f"| {row_id} |"))
         assert "| VERIFIED |" not in row
 
