@@ -1,6 +1,6 @@
 # ADR-0024 - ISI target-server production topology
 
-Status: accepted for ISI-15/ISI-16 implementation.
+Status: **HISTORICAL / PARTIALLY SUPERSEDED**. Accepted for the former ISI-15/ISI-16 implementation sequence; current shared-ingress authority is ADR-0026 and the MasterPlan reconciliation of 2026-10-01. Preserve this document as evidence of the 2026-08-28 observed topology, not as current execution authority.
 
 ## Observed target server
 

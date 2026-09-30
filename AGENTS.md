@@ -4,7 +4,7 @@ This repository is developed using specification-driven autonomous engineering. 
 
 ## Canonical authority and mandatory bootstrap
 
-`docs/roadmap/ISI-AUTONOMOUS-INDUSTRIALIZATION-MASTER-PLAN.md` is the canonical roadmap, architecture, development-governance and phase-boundary authority. Read the complete MasterPlan before any task design or implementation.
+`docs/roadmap/ISI-AUTONOMOUS-INDUSTRIALIZATION-MASTER-PLAN.md` is the canonical roadmap, architecture, development-governance and phase-boundary authority. `TECHNICAL_DOCUMENTATION.md` is the controlled living technical reference and must remain synchronized with the MasterPlan and as-built code. Read the complete MasterPlan before any task design or implementation.
 
 Before editing or invoking Codex for every new chat/task/function/recovery:
 
@@ -74,6 +74,9 @@ GitHub is source-control/CI evidence during industrialization, not a production 
 - Do not SSH to the server, mutate DNS, change central ingress, change production SMTP, rotate production credentials, modify server Ollama models, or deploy automatically.
 - Do not request, store, print, commit, or expose production secrets.
 - Server-side verification remains deferred until an explicitly approved deployment task.
+- The owner-locked shared edge is central Nginx `central-ingress-nginx-1` (Compose project `central-ingress`, service `nginx`); Caddy is not current ISI target authority.
+- ISI target endpoint is `https://isi.opus.rs:8445/`; `isi_ingress` with `isi-api`/`isi-streamlit` is the intended shared-edge integration point, while repository `isi-edge` is pre-cutover compatibility only.
+- Krcuga `:8443` and OralScanXAI `:8444` are strict non-target services for ISI deployment work and must never be disrupted by an ISI change.
 
 ## Work protocol
 

@@ -250,15 +250,15 @@
     {
       "id": "ISI-25-INDUSTRIAL-AI-MLOPS",
       "title": "Industrial AI / MLOps",
-      "status": "planned",
-      "phase_status": "in_progress",
+      "status": "done",
+      "phase_status": "implementation_complete_not_ci_verified",
       "active_checkpoint": "ISI-25B-EVALUATION-PROMOTION-RUNTIME",
       "depends_on": [
         "ISI-24-ORDO-PRODUCTION-METHODOLOGY"
       ],
       "next": "ISI-26-PERFORMANCE-LOAD-RESILIENCE",
       "spec": "automation/specs/ISI-25B-EVALUATION-PROMOTION-RUNTIME.md",
-      "note": "CURRENT/NEXT BOOTSTRAP is retained only as REQUIRED_COMPATIBILITY for the accepted ISI-24E transition test; it is not current execution authority. Global ISI-25 remains IN PROGRESS. ISI-25A is accepted on main SHA f0047321ee4410522697144ecfa464087f1b83bc, tree 06e419ec656ee2fb0bfb74b4a6b10d42ef275f25, after local deterministic acceptance and assistant human review; no hosted acceptance ran and CI_VERIFIED is not claimed. ISI-25B is the active unstaged candidate for exact-registration fallback, deterministic evaluators, promotion benchmarks/thresholds, evidence-gated promotion/rollback, circuit state, on-demand drift and shared AI XAI. No model installation, deployment or server mutation is authorized."
+      "note": "ISI-25 implementation is complete and accepted on main. ISI-25A is accepted at f0047321ee4410522697144ecfa464087f1b83bc; ISI-25B is accepted at 7e11ee2a6f7546eacc3207e15cacfc35f6d04f3e. 25B implements exact-registration fallback, deterministic evaluators, separate frozen promotion benchmarks, capability thresholds, evidence-gated promotion/rollback, circuit state, on-demand drift and shared AI XAI. Hosted full acceptance was deliberately not run under owner policy, so CI_VERIFIED is not claimed. ISI-26 is current/next. No model installation, deployment or server mutation is authorized."
     },
     {
       "id": "ISI-25A-AI-MLOPS-GOVERNANCE-EVALUATION-FOUNDATION",
@@ -274,13 +274,13 @@
     {
       "id": "ISI-25B-EVALUATION-PROMOTION-RUNTIME",
       "title": "AI Evaluators + Evidence-Gated Promotion Runtime",
-      "status": "in_progress",
+      "status": "done",
       "depends_on": [
         "ISI-25A-AI-MLOPS-GOVERNANCE-EVALUATION-FOUNDATION"
       ],
       "next": "ISI-26-PERFORMANCE-LOAD-RESILIENCE",
       "spec": "automation/specs/ISI-25B-EVALUATION-PROMOTION-RUNTIME.md",
-      "note": "Active owner-approved unstaged implementation candidate. Overall ISI-25 remains IN PROGRESS until deterministic acceptance, independent analysis and human review. Promotion is registry/runtime governance only; no permanent winner, generic winner score, hosted CI, deployment, model installation or server mutation is claimed."
+      "note": "Accepted on main SHA 7e11ee2a6f7546eacc3207e15cacfc35f6d04f3e after deterministic implementation/review closure. Hosted full acceptance was deliberately not run; CI_VERIFIED is not claimed. Promotion remains registry/runtime governance only: no permanent winner, generic winner score, automatic installation/deployment, silent rollback, online learning or server mutation."
     },
     {
       "id": "ISI-26-PERFORMANCE-LOAD-RESILIENCE",
@@ -289,7 +289,8 @@
       "depends_on": [
         "ISI-25-INDUSTRIAL-AI-MLOPS"
       ],
-      "next": "ISI-27-INDUSTRIAL-RELEASE-CANDIDATE"
+      "next": "ISI-27-INDUSTRIAL-RELEASE-CANDIDATE",
+      "note": "CURRENT/NEXT after owner-approved ISI-25 implementation closure on 2026-10-01. Bootstrap/audit must begin from exact main and must not touch the server; current-server capacity/ingress mutation remains deferred to ISI-28."
     },
     {
       "id": "ISI-27-INDUSTRIAL-RELEASE-CANDIDATE",
@@ -308,7 +309,7 @@
       "depends_on": [
         "ISI-27-INDUSTRIAL-RELEASE-CANDIDATE"
       ],
-      "note": "Only task allowed to touch the current server, DNS, ingress, production SMTP, production secrets or production data, and only after explicit owner approval."
+      "note": "Only task allowed to touch the current server, DNS, certificates, shared central Nginx ingress, production SMTP, production secrets/data or server Ollama, and only after explicit owner approval. Final owner-locked edge identity is central-ingress-nginx-1 (Compose project central-ingress, service nginx) with ISI target https://isi.opus.rs:8445/. Any ISI-28 mutation must preserve and re-verify Krcuga :8443 and OralScanXAI :8444."
     }
   ]
 }

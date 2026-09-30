@@ -2,21 +2,23 @@
 
 This is the human-facing live execution ledger. The MasterPlan is the canonical roadmap/architecture/governance authority; `automation/tasks.json`, accepted code, exact-main GitHub Actions and recorded evidence provide synchronized execution proof.
 
-Last status update: 2026-09-17.
+Last status update: 2026-10-01.
 
 ## Current execution
 
-Last completed slice: `ISI-24E - ORDO Final Whole-Phase Gap/Legacy Audit + Closeout`.
+Last accepted implementation slice: `ISI-25B - Evaluation + Promotion Runtime`.
 
-Active phase: `ISI-25 - Industrial AI / MLOps` (`IN PROGRESS`).
+Active/current-next phase: `ISI-26 - Performance, Load & Resilience Engineering` (bootstrap/audit next; implementation not started).
 
-Historical accepted transition marker retained for ISI-24E compatibility: `ISI-25 bootstrap/audit - Industrial AI / MLOps`. That bootstrap is complete and no longer the current action.
+Accepted checkpoint: `ISI-25A - AI/MLOps Governance + Evaluation Foundation` is accepted on main SHA `f0047321ee4410522697144ecfa464087f1b83bc`, tree `06e419ec656ee2fb0bfb74b4a6b10d42ef275f25`, after local deterministic acceptance and assistant human review.
 
-Accepted checkpoint: `ISI-25A - AI/MLOps Governance + Evaluation Foundation` is accepted on main SHA `f0047321ee4410522697144ecfa464087f1b83bc`, tree `06e419ec656ee2fb0bfb74b4a6b10d42ef275f25`, after local deterministic acceptance and assistant human review. No GitHub-hosted acceptance ran under current owner policy, so 25A is not `CI_VERIFIED`.
+Accepted checkpoint: `ISI-25B - Evaluation + Promotion Runtime` is implemented and accepted on main SHA `7e11ee2a6f7546eacc3207e15cacfc35f6d04f3e`. It preserves unbound 25A selected-model-only compatibility, binds governed jobs to exact registrations, enforces registered fallback/circuit/provider/review gates, separates frozen promotion benchmarks from foundation fixtures, adds deterministic evaluators and capability thresholds, and implements evidence-gated promotion/rollback, on-demand drift and faithful shared AI XAI.
 
-Current implementation checkpoint: `ISI-25B - Evaluation + Promotion Runtime` is the active unstaged/uncommitted candidate. It preserves unbound 25A jobs as selected-model-only, binds new governed jobs to an exact registration, enforces registered fallback/circuit/provider/review gates, separates frozen promotion benchmarks from the two foundation fixtures, adds deterministic evaluators and capability thresholds, and implements evidence-gated promotion/rollback, on-demand drift and faithful shared AI XAI. Overall ISI-25 remains `IN PROGRESS`; no permanent winner, hosted CI, model installation, deployment or server mutation is claimed.
+No GitHub-hosted full acceptance ran for ISI-25A/25B under the current owner cost/acceptance policy, so `CI_VERIFIED` is not claimed for ISI-25. Overall ISI-25 status is `IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED`. By explicit owner approval on 2026-10-01, ISI-26 is the next implementation phase; hosted full acceptance remains reserved for the controlled ISI-27 release-candidate checkpoint.
 
-Required next slice after 25A acceptance: `ISI-25B` evaluator engines, comparison/promotion governance, circuit breaker, drift jobs and dashboards. Overall ISI-25 remains `IN PROGRESS` until 25B is accepted.
+Shared deployment target authority is central Nginx `central-ingress-nginx-1` (Compose project `central-ingress`, service `nginx`). Caddy is not current ISI target authority. The owner-locked public endpoint is `https://isi.opus.rs:8445/`; Krcuga `:8443` and OralScanXAI `:8444` are strict non-target shared-host services. ISI `api` and `streamlit` retain external `isi_ingress` aliases `isi-api` and `isi-streamlit`; repository `isi-edge` is pre-cutover compatibility only.
+
+Server/live-host verification remains `DEFERRED_SERVER_VERIFICATION`. No server, DNS, certificate, central-ingress, real SMTP, production-secret/data or server-Ollama mutation is authorized before owner-approved ISI-28.
 
 ISI-24E remediation/closeout implementation state: `COMPLETE / CI_VERIFIED`.
 
@@ -119,7 +121,7 @@ Authoritative ISI-24E GitHub Actions: `ISI required acceptance` run #90, run ID 
 
 Overall `ISI-24-ORDO-PRODUCTION-METHODOLOGY` is `COMPLETE / CI_VERIFIED`. The mandatory whole-phase audit is closed: F01 and F02 are resolved, no Phase-24 `REMOVE_BEFORE_NEXT_SLICE` finding remains, and F08 remains explicitly deferred as `REMOVE_IN_NAMED_PHASE(ISI-25/ISI-27)`.
 
-Next action: complete the ISI-25B outer deterministic runner, independent analysis and assistant human review. Exact-candidate commit/push requires separate owner approval. ISI-26 becomes next only after 25B acceptance. GitHub-hosted full acceptance remains deferred to the controlled ISI-27 release-candidate checkpoint. Server/live-host verification remains `DEFERRED_SERVER_VERIFICATION`; server/DNS/ingress/real SMTP/production secrets/data/server Ollama remain frozen until owner-approved ISI-28.
+Next action: bootstrap/audit `ISI-26 - Performance, Load & Resilience Engineering` from the exact synchronized main baseline. GitHub-hosted full acceptance remains deferred to the controlled ISI-27 release-candidate checkpoint. Server/live-host verification remains `DEFERRED_SERVER_VERIFICATION`; server/DNS/certificates/shared-central-Nginx/real SMTP/production secrets/data/server Ollama remain frozen until owner-approved ISI-28.
 
 ## Mandatory bootstrap rule
 
@@ -143,8 +145,8 @@ A failed required gate returns the active task to implementation/fix state. Requ
 | 22 | Industrial Data Platform | **COMPLETE / CI_VERIFIED - 22A through 22G complete** |
 | 23 | SIMPA Production Methodology + Help/User Guide | **COMPLETE / CI_VERIFIED - 23A through 23E complete** |
 | 24 | ORDO Production Methodology + Help/User Guide | **COMPLETE / CI_VERIFIED - 24A through 24E complete** |
-| 25 | Industrial AI / MLOps | **IN PROGRESS - 25A accepted at f004732; 25B active candidate** |
-| 26 | Performance, Load & Resilience | PLANNED |
+| 25 | Industrial AI / MLOps | **IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN - 25A f004732; 25B 7e11ee2; NOT CI_VERIFIED** |
+| 26 | Performance, Load & Resilience | **CURRENT / NEXT FOR BOOTSTRAP - implementation not started** |
 | 27 | Industrial Release Candidate & Acceptance Pack | PLANNED |
 | 28 | Current Server Controlled Upgrade | **DEFERRED - fresh explicit owner approval required** |
 
@@ -153,9 +155,9 @@ A failed required gate returns the active task to implementation/fix state. Requ
 - Canonical authority: `docs/roadmap/ISI-AUTONOMOUS-INDUSTRIALIZATION-MASTER-PLAN.md`.
 - Canonical repo: `/Users/branislavradomirovic/Applications/Python/ISI`, branch `main`, exactly one worktree.
 - Normal workflow is direct-main; branch/PR exceptions require explicit owner approval.
-- ISI Codex runs only via `codex-isi`; generic `codex` is forbidden.
+- ISI uses the standard `codex` CLI authenticated with the canonical owner account; project-specific wrappers/`CODEX_HOME` profiles are legacy and not active authority.
 - Candidate stays unstaged/uncommitted through runner, analyzer and assistant human review; exact staging/commit/push requires explicit owner approval.
-- Completion requires exact-main `ISI required acceptance` completed/success.
+- `CI_VERIFIED` requires exact-main `ISI required acceptance` completed/success at an explicitly approved acceptance/release checkpoint; implementation-complete phases may remain explicitly `NOT CI_VERIFIED` when hosted acceptance is deliberately deferred by owner policy.
 - SIMPA and ORDO remain the only current domain applications and remain domain-isolated over shared infrastructure.
 - Numerical truth is deterministic/versioned statistical/ML output; LLM/VLM remains bounded evidence synthesis/explanation.
 - Current server/DNS/ingress/real SMTP/production secrets/data/server Ollama remain frozen through ISI-27; only ISI-28 may authorize mutation.
