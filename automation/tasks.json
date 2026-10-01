@@ -285,12 +285,66 @@
     {
       "id": "ISI-26-PERFORMANCE-LOAD-RESILIENCE",
       "title": "Performance, Load & Resilience Engineering",
-      "status": "planned",
+      "status": "in_progress",
       "depends_on": [
         "ISI-25-INDUSTRIAL-AI-MLOPS"
       ],
       "next": "ISI-27-INDUSTRIAL-RELEASE-CANDIDATE",
-      "note": "CURRENT/NEXT after owner-approved ISI-25 implementation closure on 2026-10-01. Bootstrap/audit must begin from exact main and must not touch the server; current-server capacity/ingress mutation remains deferred to ISI-28."
+      "note": "ISI-26-B0 bootstrap/audit CLOSED/PASS on exact baseline f37699224e2af01d4313b48f17de8607cb16e22e. ISI-26A Performance Contract + Deterministic Harness is OWNER_APPROVED / SPEC_READY. 26A is repository-only tooling/tests/docs with no runtime/dependency/Compose/server mutation and no invented production SLOs. Later slices: 26B API/Auth/Readiness Load + Dependency Resilience; 26C Data/Statistics/Forecast/Reporting Scale; 26D AI Queue/Concurrency/Timeout/Circuit Resilience; 26E whole-phase closeout.",
+      "phase_status": "in_progress",
+      "active_checkpoint": "ISI-26A-PERFORMANCE-CONTRACT-DETERMINISTIC-HARNESS",
+      "spec": "automation/specs/ISI-26A-PERFORMANCE-CONTRACT-DETERMINISTIC-HARNESS.md"
+    },
+    {
+      "id": "ISI-26A-PERFORMANCE-CONTRACT-DETERMINISTIC-HARNESS",
+      "title": "Performance Contract + Deterministic Harness",
+      "status": "spec_ready",
+      "depends_on": [
+        "ISI-25-INDUSTRIAL-AI-MLOPS"
+      ],
+      "next": "ISI-26B-API-AUTH-READINESS-LOAD-RESILIENCE",
+      "spec": "automation/specs/ISI-26A-PERFORMANCE-CONTRACT-DETERMINISTIC-HARNESS.md",
+      "note": "OWNER_APPROVED / SPEC_READY on 2026-10-01. Defines workload IDs, metric/percentile semantics, budget states, evidence schema and a pure-Python repository-only harness. No src/runtime/dependency/Compose/server change; production capacity remains unverified."
+    },
+    {
+      "id": "ISI-26B-API-AUTH-READINESS-LOAD-RESILIENCE",
+      "title": "API/Auth/Readiness Load + Dependency Resilience",
+      "status": "planned",
+      "depends_on": [
+        "ISI-26A-PERFORMANCE-CONTRACT-DETERMINISTIC-HARNESS"
+      ],
+      "next": "ISI-26C-DATA-ANALYTICS-REPORTING-SCALE",
+      "note": "Planned. Owns API/authenticated-flow workload calibration and controlled dependency-failure behavior. No live-server/central-ingress mutation."
+    },
+    {
+      "id": "ISI-26C-DATA-ANALYTICS-REPORTING-SCALE",
+      "title": "Data/Statistics/Forecast/Reporting Scale",
+      "status": "planned",
+      "depends_on": [
+        "ISI-26B-API-AUTH-READINESS-LOAD-RESILIENCE"
+      ],
+      "next": "ISI-26D-AI-CONCURRENCY-RESILIENCE",
+      "note": "Planned. Owns synthetic ingestion, SIMPA analytics, ORDO forecast and report/export scale evidence."
+    },
+    {
+      "id": "ISI-26D-AI-CONCURRENCY-RESILIENCE",
+      "title": "AI Queue/Concurrency/Timeout/Circuit Resilience",
+      "status": "planned",
+      "depends_on": [
+        "ISI-26C-DATA-ANALYTICS-REPORTING-SCALE"
+      ],
+      "next": "ISI-26E-PERFORMANCE-RESILIENCE-CLOSEOUT",
+      "note": "Planned. Owns AI queue/concurrency/timeout/circuit/fallback resilience and cleanup of the stale historical ISI-25B fallback comment. No model/server installation or mutation."
+    },
+    {
+      "id": "ISI-26E-PERFORMANCE-RESILIENCE-CLOSEOUT",
+      "title": "Performance & Resilience Whole-Phase Closeout",
+      "status": "planned",
+      "depends_on": [
+        "ISI-26D-AI-CONCURRENCY-RESILIENCE"
+      ],
+      "next": "ISI-27-INDUSTRIAL-RELEASE-CANDIDATE",
+      "note": "Planned. Whole-phase gap/legacy audit, budget/evidence closure and ISI-27 handoff. Live production capacity remains ISI-28."
     },
     {
       "id": "ISI-27-INDUSTRIAL-RELEASE-CANDIDATE",

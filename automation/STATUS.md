@@ -8,7 +8,7 @@ Last status update: 2026-10-01.
 
 Last accepted implementation slice: `ISI-25B - Evaluation + Promotion Runtime`.
 
-Active/current-next phase: `ISI-26 - Performance, Load & Resilience Engineering` (bootstrap/audit next; implementation not started).
+Active phase: `ISI-26 - Performance, Load & Resilience Engineering`. ISI-26-B0 bootstrap/audit is CLOSED/PASS. Current implementation checkpoint: `ISI-26A - Performance Contract + Deterministic Harness` (`SPEC_READY`; implementation not started).
 
 Accepted checkpoint: `ISI-25A - AI/MLOps Governance + Evaluation Foundation` is accepted on main SHA `f0047321ee4410522697144ecfa464087f1b83bc`, tree `06e419ec656ee2fb0bfb74b4a6b10d42ef275f25`, after local deterministic acceptance and assistant human review.
 
@@ -121,7 +121,7 @@ Authoritative ISI-24E GitHub Actions: `ISI required acceptance` run #90, run ID 
 
 Overall `ISI-24-ORDO-PRODUCTION-METHODOLOGY` is `COMPLETE / CI_VERIFIED`. The mandatory whole-phase audit is closed: F01 and F02 are resolved, no Phase-24 `REMOVE_BEFORE_NEXT_SLICE` finding remains, and F08 remains explicitly deferred as `REMOVE_IN_NAMED_PHASE(ISI-25/ISI-27)`.
 
-Next action: bootstrap/audit `ISI-26 - Performance, Load & Resilience Engineering` from the exact synchronized main baseline. GitHub-hosted full acceptance remains deferred to the controlled ISI-27 release-candidate checkpoint. Server/live-host verification remains `DEFERRED_SERVER_VERIFICATION`; server/DNS/certificates/shared-central-Nginx/real SMTP/production secrets/data/server Ollama remain frozen until owner-approved ISI-28.
+Next action: implement the owner-approved `ISI-26A - Performance Contract + Deterministic Harness` specification from the exact synchronized main baseline. 26A is repository-only tooling/tests/docs: no runtime/dependency/Compose/server change and no production SLO claim. GitHub-hosted full acceptance remains deferred to the controlled ISI-27 release-candidate checkpoint. Server/live-host verification remains `DEFERRED_SERVER_VERIFICATION`; server/DNS/certificates/shared-central-Nginx/real SMTP/production secrets/data/server Ollama remain frozen until owner-approved ISI-28.
 
 ## Mandatory bootstrap rule
 
@@ -146,7 +146,7 @@ A failed required gate returns the active task to implementation/fix state. Requ
 | 23 | SIMPA Production Methodology + Help/User Guide | **COMPLETE / CI_VERIFIED - 23A through 23E complete** |
 | 24 | ORDO Production Methodology + Help/User Guide | **COMPLETE / CI_VERIFIED - 24A through 24E complete** |
 | 25 | Industrial AI / MLOps | **IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN - 25A f004732; 25B 7e11ee2; NOT CI_VERIFIED** |
-| 26 | Performance, Load & Resilience | **CURRENT / NEXT FOR BOOTSTRAP - implementation not started** |
+| 26 | Performance, Load & Resilience | **IN PROGRESS - B0 CLOSED/PASS; 26A SPEC_READY** |
 | 27 | Industrial Release Candidate & Acceptance Pack | PLANNED |
 | 28 | Current Server Controlled Upgrade | **DEFERRED - fresh explicit owner approval required** |
 

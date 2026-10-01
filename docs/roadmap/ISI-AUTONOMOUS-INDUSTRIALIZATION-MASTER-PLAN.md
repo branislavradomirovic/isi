@@ -935,9 +935,43 @@ Human-in-the-loop remains a permanent decision-support requirement.
 
 ### ISI-26 - Performance, Load & Resilience Engineering
 
-Goal: establish measurable capacity and failure behavior across API, data, statistical/ML and AI flows.
+Goal: establish measurable capacity and failure behavior across API, data, statistical/ML and AI flows without conflating repository measurements with live production capacity.
 
-Deliverables include workload profiles, load/stress tests, AI-job concurrency, large-report tests, controlled dependency failures, performance budgets and evidence-backed tuning.
+Status: **IN PROGRESS**. ISI-26-B0 bootstrap/audit is CLOSED/PASS on baseline `f37699224e2af01d4313b48f17de8607cb16e22e`. Current checkpoint is **ISI-26A - Performance Contract + Deterministic Harness** (`OWNER_APPROVED / SPEC_READY`). No server verification or mutation is authorized.
+
+Canonical slice sequence:
+
+1. **ISI-26A - Performance Contract + Deterministic Harness**
+   - stable workload identities;
+   - exact metric/percentile/throughput semantics;
+   - budget states `HARD_GATE / CALIBRATED / UNCALIBRATED / NOT_APPLICABLE / UNAVAILABLE`;
+   - pure-Python repository-side measurement harness;
+   - synthetic/in-process smoke only;
+   - no runtime, dependency, Compose or server change;
+   - no invented production p95/p99/throughput/resource threshold.
+2. **ISI-26B - API/Auth/Readiness Load + Dependency Resilience**
+   - API and authenticated-flow workload calibration;
+   - controlled PostgreSQL/Redis/storage dependency failure behavior;
+   - repository/local-container evidence only.
+3. **ISI-26C - Data/Statistics/Forecast/Reporting Scale**
+   - synthetic ingestion/data-worker pressure;
+   - SIMPA statistical workloads;
+   - ORDO forecast/backtest workloads;
+   - report/export scale and evidence integrity.
+4. **ISI-26D - AI Queue/Concurrency/Timeout/Circuit Resilience**
+   - AI queue/concurrency;
+   - provider timeout;
+   - circuit/fallback/review-required resilience;
+   - resource/latency evidence without model/server installation.
+5. **ISI-26E - Whole-Phase Performance & Resilience Closeout**
+   - mandatory gap/legacy audit;
+   - calibrated repository acceptance budgets/evidence;
+   - unresolved capacity limitations explicitly deferred to ISI-28;
+   - ISI-27 release-candidate handoff.
+
+Performance correctness/security invariants are hard gates. Numeric latency/throughput/resource budgets may be called `CALIBRATED` only when backed by accepted measurement evidence. Repository/local measurements must always state `PRODUCTION_CAPACITY_VERIFIED=false` and `SERVER_VERIFIED=false` until owner-approved ISI-28.
+
+Deliverables across the phase include workload profiles, deterministic harnesses, load/stress evidence, AI-job concurrency, large-report tests, controlled dependency failures, explicit budget/evidence contracts and evidence-backed tuning. ISI-26 must not touch current server/DNS/certificates/shared central Nginx/production data/secrets/SMTP/server Ollama or Krcuga/OralScanXAI.
 
 ### ISI-27 - Industrial Release Candidate & Acceptance Pack
 

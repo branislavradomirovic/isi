@@ -34,7 +34,7 @@ The platform currently includes a public institutional website, an authenticated
 | ISI-23 SIMPA Production Methodology + Help/XAI | COMPLETE / CI_VERIFIED |
 | ISI-24 ORDO Production Methodology + Help/XAI | COMPLETE / CI_VERIFIED |
 | ISI-25 Industrial AI / MLOps | IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED |
-| ISI-26 Performance, Load & Resilience | CURRENT / NEXT FOR BOOTSTRAP |
+| ISI-26 Performance, Load & Resilience | IN PROGRESS - B0 CLOSED/PASS; 26A SPEC_READY |
 | ISI-27 Industrial Release Candidate | PLANNED |
 | ISI-28 Current Server Controlled Upgrade | DEFERRED / owner-gated |
 
@@ -484,22 +484,23 @@ The following are not current ISI production capabilities unless a later owner-a
 - automatic model installation/deployment;
 - automatic causal/policy decisioning.
 
-## 19. Current next phase: ISI-26
+## 19. Current phase: ISI-26
 
-ISI-26 Performance, Load & Resilience Engineering must establish evidence-backed behavior for:
+ISI-26 Performance, Load & Resilience Engineering is IN PROGRESS. The B0 bootstrap/audit is closed and the current checkpoint is **ISI-26A - Performance Contract + Deterministic Harness**.
 
-- workload profiles;
-- API and authenticated-flow load;
-- ingestion/data-worker pressure;
-- AI-job concurrency and timeout behavior;
-- statistical/forecast workload;
-- large report/export paths;
-- controlled dependency failure;
-- recovery from transient Redis/storage/AI/provider failure;
-- resource/performance budgets;
-- evidence-backed tuning without weakening correctness/security.
+Canonical slice sequence:
 
-ISI-26 remains repository/application work. It does not authorize current-server capacity tuning or ingress mutation.
+- **26A** performance contract, workload catalogue, budget-state model, deterministic harness and in-process smoke;
+- **26B** API/auth/readiness load plus controlled dependency resilience;
+- **26C** ingestion/data/statistics/forecast/reporting scale;
+- **26D** AI queue/concurrency/timeout/circuit/fallback resilience;
+- **26E** whole-phase gap/legacy/performance evidence closeout.
+
+ISI-26A deliberately does not invent production SLOs. Correctness/security invariants are hard gates; timing/throughput/resource measurements remain `UNCALIBRATED` until an owning later slice establishes evidence-backed thresholds. Repository/local measurements must never be presented as live-host capacity proof.
+
+Across ISI-26 the platform must establish evidence-backed behavior for workload profiles, API/authenticated flow, ingestion/data-worker pressure, statistical/forecast workload, report/export paths, AI concurrency/timeouts, controlled dependency failure, recovery behavior and calibrated repository budgets.
+
+ISI-26 remains repository/application work. It does not authorize current-server capacity tuning, DNS/certificate/shared-ingress mutation, server Ollama changes or any Krcuga/OralScanXAI modification.
 
 ## 20. Canonical source index
 
@@ -526,4 +527,5 @@ Historical deployment documents remain useful only when the MasterPlan/ADR class
 
 | Version | Date | Change |
 |---|---|---|
+| 1.1 | 2026-10-01 | ISI-26-B0 closed; locks 26A-26E performance/resilience slice model and 26A contract-first/no-false-production-SLO rule. |
 | 1.0 | 2026-10-01 | Initial consolidated technical baseline; closes stale ISI-25B status, establishes ISI-26 as next, records central Nginx as final shared-edge authority, locks `https://isi.opus.rs:8445/`, and preserves ISI-28 as the exclusive live-server mutation phase. |
