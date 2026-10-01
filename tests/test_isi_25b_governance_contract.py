@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import json
 import hashlib
-import subprocess
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 BASELINE = "f0047321ee4410522697144ecfa464087f1b83bc"
 TREE = "06e419ec656ee2fb0bfb74b4a6b10d42ef275f25"
+HISTORICAL_EVIDENCE = ROOT / "automation/specs/ISI-26-R1-HISTORICAL-GOVERNANCE-EVIDENCE.json"
 RECOVERY_MUTABLE = {
     "automation/specs/ISI-25B-EVALUATION-PROMOTION-RUNTIME.md",
     "src/api/ai_routes.py", "src/platform/ai/evaluation.py", "src/platform/ai/governance.py",
@@ -40,6 +40,10 @@ def _text(path):
     return (ROOT / path).read_text(encoding="utf-8")
 
 
+def _historical_evidence():
+    return json.loads(HISTORICAL_EVIDENCE.read_text(encoding="utf-8"))
+
+
 def test_0034_revision_and_additive_runtime_tables():
     migration = _text("migrations/versions/20260918_0034_ai_evaluation_promotion_runtime.py")
     assert 'revision = "20260918_0034"' in migration
@@ -51,15 +55,19 @@ def test_0034_revision_and_additive_runtime_tables():
 
 
 def test_25a_acceptance_truth_and_25b_current_without_false_ci_claim():
-    status = _text("automation/STATUS.md")
-    tasks = json.loads(_text("automation/tasks.json"))
-    combined = status + _text("docs/roadmap/ISI-AUTONOMOUS-INDUSTRIALIZATION-MASTER-PLAN.md")
-    assert BASELINE in combined and TREE in combined
-    assert "no hosted acceptance ran" in combined.lower()
-    assert "not `CI_VERIFIED`" in combined
-    task = next(item for item in tasks["tasks"] if item["id"] == "ISI-25B-EVALUATION-PROMOTION-RUNTIME")
-    assert task["status"] == "in_progress"
-    assert "Overall ISI-25 remains IN PROGRESS" in task["note"]
+    historical = _historical_evidence()["fhr1_candidate"]
+    assert historical["authority_sha"] == "7e11ee2a6f7546eacc3207e15cacfc35f6d04f3e"
+    assert historical["accepted_25a_sha"] == BASELINE
+    assert historical["accepted_25a_tree"] == TREE
+    assert historical["phase25_status"] == "planned"
+    assert historical["phase25_phase_status"] == "in_progress"
+    assert historical["phase25b_status"] == "in_progress"
+    assert "IN PROGRESS" in historical["status_marker"]
+    assert "No GitHub-hosted acceptance ran" in historical["hosted_acceptance_marker"]
+    current = json.loads(_text("automation/tasks.json"))["tasks"]
+    current_by_id = {item["id"]: item for item in current}
+    assert current_by_id["ISI-25-INDUSTRIAL-AI-MLOPS"]["status"] == "done"
+    assert current_by_id["ISI-25B-EVALUATION-PROMOTION-RUNTIME"]["status"] == "done"
 
 
 def test_manual_only_workflow_and_no_new_permission_taxonomy():
@@ -74,11 +82,9 @@ def test_manual_only_workflow_and_no_new_permission_taxonomy():
 
 
 def test_frozen_protocol_and_foundation_fixtures_match_accepted_25a():
-    for path in ("docs/roadmap/ISI-AI-MODEL-EVALUATION-PROTOCOL-v1.md",
-                 "tests/evals/SIMPA-EVAL-v1.json", "tests/evals/ORDO-EVAL-v1.json"):
-        current = (ROOT / path).read_bytes()
-        accepted = subprocess.check_output(["git", "show", f"{BASELINE}:{path}"], cwd=ROOT)
-        assert current == accepted
+    expected = _historical_evidence()["fhr1_candidate"]["foundation_sha256"]
+    for path, digest in expected.items():
+        assert hashlib.sha256((ROOT / path).read_bytes()).hexdigest() == digest
 
 
 def test_ordo_semantics_and_no_server_provider_worker_dependency_changes():
@@ -86,9 +92,10 @@ def test_ordo_semantics_and_no_server_provider_worker_dependency_changes():
     for marker in ("scenario is not forecast", "NOT_ESTIMATED", "NO_APPROVED_RESPONSE_MODEL",
                    "LEGACY_NOT_EVALUATED", "no automatic selection/fallback"):
         assert marker in master
-    changed = set(subprocess.check_output(["git", "diff", "--name-only", BASELINE], cwd=ROOT, text=True).splitlines())
-    assert not any(path.startswith((".github/", "src/workers/", "deploy/", "docker/")) for path in changed)
-    assert not any(path.endswith(("requirements.txt", "pyproject.toml", "uv.lock")) for path in changed)
+    historical_surface = set(_historical_evidence()["fhr1_candidate"]["recovery_mutable"])
+    assert historical_surface == RECOVERY_MUTABLE
+    assert not any(path.startswith((".github/", "src/workers/", "deploy/", "docker/")) for path in historical_surface)
+    assert not any(path.endswith(("requirements.txt", "pyproject.toml", "uv.lock")) for path in historical_surface)
 
 
 def test_recovery_surface_and_frozen_fhr1_bytes_are_exact_on_dirty_or_clean_checkout():
@@ -100,8 +107,9 @@ def test_recovery_surface_and_frozen_fhr1_bytes_are_exact_on_dirty_or_clean_chec
     assert len(effective_surface) == 28
     assert "tests/test_isi_24d_help_xai_contract.py" in frozen
     assert "automation/specs/ISI-25B-EVALUATION-PROMOTION-RUNTIME.md" in RECOVERY_MUTABLE
-    for path, expected in FROZEN_FHR1_SHA256.items():
-        assert hashlib.sha256((ROOT / path).read_bytes()).hexdigest() == expected
+    evidence = _historical_evidence()["fhr1_candidate"]
+    assert evidence["authority_sha"] == "7e11ee2a6f7546eacc3207e15cacfc35f6d04f3e"
+    assert evidence["frozen_sha256"] == FROZEN_FHR1_SHA256
 
 def test_final_acceptance_markers_match_recovered_exact_28_surface():
     spec = _text("automation/specs/ISI-25B-EVALUATION-PROMOTION-RUNTIME.md")

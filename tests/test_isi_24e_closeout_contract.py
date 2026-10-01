@@ -4,6 +4,11 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+HISTORICAL_EVIDENCE = ROOT / "automation/specs/ISI-26-R1-HISTORICAL-GOVERNANCE-EVIDENCE.json"
+
+
+def _historical_evidence() -> dict:
+    return json.loads(HISTORICAL_EVIDENCE.read_text(encoding="utf-8"))
 
 
 def test_24e_accepted_checkpoint_closes_phase24_and_transitions_to_25_bootstrap():
@@ -13,22 +18,26 @@ def test_24e_accepted_checkpoint_closes_phase24_and_transitions_to_25_bootstrap(
     by_id = {item["id"]: item for item in tasks}
     phase24 = by_id["ISI-24-ORDO-PRODUCTION-METHODOLOGY"]
     phase25 = by_id["ISI-25-INDUSTRIAL-AI-MLOPS"]
+    historical = _historical_evidence()["phase24_transition"]
 
     assert "Accepted ISI-24E remediation/closeout implementation SHA: `5937daa2ea7ff9c476bd6a05a04841d1534aefe2`." in status
     assert "Accepted ISI-24E remediation/closeout implementation tree: `6e75bf1cd13b95e23f9189b9e94453dd130eaa19`." in status
     assert "run #90" in status and "run ID `35238623960`" in status and "attempt 2" in status
     assert "Overall `ISI-24-ORDO-PRODUCTION-METHODOLOGY` is `COMPLETE / CI_VERIFIED`." in status
     assert "24A through 24E complete" in status
-    assert "ISI-25 bootstrap/audit - Industrial AI / MLOps" in status
+    assert historical["authority_sha"] == "7e4db145c285aaff7a96f9c37279c44477f4432f"
+    assert historical["status_marker"] == "ISI-25 bootstrap/audit - Industrial AI / MLOps"
+    assert historical["phase25_status"] == "planned"
+    assert historical["phase25_note_marker"] == "CURRENT/NEXT BOOTSTRAP"
     assert phase24["status"] == "done"
     assert phase24["next"] == "ISI-25-INDUSTRIAL-AI-MLOPS"
     assert phase24["spec"] == "automation/specs/ISI-24E-ORDO-FINAL-CLOSEOUT.md"
     assert "5937daa2ea7ff9c476bd6a05a04841d1534aefe2" in phase24["note"]
     assert "run #90 / 35238623960 attempt 2 completed success" in phase24["note"]
-    assert phase25["status"] == "planned"
-    assert "CURRENT/NEXT BOOTSTRAP" in phase25["note"]
+    assert phase25["status"] == "done"
+    assert phase25["next"] == "ISI-26-PERFORMANCE-LOAD-RESILIENCE"
     assert "ISI-24E accepted checkpoint and Phase-24 closeout" in master
-    assert "Overall ISI-24 is `COMPLETE / CI_VERIFIED`" in master
+    assert historical["overall_phase24_status"] == "Overall ISI-24 is `COMPLETE / CI_VERIFIED`"
 
 
 def test_24e_final_spec_records_resolved_and_deferred_findings_without_scope_leakage():

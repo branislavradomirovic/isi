@@ -5,6 +5,11 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+HISTORICAL_EVIDENCE = ROOT / "automation/specs/ISI-26-R1-HISTORICAL-GOVERNANCE-EVIDENCE.json"
+
+
+def _historical_evidence() -> dict:
+    return json.loads(HISTORICAL_EVIDENCE.read_text(encoding="utf-8"))
 
 
 def _text(path: str) -> str:
@@ -35,8 +40,17 @@ def test_system_inventory_records_25a_as_built_and_future_boundary():
     assert "INV-C41 | AI evaluation dataset/run/result/review foundation" in master
     assert "INV-E05 | Legacy selected-only plus exact-registration-bound fallback runtime" in master
     assert "INV-E06 | AI runtime model/prompt/policy + capability governance registry" in master
-    assert "Status: **IN PROGRESS**" in master
-    assert "ISI-25B is the active unstaged candidate" in master
+    historical = _historical_evidence()["fhr1_candidate"]
+    assert historical["authority_sha"] == "7e11ee2a6f7546eacc3207e15cacfc35f6d04f3e"
+    assert historical["status_marker"] == "Overall ISI-25 remains `IN PROGRESS`"
+    assert "Status: **IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED**" in master
+    for current_row in (
+        "INV-C42 | AI promotion benchmark + capability threshold authority",
+        "INV-C43 | AI promotion decision + capability runtime/circuit state",
+        "INV-C44 | AI drift snapshot + shared AI XAI read model",
+    ):
+        assert current_row in master
+    assert "ISI-25B is the active unstaged candidate" not in master
     assert "Dedicated Vision provider/service | AI modality | NOT_PRESENT" in master
     assert "Dedicated Audio provider/service | AI modality | NOT_PRESENT" in master
 
@@ -87,10 +101,15 @@ def test_ci_and_server_boundaries_remain_frozen():
     assert "workflow_dispatch:" in on_block
     for automatic in ("push:", "pull_request:", "schedule:", "workflow_run:", "merge_group:"):
         assert automatic not in on_block
+    historical = _historical_evidence()["fhr1_candidate"]
+    assert historical["hosted_acceptance_marker"] == "No GitHub-hosted acceptance ran under current owner policy"
     status = _text("automation/STATUS.md")
-    assert "No GitHub-hosted acceptance ran" in status
+    assert "No GitHub-hosted full acceptance ran for ISI-25A/25B" in status
     assert "DEFERRED_SERVER_VERIFICATION" in status
-    assert "server/DNS/ingress/real SMTP/production secrets/data/server Ollama remain frozen" in status
+    assert "ISI-28" in status
+    master = _text("docs/roadmap/ISI-AUTONOMOUS-INDUSTRIALIZATION-MASTER-PLAN.md")
+    assert "central-ingress-nginx-1" in master
+    assert "https://isi.opus.rs:8445/" in master
 
 
 def test_migration_is_single_additive_25a_revision():

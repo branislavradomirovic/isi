@@ -8,7 +8,7 @@ Last status update: 2026-10-01.
 
 Last accepted implementation slice: `ISI-25B - Evaluation + Promotion Runtime`.
 
-Active phase: `ISI-26 - Performance, Load & Resilience Engineering`. ISI-26-B0 bootstrap/audit is CLOSED/PASS. Current implementation checkpoint: `ISI-26A - Performance Contract + Deterministic Harness` (`SPEC_READY`; implementation not started).
+Active phase: `ISI-26 - Performance, Load & Resilience Engineering`. ISI-26-B0 bootstrap/audit is CLOSED/PASS. Current implementation checkpoint: `ISI-26-R1-FULL-PERFORMANCE-LOAD-RESILIENCE` (**IN PROGRESS / R1 FULL IMPLEMENTATION CANDIDATE**).
 
 Accepted checkpoint: `ISI-25A - AI/MLOps Governance + Evaluation Foundation` is accepted on main SHA `f0047321ee4410522697144ecfa464087f1b83bc`, tree `06e419ec656ee2fb0bfb74b4a6b10d42ef275f25`, after local deterministic acceptance and assistant human review.
 
@@ -121,7 +121,11 @@ Authoritative ISI-24E GitHub Actions: `ISI required acceptance` run #90, run ID 
 
 Overall `ISI-24-ORDO-PRODUCTION-METHODOLOGY` is `COMPLETE / CI_VERIFIED`. The mandatory whole-phase audit is closed: F01 and F02 are resolved, no Phase-24 `REMOVE_BEFORE_NEXT_SLICE` finding remains, and F08 remains explicitly deferred as `REMOVE_IN_NAMED_PHASE(ISI-25/ISI-27)`.
 
-Next action: implement the owner-approved `ISI-26A - Performance Contract + Deterministic Harness` specification from the exact synchronized main baseline. 26A is repository-only tooling/tests/docs: no runtime/dependency/Compose/server change and no production SLO claim. GitHub-hosted full acceptance remains deferred to the controlled ISI-27 release-candidate checkpoint. Server/live-host verification remains `DEFERRED_SERVER_VERIFICATION`; server/DNS/certificates/shared-central-Nginx/real SMTP/production secrets/data/server Ollama remain frozen until owner-approved ISI-28.
+Next action: validate the single R1 candidate through the package runner, independent analyzer and assistant human review. R1 groups implementation execution across the formal ISI-26A/26B/26C/26D coverage/gate checkpoints; it supersedes only a micro-task-per-Codex execution cadence, not the formal gates themselves. ISI-26E remains the planned whole-phase closeout gate and is not a pre-authorized Codex task. Recovery/closeout work is created only from evidence after R1 review. ISI-27 follows ISI-26 whole-phase acceptance. Hosted CI remains manual and undispatched; server mutation remains exclusive to ISI-28.
+
+R1 local acceptance evidence through R1-R1C: focused ISI-26 tests, required regressions, synthetic performance evidence, native PostgreSQL acceptance and one final full local regression are PASS. Production capacity, live server verification and hosted CI remain unverified/undispatched.
+
+R1 renewed-human-review recovery: R1-R1E is locally green. Human review then found two governance/provenance-only blockers: the self-contained historical evidence JSON was hidden by the repository `evidence/` ignore rule, and canonical child tasks incorrectly converted the grouped R1 execution model into formal gate supersession. `ISI-26-R1-R1F` moves the evidence to a visible controlled spec path and restores ISI-26A through ISI-26E as formal coverage/gate identities while keeping R1 as the grouped implementation execution candidate. No runtime/performance change. R1 remains unstaged/uncommitted pending R1-R1F continuation, renewed human review and independent analysis.
 
 ## Mandatory bootstrap rule
 
@@ -146,7 +150,7 @@ A failed required gate returns the active task to implementation/fix state. Requ
 | 23 | SIMPA Production Methodology + Help/User Guide | **COMPLETE / CI_VERIFIED - 23A through 23E complete** |
 | 24 | ORDO Production Methodology + Help/User Guide | **COMPLETE / CI_VERIFIED - 24A through 24E complete** |
 | 25 | Industrial AI / MLOps | **IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN - 25A f004732; 25B 7e11ee2; NOT CI_VERIFIED** |
-| 26 | Performance, Load & Resilience | **IN PROGRESS - B0 CLOSED/PASS; 26A SPEC_READY** |
+| 26 | Performance, Load & Resilience | **IN PROGRESS / R1 FULL IMPLEMENTATION CANDIDATE** |
 | 27 | Industrial Release Candidate & Acceptance Pack | PLANNED |
 | 28 | Current Server Controlled Upgrade | **DEFERRED - fresh explicit owner approval required** |
 

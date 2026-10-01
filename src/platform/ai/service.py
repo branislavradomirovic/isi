@@ -331,10 +331,8 @@ def _candidate_models(
         or not provider_allowed(policy=policy, local_provider=selected.local_provider)
     ):
         return []
-    # ISI-25A fails closed to the explicitly selected/default runtime model.
-    # Persisted fallback edges are governance evidence only until ISI-25B binds
-    # execution to an unambiguous capability/registration and enforces every
-    # edge review and semantic-equivalence gate.
+    # Unbound legacy jobs remain selected/default-model-only. Bound jobs use
+    # execute_ai_job's exact registration and governed fallback gates below.
     return [selected]
 
 

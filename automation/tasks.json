@@ -290,10 +290,11 @@
         "ISI-25-INDUSTRIAL-AI-MLOPS"
       ],
       "next": "ISI-27-INDUSTRIAL-RELEASE-CANDIDATE",
-      "note": "ISI-26-B0 bootstrap/audit CLOSED/PASS on exact baseline f37699224e2af01d4313b48f17de8607cb16e22e. ISI-26A Performance Contract + Deterministic Harness is OWNER_APPROVED / SPEC_READY. 26A is repository-only tooling/tests/docs with no runtime/dependency/Compose/server mutation and no invented production SLOs. Later slices: 26B API/Auth/Readiness Load + Dependency Resilience; 26C Data/Statistics/Forecast/Reporting Scale; 26D AI Queue/Concurrency/Timeout/Circuit Resilience; 26E whole-phase closeout.",
-      "phase_status": "in_progress",
-      "active_checkpoint": "ISI-26A-PERFORMANCE-CONTRACT-DETERMINISTIC-HARNESS",
-      "spec": "automation/specs/ISI-26A-PERFORMANCE-CONTRACT-DETERMINISTIC-HARNESS.md"
+      "note": "One controlled repository-side R1 full implementation candidate. Synthetic/local evidence only; production capacity unverified. Runner acceptance, independent analysis and human review remain required. Recovery/closeout work is created only from evidence after R1 review. ISI-27 follows whole-phase ISI-26 acceptance; ISI-28 exclusively owns live-server mutation.",
+      "phase_status": "IN PROGRESS / R1 FULL IMPLEMENTATION CANDIDATE",
+      "active_checkpoint": "ISI-26-R1-FULL-PERFORMANCE-LOAD-RESILIENCE",
+      "spec": "automation/specs/ISI-26-R1-FULL-PERFORMANCE-LOAD-RESILIENCE.md",
+      "recovery_note": "R1 local acceptance is green through R1-R1E. Renewed human review found two governance/provenance-only blockers: the historical evidence JSON was hidden by the repository evidence/ ignore rule, and canonical child tasks incorrectly described formal 26A-D gates as superseded. ISI-26-R1-R1F moves the evidence to a visible controlled spec path and restores the formal 26A-E gate model without runtime/performance changes. Candidate remains unstaged/uncommitted pending R1-R1F continuation, renewed human review and independent analysis."
     },
     {
       "id": "ISI-26A-PERFORMANCE-CONTRACT-DETERMINISTIC-HARNESS",
@@ -302,9 +303,11 @@
       "depends_on": [
         "ISI-25-INDUSTRIAL-AI-MLOPS"
       ],
-      "next": "ISI-26B-API-AUTH-READINESS-LOAD-RESILIENCE",
       "spec": "automation/specs/ISI-26A-PERFORMANCE-CONTRACT-DETERMINISTIC-HARNESS.md",
-      "note": "OWNER_APPROVED / SPEC_READY on 2026-10-01. Defines workload IDs, metric/percentile semantics, budget states, evidence schema and a pure-Python repository-only harness. No src/runtime/dependency/Compose/server change; production capacity remains unverified."
+      "note": "OWNER_APPROVED / SPEC_READY formal coverage gate. Repository implementation evidence is grouped in the R1 full-slice candidate; no separate Codex invocation is implied.",
+      "next": "ISI-26B-API-AUTH-READINESS-LOAD-RESILIENCE",
+      "execution_group": "ISI-26-R1-FULL-PERFORMANCE-LOAD-RESILIENCE",
+      "coverage_status": "R1_CANDIDATE_COVERED"
     },
     {
       "id": "ISI-26B-API-AUTH-READINESS-LOAD-RESILIENCE",
@@ -313,8 +316,10 @@
       "depends_on": [
         "ISI-26A-PERFORMANCE-CONTRACT-DETERMINISTIC-HARNESS"
       ],
+      "note": "Formal coverage gate retained. API/auth/readiness implementation evidence is grouped in the R1 full-slice candidate; no live-server/central-ingress mutation.",
       "next": "ISI-26C-DATA-ANALYTICS-REPORTING-SCALE",
-      "note": "Planned. Owns API/authenticated-flow workload calibration and controlled dependency-failure behavior. No live-server/central-ingress mutation."
+      "execution_group": "ISI-26-R1-FULL-PERFORMANCE-LOAD-RESILIENCE",
+      "coverage_status": "R1_CANDIDATE_COVERED"
     },
     {
       "id": "ISI-26C-DATA-ANALYTICS-REPORTING-SCALE",
@@ -323,8 +328,10 @@
       "depends_on": [
         "ISI-26B-API-AUTH-READINESS-LOAD-RESILIENCE"
       ],
+      "note": "Formal coverage gate retained. Synthetic ingestion, SIMPA analytics, ORDO forecast and reporting-scale implementation evidence is grouped in the R1 full-slice candidate.",
       "next": "ISI-26D-AI-CONCURRENCY-RESILIENCE",
-      "note": "Planned. Owns synthetic ingestion, SIMPA analytics, ORDO forecast and report/export scale evidence."
+      "execution_group": "ISI-26-R1-FULL-PERFORMANCE-LOAD-RESILIENCE",
+      "coverage_status": "R1_CANDIDATE_COVERED"
     },
     {
       "id": "ISI-26D-AI-CONCURRENCY-RESILIENCE",
@@ -333,8 +340,10 @@
       "depends_on": [
         "ISI-26C-DATA-ANALYTICS-REPORTING-SCALE"
       ],
+      "note": "Formal coverage gate retained. AI queue/concurrency/timeout/circuit/fallback implementation evidence is grouped in the R1 full-slice candidate; no model/server installation or mutation.",
       "next": "ISI-26E-PERFORMANCE-RESILIENCE-CLOSEOUT",
-      "note": "Planned. Owns AI queue/concurrency/timeout/circuit/fallback resilience and cleanup of the stale historical ISI-25B fallback comment. No model/server installation or mutation."
+      "execution_group": "ISI-26-R1-FULL-PERFORMANCE-LOAD-RESILIENCE",
+      "coverage_status": "R1_CANDIDATE_COVERED"
     },
     {
       "id": "ISI-26E-PERFORMANCE-RESILIENCE-CLOSEOUT",
@@ -344,7 +353,7 @@
         "ISI-26D-AI-CONCURRENCY-RESILIENCE"
       ],
       "next": "ISI-27-INDUSTRIAL-RELEASE-CANDIDATE",
-      "note": "Planned. Whole-phase gap/legacy audit, budget/evidence closure and ISI-27 handoff. Live production capacity remains ISI-28."
+      "note": "Planned formal whole-phase closeout gate. It owns final gap/legacy audit, budget/evidence closure and ISI-27 handoff. It is not a pre-authorized separate Codex implementation task; any recovery/closeout execution is created only from evidence after R1 review. Live production capacity remains ISI-28."
     },
     {
       "id": "ISI-27-INDUSTRIAL-RELEASE-CANDIDATE",

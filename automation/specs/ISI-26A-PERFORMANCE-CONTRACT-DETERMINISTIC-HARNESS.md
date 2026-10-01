@@ -1,7 +1,9 @@
 # ISI-26A - Performance Contract + Deterministic Harness
 
 ## Status
-`OWNER_APPROVED / SPEC_READY`
+`OWNER_APPROVED / SPEC_READY / FORMAL_COVERAGE_GATE`
+
+> This specification remains the formal 26A coverage/gate identity. Repository implementation execution is grouped inside `ISI-26-R1-FULL-PERFORMANCE-LOAD-RESILIENCE.md`; that grouping removes the need for a separate 26A Codex invocation but does not supersede this formal gate.
 
 Owner approval date: **2026-10-01**.
 

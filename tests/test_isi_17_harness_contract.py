@@ -12,6 +12,12 @@ from tools.ci.policy_check import (
 
 ROOT = Path(__file__).resolve().parents[1]
 
+HISTORICAL_EVIDENCE = ROOT / "automation/specs/ISI-26-R1-HISTORICAL-GOVERNANCE-EVIDENCE.json"
+
+
+def _historical_evidence() -> dict:
+    return json.loads(HISTORICAL_EVIDENCE.read_text(encoding="utf-8"))
+
 
 def test_policy_guard_accepts_repository() -> None:
     result = subprocess.run(
@@ -175,7 +181,9 @@ def test_live_status_records_phase24_closeout_and_verified_predecessors() -> Non
     assert "Accepted ISI-24E remediation/closeout implementation SHA: `5937daa2ea7ff9c476bd6a05a04841d1534aefe2`." in status
     assert "run #90" in status and "run ID `35238623960`" in status
     assert "Overall `ISI-24-ORDO-PRODUCTION-METHODOLOGY` is `COMPLETE / CI_VERIFIED`." in status
-    assert "ISI-25 bootstrap/audit - Industrial AI / MLOps" in status
+    historical = _historical_evidence()["phase24_transition"]
+    assert historical["authority_sha"] == "7e4db145c285aaff7a96f9c37279c44477f4432f"
+    assert historical["status_marker"] == "ISI-25 bootstrap/audit - Industrial AI / MLOps"
 
     tasks = json.loads((ROOT / "automation/tasks.json").read_text())["tasks"]
     by_id = {task["id"]: task for task in tasks}
@@ -202,8 +210,10 @@ def test_live_status_records_phase24_closeout_and_verified_predecessors() -> Non
     assert "5937daa2ea7ff9c476bd6a05a04841d1534aefe2" in by_id["ISI-24-ORDO-PRODUCTION-METHODOLOGY"]["note"]
     assert "run #90 / 35238623960 attempt 2 completed success" in by_id["ISI-24-ORDO-PRODUCTION-METHODOLOGY"]["note"]
     assert by_id["ISI-24-ORDO-PRODUCTION-METHODOLOGY"]["spec"] == "automation/specs/ISI-24E-ORDO-FINAL-CLOSEOUT.md"
-    assert by_id["ISI-25-INDUSTRIAL-AI-MLOPS"]["status"] == "planned"
-    assert "CURRENT/NEXT BOOTSTRAP" in by_id["ISI-25-INDUSTRIAL-AI-MLOPS"]["note"]
+    assert historical["phase25_status"] == "planned"
+    assert historical["phase25_note_marker"] == "CURRENT/NEXT BOOTSTRAP"
+    assert by_id["ISI-25-INDUSTRIAL-AI-MLOPS"]["status"] == "done"
+    assert by_id["ISI-26-PERFORMANCE-LOAD-RESILIENCE"]["status"] == "in_progress"
 
 
 def test_canonical_system_inventory_is_complete_and_self_contained() -> None:
@@ -244,6 +254,9 @@ def test_canonical_system_inventory_is_complete_and_self_contained() -> None:
     assert by_id["INV-L07"][3] == "NOT_PRESENT"
     assert by_id["INV-L08"][3] == "NOT_PRESENT"
     assert "isi.opus.rs:8445" in master
-    assert "historical `isi.rs:8443`" in master
+    assert by_id["INV-N07"][3] == "HISTORICAL"
+    assert "isi.rs:8443" in " | ".join(by_id["INV-N07"])
+    assert "central-ingress-nginx-1" in master
+    assert "https://isi.opus.rs:8445/" in master
     assert "There is no application-owned scheduler" in master
     assert "no active external document-conversion service" in master

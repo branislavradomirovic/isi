@@ -470,6 +470,8 @@ This inventory is the controlled bridge between the MasterPlan and the as-built 
 | INV-M17 | Production workflow/server compatibility authority | Test authority | COMPATIBILITY | tests/test_isi_production_workflow_lock.py; tests/test_isi_server_deployment_contract.py; tests/test_isi_server_runtime_promotion.py | Ensure old execution path fails closed while deployment assets remain inspectable | Historical/compatibility server artifacts | Pass/fail | Server/deployment artifacts | CI/ISI-28 | Files only in normal CI | Must not contact/mutate server | NO | YES | Self | REQUIRED_COMPATIBILITY | ISI-28 | Convert from historical compatibility to final ISI-28 deployment acceptance |
 | INV-M18 | Aggregate exact-main CI authority | Acceptance authority | CURRENT_AS_BUILT | .github/workflows/ci.yml; tools/ci/run_isi17_acceptance.sh | Block main acceptance unless all required jobs pass | Committed exact main SHA | CI_VERIFIED evidence | All test/quality/policy jobs | Development lifecycle | GitHub run metadata | No production deployment/secrets | NO | YES | Workflow + harness tests | NONE | ISI-17 / ISI-27 | Cannot be weakened to accept a defect |
 
+| INV-M19 | Repository performance and resilience acceptance | Test authority | DEVELOPMENT_ONLY | tools/performance/**; tests/test_isi_26_*.py; docs/ops/ISI-26-PERFORMANCE-LOAD-RESILIENCE.md | Synthetic bounded workload catalogue, concurrent harness and privacy-safe evidence | Versioned synthetic fixtures | Fingerprinted contracts/counts/latencies | Existing API/data/domain/report/AI surfaces | Local runner; ISI-27 acceptance | Ephemeral SQLite and JSON evidence | No raw identifiers/secrets/payloads; no server/network capacity authority | NO | NO | tests/test_isi_26_*.py | NONE | ISI-26 / ISI-27 | Timing remains UNCALIBRATED until accepted local evidence; live capacity only ISI-28 |
+
 #### N. LEGACY LEDGER
 
 | ID | NAME | TYPE | STATUS | CANONICAL PATH(S) | RESPONSIBILITY | INPUTS | OUTPUTS | UPSTREAM | DOWNSTREAM | DATA/PERSISTENCE | SECURITY BOUNDARY | CUSTOMER-FACING | PRODUCTION_CRITICAL | TEST AUTHORITY | LEGACY STATUS | ROADMAP OWNER | REMOVAL/REPLACEMENT RULE |
@@ -937,41 +939,15 @@ Human-in-the-loop remains a permanent decision-support requirement.
 
 Goal: establish measurable capacity and failure behavior across API, data, statistical/ML and AI flows without conflating repository measurements with live production capacity.
 
-Status: **IN PROGRESS**. ISI-26-B0 bootstrap/audit is CLOSED/PASS on baseline `f37699224e2af01d4313b48f17de8607cb16e22e`. Current checkpoint is **ISI-26A - Performance Contract + Deterministic Harness** (`OWNER_APPROVED / SPEC_READY`). No server verification or mutation is authorized.
+Status: **IN PROGRESS / R1 FULL IMPLEMENTATION CANDIDATE**. ISI-26-B0 remains CLOSED/PASS historical bootstrap evidence. The active locked authority is `automation/specs/ISI-26-R1-FULL-PERFORMANCE-LOAD-RESILIENCE.md`, implemented as one controlled repository-side slice.
 
-Canonical slice sequence:
+The 26A performance contract/harness, 26B API/auth/readiness resilience, 26C data/statistics/forecast/report scale and 26D AI queue/concurrency/timeout/circuit/fallback identities remain the formal ISI-26 coverage/gate checkpoints. Their repository implementation execution is grouped into the single R1 candidate, so R1 supersedes only the micro-task execution cadence and does not supersede those gates. 26E remains the planned whole-phase closeout gate and is not a pre-authorized separate Codex task. Recovery/closeout work is created only from evidence after R1 review.
 
-1. **ISI-26A - Performance Contract + Deterministic Harness**
-   - stable workload identities;
-   - exact metric/percentile/throughput semantics;
-   - budget states `HARD_GATE / CALIBRATED / UNCALIBRATED / NOT_APPLICABLE / UNAVAILABLE`;
-   - pure-Python repository-side measurement harness;
-   - synthetic/in-process smoke only;
-   - no runtime, dependency, Compose or server change;
-   - no invented production p95/p99/throughput/resource threshold.
-2. **ISI-26B - API/Auth/Readiness Load + Dependency Resilience**
-   - API and authenticated-flow workload calibration;
-   - controlled PostgreSQL/Redis/storage dependency failure behavior;
-   - repository/local-container evidence only.
-3. **ISI-26C - Data/Statistics/Forecast/Reporting Scale**
-   - synthetic ingestion/data-worker pressure;
-   - SIMPA statistical workloads;
-   - ORDO forecast/backtest workloads;
-   - report/export scale and evidence integrity.
-4. **ISI-26D - AI Queue/Concurrency/Timeout/Circuit Resilience**
-   - AI queue/concurrency;
-   - provider timeout;
-   - circuit/fallback/review-required resilience;
-   - resource/latency evidence without model/server installation.
-5. **ISI-26E - Whole-Phase Performance & Resilience Closeout**
-   - mandatory gap/legacy audit;
-   - calibrated repository acceptance budgets/evidence;
-   - unresolved capacity limitations explicitly deferred to ISI-28;
-   - ISI-27 release-candidate handoff.
+R1 adds immutable performance/evidence contracts, ten versioned workloads, bounded standard-library concurrent execution and synthetic local service/renderer/worker exercises. Correctness/security/resilience are non-compensable hard gates. Nearest-rank latency and completed-operation throughput remain `UNCALIBRATED`; host-specific resource evidence is `UNAVAILABLE`. No accepted portable timing threshold is fabricated. Local SQLite lanes are independent and do not prove shared PostgreSQL or Redis contention capacity. Queue transport is tested with doubles, and AI execution uses development stubs only.
 
-Performance correctness/security invariants are hard gates. Numeric latency/throughput/resource budgets may be called `CALIBRATED` only when backed by accepted measurement evidence. Repository/local measurements must always state `PRODUCTION_CAPACITY_VERIFIED=false` and `SERVER_VERIFIED=false` until owner-approved ISI-28.
+Inventory impact: INV-M19 adds repository acceptance tooling; INV-B25, INV-D01 through INV-D04, INV-C38/C39, INV-E05 and INV-F04 retain runtime ownership. No customer-facing/API/schema/dependency/deployment boundary changes. See `docs/ops/ISI-26-PERFORMANCE-LOAD-RESILIENCE.md` for the reconciled audit and exact evidence semantics.
 
-Deliverables across the phase include workload profiles, deterministic harnesses, load/stress evidence, AI-job concurrency, large-report tests, controlled dependency failures, explicit budget/evidence contracts and evidence-backed tuning. ISI-26 must not touch current server/DNS/certificates/shared central Nginx/production data/secrets/SMTP/server Ollama or Krcuga/OralScanXAI.
+ISI-27 is next only after ISI-26 whole-phase acceptance. Hosted full CI remains manual and undispatched for this candidate. Every performance record states `PRODUCTION_CAPACITY_VERIFIED=false` and `SERVER_VERIFIED=false`. ISI-28 exclusively owns live-server mutation/capacity verification. Current server, DNS, certificates, central Nginx, production SMTP/data/secrets, server Ollama, Krcuga and OralScanXAI remain outside R1 execution.
 
 ### ISI-27 - Industrial Release Candidate & Acceptance Pack
 
