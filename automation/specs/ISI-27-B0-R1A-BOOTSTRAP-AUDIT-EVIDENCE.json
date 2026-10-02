@@ -1,0 +1,385 @@
+{
+  "boundaries": {
+    "codex_calls": 0,
+    "github_actions_dispatch": false,
+    "production_capacity_verified": false,
+    "server_mutation": false,
+    "server_verified": false,
+    "stage_commit_push": false
+  },
+  "branch": "main",
+  "counts": {
+    "DONE": 6,
+    "DRIFT": 0,
+    "MISSING": 5,
+    "PARTIAL": 8
+  },
+  "direct_remote_main": "e46128752e29f46dc6d9b8510198739f88da50e9",
+  "findings": [
+    {
+      "area": "Canonical baseline",
+      "evidence": [
+        "e46128752e29f46dc6d9b8510198739f88da50e9",
+        "bc73ca23303d3f3353d440203f96dd698bf42b35",
+        "origin/main == direct remote main"
+      ],
+      "id": "B0-01",
+      "legacy_classification": null,
+      "release_blocker": false,
+      "status": "DONE",
+      "summary": "Exact main/remote/tree/one-worktree/clean-state bootstrap authority is synchronized."
+    },
+    {
+      "area": "Serial governance",
+      "evidence": [
+        "automation/STATUS.md",
+        "automation/tasks.json",
+        "MasterPlan ISI-26/27/28"
+      ],
+      "id": "B0-02",
+      "legacy_classification": null,
+      "release_blocker": false,
+      "status": "DONE",
+      "summary": "ISI-26 is closed as accepted-on-main/not-CI-verified; ISI-27 is planned/current-next; ISI-28 is deferred server-only authority."
+    },
+    {
+      "area": "ISI-27 scope authority",
+      "evidence": [
+        "git ls-files: no ISI-27 named artifact"
+      ],
+      "id": "B0-03",
+      "legacy_classification": null,
+      "release_blocker": true,
+      "status": "MISSING",
+      "summary": "No dedicated ISI-27 specification/evidence/test authority exists yet."
+    },
+    {
+      "area": "Help/XAI production-completeness gate",
+      "evidence": [
+        "INV-A01 Public website: MISSING",
+        "INV-A02 Login: MISSING",
+        "INV-A03 Invitation onboarding: MISSING",
+        "INV-A04 Email verification: MISSING",
+        "INV-A05 Password reset: MISSING",
+        "INV-A06 Authenticated app shell: PARTIAL",
+        "INV-A08 Data workspace: PARTIAL",
+        "INV-A14 Reporting workspace: MISSING",
+        "INV-A15 Administration workspace: MISSING",
+        "INV-A16 Account security workspace: MISSING",
+        "INV-A17 Public self-registration: MISSING",
+        "INV-A21 Cross-product Help Coverage Matrix: PARTIAL"
+      ],
+      "id": "B0-04",
+      "legacy_classification": null,
+      "release_blocker": true,
+      "status": "MISSING",
+      "summary": "12 production-critical customer-facing surface(s) are below VERIFIED and block RC acceptance."
+    },
+    {
+      "area": "Domain/shared AI Help authorities",
+      "evidence": [
+        "SIMPA/ORDO/AI User Guides",
+        "ISI-23D/24D/25B Help tests"
+      ],
+      "id": "B0-05",
+      "legacy_classification": null,
+      "release_blocker": false,
+      "status": "DONE",
+      "summary": "SIMPA, ORDO and shared AI guide/test authorities are present."
+    },
+    {
+      "area": "Methodology release acceptance",
+      "evidence": [
+        "docs/roadmap/ISI-SIMPA-METHODOLOGY-v1.md",
+        "docs/roadmap/ISI-ORDO-METHODOLOGY-v1.md",
+        "docs/architecture/ADR-0025-simpa-ordo-analytical-ai-methodology.md"
+      ],
+      "id": "B0-06",
+      "legacy_classification": null,
+      "release_blocker": true,
+      "status": "PARTIAL",
+      "summary": "Accepted methodology authorities exist, but ISI-27 still needs a consolidated RC methodology-state acceptance artifact."
+    },
+    {
+      "area": "Model/evaluation provenance",
+      "evidence": [
+        "docs/roadmap/ISI-AI-MODEL-EVALUATION-PROTOCOL-v1.md",
+        "tests/evals/SIMPA-EVAL-v1.json",
+        "tests/evals/ORDO-EVAL-v1.json",
+        "docs/help/ISI-AI-USER-GUIDE.md"
+      ],
+      "id": "B0-07",
+      "legacy_classification": null,
+      "release_blocker": true,
+      "status": "PARTIAL",
+      "summary": "Model/eval provenance authorities exist, but no ISI-27 immutable RC provenance manifest is present yet."
+    },
+    {
+      "area": "Security/privacy evidence",
+      "evidence": [
+        "automation/evidence/ISI-20/acceptance-summary.md",
+        "automation/evidence/ISI-21/acceptance-summary.md",
+        "automation/evidence/ISI-20/security-control-matrix.json"
+      ],
+      "id": "B0-08",
+      "legacy_classification": null,
+      "release_blocker": true,
+      "status": "PARTIAL",
+      "summary": "Accepted predecessor security/privacy evidence exists; ISI-27 still needs exact-RC security/privacy acceptance consolidation."
+    },
+    {
+      "area": "Migration/recovery rehearsal evidence",
+      "evidence": [
+        "automation/evidence/ISI-19/acceptance-summary.md",
+        "tools/ci/native_postgres_tests.sh"
+      ],
+      "id": "B0-09",
+      "legacy_classification": null,
+      "release_blocker": true,
+      "status": "PARTIAL",
+      "summary": "Accepted recovery/native PostgreSQL authority exists; an exact-RC rehearsal/evidence record is still required by ISI-27."
+    },
+    {
+      "area": "Performance/resilience acceptance",
+      "evidence": [
+        "e4b5b7f5927bc553fd616800d37beb5d115bb46e",
+        "PRODUCTION_CAPACITY_VERIFIED=false",
+        "SERVER_VERIFIED=false"
+      ],
+      "id": "B0-10",
+      "legacy_classification": null,
+      "release_blocker": false,
+      "status": "DONE",
+      "summary": "ISI-26 repository-side performance/resilience acceptance is closed; UNCALIBRATED/UNAVAILABLE limits remain explicit and are not production SLOs."
+    },
+    {
+      "area": "Hosted exact-main acceptance workflow",
+      "evidence": [
+        "policy",
+        "quality",
+        "tests",
+        "architecture-security",
+        "migration",
+        "native-postgres",
+        "compose",
+        "supply-chain",
+        "build",
+        "acceptance",
+        "workflow_dispatch only"
+      ],
+      "id": "B0-11",
+      "legacy_classification": null,
+      "release_blocker": true,
+      "status": "PARTIAL",
+      "summary": "Manual fail-closed workflow is structurally ready, but no ISI-27 exact-main release-candidate run has been dispatched/accepted yet."
+    },
+    {
+      "area": "Supply-chain baseline controls",
+      "evidence": [
+        "pip-audit",
+        "bandit",
+        "gitleaks"
+      ],
+      "id": "B0-12",
+      "legacy_classification": null,
+      "release_blocker": false,
+      "status": "DONE",
+      "summary": "Dependency audit, Python SAST and secret scan are present in the canonical manual workflow."
+    },
+    {
+      "area": "SBOM / signed provenance / attestation",
+      "evidence": [
+        "no SBOM/CycloneDX/SPDX/Syft release control",
+        "no Cosign/attestation release control"
+      ],
+      "id": "B0-13",
+      "legacy_classification": null,
+      "release_blocker": true,
+      "status": "MISSING",
+      "summary": "No controlled release SBOM plus signed provenance/attestation implementation is present; policy/spec mentions are requirements, not implementation evidence."
+    },
+    {
+      "area": "Container/image vulnerability enforcement",
+      "evidence": [
+        "no trivy/grype/docker-scout release control found"
+      ],
+      "id": "B0-14",
+      "legacy_classification": null,
+      "release_blocker": true,
+      "status": "MISSING",
+      "summary": "No image vulnerability enforcement tool is present in the current release/CI authority."
+    },
+    {
+      "area": "RC release notes / compatibility / known limitations / rollback pack",
+      "evidence": [
+        "automation/specs/ISI-04B-HOTFIX-6-CONTRACT-COMPATIBILITY-RECOVERY.md",
+        "automation/specs/ISI-05-HOTFIX-1-LEGACY-STREAMLIT-CONTRACT-COMPATIBILITY.md",
+        "tests/test_isi_04b_hotfix6_compatibility.py"
+      ],
+      "id": "B0-15",
+      "legacy_classification": null,
+      "release_blocker": true,
+      "status": "PARTIAL",
+      "summary": "Related artifacts exist but no dedicated ISI-27 RC pack is established."
+    },
+    {
+      "area": "Immutable release builder / workstation portability",
+      "evidence": [
+        "tools/release/build_server_release.sh",
+        "hard-coded sha256sum",
+        "RC-pack integration/acceptance still open"
+      ],
+      "id": "B0-16",
+      "legacy_classification": null,
+      "release_blocker": true,
+      "status": "PARTIAL",
+      "summary": "Release builder has immutable Git archive/checksum semantics, but it hard-codes `sha256sum`; ISI-27 must make the builder portable across canonical macOS workstations or move RC building to an explicitly controlled portable lane."
+    },
+    {
+      "area": "Legacy/server deployment boundary",
+      "evidence": [
+        "tools/release/deploy_server_release.sh",
+        "tools/server/deploy_release_on_server.sh",
+        "tools/server/run_server_acceptance.sh",
+        "production workflow/runbook explicitly superseded"
+      ],
+      "id": "B0-17",
+      "legacy_classification": "REMOVE_IN_NAMED_PHASE(ISI-28)",
+      "release_blocker": false,
+      "status": "DONE",
+      "summary": "Legacy deployment tools remain repository history/compatibility only; ISI-27 must not execute them and ISI-28 owns fresh server audit/deployment."
+    },
+    {
+      "area": "GitHub Actions usage pre/post evidence",
+      "evidence": [
+        "docs/ops/ISI-RELEASE-POLICY.md",
+        "external owner-controlled gate"
+      ],
+      "id": "B0-18",
+      "legacy_classification": null,
+      "release_blocker": true,
+      "status": "PARTIAL",
+      "summary": "Owner policy requires Actions-usage checks immediately before and after the approved ISI-27 hosted acceptance cycle; repository-only B0 cannot fabricate external usage evidence."
+    },
+    {
+      "area": "Exact-RC CI_VERIFIED state",
+      "evidence": [
+        "workflow_dispatch not executed by B0",
+        "prior phases not-CI-verified marker observed=True"
+      ],
+      "id": "B0-19",
+      "legacy_classification": null,
+      "release_blocker": true,
+      "status": "MISSING",
+      "summary": "No ISI-27 exact-main hosted release-candidate acceptance exists yet; this is an expected future hard gate, not a bootstrap defect."
+    }
+  ],
+  "head": "e46128752e29f46dc6d9b8510198739f88da50e9",
+  "help_release_blockers": [
+    {
+      "coverage": "MISSING",
+      "id": "INV-A01",
+      "inventory_status": "CURRENT_AS_BUILT",
+      "owner": "FOUNDATION / ISI-27",
+      "surface": "Public website"
+    },
+    {
+      "coverage": "MISSING",
+      "id": "INV-A02",
+      "inventory_status": "CURRENT_AS_BUILT",
+      "owner": "ISI-20 / ISI-27",
+      "surface": "Login"
+    },
+    {
+      "coverage": "MISSING",
+      "id": "INV-A03",
+      "inventory_status": "CURRENT_AS_BUILT",
+      "owner": "ISI-13 / ISI-20",
+      "surface": "Invitation onboarding"
+    },
+    {
+      "coverage": "MISSING",
+      "id": "INV-A04",
+      "inventory_status": "CURRENT_AS_BUILT",
+      "owner": "ISI-20",
+      "surface": "Email verification"
+    },
+    {
+      "coverage": "MISSING",
+      "id": "INV-A05",
+      "inventory_status": "CURRENT_AS_BUILT",
+      "owner": "ISI-20",
+      "surface": "Password reset"
+    },
+    {
+      "coverage": "PARTIAL",
+      "id": "INV-A06",
+      "inventory_status": "CURRENT_AS_BUILT",
+      "owner": "FOUNDATION / ISI-23 / ISI-24",
+      "surface": "Authenticated app shell"
+    },
+    {
+      "coverage": "PARTIAL",
+      "id": "INV-A08",
+      "inventory_status": "CURRENT_AS_BUILT",
+      "owner": "ISI-22",
+      "surface": "Data workspace"
+    },
+    {
+      "coverage": "MISSING",
+      "id": "INV-A14",
+      "inventory_status": "CURRENT_AS_BUILT",
+      "owner": "ISI-27",
+      "surface": "Reporting workspace"
+    },
+    {
+      "coverage": "MISSING",
+      "id": "INV-A15",
+      "inventory_status": "CURRENT_AS_BUILT",
+      "owner": "ISI-20 / ISI-27",
+      "surface": "Administration workspace"
+    },
+    {
+      "coverage": "MISSING",
+      "id": "INV-A16",
+      "inventory_status": "CURRENT_AS_BUILT",
+      "owner": "ISI-20",
+      "surface": "Account security workspace"
+    },
+    {
+      "coverage": "MISSING",
+      "id": "INV-A17",
+      "inventory_status": "NOT_PRESENT",
+      "owner": "ISI-20",
+      "surface": "Public self-registration"
+    },
+    {
+      "coverage": "PARTIAL",
+      "id": "INV-A21",
+      "inventory_status": "CURRENT_AS_BUILT",
+      "owner": "ISI-23 / ISI-24 / ISI-25 / ISI-27",
+      "surface": "Cross-product Help Coverage Matrix"
+    }
+  ],
+  "index_empty": true,
+  "origin_main": "e46128752e29f46dc6d9b8510198739f88da50e9",
+  "outputs": {
+    "evidence": "/Users/branislavradomirovic/Downloads/ISI-27-B0-R1A-BOOTSTRAP-AUDIT-EVIDENCE.json",
+    "report": "/Users/branislavradomirovic/Downloads/ISI-27-B0-R1A-BOOTSTRAP-AUDIT-REPORT.md"
+  },
+  "recovery": {
+    "help_parser_corrected": true,
+    "release_builder_portability_reconciled": true,
+    "sbom_attestation_detection_corrected": true,
+    "source_evidence_sha256": "29736556d21f1f513f0e09ba2f9d03a8463783a4996c854ed9101f48aca312c2",
+    "source_report_sha256": "31b3128d2428b82656235a99ffe7b799b5d9e4e4874a9a143282f4eacb830345"
+  },
+  "release_blockers_not_done": 13,
+  "repository": "/Users/branislavradomirovic/Applications/Python/ISI",
+  "stash_empty": true,
+  "status": "PASS",
+  "task": "ISI-27-B0-R1A-READ-ONLY-AUDIT-SYNTAX-RECOVERY",
+  "tree": "bc73ca23303d3f3353d440203f96dd698bf42b35",
+  "worktree_clean": true,
+  "worktree_count": 1
+}

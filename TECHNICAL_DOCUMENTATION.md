@@ -35,7 +35,7 @@ The platform currently includes a public institutional website, an authenticated
 | ISI-24 ORDO Production Methodology + Help/XAI | COMPLETE / CI_VERIFIED |
 | ISI-25 Industrial AI / MLOps | IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED |
 | ISI-26 Performance, Load & Resilience | IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED |
-| ISI-27 Industrial Release Candidate | PLANNED / NEXT |
+| ISI-27 Industrial Release Candidate | IN PROGRESS / SCOPE LOCKED / 27A SPEC_READY |
 | ISI-28 Current Server Controlled Upgrade | DEFERRED / owner-gated |
 
 ISI-25A is accepted at `f0047321ee4410522697144ecfa464087f1b83bc`. ISI-25B is accepted at `7e11ee2a6f7546eacc3207e15cacfc35f6d04f3e`. Hosted full acceptance was deliberately not run for those development checkpoints under the owner CI-cost policy; `CI_VERIFIED` is therefore not claimed for ISI-25.
@@ -492,7 +492,15 @@ ISI-26 is **IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED**. R1 i
 
 Timing budgets remain `UNCALIBRATED` where the locked calibration conditions are not met. Portable host resource measurement remains `UNAVAILABLE`; Compose memory limits are configuration only. These truthful repository states do not block closeout and are not production SLOs. `PRODUCTION_CAPACITY_VERIFIED=false`, `SERVER_VERIFIED=false`, `GITHUB_ACTIONS_DISPATCH=NO` and `CI_VERIFIED=NO` remain explicit.
 
-No customer-facing workflow, schema, dependency, runtime behavior or deployment topology changed. ISI-27 is current/next for a fresh Industrial Release Candidate bootstrap and controlled hosted acceptance. ISI-28 remains the exclusive live-server mutation/capacity-verification phase; Krcuga and OralScanXAI are strict non-targets.
+No customer-facing workflow, schema, dependency, runtime behavior or deployment topology changed. ISI-27 B0-R1A bootstrap is closed, the four-gate scope is locked, and `ISI-27A - Shared Help & Release UX Completeness` is the current checkpoint; controlled hosted acceptance remains reserved for 27D. ISI-28 remains the exclusive live-server mutation/capacity-verification phase; Krcuga and OralScanXAI are strict non-targets.
+
+## 19A. ISI-27 scope lock
+
+Corrected B0-R1A bootstrap authority is repository-visible through `automation/specs/ISI-27-B0-R1A-BOOTSTRAP-AUDIT-REPORT.md` and `.json`. It records DONE=6, PARTIAL=8, MISSING=5, DRIFT=0, thirteen release blockers not DONE, twelve real Help/XAI blockers and SBOM/attestation as MISSING.
+
+ISI-27 execution is locked into four larger gates: 27A closes shared Help/release UX completeness; 27B creates the exact-RC evidence/governance pack; 27C creates the portable immutable release artifact and missing supply-chain assurance; 27D performs the owner-controlled exact-main hosted release-candidate acceptance and phase closeout.
+
+The release builder must be portable across canonical macOS development and Linux CI/release environments. Automatic GitHub Actions triggers remain forbidden. Production/server capacity is not verified in ISI-27 and no server/DNS/ingress/SMTP/production secret/data/Ollama action is authorized.
 
 ## 20. Canonical source index
 
@@ -519,6 +527,7 @@ Historical deployment documents remain useful only when the MasterPlan/ADR class
 
 | Version | Date | Change |
 |---|---|---|
+| 1.4 | 2026-10-02 | ISI-27 corrected B0-R1A bootstrap accepted as scope authority; four-gate RC execution architecture locked; 27A becomes SPEC_READY. |
 | 1.3 | 2026-10-02 | ISI-26 R1 accepted on main; 26A-26D formal gates accepted through R1; 26E whole-phase closeout completed; ISI-27 becomes next. |
 | 1.2 | 2026-10-01 | R1 full-slice candidate supersedes active micro-task execution; adds local performance contracts, workload/evidence tooling and explicit capacity limitations. |
 | 1.1 | 2026-10-01 | ISI-26-B0 closed; locks 26A-26E performance/resilience slice model and 26A contract-first/no-false-production-SLO rule. |

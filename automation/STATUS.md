@@ -8,7 +8,7 @@ Last status update: 2026-10-02.
 
 Last accepted implementation slice: `ISI-26-R1 - Full Performance, Load & Resilience Implementation`.
 
-ISI-26 - Performance, Load & Resilience Engineering is `IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED`. ISI-26E whole-phase closeout is complete in this governance closeout candidate. Current/next phase after closeout acceptance: `ISI-27 - Industrial Release Candidate & Acceptance Pack` (PLANNED; fresh bootstrap required).
+ISI-26 - Performance, Load & Resilience Engineering is `IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED`. ISI-27 B0-R1A corrected read-only bootstrap is CLOSED/PASS on baseline `e46128752e29f46dc6d9b8510198739f88da50e9`; current phase is `ISI-27 - Industrial Release Candidate & Acceptance Pack` with **SCOPE LOCKED / 27A SPEC_READY**. Current checkpoint: `ISI-27A - Shared Help & Release UX Completeness`.
 
 Accepted checkpoint: `ISI-25A - AI/MLOps Governance + Evaluation Foundation` is accepted on main SHA `f0047321ee4410522697144ecfa464087f1b83bc`, tree `06e419ec656ee2fb0bfb74b4a6b10d42ef275f25`, after local deterministic acceptance and assistant human review.
 
@@ -125,7 +125,15 @@ Overall `ISI-24-ORDO-PRODUCTION-METHODOLOGY` is `COMPLETE / CI_VERIFIED`. The ma
 
 ISI-26 whole-phase closeout evidence: R1 is accepted on main SHA `e4b5b7f5927bc553fd616800d37beb5d115bb46e` (tree `9a30b280ba44798b987167c155f0be6ccc13776e`) from candidate fingerprint `98653d20a5223d4f6be66f3ee2017f998865b00ecb08a0950c07123d60dc2e24`. ISI-26A through ISI-26D are satisfied as formal coverage/gate checkpoints through that accepted R1 implementation; ISI-26E closes the whole-phase audit. No `REMOVE_BEFORE_NEXT_SLICE` finding remains open. Timing remains `UNCALIBRATED` exactly where the locked R1 calibration policy requires it, portable resource evidence remains `UNAVAILABLE`, and neither state is converted into a fabricated production SLO.
 
-Overall `ISI-26-PERFORMANCE-LOAD-RESILIENCE` is `IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED`. `PRODUCTION_CAPACITY_VERIFIED=false`, `SERVER_VERIFIED=false`, and `GITHUB_ACTIONS_DISPATCH=NO` remain binding. The next action is a fresh ISI-27 bootstrap/audit for the Industrial Release Candidate & Acceptance Pack. ISI-28 remains the exclusive authority for live server/DNS/certificate/central-ingress/SMTP/production-secret/data/server-Ollama mutation. Krcuga and OralScanXAI remain strict non-targets.
+Overall `ISI-26-PERFORMANCE-LOAD-RESILIENCE` is `IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED`. `PRODUCTION_CAPACITY_VERIFIED=false`, `SERVER_VERIFIED=false`, and `GITHUB_ACTIONS_DISPATCH=NO` remain binding. ISI-27 B0-R1A bootstrap is CLOSED/PASS, the ISI-27 scope is locked, and the current next action is `ISI-27A - Shared Help & Release UX Completeness`. ISI-28 remains the exclusive authority for live server/DNS/certificate/central-ingress/SMTP/production-secret/data/server-Ollama mutation. Krcuga and OralScanXAI remain strict non-targets.
+
+## ISI-27 scope lock
+
+Corrected B0-R1A authority: DONE=6, PARTIAL=8, MISSING=5, DRIFT=0; 13 release blockers are not DONE. The corrected Help/XAI blocker set contains 12 shared production-critical surfaces. SBOM/signed provenance/attestation is MISSING, while image vulnerability enforcement is also MISSING.
+
+Execution is deliberately grouped into four larger formal gates: **27A Shared Help & Release UX Completeness -> 27B RC Evidence & Governance Pack -> 27C Reproducible Release & Supply-Chain Assurance -> 27D Exact-Main RC Acceptance & Phase Closeout**. 27D is owner-controlled and owns the single explicit hosted release-candidate acceptance cycle. No hosted CI is authorized by scope lock itself.
+
+Current next action: implement the locked 27A slice from exact synchronized main. Server/live-host work remains frozen through ISI-27 and belongs exclusively to ISI-28. Krcuga and OralScanXAI remain strict non-targets.
 
 ## Mandatory bootstrap rule
 
@@ -151,7 +159,7 @@ A failed required gate returns the active task to implementation/fix state. Requ
 | 24 | ORDO Production Methodology + Help/User Guide | **COMPLETE / CI_VERIFIED - 24A through 24E complete** |
 | 25 | Industrial AI / MLOps | **IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN - 25A f004732; 25B 7e11ee2; NOT CI_VERIFIED** |
 | 26 | Performance, Load & Resilience | **IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED - R1 e4b5b7f; 26E closeout complete** |
-| 27 | Industrial Release Candidate & Acceptance Pack | **PLANNED / NEXT - fresh bootstrap required** |
+| 27 | Industrial Release Candidate & Acceptance Pack | **IN PROGRESS / SCOPE LOCKED / 27A SPEC_READY** |
 | 28 | Current Server Controlled Upgrade | **DEFERRED - fresh explicit owner approval required** |
 
 ## Locked execution boundaries

@@ -28,7 +28,10 @@ def test_26e_closeout_accepts_r1_and_formal_coverage_gates():
     assert closeout["status"] == "done"
     assert closeout["spec"].endswith("ISI-26E-PERFORMANCE-RESILIENCE-CLOSEOUT.md")
     assert closeout["coverage_status"] == "CLOSEOUT_COMPLETE"
-    assert tasks["ISI-27-INDUSTRIAL-RELEASE-CANDIDATE"]["status"] == "planned"
+    phase27 = tasks["ISI-27-INDUSTRIAL-RELEASE-CANDIDATE"]
+    assert phase27["status"] == "in_progress"
+    assert phase27["active_checkpoint"] == "ISI-27A-SHARED-HELP-RELEASE-UX-COMPLETENESS"
+    assert tasks["ISI-27A-SHARED-HELP-RELEASE-UX-COMPLETENESS"]["status"] == "spec_ready"
     assert tasks["ISI-27-INDUSTRIAL-RELEASE-CANDIDATE"]["depends_on"] == [parent["id"]]
     for path in ("TECHNICAL_DOCUMENTATION.md", "automation/STATUS.md",
                  "docs/roadmap/ISI-AUTONOMOUS-INDUSTRIALIZATION-MASTER-PLAN.md"):

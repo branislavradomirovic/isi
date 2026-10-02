@@ -875,7 +875,7 @@ Critical rule: no Codex/LLM may invent indicator formulas, LISI weights, thresho
 
 #### ISI-24E accepted checkpoint and Phase-24 closeout
 
-`ISI-24E - ORDO Final Whole-Phase Gap/Legacy Audit + Closeout` is COMPLETE / CI_VERIFIED at the accepted remediation/closeout implementation checkpoint `5937daa2ea7ff9c476bd6a05a04841d1534aefe2` (tree `6e75bf1cd13b95e23f9189b9e94453dd130eaa19`) with `ISI required acceptance` run #90 / `35238623960` attempt 2 completed `success`. The whole-phase audit found F01 stale user-facing wording and F02 incomplete forecast customer reachability as the only `REMOVE_BEFORE_NEXT_SLICE` blockers; both are resolved. No Phase-24 `REMOVE_BEFORE_NEXT_SLICE` item remains. ISI-25 and ISI-26 subsequently completed implementation acceptance on main; ISI-27 is now current/next for a fresh release-candidate bootstrap. Server/DNS/central-ingress/production mutation remains forbidden until owner-approved ISI-28.
+`ISI-24E - ORDO Final Whole-Phase Gap/Legacy Audit + Closeout` is COMPLETE / CI_VERIFIED at the accepted remediation/closeout implementation checkpoint `5937daa2ea7ff9c476bd6a05a04841d1534aefe2` (tree `6e75bf1cd13b95e23f9189b9e94453dd130eaa19`) with `ISI required acceptance` run #90 / `35238623960` attempt 2 completed `success`. The whole-phase audit found F01 stale user-facing wording and F02 incomplete forecast customer reachability as the only `REMOVE_BEFORE_NEXT_SLICE` blockers; both are resolved. No Phase-24 `REMOVE_BEFORE_NEXT_SLICE` item remains. ISI-25 and ISI-26 subsequently completed implementation acceptance on main; ISI-27 B0-R1A bootstrap is closed, scope is locked, and 27A is current. Server/DNS/central-ingress/production mutation remains forbidden until owner-approved ISI-28.
 
 Goal: convert ORDO evidence/scenario infrastructure into a production destination-intelligence methodology without fabricating predictive capability.
 
@@ -910,7 +910,7 @@ Goal: make statistical/ML, embedding, LLM and VLM behavior measurable, versioned
 
 The canonical evaluation baseline is `docs/roadmap/ISI-AI-MODEL-EVALUATION-PROTOCOL-v1.md` and ADR-0025.
 
-Status: **IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED**. ISI-25A is accepted on main SHA `f0047321ee4410522697144ecfa464087f1b83bc` (tree `06e419ec656ee2fb0bfb74b4a6b10d42ef275f25`) after local deterministic acceptance and assistant human review. ISI-25B is implemented and accepted on main SHA `7e11ee2a6f7546eacc3207e15cacfc35f6d04f3e`; it provides exact-registration-bound fallback, separate frozen promotion benchmarks, deterministic evaluators, capability thresholds, evidence-gated promotion/rollback governance, deterministic circuit state, on-demand drift and shared AI XAI. No hosted full acceptance was run for 25A/25B under the owner cost/acceptance policy, so `CI_VERIFIED` is not claimed. ISI-26 has now also completed repository implementation acceptance on main and ISI-27 is current/next for a fresh release-candidate bootstrap; hosted full acceptance remains reserved for that controlled ISI-27 checkpoint. Server verification and all deployment mutation remain deferred to ISI-28.
+Status: **IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED**. ISI-25A is accepted on main SHA `f0047321ee4410522697144ecfa464087f1b83bc` (tree `06e419ec656ee2fb0bfb74b4a6b10d42ef275f25`) after local deterministic acceptance and assistant human review. ISI-25B is implemented and accepted on main SHA `7e11ee2a6f7546eacc3207e15cacfc35f6d04f3e`; it provides exact-registration-bound fallback, separate frozen promotion benchmarks, deterministic evaluators, capability thresholds, evidence-gated promotion/rollback governance, deterministic circuit state, on-demand drift and shared AI XAI. No hosted full acceptance was run for 25A/25B under the owner cost/acceptance policy, so `CI_VERIFIED` is not claimed. ISI-26 has now also completed repository implementation acceptance on main and ISI-27 B0-R1A bootstrap is closed with scope locked and 27A current; hosted full acceptance remains reserved for the controlled 27D checkpoint. Server verification and all deployment mutation remain deferred to ISI-28.
 
 Required deliverables include:
 
@@ -947,15 +947,24 @@ R1 provides immutable performance/evidence contracts, ten versioned workloads, b
 
 Inventory impact remains INV-M19 repository acceptance tooling only; runtime ownership stays with INV-B25, INV-D01 through INV-D04, INV-C38/C39, INV-E05 and INV-F04. No customer-facing/API/schema/dependency/deployment boundary changed. `PRODUCTION_CAPACITY_VERIFIED=false` and `SERVER_VERIFIED=false` remain explicit. Live capacity/server verification belongs exclusively to ISI-28. Current server, DNS, certificates, central Nginx, production SMTP/data/secrets, server Ollama, Krcuga and OralScanXAI remain outside ISI-26 execution.
 
-ISI-27 is current/next for a fresh bootstrap/audit and owns the Industrial Release Candidate & Acceptance Pack, including the next explicitly approved hosted full acceptance checkpoint. See `automation/specs/ISI-26E-PERFORMANCE-RESILIENCE-CLOSEOUT.md` and `docs/ops/ISI-26-PERFORMANCE-LOAD-RESILIENCE.md` for exact closeout evidence and retained limitations.
+ISI-27 B0-R1A bootstrap is CLOSED/PASS; the four-gate scope is locked and `ISI-27A - Shared Help & Release UX Completeness` is the current checkpoint. ISI-27 owns the Industrial Release Candidate & Acceptance Pack, while the explicitly approved hosted full acceptance checkpoint remains 27D. See `automation/specs/ISI-26E-PERFORMANCE-RESILIENCE-CLOSEOUT.md` and `docs/ops/ISI-26-PERFORMANCE-LOAD-RESILIENCE.md` for exact predecessor closeout evidence and retained limitations.
 
 ### ISI-27 - Industrial Release Candidate & Acceptance Pack
 
 Goal: produce one release candidate technically ready for controlled deployment.
 
-Release acceptance must include explicit SIMPA and ORDO methodology states, model/eval provenance, security/privacy acceptance, migration/recovery rehearsals and performance acceptance.
+Status: **IN PROGRESS / SCOPE LOCKED / 27A SPEC_READY**. Corrected B0-R1A bootstrap authority is `automation/specs/ISI-27-B0-R1A-BOOTSTRAP-AUDIT-REPORT.md` plus its JSON evidence. On baseline `e46128752e29f46dc6d9b8510198739f88da50e9` it records DONE=6, PARTIAL=8, MISSING=5, DRIFT=0; thirteen release blockers are not DONE. Twelve production-critical shared Help/XAI surfaces are blockers. SBOM/signed provenance/attestation and image vulnerability enforcement are MISSING.
 
-Help/XAI is a hard release gate. ISI-27 may not accept the release candidate unless the canonical Help Coverage Matrix shows `VERIFIED` coverage for every production-critical customer-facing screen/function/workflow/action (with checklist-level `NOT_APPLICABLE` only where explicitly justified), both SIMPA and ORDO in-app Help/User Guides are complete, and every applicable statistical/ML/RAG/LLM/VLM user-facing output has faithful model-appropriate XAI interpretation/provenance. Missing Help, fabricated/unsupported XAI, unexplained model states, or unqualified uncertainty/confidence block release acceptance.
+Release acceptance must include explicit SIMPA and ORDO methodology states, model/eval provenance, security/privacy acceptance, migration/recovery rehearsals and performance acceptance. Help/XAI remains a hard release gate. The canonical Help Coverage Matrix must show `VERIFIED` for every applicable production-critical action, with checklist-level `NOT_APPLICABLE` only where explicitly justified. `INV-A17` public self-registration remains NOT_PRESENT; ISI-27 must not create public signup merely to satisfy Help coverage.
+
+Formal ISI-27 execution gates are intentionally large and serial:
+
+1. **ISI-27A - Shared Help & Release UX Completeness** — close the twelve corrected shared Help/XAI blockers while preserving already VERIFIED SIMPA/ORDO/shared-AI authority.
+2. **ISI-27B - RC Evidence & Governance Pack** — consolidate methodology state, model/eval provenance, security/privacy, exact-RC migration/native-PostgreSQL/recovery evidence, inherited ISI-26 limits, release notes, compatibility, known limitations and rollback/handoff.
+3. **ISI-27C - Reproducible Release & Supply-Chain Assurance** — portable immutable release builder, exact artifact/checksum identity, real SBOM, provenance/attestation and blocking image vulnerability enforcement; automatic CI triggers remain forbidden.
+4. **ISI-27D - Exact-Main RC Acceptance & Phase Closeout** — owner-controlled Actions usage precheck, explicit approval, manual `workflow_dispatch` checkpoint `release-candidate` on exact main, all blocking jobs success, run/artifact binding, usage postcheck and final whole-phase audit before exact-RC `CI_VERIFIED`.
+
+No ISI-27 gate may contact or mutate the current server, DNS, certificates, central Nginx, real SMTP, production secrets/data or server Ollama. Those remain ISI-28-only. Krcuga and OralScanXAI remain strict non-targets.
 
 ### ISI-28 - Current Server Controlled Upgrade
 
@@ -1152,7 +1161,7 @@ Material changes to these points require a new explicit owner approval and, wher
 
 - ISI-25B implementation is accepted on main SHA `7e11ee2a6f7546eacc3207e15cacfc35f6d04f3e`; the later `ff573b3d76cf29581cb19c255821e9b4c4841108` governance commit changes no product/runtime feature code.
 - Overall ISI-25 is `IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED`; full hosted acceptance was deliberately not run and remains reserved for the controlled ISI-27 acceptance/release checkpoint.
-- ISI-26 repository implementation is accepted on main SHA `e4b5b7f5927bc553fd616800d37beb5d115bb46e` with whole-phase 26E closeout complete; ISI-27 is current/next for a fresh release-candidate bootstrap.
+- ISI-26 repository implementation is accepted on main SHA `e4b5b7f5927bc553fd616800d37beb5d115bb46e` with whole-phase 26E closeout complete; ISI-27 B0-R1A bootstrap is closed, scope is locked, and 27A is current.
 - The final owner-approved shared edge for ISI is central Nginx `central-ingress-nginx-1`, Compose project `central-ingress`, service `nginx`; Caddy is not current ISI target authority.
 - The owner-locked public ISI endpoint is `https://isi.opus.rs:8445/`, alongside Krcuga `:8443` and OralScanXAI `:8444` on the same shared host boundary.
 - ISI retains its independent Compose project and stateful/runtime services. `api` and `streamlit` attach to external `isi_ingress` with aliases `isi-api` and `isi-streamlit`; those are the intended shared-Nginx upstream identities.
@@ -1169,3 +1178,12 @@ Material changes to these points require a new explicit owner approval and, wher
 - Timing remains `UNCALIBRATED` where calibration conditions are not met; portable resource evidence remains `UNAVAILABLE`. No production SLO or live capacity is fabricated.
 - `CI_VERIFIED` is not claimed because hosted full acceptance was deliberately not dispatched. ISI-27 is current/next and owns the controlled release-candidate acceptance checkpoint.
 - `PRODUCTION_CAPACITY_VERIFIED=false` and `SERVER_VERIFIED=false` remain binding; live-server capacity and mutation remain ISI-28-only.
+
+
+### 2026-10-02 ISI-27 corrected bootstrap and scope lock
+
+- B0-R1A is the corrected read-only bootstrap authority on main `e46128752e29f46dc6d9b8510198739f88da50e9`, tree `bc73ca23303d3f3353d440203f96dd698bf42b35`.
+- Corrected classification: DONE=6, PARTIAL=8, MISSING=5, DRIFT=0; thirteen release blockers not DONE; twelve real shared Help/XAI blockers; SBOM/signed provenance/attestation MISSING.
+- ISI-27 is locked into 27A Help/UX completeness, 27B RC evidence/governance, 27C reproducible release/supply-chain assurance and 27D owner-controlled exact-main hosted RC acceptance/closeout.
+- No hosted CI dispatch, stage/commit/push or server action is authorized by scope lock.
+- ISI-28 remains the exclusive live-server mutation/capacity-verification phase.
