@@ -8,27 +8,28 @@ Coverage vocabulary: MISSING, PARTIAL, COMPLETE, VERIFIED. Only VERIFIED satisfi
 
 | Inventory | Surface | Coverage | Roadmap owner | Canonical Help / evidence |
 | --- | --- | --- | --- | --- |
-| INV-A01 | Public website | MISSING | FOUNDATION / ISI-27 | Not owned by ISI-23D. |
-| INV-A02 | Login | MISSING | ISI-20 / ISI-27 | Not owned by ISI-23D. |
-| INV-A03 | Invitation onboarding | MISSING | ISI-13 / ISI-20 | Not owned by ISI-23D. |
-| INV-A04 | Email verification | MISSING | ISI-20 | Not owned by ISI-23D. |
-| INV-A05 | Password reset | MISSING | ISI-20 | Not owned by ISI-23D. |
-| INV-A06 | Authenticated app shell | PARTIAL | FOUNDATION / ISI-23 / ISI-24 | SIMPA access/workspace context covered by SIMPA-H01; cross-product shell Help remains open. |
+| INV-A01 | Public website | VERIFIED | FOUNDATION / ISI-27 | ISI-H01; src/streamlit_app/shared_help_workspace.py; docs/help/ISI-SHARED-USER-GUIDE.md; tests/test_isi_27a_shared_help_contract.py; tests/test_isi_27a_public_help_contract.py. |
+| INV-A02 | Login | VERIFIED | ISI-20 / ISI-27 | ISI-H02; src/streamlit_app/shared_help_workspace.py; docs/help/ISI-SHARED-USER-GUIDE.md; tests/test_isi_27a_shared_help_contract.py; tests/test_isi_27a_auth_ux_contract.py. |
+| INV-A03 | Invitation onboarding | VERIFIED | ISI-13 / ISI-20 | ISI-H03; src/streamlit_app/shared_help_workspace.py; docs/help/ISI-SHARED-USER-GUIDE.md; tests/test_isi_27a_shared_help_contract.py; tests/test_isi_27a_auth_ux_contract.py. |
+| INV-A04 | Email verification | VERIFIED | ISI-20 | ISI-H04; src/streamlit_app/shared_help_workspace.py; docs/help/ISI-SHARED-USER-GUIDE.md; tests/test_isi_27a_shared_help_contract.py; tests/test_isi_27a_auth_ux_contract.py. |
+| INV-A05 | Password reset | VERIFIED | ISI-20 | ISI-H05; src/streamlit_app/shared_help_workspace.py; docs/help/ISI-SHARED-USER-GUIDE.md; tests/test_isi_27a_shared_help_contract.py; tests/test_isi_27a_auth_ux_contract.py. |
+| INV-A06 | Authenticated app shell | VERIFIED | FOUNDATION / ISI-23 / ISI-24 | ISI-H06; src/streamlit_app/shared_help_workspace.py; docs/help/ISI-SHARED-USER-GUIDE.md; tests/test_isi_27a_shared_help_contract.py. |
 | INV-A07 | Overview workspace | MISSING | FOUNDATION | Shared overview Help remains open. |
-| INV-A08 | Data workspace | PARTIAL | ISI-22 | SIMPA governed analytical prerequisite covered by SIMPA-H05; full Data workspace Help remains open. |
+| INV-A08 | Data workspace | VERIFIED | ISI-22 | ISI-H07; src/streamlit_app/shared_help_workspace.py; docs/help/ISI-SHARED-USER-GUIDE.md; tests/test_isi_27a_shared_help_contract.py. |
 | INV-A09 | AI workspace | VERIFIED | ISI-25 | Shared registry/evaluation/promotion/fallback/circuit/drift/XAI actions are covered by docs/help/ISI-AI-USER-GUIDE.md and tests/test_isi_25b_monitoring_xai_help.py; non-AI shared Help remains separately owned. |
 | INV-A10 | SIMPA indicators | VERIFIED | ISI-23 | SIMPA-H02/H03/H04 plus SIMPA User Guide; tests/test_isi_23d_help_xai_contract.py. |
 | INV-A11 | SIMPA analytics | VERIFIED | ISI-23 | SIMPA-H05 through H12 plus deterministic statistical XAI; ISI-23D tests. |
 | INV-A12 | ORDO indicators | VERIFIED | ISI-24 | ORDO-H01 through H06 plus ORDO User Guide; tests/test_isi_24d_help_xai_contract.py. |
 | INV-A13 | ORDO analytics and scenarios | VERIFIED | ISI-24 | ORDO-H05 through H11, governed time-series-spec lifecycle, series discovery, explicit forecast execution, persisted-result presentation and deterministic forecast/scenario XAI; ISI-24D/24E tests. |
-| INV-A14 | Reporting workspace | MISSING | ISI-27 | Shared reporting Help remains open. |
-| INV-A15 | Administration workspace | MISSING | ISI-20 / ISI-27 | Shared administration Help remains open. |
-| INV-A16 | Account security workspace | MISSING | ISI-20 | Shared security Help remains open. |
-| INV-A17 | Public self-registration | MISSING | ISI-20 | Surface is intentionally NOT_PRESENT; cross-product absence/help wording remains outside ISI-23D. |
+| INV-A14 | Reporting workspace | VERIFIED | ISI-27 | ISI-H08; src/streamlit_app/shared_help_workspace.py; docs/help/ISI-SHARED-USER-GUIDE.md; tests/test_isi_27a_shared_help_contract.py. |
+| INV-A15 | Administration workspace | VERIFIED | ISI-20 / ISI-27 | ISI-H09; src/streamlit_app/shared_help_workspace.py; docs/help/ISI-SHARED-USER-GUIDE.md; tests/test_isi_27a_shared_help_contract.py. |
+| INV-A16 | Account security workspace | VERIFIED | ISI-20 | ISI-H10; src/streamlit_app/shared_help_workspace.py; docs/help/ISI-SHARED-USER-GUIDE.md; tests/test_isi_27a_shared_help_contract.py. |
+| INV-A17 | Public self-registration | VERIFIED | ISI-20 | ISI-H11; src/streamlit_app/shared_help_workspace.py; docs/help/ISI-SHARED-USER-GUIDE.md; tests/test_isi_27a_shared_help_contract.py; tests/test_isi_27a_auth_ux_contract.py. Runtime NOT_PRESENT; invitation-only; public signup absence tested. |
 | INV-A18 | SIMPA Help, User Guide and XAI interpretation | VERIFIED | ISI-23 / ISI-25 / ISI-27 | SIMPA domain Help/statistical XAI plus ISI-25 shared AI evaluation/provenance/promotion/fallback interpretation are verified; remaining global release Help remains ISI-27. |
 | INV-A19 | ORDO Help, User Guide and XAI interpretation | VERIFIED | ISI-24 / ISI-25 / ISI-27 | ORDO forecast/scenario Help/XAI plus ISI-25 shared AI evaluation/provenance/promotion/fallback interpretation are verified; remaining global release Help remains ISI-27. |
 | INV-A20 | Commercial checkout/payment surface | MISSING | OUT_OF_SCOPE | Surface is NOT_PRESENT; no ISI commercial payment architecture exists. |
-| INV-A21 | Cross-product Help Coverage Matrix | PARTIAL | ISI-23 / ISI-24 / ISI-25 / ISI-27 | ISI-25-owned shared AI guidance is VERIFIED; Login/Reporting/Administration/Security/shared release coverage remains REMOVE_IN_NAMED_PHASE(ISI-27), so the global matrix honestly remains PARTIAL. |
+| INV-A21 | Cross-product Help Coverage Matrix | VERIFIED | ISI-23 / ISI-24 / ISI-25 / ISI-27 | ISI-H12; src/streamlit_app/shared_help_workspace.py; docs/help/ISI-SHARED-USER-GUIDE.md; tests/test_isi_27a_shared_help_contract.py. All production-critical USER SURFACE rows VERIFIED as Help coverage; A17 absence explicitly tested. |
+
 
 ## ISI-25B shared AI material actions
 
@@ -85,7 +86,44 @@ Every action below satisfies the ten-point MasterPlan checklist through the matc
 
 ## Hard boundaries
 
-- MISSING/PARTIAL shared coverage remains a release blocker for its owning phase; ORDO references do not make shared Login/Data/AI/Reporting/Administration/Security Help VERIFIED, and this matrix is not a claim that ISI-27 is ready.
+- ISI-27A supplies independent shared Help/test authority for the twelve corrected blockers. A07 stays MISSING and non-production-critical; A20 stays OUT_OF_SCOPE/NOT_PRESENT and non-production-critical. This is not a claim that ISI-27 is ready or CI/server verified.
 - Unsupported XAI is shown as unavailable, never invented.
 - No Help text creates a formula, LISI weight, threshold, citizen risk label, eligibility rule, causal claim, forecast or policy conclusion.
 - Server verification/deployment remains deferred to owner-approved ISI-28.
+
+## ISI-27A shared material actions
+
+All ten checklist fields are supplied by the matching canonical shared topic and
+`docs/help/ISI-SHARED-USER-GUIDE.md`. Public/auth topics require no tenant data.
+VERIFIED records focused local Help/UX evidence, not overall runner acceptance or
+CI_VERIFIED. The top-level table is the coverage authority; later material-action
+rows never overwrite it. Protected domain/AI guide references to earlier global
+PARTIAL coverage are LEGITIMATE_HISTORY, not current cross-product coverage.
+
+| Inventory | Material user action | In-app topic | Coverage | Test/evidence authority |
+| --- | --- | --- | --- | --- |
+| INV-A01 | Javni sajt | ISI-H01 | VERIFIED | tests/test_isi_27a_shared_help_contract.py; tests/test_isi_27a_public_help_contract.py |
+| INV-A02 | Prijava | ISI-H02 | VERIFIED | tests/test_isi_27a_shared_help_contract.py; tests/test_isi_27a_auth_ux_contract.py |
+| INV-A03 | Prihvatanje poziva | ISI-H03 | VERIFIED | tests/test_isi_27a_shared_help_contract.py; tests/test_isi_27a_auth_ux_contract.py |
+| INV-A04 | Potvrda emaila | ISI-H04 | VERIFIED | tests/test_isi_27a_shared_help_contract.py; tests/test_isi_27a_auth_ux_contract.py |
+| INV-A05 | Oporavak lozinke | ISI-H05 | VERIFIED | tests/test_isi_27a_shared_help_contract.py; tests/test_isi_27a_auth_ux_contract.py |
+| INV-A06 | Organizacija, platforma i workspace | ISI-H06 | VERIFIED | tests/test_isi_27a_shared_help_contract.py; src/streamlit_app/shared_help_workspace.py |
+| INV-A08 | Podaci i poreklo | ISI-H07 | VERIFIED | tests/test_isi_27a_shared_help_contract.py; src/streamlit_app/shared_help_workspace.py |
+| INV-A14 | Izveštaji, pregled i izvoz | ISI-H08 | VERIFIED | tests/test_isi_27a_shared_help_contract.py; src/streamlit_app/shared_help_workspace.py |
+| INV-A15 | Administracija | ISI-H09 | VERIFIED | tests/test_isi_27a_shared_help_contract.py; src/streamlit_app/shared_help_workspace.py |
+| INV-A16 | Bezbednost naloga | ISI-H10 | VERIFIED | tests/test_isi_27a_shared_help_contract.py; src/streamlit_app/shared_help_workspace.py |
+| INV-A17 | Pristup samo po pozivu | ISI-H11 | VERIFIED | tests/test_isi_27a_shared_help_contract.py; tests/test_isi_27a_auth_ux_contract.py |
+| INV-A21 | Kako koristiti zajedničku Pomoć | ISI-H12 | VERIFIED | tests/test_isi_27a_shared_help_contract.py; src/streamlit_app/shared_help_workspace.py |
+
+For INV-A17, signup fields, execution results and model XAI are NOT_APPLICABLE
+because public signup is NOT_PRESENT; institutional onboarding remains invitation-only.
+Shared Help does not compute model outputs: numerical XAI is NOT_APPLICABLE here;
+domain/AI XAI remains owned by its accepted guides. ISI-H07 covers upload/catalog,
+analytical/feature inspection, lineage and eligibility; API-only governance is
+explicitly identified. H08 covers version/review/publication/export; H09 covers
+members/access/roles/invitations/workspaces/organization/audit; H10 covers password
+assurance and self-session revocation. No additional runtime capabilities are implied.
+
+Candidate acceptance evidence belongs under
+`automation/evidence/ISI-27A-SHARED-HELP-RELEASE-UX-COMPLETENESS/`.
+The independent runner and review gates remain required before IMPLEMENTED/REVIEW_VERIFIED.

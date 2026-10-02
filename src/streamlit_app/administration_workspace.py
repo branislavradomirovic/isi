@@ -4,6 +4,8 @@ import re
 
 import streamlit as st
 
+from src.streamlit_app.shared_help_workspace import render_topic_summary
+
 from src.streamlit_app import administration_api
 from src.streamlit_app.api_client import AccessDenied, ApiUnavailable, AuthenticationRequired
 
@@ -27,6 +29,7 @@ def _slugify(value: str) -> str:
 
 
 def render_administration(*, token: str, shell: dict) -> None:
+    render_topic_summary("ISI-H09")
     product = shell["product"]
     product_code = product["code"]
     organization_id = str(shell["organization"]["id"])
@@ -123,9 +126,6 @@ def render_administration(*, token: str, shell: dict) -> None:
                 result = _safe(administration_api.invite, token, organization_id=organization_id, product_code=product_code, email=email, role_code=role_code)
                 if result:
                     st.success("Poziv je kreiran sa eksplicitnim product access + role grant-om.")
-                    if result.get("development_token"):
-                        st.warning("Razvojni token je prikazan samo zato što ISI_ENV nije production. Ne tretirati ovaj ekran kao produkcioni delivery kanal.")
-                        st.code(result["development_token"])
                     st.rerun()
             invitations = data.get("invitations", [])
             if invitations:

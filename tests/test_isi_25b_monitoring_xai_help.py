@@ -82,8 +82,9 @@ def test_shared_ai_guide_and_matrix_are_complete_without_overclaiming_isi27():
                    "Provenance and XAI", "Explicit non-goals", "review_required", "online learning"):
         assert marker.lower() in guide.lower()
     assert "ISI-25B shared AI material actions" in matrix
-    assert "REMOVE_IN_NAMED_PHASE(ISI-27)" in matrix
-    assert "global matrix honestly remains PARTIAL" in matrix
+    global_row = next(line for line in matrix.splitlines() if line.startswith("| INV-A21 |"))
+    assert "| VERIFIED |" in global_row
+    assert "test_isi_27a_shared_help_contract.py" in global_row
 
 
 def test_capability_status_and_xai_select_only_authorized_workspace_evidence():

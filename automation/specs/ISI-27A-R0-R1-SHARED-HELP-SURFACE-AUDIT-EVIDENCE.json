@@ -1,0 +1,378 @@
+{
+  "baseline_sha": "39dc1d59a74a03c86f68df093cc07e32d41d028c",
+  "baseline_tree": "3c7027b375b041043f7305cdab008aee35f16ef7",
+  "boundaries": {
+    "ci_verified": false,
+    "codex_calls": 0,
+    "github_actions_dispatch": false,
+    "server_mutation": false,
+    "server_verified": false,
+    "stage_commit_push": false
+  },
+  "observed_matrix": {
+    "INV-A01": {
+      "coverage": "MISSING",
+      "evidence": "Not owned by ISI-23D.",
+      "owner": "FOUNDATION / ISI-27",
+      "surface": "Public website"
+    },
+    "INV-A02": {
+      "coverage": "MISSING",
+      "evidence": "Not owned by ISI-23D.",
+      "owner": "ISI-20 / ISI-27",
+      "surface": "Login"
+    },
+    "INV-A03": {
+      "coverage": "MISSING",
+      "evidence": "Not owned by ISI-23D.",
+      "owner": "ISI-13 / ISI-20",
+      "surface": "Invitation onboarding"
+    },
+    "INV-A04": {
+      "coverage": "MISSING",
+      "evidence": "Not owned by ISI-23D.",
+      "owner": "ISI-20",
+      "surface": "Email verification"
+    },
+    "INV-A05": {
+      "coverage": "MISSING",
+      "evidence": "Not owned by ISI-23D.",
+      "owner": "ISI-20",
+      "surface": "Password reset"
+    },
+    "INV-A06": {
+      "coverage": "PARTIAL",
+      "evidence": "SIMPA access/workspace context covered by SIMPA-H01; cross-product shell Help remains open.",
+      "owner": "FOUNDATION / ISI-23 / ISI-24",
+      "surface": "Authenticated app shell"
+    },
+    "INV-A08": {
+      "coverage": "PARTIAL",
+      "evidence": "SIMPA governed analytical prerequisite covered by SIMPA-H05; full Data workspace Help remains open.",
+      "owner": "ISI-22",
+      "surface": "Data workspace"
+    },
+    "INV-A14": {
+      "coverage": "MISSING",
+      "evidence": "Shared reporting Help remains open.",
+      "owner": "ISI-27",
+      "surface": "Reporting workspace"
+    },
+    "INV-A15": {
+      "coverage": "MISSING",
+      "evidence": "Shared administration Help remains open.",
+      "owner": "ISI-20 / ISI-27",
+      "surface": "Administration workspace"
+    },
+    "INV-A16": {
+      "coverage": "MISSING",
+      "evidence": "Shared security Help remains open.",
+      "owner": "ISI-20",
+      "surface": "Account security workspace"
+    },
+    "INV-A17": {
+      "coverage": "MISSING",
+      "evidence": "Surface is intentionally NOT_PRESENT; cross-product absence/help wording remains outside ISI-23D.",
+      "owner": "ISI-20",
+      "surface": "Public self-registration"
+    },
+    "INV-A21": {
+      "coverage": "PARTIAL",
+      "evidence": "ISI-25-owned shared AI guidance is VERIFIED; Login/Reporting/Administration/Security/shared release coverage remains REMOVE_IN_NAMED_PHASE(ISI-27), so the global matrix honestly remains PARTIAL.",
+      "owner": "ISI-23 / ISI-24 / ISI-25 / ISI-27",
+      "surface": "Cross-product Help Coverage Matrix"
+    }
+  },
+  "proposed_implementation_surface": [
+    "docs/help/ISI-SHARED-USER-GUIDE.md (new canonical shared guide)",
+    "docs/help/ISI-HELP-COVERAGE-MATRIX.md",
+    "src/streamlit_app/app.py",
+    "src/streamlit_app/data_workspace.py",
+    "src/streamlit_app/reporting_workspace.py",
+    "src/streamlit_app/administration_workspace.py",
+    "src/streamlit_app/security_workspace.py",
+    "src/public/templates/partials/header.html and/or footer.html (public Help entry point; exact choice after implementation inspection)",
+    "tests/test_isi_27a_shared_help_contract.py (new)",
+    "targeted inherited auth/public/app-shell tests only where needed"
+  ],
+  "protected_verified_predecessor_help": {
+    "INV-A10": {
+      "coverage": "VERIFIED",
+      "evidence": "SIMPA-H02/H03/H04 plus SIMPA User Guide; tests/test_isi_23d_help_xai_contract.py.",
+      "owner": "ISI-23",
+      "surface": "SIMPA indicators"
+    },
+    "INV-A11": {
+      "coverage": "VERIFIED",
+      "evidence": "SIMPA-H05 through H12 plus deterministic statistical XAI; ISI-23D tests.",
+      "owner": "ISI-23",
+      "surface": "SIMPA analytics"
+    },
+    "INV-A12": {
+      "coverage": "VERIFIED",
+      "evidence": "ORDO-H01 through H06 plus ORDO User Guide; tests/test_isi_24d_help_xai_contract.py.",
+      "owner": "ISI-24",
+      "surface": "ORDO indicators"
+    },
+    "INV-A13": {
+      "coverage": "VERIFIED",
+      "evidence": "ORDO-H05 through H11, governed time-series-spec lifecycle, series discovery, explicit forecast execution, persisted-result presentation and deterministic forecast/scenario XAI; ISI-24D/24E tests.",
+      "owner": "ISI-24",
+      "surface": "ORDO analytics and scenarios"
+    },
+    "INV-A18": {
+      "coverage": "VERIFIED",
+      "evidence": "SIMPA domain Help/statistical XAI plus ISI-25 shared AI evaluation/provenance/promotion/fallback interpretation are verified; remaining global release Help remains ISI-27.",
+      "owner": "ISI-23 / ISI-25 / ISI-27",
+      "surface": "SIMPA Help, User Guide and XAI interpretation"
+    },
+    "INV-A19": {
+      "coverage": "VERIFIED",
+      "evidence": "ORDO forecast/scenario Help/XAI plus ISI-25 shared AI evaluation/provenance/promotion/fallback interpretation are verified; remaining global release Help remains ISI-27.",
+      "owner": "ISI-24 / ISI-25 / ISI-27",
+      "surface": "ORDO Help, User Guide and XAI interpretation"
+    }
+  },
+  "public_self_registration": {
+    "auth_route_scan": "PASS",
+    "must_remain_absent": true,
+    "state": "NOT_PRESENT"
+  },
+  "release_blocking_help_ids": [
+    "INV-A01",
+    "INV-A02",
+    "INV-A03",
+    "INV-A04",
+    "INV-A05",
+    "INV-A06",
+    "INV-A08",
+    "INV-A14",
+    "INV-A15",
+    "INV-A16",
+    "INV-A17",
+    "INV-A21"
+  ],
+  "schema_version": 1,
+  "scope_notes": [
+    "INV-A07 is not one of the corrected twelve ISI-27A release blockers and is not silently added to scope.",
+    "INV-A20 is OUT_OF_SCOPE and NOT_PRESENT.",
+    "SIMPA/ORDO/shared-AI Help/XAI predecessor authorities remain protected and are not reimplemented.",
+    "Exact mutable paths are not yet authorized by this read-only audit; the next 27A implementation contract must freeze them."
+  ],
+  "surface_code_markers": {
+    "administration": {
+      "src/streamlit_app/administration_workspace.py": {
+        "caption": true,
+        "exists": true,
+        "expander": false,
+        "help_word": false,
+        "invitation": true,
+        "login": true,
+        "password_reset": false,
+        "self_registration": false,
+        "verification": false
+      }
+    },
+    "auth": {
+      "src/api/auth_routes.py": {
+        "caption": false,
+        "exists": true,
+        "expander": false,
+        "help_word": false,
+        "invitation": true,
+        "login": true,
+        "password_reset": true,
+        "self_registration": false,
+        "verification": true
+      },
+      "src/platform/auth/delivery.py": {
+        "caption": false,
+        "exists": true,
+        "expander": false,
+        "help_word": false,
+        "invitation": true,
+        "login": true,
+        "password_reset": true,
+        "self_registration": false,
+        "verification": true
+      },
+      "src/streamlit_app/app.py": {
+        "caption": true,
+        "exists": true,
+        "expander": true,
+        "help_word": true,
+        "invitation": false,
+        "login": true,
+        "password_reset": false,
+        "self_registration": false,
+        "verification": false
+      }
+    },
+    "data": {
+      "src/streamlit_app/data_workspace.py": {
+        "caption": true,
+        "exists": true,
+        "expander": true,
+        "help_word": true,
+        "invitation": false,
+        "login": true,
+        "password_reset": false,
+        "self_registration": false,
+        "verification": false
+      }
+    },
+    "help": {
+      "docs/help/ISI-AI-USER-GUIDE.md": {
+        "caption": false,
+        "exists": true,
+        "expander": false,
+        "help_word": true,
+        "invitation": false,
+        "login": false,
+        "password_reset": true,
+        "self_registration": false,
+        "verification": false
+      },
+      "docs/help/ISI-HELP-COVERAGE-MATRIX.md": {
+        "caption": false,
+        "exists": true,
+        "expander": false,
+        "help_word": true,
+        "invitation": true,
+        "login": true,
+        "password_reset": true,
+        "self_registration": true,
+        "verification": true
+      },
+      "docs/help/ORDO-USER-GUIDE.md": {
+        "caption": false,
+        "exists": true,
+        "expander": false,
+        "help_word": true,
+        "invitation": false,
+        "login": true,
+        "password_reset": false,
+        "self_registration": false,
+        "verification": true
+      },
+      "docs/help/SIMPA-USER-GUIDE.md": {
+        "caption": false,
+        "exists": true,
+        "expander": false,
+        "help_word": true,
+        "invitation": false,
+        "login": false,
+        "password_reset": false,
+        "self_registration": false,
+        "verification": false
+      },
+      "src/streamlit_app/ordo_help_workspace.py": {
+        "caption": true,
+        "exists": true,
+        "expander": false,
+        "help_word": true,
+        "invitation": false,
+        "login": true,
+        "password_reset": false,
+        "self_registration": false,
+        "verification": true
+      },
+      "src/streamlit_app/simpa_help_workspace.py": {
+        "caption": true,
+        "exists": true,
+        "expander": false,
+        "help_word": true,
+        "invitation": false,
+        "login": true,
+        "password_reset": false,
+        "self_registration": false,
+        "verification": false
+      }
+    },
+    "public": {
+      "src/public/routes.py": {
+        "caption": false,
+        "exists": true,
+        "expander": false,
+        "help_word": false,
+        "invitation": false,
+        "login": false,
+        "password_reset": false,
+        "self_registration": false,
+        "verification": false
+      },
+      "src/public/templates/base.html": {
+        "caption": false,
+        "exists": true,
+        "expander": false,
+        "help_word": false,
+        "invitation": false,
+        "login": false,
+        "password_reset": false,
+        "self_registration": false,
+        "verification": false
+      },
+      "src/public/templates/partials/footer.html": {
+        "caption": false,
+        "exists": true,
+        "expander": false,
+        "help_word": false,
+        "invitation": false,
+        "login": false,
+        "password_reset": false,
+        "self_registration": false,
+        "verification": false
+      },
+      "src/public/templates/partials/header.html": {
+        "caption": false,
+        "exists": true,
+        "expander": false,
+        "help_word": false,
+        "invitation": false,
+        "login": false,
+        "password_reset": false,
+        "self_registration": false,
+        "verification": false
+      }
+    },
+    "reporting": {
+      "src/streamlit_app/reporting_workspace.py": {
+        "caption": true,
+        "exists": true,
+        "expander": true,
+        "help_word": false,
+        "invitation": false,
+        "login": true,
+        "password_reset": false,
+        "self_registration": false,
+        "verification": false
+      }
+    },
+    "security": {
+      "src/streamlit_app/security_workspace.py": {
+        "caption": true,
+        "exists": true,
+        "expander": false,
+        "help_word": false,
+        "invitation": false,
+        "login": false,
+        "password_reset": false,
+        "self_registration": false,
+        "verification": false
+      }
+    },
+    "shell": {
+      "src/streamlit_app/app.py": {
+        "caption": true,
+        "exists": true,
+        "expander": true,
+        "help_word": true,
+        "invitation": false,
+        "login": true,
+        "password_reset": false,
+        "self_registration": false,
+        "verification": false
+      }
+    }
+  }
+}

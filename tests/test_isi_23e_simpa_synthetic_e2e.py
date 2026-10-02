@@ -103,14 +103,15 @@ def test_synthetic_contract_engine_xai_flow_for_all_accepted_families(semantic, 
             assert "generic confidence score" in xai["calibration_interpretation"].casefold()
 
 
-def test_synthetic_flow_terminates_in_verified_simpa_help_without_upgrading_global_matrix():
+def test_synthetic_flow_preserves_simpa_help_and_follows_current_global_matrix_authority():
     matrix = (ROOT / "docs/help/ISI-HELP-COVERAGE-MATRIX.md").read_text(encoding="utf-8")
     guide = (ROOT / "docs/help/SIMPA-USER-GUIDE.md").read_text(encoding="utf-8")
     for row in ("INV-A10", "INV-A11", "INV-A18"):
         line = next(item for item in matrix.splitlines() if item.startswith(f"| {row} |"))
         assert "| VERIFIED |" in line
     inv_a21 = next(item for item in matrix.splitlines() if item.startswith("| INV-A21 |"))
-    assert "| PARTIAL |" in inv_a21
+    assert "| VERIFIED |" in inv_a21
+    assert "test_isi_27a_shared_help_contract.py" in inv_a21
     for phrase in (
         "OLS",
         "Poisson",

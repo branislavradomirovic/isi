@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import streamlit as st
 
+from src.streamlit_app.shared_help_workspace import render_topic_summary
+
 from src.streamlit_app import reporting_api
 from src.streamlit_app.api_client import AccessDenied, ApiUnavailable, AuthenticationRequired
 
@@ -45,6 +47,7 @@ def _section(section: dict) -> None:
 
 
 def render_reporting(*, token: str, shell: dict) -> None:
+    render_topic_summary("ISI-H08")
     product = shell["product"]
     product_code = product["code"]
     organization_id = str(shell["organization"]["id"])

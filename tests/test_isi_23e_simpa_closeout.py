@@ -58,12 +58,12 @@ def test_masterplan_and_evidence_close_phase_without_claiming_new_capability():
     assert "LISI" in evidence
 
 
-def test_simpa_help_acceptance_is_verified_without_false_global_upgrade():
+def test_simpa_help_acceptance_preserves_simpa_and_follows_current_global_matrix_authority():
     rows = _matrix_rows()
     assert rows["INV-A10"] == "VERIFIED"
     assert rows["INV-A11"] == "VERIFIED"
     assert rows["INV-A18"] == "VERIFIED"
-    assert rows["INV-A21"] == "PARTIAL"
+    assert rows["INV-A21"] == "VERIFIED"
     assert any(value in {"PARTIAL", "MISSING"} for key, value in rows.items() if key not in {"INV-A10", "INV-A11", "INV-A18"})
     assert GUIDE.is_file()
 

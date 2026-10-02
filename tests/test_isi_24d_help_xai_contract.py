@@ -52,7 +52,7 @@ def test_user_guide_and_matrix_cover_ordo_without_promoting_shared_surfaces():
     for row_id in ("INV-A12", "INV-A13", "INV-A19"):
         row = next(line for line in matrix.splitlines() if line.startswith(f"| {row_id} |"))
         assert "| VERIFIED |" in row
-    assert "| PARTIAL |" in next(
+    assert "| VERIFIED |" in next(
         line for line in matrix.splitlines() if line.startswith("| INV-A21 |")
     )
     # INV-A09 was intentionally PARTIAL during ISI-24D, but ISI-25 owns the
@@ -66,7 +66,8 @@ def test_user_guide_and_matrix_cover_ordo_without_promoting_shared_surfaces():
     assert "ISI-AI-USER-GUIDE.md" in ai_workspace_row
     for row_id in ("INV-A02", "INV-A08", "INV-A14", "INV-A15", "INV-A16"):
         row = next(line for line in matrix.splitlines() if line.startswith(f"| {row_id} |"))
-        assert "| VERIFIED |" not in row
+        assert "| VERIFIED |" in row
+        assert "test_isi_27a_shared_help_contract.py" in row
 
 
 def test_inventory_policy_harness_and_governance_history_are_synchronized():

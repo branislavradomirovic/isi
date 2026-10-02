@@ -74,7 +74,7 @@ def test_phase24_inventory_is_synchronized_to_accepted_customer_workflow():
     assert "read-only persisted forecast presentation" not in a13
     assert "no raw-UUID execution form" not in a13
     assert "tests/test_isi_24e_forecast_workflow_ui.py" in a19
-    assert "global Help remains partial" in a19
+    assert "ISI-27A supplies current shared Help/presentation authority" in a19
     assert "tests/test_isi_24e*.py" in m08
 
 
@@ -84,7 +84,8 @@ def test_f01_stale_caption_remains_removed_and_f08_stays_deferred():
     assert "ISI-11 povezuje" not in ui
     assert "| INV-A13 | ORDO analytics and scenarios | VERIFIED |" in matrix
     assert "| INV-A19 | ORDO Help, User Guide and XAI interpretation | VERIFIED |" in matrix
-    assert "| INV-A21 | Cross-product Help Coverage Matrix | PARTIAL |" in matrix
+    assert "| INV-A21 | Cross-product Help Coverage Matrix | VERIFIED |" in matrix
+    assert "test_isi_27a_shared_help_contract.py" in next(line for line in matrix.splitlines() if line.startswith("| INV-A21 |"))
 
 def test_masterplan_has_no_stale_phase24_in_progress_binding_after_closeout():
     master = (ROOT / "docs/roadmap/ISI-AUTONOMOUS-INDUSTRIALIZATION-MASTER-PLAN.md").read_text()

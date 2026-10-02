@@ -38,7 +38,8 @@ def test_help_matrix_user_guide_and_inventory_are_synchronized():
         row = next(line for line in matrix.splitlines() if line.startswith(f"| {row_id} |"))
         assert "| VERIFIED |" in row
     global_row = next(line for line in matrix.splitlines() if line.startswith("| INV-A21 |"))
-    assert "| PARTIAL |" in global_row
+    assert "| VERIFIED |" in global_row
+    assert "test_isi_27a_shared_help_contract.py" in global_row
     for phrase in (
         "DRAFT -> PROPOSED -> VALIDATED -> RETIRED",
         "unavailable_legacy_result",

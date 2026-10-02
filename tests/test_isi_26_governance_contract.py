@@ -31,7 +31,8 @@ def test_26e_closeout_accepts_r1_and_formal_coverage_gates():
     phase27 = tasks["ISI-27-INDUSTRIAL-RELEASE-CANDIDATE"]
     assert phase27["status"] == "in_progress"
     assert phase27["active_checkpoint"] == "ISI-27A-SHARED-HELP-RELEASE-UX-COMPLETENESS"
-    assert tasks["ISI-27A-SHARED-HELP-RELEASE-UX-COMPLETENESS"]["status"] == "spec_ready"
+    assert tasks["ISI-27A-SHARED-HELP-RELEASE-UX-COMPLETENESS"]["status"] == "in_progress"
+    assert tasks["ISI-27A-SHARED-HELP-RELEASE-UX-COMPLETENESS"]["spec"] == "automation/specs/ISI-27A-R1-SHARED-HELP-RELEASE-UX-COMPLETENESS.md"
     assert tasks["ISI-27-INDUSTRIAL-RELEASE-CANDIDATE"]["depends_on"] == [parent["id"]]
     for path in ("TECHNICAL_DOCUMENTATION.md", "automation/STATUS.md",
                  "docs/roadmap/ISI-AUTONOMOUS-INDUSTRIALIZATION-MASTER-PLAN.md"):

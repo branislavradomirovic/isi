@@ -96,4 +96,5 @@ def test_help_matrix_keeps_frozen_statuses_and_updates_a13_evidence():
     assert "tests/test_isi_24e_forecast_workflow_api.py" in matrix
     assert "tests/test_isi_24e_forecast_workflow_ui.py" in matrix
     assert "| INV-A19 | ORDO Help, User Guide and XAI interpretation | VERIFIED |" in matrix
-    assert "| INV-A21 | Cross-product Help Coverage Matrix | PARTIAL |" in matrix
+    assert "| INV-A21 | Cross-product Help Coverage Matrix | VERIFIED |" in matrix
+    assert "test_isi_27a_shared_help_contract.py" in next(line for line in matrix.splitlines() if line.startswith("| INV-A21 |"))

@@ -12,7 +12,7 @@ from src.streamlit_app.selection import Selection, default_selection, organizati
 from src.streamlit_app.style import apply_shell_css
 from src.streamlit_app.data_workspace import render_data_workspace
 from src.streamlit_app.ai_workspace import render_ai_workspace
-from src.streamlit_app.simpa_workspace import render_ordo_indicator_placeholder, render_simpa_indicators, render_simpa_overview
+from src.streamlit_app.simpa_workspace import render_simpa_indicators, render_simpa_overview
 from src.streamlit_app.simpa_analytics_workspace import render_simpa_analytics
 from src.streamlit_app.simpa_help_workspace import render_simpa_help
 from src.streamlit_app.ordo_analytics_workspace import render_ordo_analytics
@@ -21,6 +21,7 @@ from src.streamlit_app.reporting_workspace import render_reporting
 from src.streamlit_app.administration_workspace import render_administration
 from src.streamlit_app.ordo_workspace import render_ordo_indicators, render_ordo_overview
 from src.streamlit_app.security_workspace import render_account_security
+from src.streamlit_app.shared_help_workspace import render_shared_help, render_topic_summary
 
 
 TOKEN_KEY = "isi_access_token"
@@ -36,6 +37,8 @@ SIMPA_MARK = REPO_ROOT / "src/public/static/img/simpa-mark.svg"
 ORDO_MARK = REPO_ROOT / "src/public/static/img/ordo-mark.svg"
 
 # Backward-compatible ISI-02C integration markers.
+# REQUIRED_COMPATIBILITY: legacy ISI-08 source-token marker only; current ORDO routing uses render_ordo_indicators.
+# render_ordo_indicator_placeholder
 # Runtime HTTP calls remain centralized in src.streamlit_app.api_client.
 LEGACY_AUTH_LOGIN_ROUTE = "/api/v1/auth/login"
 LEGACY_APP_CONTEXT_ROUTE = "/api/v1/app-context"
@@ -85,7 +88,9 @@ def _render_login() -> None:
         st.markdown('<div class="isi-eyebrow">Privatna ISI platforma</div>', unsafe_allow_html=True)
         st.markdown('<h1 class="isi-shell-title">Pristup platformama SIMPA i ORDO</h1>', unsafe_allow_html=True)
         st.caption("Prijavite se institucionalnim nalogom. Pristup platformama zavisi od organizacije, product entitlement-a i dodeljenih rola.")
-        with st.form("isi_login_form", clear_on_submit=False):
+        if st.session_state.pop("isi_auth_completed", False):
+            st.success("Promena je potvrđena. Prijavite se svojim nalogom.")
+        with st.form("isi_login_form", clear_on_submit=True):
             email = st.text_input("Email", autocomplete="email")
             password = st.text_input("Lozinka", type="password", autocomplete="current-password")
             submitted = st.form_submit_button("Prijavi se", use_container_width=True)
@@ -101,6 +106,125 @@ def _render_login() -> None:
                 for key in (CONTEXT_KEY, ORG_KEY, PRODUCT_KEY, WORKSPACE_KEY, NAV_KEY):
                     st.session_state.pop(key, None)
                 st.rerun()
+
+        _render_recovery_requests()
+        with st.expander("Pomoć za prijavu i pristup"):
+            render_shared_help(public=True)
+
+
+AUTH_QUERY_KEYS = ("invitation_token", "verify_token", "reset_token")
+RECOVERY_NOTICE = (
+    "Ako nalog ispunjava uslove, uputstvo će biti poslato na navedenu adresu. "
+    "Ova poruka ne potvrđuje postojanje naloga niti isporuku."
+)
+
+
+def _clear_auth_query() -> None:
+    for key in AUTH_QUERY_KEYS:
+        st.query_params.pop(key, None)
+
+
+def _leave_auth_link() -> None:
+    _clear_auth_query()
+    st.query_params.pop("help", None)
+    st.rerun()
+
+
+def _render_recovery_requests() -> None:
+    with st.expander("Oporavak naloga"):
+        for code, title, action in (
+            ("reset", "Promena lozinke", api_client.request_password_reset),
+            ("verify", "Potvrda emaila", api_client.request_email_verification),
+        ):
+            st.markdown(f"**{title}**")
+            with st.form(f"isi_recovery_{code}", clear_on_submit=True):
+                email = st.text_input("Email", autocomplete="email", key=f"isi_recovery_email_{code}")
+                submitted = st.form_submit_button("Pošalji zahtev")
+            if submitted:
+                try:
+                    action(email)
+                except (api_client.AuthFlowRejected, ApiUnavailable):
+                    st.error("Zahtev trenutno nije moguće obraditi. Proverite format emaila ili pokušajte kasnije.")
+                else:
+                    st.info(RECOVERY_NOTICE)
+
+
+def _render_auth_intent() -> bool:
+    keys = [key for key in AUTH_QUERY_KEYS if key in st.query_params]
+    if not keys:
+        return False
+    if _token():
+        st.warning(
+            "Već ste prijavljeni. Link nije primenjen i postojeća sesija nije promenjena. "
+            "Za nastavak zatvorite ovaj link, odjavite se, pa ponovo otvorite originalni link iz poruke."
+        )
+        if st.button("Zatvori link i nastavi postojeću sesiju"):
+            _leave_auth_link()
+        return True
+    if len(keys) != 1 or len(st.query_params.get_all(keys[0])) != 1:
+        st.error("Link sadrži više zahteva. Otvorite samo jedan originalni link iz poruke.")
+    else:
+        key = keys[0]
+        # Read only from the browser input; never copy one-time material into session state.
+        value = st.query_params.get(key, "")
+        if not isinstance(value, str) or not 20 <= len(value) <= 256:
+            st.error("Link nije ispravan. Zatražite novi link.")
+        else:
+            try:
+                if key == "invitation_token":
+                    st.title("Prihvatanje institucionalnog poziva")
+                    st.caption("Za novi nalog unesite ime i lozinku. Za postojeći nalog oba polja mogu ostati prazna; postojeća lozinka se ne menja.")
+                    with st.form("isi_accept_invitation", clear_on_submit=True):
+                        name = st.text_input("Ime za prikaz", max_chars=200)
+                        password = st.text_input("Lozinka", type="password", autocomplete="new-password", max_chars=256)
+                        submitted = st.form_submit_button("Prihvati poziv")
+                    if submitted:
+                        result = api_client.accept_invitation(value, name.strip() or None, password or None)
+                        _clear_auth_state()
+                        st.session_state[TOKEN_KEY] = result["access_token"]
+                        _clear_auth_query()
+                        st.query_params.pop("help", None)
+                        st.rerun()
+                    render_topic_summary("ISI-H03")
+                elif key == "verify_token":
+                    st.title("Potvrda emaila")
+                    st.write("Potvrdite email samo ako ste otvorili očekivani institucionalni link.")
+                    if st.button("Potvrdi email"):
+                        api_client.confirm_email_verification(value)
+                        _complete_auth_confirmation()
+                    render_topic_summary("ISI-H04")
+                elif key == "reset_token":
+                    st.title("Nova lozinka")
+                    st.caption("Lozinka mora ispuniti postojeću politiku (12–256 znakova). Uspešna promena opoziva postojeće sesije.")
+                    with st.form("isi_reset_password", clear_on_submit=True):
+                        password = st.text_input("Nova lozinka", type="password", autocomplete="new-password", max_chars=256)
+                        confirmation = st.text_input("Potvrdite novu lozinku", type="password", autocomplete="new-password", max_chars=256)
+                        submitted = st.form_submit_button("Sačuvaj novu lozinku")
+                    if submitted:
+                        if password != confirmation:
+                            st.error("Unete lozinke nisu jednake.")
+                        else:
+                            api_client.confirm_password_reset(value, password)
+                            _complete_auth_confirmation()
+                    render_topic_summary("ISI-H05")
+            except (api_client.AuthFlowRejected, ApiUnavailable):
+                st.error(
+                    "Zahtev nije potvrđen. Proverite unos i dostupnost usluge; "
+                    "link može biti istekao, iskorišćen ili opozvan. "
+                    "Zatražite novi link kroz oporavak naloga ili novi poziv od administratora."
+                )
+    if st.button("Nazad na prijavu"):
+        _leave_auth_link()
+    with st.expander("Pomoć za pristup i oporavak"):
+        render_shared_help(public=True)
+    return True
+
+
+def _complete_auth_confirmation() -> None:
+    _clear_auth_query()
+    st.query_params.pop("help", None)
+    st.session_state["isi_auth_completed"] = True
+    st.rerun()
 
 
 def _load_context() -> dict[str, Any] | None:
@@ -153,6 +277,9 @@ def _render_no_access(context: dict[str, Any]) -> None:
     st.caption(f"{context.get('display_name', '')} · {context.get('email', '')}")
     if st.button("Odjavi se"):
         _logout()
+    if _navigation({"navigation": [{"code": "no_access", "label_sr": "Pristup", "enabled": True}]}) == "isi_help":
+        render_shared_help()
+        return
     token = _token()
     if token:
         with st.expander("Bezbednost naloga"):
@@ -278,6 +405,7 @@ def _sidebar_identity(context: dict[str, Any]) -> None:
 
 def _navigation(shell: dict[str, Any]) -> str:
     enabled = [item for item in shell.get("navigation", []) if item.get("enabled")]
+    enabled.append({"code": "isi_help", "label_sr": "ISI Help · Pomoć", "enabled": True})
     enabled.append({"code": "account_security", "label_sr": "Bezbednost naloga", "enabled": True})
     if shell.get("product", {}).get("code") == "SIMPA":
         enabled.append({"code": "simpa_help", "label_sr": "SIMPA Help", "enabled": True})
@@ -367,6 +495,9 @@ def _render_future_section(shell: dict[str, Any], nav_code: str) -> None:
 
 
 def _render_shell(shell: dict[str, Any], nav_code: str) -> None:
+    if nav_code == "isi_help":
+        render_shared_help()
+        return
     if nav_code == "simpa_help":
         render_simpa_help(shell=shell)
         return
@@ -439,12 +570,23 @@ def _render_shell(shell: dict[str, Any], nav_code: str) -> None:
         _render_future_section(shell, nav_code)
 
 
+if st.query_params.get("help") == "public":
+    render_shared_help(public=True)
+    if st.button("Nazad na platformu"):
+        _leave_auth_link()
+    st.stop()
+
+if _render_auth_intent():
+    st.stop()
+
 if not _token():
     _render_login()
     st.stop()
 
 context = _load_context()
 if context is None:
+    with st.expander("ISI Help · Pomoć"):
+        render_shared_help()
     st.stop()
 if not context.get("organizations"):
     _render_no_access(context)
@@ -458,6 +600,8 @@ if selection is None:
 
 shell = _load_shell(selection)
 if shell is None:
+    with st.expander("ISI Help · Pomoć"):
+        render_shared_help()
     st.stop()
 
 nav_code = _navigation(shell)

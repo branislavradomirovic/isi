@@ -4,6 +4,8 @@ from typing import Any
 
 import streamlit as st
 
+from src.streamlit_app.shared_help_workspace import render_topic_summary
+
 from src.streamlit_app import data_api
 from src.streamlit_app.api_client import AccessDenied, ApiUnavailable, AuthenticationRequired
 
@@ -297,6 +299,7 @@ def _render_analytical_governance(token: str, shell: dict[str, Any], scope: tupl
 
 
 def render_data_workspace(*, token: str, shell: dict[str, Any]) -> None:
+    render_topic_summary("ISI-H07")
     product = shell["product"]
     organization = shell["organization"]
     workspace = shell.get("workspace")

@@ -16,6 +16,7 @@
         {% endif %}
       {% endfor %}
       {% if alternate_path %}<a class="locale-link" hreflang="{{ 'sr-Latn' if locale == 'en' else 'en' }}" href="{{ alternate_path }}">{{ alternate_label }}</a>{% endif %}
+      <a href="{{ app_url }}?help=public">{{ 'Help (Serbian)' if locale == 'en' else 'Pomoć' }}</a>
       <a class="app-link approved-app-link" href="{{ app_url }}">{{ 'Open platform' if locale == 'en' else 'Otvori platformu' }} <span aria-hidden="true">→</span></a>
     </nav>
   </div>

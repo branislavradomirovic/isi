@@ -1,8 +1,8 @@
 # ISI Technical Documentation
 
-**Version:** 1.0  
+**Version:** 1.5
 **Status:** Controlled living technical document  
-**Last updated:** 2026-10-01  
+**Last updated:** 2026-10-02
 **Canonical repository:** `branislavradomirovic/isi`  
 **As-built feature checkpoint:** `7e11ee2a6f7546eacc3207e15cacfc35f6d04f3e` (ISI-25B)  
 **Pre-reconciliation governance baseline:** `ff573b3d76cf29581cb19c255821e9b4c4841108`  
@@ -35,7 +35,7 @@ The platform currently includes a public institutional website, an authenticated
 | ISI-24 ORDO Production Methodology + Help/XAI | COMPLETE / CI_VERIFIED |
 | ISI-25 Industrial AI / MLOps | IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED |
 | ISI-26 Performance, Load & Resilience | IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED |
-| ISI-27 Industrial Release Candidate | IN PROGRESS / SCOPE LOCKED / 27A SPEC_READY |
+| ISI-27 Industrial Release Candidate | IN PROGRESS / SCOPE LOCKED / 27A IMPLEMENTATION CANDIDATE / NOT CI_VERIFIED |
 | ISI-28 Current Server Controlled Upgrade | DEFERRED / owner-gated |
 
 ISI-25A is accepted at `f0047321ee4410522697144ecfa464087f1b83bc`. ISI-25B is accepted at `7e11ee2a6f7546eacc3207e15cacfc35f6d04f3e`. Hosted full acceptance was deliberately not run for those development checkpoints under the owner CI-cost policy; `CI_VERIFIED` is therefore not claimed for ISI-25.
@@ -414,7 +414,7 @@ Existing production RPO/RTO numbers in the recovery runbook are **proposed plann
 
 Production-complete user-facing functionality requires Help coverage in the canonical Help Coverage Matrix.
 
-SIMPA and ORDO domain Help/XAI are implemented and phase-accepted. Global/shared Help coverage remains a release-candidate gate under ISI-27.
+SIMPA and ORDO domain Help/XAI are implemented and phase-accepted. Shared Help/presentation has a local ISI-27A candidate and focused test authority; overall runner acceptance, independent review and later release gates remain open.
 
 XAI must remain faithful to actual model/run evidence. The platform must not invent:
 
@@ -532,3 +532,50 @@ Historical deployment documents remain useful only when the MasterPlan/ADR class
 | 1.2 | 2026-10-01 | R1 full-slice candidate supersedes active micro-task execution; adds local performance contracts, workload/evidence tooling and explicit capacity limitations. |
 | 1.1 | 2026-10-01 | ISI-26-B0 closed; locks 26A-26E performance/resilience slice model and 26A contract-first/no-false-production-SLO rule. |
 | 1.0 | 2026-10-01 | Initial consolidated technical baseline; closes stale ISI-25B status, establishes ISI-26 as next, records central Nginx as final shared-edge authority, locks `https://isi.opus.rs:8445/`, and preserves ISI-28 as the exclusive live-server mutation phase. |
+
+
+## ISI-27A R1 implementation candidate
+
+Baseline: `39dc1d59a74a03c86f68df093cc07e32d41d028c`, tree
+`3c7027b375b041043f7305cdab008aee35f16ef7`. Contract:
+`automation/specs/ISI-27A-R1-SHARED-HELP-RELEASE-UX-COMPLETENESS.md`.
+27A is `in_progress`, an unstaged/uncommitted implementation-candidate, NOT CI_VERIFIED.
+Parent ISI-27 remains in_progress; active checkpoint remains
+`ISI-27A-SHARED-HELP-RELEASE-UX-COMPLETENESS`; 27B/27C/27D stay planned.
+
+Shared Help authority: `src/streamlit_app/shared_help_workspace.py`, twelve topics
+ISI-H01..H12, mirrored in `docs/help/ISI-SHARED-USER-GUIDE.md`.
+Public header/footer target `help=public`; public-safe guidance needs no session.
+Authenticated `isi_help` and contextual Data/Reporting/Admin/Account Security Help
+use that authority. Invitation/verification/reset presentation consumes existing
+APIs and clears sensitive queries on success; active sessions cannot be replaced
+by one-time links. Public self-registration remains NOT_PRESENT/invitation-only.
+The twelve corrected matrix rows have focused 27A Help/test authority; A07/A20
+are not promoted. Protected SIMPA/ORDO/AI Help content is unchanged.
+
+Bootstrap classification: accepted auth/domain/service authorities DONE;
+shared Help/auth presentation PARTIAL/MISSING at baseline, addressed in this
+candidate. Protected auth/domain authorities and shell markers are
+REQUIRED_COMPATIBILITY. Earlier phase/global Help statements are LEGITIMATE_HISTORY;
+the current top-level matrix supersedes their global status only, not methodology.
+The R0 parser over-read is LEGITIMATE_HISTORY; corrected R0-R1 hashes match.
+Historical tests freezing global PARTIAL are REMOVE_BEFORE_NEXT_SLICE.
+ISI-27A-R1A authorizes only four inherited predecessor Help assertions to converge
+with the current top-level matrix authority; no domain/runtime semantics, predecessor
+acceptance facts, methodology, XAI or authorization behavior are changed. Full local
+acceptance and independent review remain required; no test bypass is permitted.
+
+Local HEAD and origin/main match baseline; direct remote verification is unavailable
+in this sandbox because GitHub DNS resolution failed. The latest recorded hosted
+acceptance is predecessor run #90 / 35238623960 on 5937daa2ea7ff9c476bd6a05a04841d1534aefe2,
+not this candidate; 25/26 hosted acceptance was deliberately deferred. Runner
+fingerprint, complete deterministic acceptance and independent review remain gates.
+
+STAGE_COMMIT_PUSH=NO; GITHUB_ACTIONS_DISPATCH=NO; SERVER_MUTATION=NO;
+CI_VERIFIED=NO; SERVER_VERIFIED=NO. Real-provider MFA is not verified; production
+SMTP and live deployment/capacity remain ISI-28-only, DEFERRED_SERVER_VERIFICATION.
+
+
+### ISI-27A-R1A no-Codex inherited Help convergence
+
+R1A continues the existing unstaged R1 candidate after workspace-credit exhaustion. It authorizes only four predecessor test assertions that froze the historical global `INV-A21=PARTIAL` state. Runtime/auth/domain code is frozen to the R1 prestate. The current top-level Help matrix may be `VERIFIED` for the corrected production-critical 27A scope while predecessor phase facts remain historical. `INV-A17` remains `NOT_PRESENT` and onboarding remains invitation-only. Full local regression, independent analysis and human review remain open; `CI_VERIFIED=NO`, `SERVER_VERIFIED=NO`, `STAGE_COMMIT_PUSH=NO`, `GITHUB_ACTIONS_DISPATCH=NO`, `SERVER_MUTATION=NO`.

@@ -82,3 +82,49 @@ def app_shell(
     if response.status_code != 200:
         raise ApiUnavailable("Nije moguće učitati aplikacioni shell.")
     return response.json()
+
+
+class AuthFlowRejected(RuntimeError):
+    """Bounded customer error; never carry a response body or submitted secret."""
+
+
+def _auth_action(path: str, payload: dict[str, Any], *, expected_status: int = 200) -> httpx.Response:
+    response = request("POST", path, json=payload)
+    if response.status_code >= 500:
+        raise ApiUnavailable("Usluga trenutno nije dostupna. Pokušajte kasnije.")
+    if response.status_code != expected_status:
+        raise AuthFlowRejected(
+            "Zahtev nije prihvaćen. Proverite unos ili zatražite novi link; "
+            "link može biti istekao, iskorišćen ili opozvan."
+        )
+    return response
+
+
+def accept_invitation(token: str, display_name: str | None, password: str | None) -> dict[str, Any]:
+    response = _auth_action(
+        "/api/v1/auth/invitations/accept",
+        {"token": token, "display_name": display_name, "password": password},
+    )
+    try:
+        result = response.json()
+    except ValueError:
+        raise ApiUnavailable("Odgovor prijave nije dostupan. Pokušajte prijavu ili kontaktirajte administratora.") from None
+    if not isinstance(result, dict) or not isinstance(result.get("access_token"), str) or not result["access_token"]:
+        raise ApiUnavailable("Odgovor prijave nije dostupan. Pokušajte prijavu ili kontaktirajte administratora.")
+    return {"access_token": result["access_token"]}
+
+
+def confirm_email_verification(token: str) -> None:
+    _auth_action("/api/v1/auth/email-verification/confirm", {"token": token})
+
+
+def confirm_password_reset(token: str, new_password: str) -> None:
+    _auth_action("/api/v1/auth/password-reset/confirm", {"token": token, "new_password": new_password})
+
+
+def request_password_reset(email: str) -> None:
+    _auth_action("/api/v1/auth/password-reset/request", {"email": email}, expected_status=202)
+
+
+def request_email_verification(email: str) -> None:
+    _auth_action("/api/v1/auth/email-verification/request", {"email": email}, expected_status=202)

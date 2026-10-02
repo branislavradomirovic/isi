@@ -2,11 +2,14 @@ from __future__ import annotations
 
 import streamlit as st
 
+from src.streamlit_app.shared_help_workspace import render_topic_summary
+
 from src.streamlit_app.api_client import ApiUnavailable, AuthenticationRequired
 from src.streamlit_app import security_api
 
 
 def render_account_security(*, token: str) -> None:
+    render_topic_summary("ISI-H10")
     st.markdown('<div class="isi-eyebrow">Bezbednost naloga</div>', unsafe_allow_html=True)
     st.markdown('<h1 class="isi-shell-title">Sesije i potvrda identiteta</h1>', unsafe_allow_html=True)
     st.caption("Prikaz koristi isključivo privatne, ograničene opise uređaja; mrežne adrese i puni user-agent podaci se ne prikazuju.")

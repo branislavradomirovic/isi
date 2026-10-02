@@ -369,20 +369,20 @@
       ],
       "note": "ISI-27 B0-R1A corrected read-only bootstrap is CLOSED/PASS on baseline e46128752e29f46dc6d9b8510198739f88da50e9: DONE=6 PARTIAL=8 MISSING=5 DRIFT=0, 13 release blockers not done and 12 real Help/XAI blockers. Execution is locked into four larger gates: 27A shared Help/release UX, 27B RC evidence/governance pack, 27C reproducible release/supply-chain assurance, and 27D owner-controlled exact-main hosted RC acceptance/closeout. Server mutation remains ISI-28-only.",
       "next": "ISI-28-CURRENT-SERVER-CONTROLLED-UPGRADE",
-      "phase_status": "IN PROGRESS / SCOPE LOCKED / 27A SPEC_READY",
+      "phase_status": "IN PROGRESS / SCOPE LOCKED / 27A IMPLEMENTATION CANDIDATE / NOT CI_VERIFIED",
       "active_checkpoint": "ISI-27A-SHARED-HELP-RELEASE-UX-COMPLETENESS",
       "spec": "automation/specs/ISI-27-SCOPE-LOCK.md"
     },
     {
       "id": "ISI-27A-SHARED-HELP-RELEASE-UX-COMPLETENESS",
       "title": "Shared Help & Release UX Completeness",
-      "status": "spec_ready",
+      "status": "in_progress",
       "depends_on": [
         "ISI-26-PERFORMANCE-LOAD-RESILIENCE"
       ],
-      "spec": "automation/specs/ISI-27-SCOPE-LOCK.md",
+      "spec": "automation/specs/ISI-27A-R1-SHARED-HELP-RELEASE-UX-COMPLETENESS.md",
       "next": "ISI-27B-RC-EVIDENCE-GOVERNANCE-PACK",
-      "note": "Formal gate. Close the 12 corrected B0-R1A production-critical Help/XAI blockers; preserve already VERIFIED SIMPA/ORDO/shared-AI authorities; INV-A17 remains NOT_PRESENT and may only use justified checklist-level NOT_APPLICABLE. No public self-registration may be added."
+      "note": "Unstaged implementation-candidate on baseline 39dc1d59a74a03c86f68df093cc07e32d41d028c; NOT CI_VERIFIED. Shared Help, public/auth presentation and contextual guidance cover the corrected twelve surfaces; INV-A17 remains NOT_PRESENT and invitation-only. Runner acceptance and independent review are pending; R1A/R1A-R2/R1A-R3 recovery provenance converges inherited Help/current-state assertions, corrects Git-ignored transient-evidence observation, preserves the canonical R1 implementation-spec pointer, and restores the required legacy ISI-08 source marker without restoring dead routing; no auth/domain runtime semantics change. Deterministic full-local acceptance and independent review remain pending. No staging, commit, push, hosted Actions or server mutation."
     },
     {
       "id": "ISI-27B-RC-EVIDENCE-GOVERNANCE-PACK",

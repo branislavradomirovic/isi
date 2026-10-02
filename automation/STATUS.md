@@ -8,7 +8,7 @@ Last status update: 2026-10-02.
 
 Last accepted implementation slice: `ISI-26-R1 - Full Performance, Load & Resilience Implementation`.
 
-ISI-26 - Performance, Load & Resilience Engineering is `IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED`. ISI-27 B0-R1A corrected read-only bootstrap is CLOSED/PASS on baseline `e46128752e29f46dc6d9b8510198739f88da50e9`; current phase is `ISI-27 - Industrial Release Candidate & Acceptance Pack` with **SCOPE LOCKED / 27A SPEC_READY**. Current checkpoint: `ISI-27A - Shared Help & Release UX Completeness`.
+ISI-26 - Performance, Load & Resilience Engineering is `IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED`. ISI-27 B0-R1A corrected read-only bootstrap is CLOSED/PASS on baseline `e46128752e29f46dc6d9b8510198739f88da50e9`; current phase is `ISI-27 - Industrial Release Candidate & Acceptance Pack` with **SCOPE LOCKED / 27A IMPLEMENTATION CANDIDATE / NOT CI_VERIFIED**. Current checkpoint: `ISI-27A - Shared Help & Release UX Completeness`.
 
 Accepted checkpoint: `ISI-25A - AI/MLOps Governance + Evaluation Foundation` is accepted on main SHA `f0047321ee4410522697144ecfa464087f1b83bc`, tree `06e419ec656ee2fb0bfb74b4a6b10d42ef275f25`, after local deterministic acceptance and assistant human review.
 
@@ -133,7 +133,7 @@ Corrected B0-R1A authority: DONE=6, PARTIAL=8, MISSING=5, DRIFT=0; 13 release bl
 
 Execution is deliberately grouped into four larger formal gates: **27A Shared Help & Release UX Completeness -> 27B RC Evidence & Governance Pack -> 27C Reproducible Release & Supply-Chain Assurance -> 27D Exact-Main RC Acceptance & Phase Closeout**. 27D is owner-controlled and owns the single explicit hosted release-candidate acceptance cycle. No hosted CI is authorized by scope lock itself.
 
-Current next action: implement the locked 27A slice from exact synchronized main. Server/live-host work remains frozen through ISI-27 and belongs exclusively to ISI-28. Krcuga and OralScanXAI remain strict non-targets.
+Current next action: validate and review the unstaged 27A implementation candidate; resolve the immutable inherited-test acceptance blockers through an authorized scope correction. Server/live-host work remains frozen through ISI-27 and belongs exclusively to ISI-28. Krcuga and OralScanXAI remain strict non-targets.
 
 ## Mandatory bootstrap rule
 
@@ -159,7 +159,7 @@ A failed required gate returns the active task to implementation/fix state. Requ
 | 24 | ORDO Production Methodology + Help/User Guide | **COMPLETE / CI_VERIFIED - 24A through 24E complete** |
 | 25 | Industrial AI / MLOps | **IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN - 25A f004732; 25B 7e11ee2; NOT CI_VERIFIED** |
 | 26 | Performance, Load & Resilience | **IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED - R1 e4b5b7f; 26E closeout complete** |
-| 27 | Industrial Release Candidate & Acceptance Pack | **IN PROGRESS / SCOPE LOCKED / 27A SPEC_READY** |
+| 27 | Industrial Release Candidate & Acceptance Pack | **IN PROGRESS / SCOPE LOCKED / 27A IMPLEMENTATION CANDIDATE / NOT CI_VERIFIED** |
 | 28 | Current Server Controlled Upgrade | **DEFERRED - fresh explicit owner approval required** |
 
 ## Locked execution boundaries
@@ -173,3 +173,50 @@ A failed required gate returns the active task to implementation/fix state. Requ
 - SIMPA and ORDO remain the only current domain applications and remain domain-isolated over shared infrastructure.
 - Numerical truth is deterministic/versioned statistical/ML output; LLM/VLM remains bounded evidence synthesis/explanation.
 - Current server/DNS/ingress/real SMTP/production secrets/data/server Ollama remain frozen through ISI-27; only ISI-28 may authorize mutation.
+
+
+## ISI-27A R1 implementation candidate
+
+Baseline: `39dc1d59a74a03c86f68df093cc07e32d41d028c`, tree
+`3c7027b375b041043f7305cdab008aee35f16ef7`. Contract:
+`automation/specs/ISI-27A-R1-SHARED-HELP-RELEASE-UX-COMPLETENESS.md`.
+27A is `in_progress`, an unstaged/uncommitted implementation-candidate, NOT CI_VERIFIED.
+Parent ISI-27 remains in_progress; active checkpoint remains
+`ISI-27A-SHARED-HELP-RELEASE-UX-COMPLETENESS`; 27B/27C/27D stay planned.
+
+Shared Help authority: `src/streamlit_app/shared_help_workspace.py`, twelve topics
+ISI-H01..H12, mirrored in `docs/help/ISI-SHARED-USER-GUIDE.md`.
+Public header/footer target `help=public`; public-safe guidance needs no session.
+Authenticated `isi_help` and contextual Data/Reporting/Admin/Account Security Help
+use that authority. Invitation/verification/reset presentation consumes existing
+APIs and clears sensitive queries on success; active sessions cannot be replaced
+by one-time links. Public self-registration remains NOT_PRESENT/invitation-only.
+The twelve corrected matrix rows have focused 27A Help/test authority; A07/A20
+are not promoted. Protected SIMPA/ORDO/AI Help content is unchanged.
+
+Bootstrap classification: accepted auth/domain/service authorities DONE;
+shared Help/auth presentation PARTIAL/MISSING at baseline, addressed in this
+candidate. Protected auth/domain authorities and shell markers are
+REQUIRED_COMPATIBILITY. Earlier phase/global Help statements are LEGITIMATE_HISTORY;
+the current top-level matrix supersedes their global status only, not methodology.
+The R0 parser over-read is LEGITIMATE_HISTORY; corrected R0-R1 hashes match.
+Historical tests freezing global PARTIAL are REMOVE_BEFORE_NEXT_SLICE.
+ISI-27A-R1A authorizes only four inherited predecessor Help assertions to converge
+with the current top-level matrix authority; no domain/runtime semantics, predecessor
+acceptance facts, methodology, XAI or authorization behavior are changed. Full local
+acceptance and independent review remain required; no test bypass is permitted.
+
+Local HEAD and origin/main match baseline; direct remote verification is unavailable
+in this sandbox because GitHub DNS resolution failed. The latest recorded hosted
+acceptance is predecessor run #90 / 35238623960 on 5937daa2ea7ff9c476bd6a05a04841d1534aefe2,
+not this candidate; 25/26 hosted acceptance was deliberately deferred. Runner
+fingerprint, complete deterministic acceptance and independent review remain gates.
+
+STAGE_COMMIT_PUSH=NO; GITHUB_ACTIONS_DISPATCH=NO; SERVER_MUTATION=NO;
+CI_VERIFIED=NO; SERVER_VERIFIED=NO. Real-provider MFA is not verified; production
+SMTP and live deployment/capacity remain ISI-28-only, DEFERRED_SERVER_VERIFICATION.
+
+
+### ISI-27A-R1A no-Codex inherited Help convergence
+
+R1A continues the existing unstaged R1 candidate after workspace-credit exhaustion. It authorizes only four predecessor test assertions that froze the historical global `INV-A21=PARTIAL` state. Runtime/auth/domain code is frozen to the R1 prestate. The current top-level Help matrix may be `VERIFIED` for the corrected production-critical 27A scope while predecessor phase facts remain historical. `INV-A17` remains `NOT_PRESENT` and onboarding remains invitation-only. Full local regression, independent analysis and human review remain open; `CI_VERIFIED=NO`, `SERVER_VERIFIED=NO`, `STAGE_COMMIT_PUSH=NO`, `GITHUB_ACTIONS_DISPATCH=NO`, `SERVER_MUTATION=NO`.

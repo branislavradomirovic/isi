@@ -8,5 +8,5 @@
     <div><h2>{{ 'Knowledge' if locale == 'en' else 'Znanje' }}</h2><a href="{{ '/en/dokumenti/' if locale == 'en' else '/dokumenti/' }}">{{ 'Documents' if locale == 'en' else 'Dokumenti' }}</a><a href="{{ '/en/biblioteka/' if locale == 'en' else '/biblioteka/' }}">{{ 'Library' if locale == 'en' else 'Biblioteka' }}</a><a href="{{ '/en/inkluzivni-razvoj/' if locale == 'en' else '/inkluzivni-razvoj/' }}">{{ 'Inclusive development' if locale == 'en' else 'Inkluzivni razvoj' }}</a></div>
     <div><h2>{{ 'Contact' if locale == 'en' else 'Kontakt' }}</h2><a href="mailto:institutzasocijalnuinkluziju@gmail.com">institutzasocijalnuinkluziju@gmail.com</a><p class="approved-footer-note">{{ 'Knowledge is our form of solidarity.' if locale == 'en' else 'Znanje je naš oblik solidarnosti.' }}</p></div>
   </div>
-  <div class="shell approved-footer-bottom"><span>© ISI · Institut za socijalnu inkluziju</span><span>SIMPA · ORDO</span></div>
+  <div class="shell approved-footer-bottom"><span>© ISI · Institut za socijalnu inkluziju</span><a href="{{ app_url }}?help=public">{{ 'Help (Serbian)' if locale == 'en' else 'Pomoć' }}</a><span>SIMPA · ORDO</span></div>
 </footer>
