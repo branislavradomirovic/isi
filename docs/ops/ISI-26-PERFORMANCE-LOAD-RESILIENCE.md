@@ -1,11 +1,11 @@
 # ISI-26 R1 repository performance and resilience
 
-Status: **IN PROGRESS / R1 FULL IMPLEMENTATION CANDIDATE**. Authority: the installed
-`automation/specs/ISI-26-R1-FULL-PERFORMANCE-LOAD-RESILIENCE.md` locked contract.
-This is one full implementation slice. 26A/26B/26C/26D execution is
-`SUPERSEDED_BY_R1_FULL_SLICE`; their technical coverage remains history. 26E is
-only the whole-phase closeout concept. Recovery/closeout work is created only
-from evidence after R1 review. ISI-27 follows whole-phase acceptance.
+Status: **IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED**. R1 is accepted on main SHA `e4b5b7f5927bc553fd616800d37beb5d115bb46e`
+(tree `9a30b280ba44798b987167c155f0be6ccc13776e`) from human-reviewed candidate fingerprint
+`98653d20a5223d4f6be66f3ee2017f998865b00ecb08a0950c07123d60dc2e24`. ISI-26A/26B/26C/26D remain formal coverage/gate identities
+and are accepted through the grouped R1 implementation; R1 superseded only the
+micro-task execution cadence. ISI-26E closes the whole-phase audit. ISI-27 is
+current/next for a fresh release-candidate bootstrap.
 
 ## Bootstrap and inventory reconciliation
 
@@ -176,10 +176,16 @@ non-targets. Hosted full CI remains manual/undispatched. No dependency, migratio
 Compose, deploy or .github changes are authorized.
 
 ```text
-STAGE_COMMIT_PUSH=NO
-SERVER_MUTATION=NO
+R1_STAGE_COMMIT_PUSH=PASS
+R1_REMOTE_EQUALITY=PASS
 GITHUB_ACTIONS_DISPATCH=NO
+SERVER_MUTATION=NO
+CI_VERIFIED=NO
+PRODUCTION_CAPACITY_VERIFIED=NO
+SERVER_VERIFIED=NO
 ```
+
+The pre-finalizer candidate previously carried `STAGE_COMMIT_PUSH=NO`; that marker is retained only as historical candidate evidence, not as the current accepted-main state.
 
 ## Historical governance regression recovery
 
@@ -219,3 +225,19 @@ The R1-R1D targeted governance gate validated the self-contained evidence approa
 Renewed human review after R1-R1E found two non-runtime blockers. First, the self-contained historical governance JSON was written below `automation/evidence/`, but the repository `evidence/` ignore rule hides new files there from Git status, candidate fingerprinting and review packaging. R1-R1F moves the unchanged verified record to `automation/specs/ISI-26-R1-HISTORICAL-GOVERNANCE-EVIDENCE.json` and updates all test/document consumers; the ignored local copy is removed.
 
 Second, the R1 execution contract intentionally grouped 26A-D implementation into one large execution slice, but canonical live governance had incorrectly converted that execution grouping into task supersession. R1-R1F restores ISI-26A through 26E as formal coverage/gate checkpoint identities. R1 remains the grouped implementation execution candidate and removes the need for one Codex invocation per child gate; it does not erase or supersede the formal gates. ISI-26E remains the planned whole-phase closeout gate. No runtime, dependency, migration, workflow, deployment or server behavior changes.
+
+## ISI-26E whole-phase closeout
+
+Closeout authority is `automation/specs/ISI-26E-PERFORMANCE-RESILIENCE-CLOSEOUT.md` with machine-readable evidence in `automation/specs/ISI-26E-PERFORMANCE-RESILIENCE-CLOSEOUT-EVIDENCE.json`.
+
+Accepted implementation identity:
+- main SHA `e4b5b7f5927bc553fd616800d37beb5d115bb46e`;
+- tree `9a30b280ba44798b987167c155f0be6ccc13776e`;
+- R1 candidate fingerprint `98653d20a5223d4f6be66f3ee2017f998865b00ecb08a0950c07123d60dc2e24`;
+- assistant human review `PASS`;
+- independent analysis `PASS`;
+- exact staging/commit/normal push/remote equality `PASS`.
+
+Whole-phase audit result: no `REMOVE_BEFORE_NEXT_SLICE` finding remains. The formal 26A performance-contract gate, 26B API/auth/readiness gate, 26C data/statistics/forecast/reporting gate and 26D AI resilience gate are satisfied through the accepted grouped R1 implementation. 26E closes the phase-level evidence/governance audit without additional runtime implementation.
+
+Accepted limitations/deferrals are explicit rather than hidden: latency/throughput remain `UNCALIBRATED` wherever the locked calibration policy does not support a stable threshold; portable resource evidence remains `UNAVAILABLE`; hosted full CI is not dispatched until an explicitly approved ISI-27 release-candidate checkpoint; production capacity and live-server verification remain ISI-28-only. These are not open ISI-26 implementation defects and must not be converted into fabricated production claims.

@@ -213,7 +213,8 @@ def test_live_status_records_phase24_closeout_and_verified_predecessors() -> Non
     assert historical["phase25_status"] == "planned"
     assert historical["phase25_note_marker"] == "CURRENT/NEXT BOOTSTRAP"
     assert by_id["ISI-25-INDUSTRIAL-AI-MLOPS"]["status"] == "done"
-    assert by_id["ISI-26-PERFORMANCE-LOAD-RESILIENCE"]["status"] == "in_progress"
+    assert by_id["ISI-26-PERFORMANCE-LOAD-RESILIENCE"]["status"] == "done"
+    assert by_id["ISI-27-INDUSTRIAL-RELEASE-CANDIDATE"]["status"] == "planned"
 
 
 def test_canonical_system_inventory_is_complete_and_self_contained() -> None:

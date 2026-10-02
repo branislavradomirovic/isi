@@ -2,19 +2,21 @@
 
 This is the human-facing live execution ledger. The MasterPlan is the canonical roadmap/architecture/governance authority; `automation/tasks.json`, accepted code, exact-main GitHub Actions and recorded evidence provide synchronized execution proof.
 
-Last status update: 2026-10-01.
+Last status update: 2026-10-02.
 
 ## Current execution
 
-Last accepted implementation slice: `ISI-25B - Evaluation + Promotion Runtime`.
+Last accepted implementation slice: `ISI-26-R1 - Full Performance, Load & Resilience Implementation`.
 
-Active phase: `ISI-26 - Performance, Load & Resilience Engineering`. ISI-26-B0 bootstrap/audit is CLOSED/PASS. Current implementation checkpoint: `ISI-26-R1-FULL-PERFORMANCE-LOAD-RESILIENCE` (**IN PROGRESS / R1 FULL IMPLEMENTATION CANDIDATE**).
+ISI-26 - Performance, Load & Resilience Engineering is `IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED`. ISI-26E whole-phase closeout is complete in this governance closeout candidate. Current/next phase after closeout acceptance: `ISI-27 - Industrial Release Candidate & Acceptance Pack` (PLANNED; fresh bootstrap required).
 
 Accepted checkpoint: `ISI-25A - AI/MLOps Governance + Evaluation Foundation` is accepted on main SHA `f0047321ee4410522697144ecfa464087f1b83bc`, tree `06e419ec656ee2fb0bfb74b4a6b10d42ef275f25`, after local deterministic acceptance and assistant human review.
 
 Accepted checkpoint: `ISI-25B - Evaluation + Promotion Runtime` is implemented and accepted on main SHA `7e11ee2a6f7546eacc3207e15cacfc35f6d04f3e`. It preserves unbound 25A selected-model-only compatibility, binds governed jobs to exact registrations, enforces registered fallback/circuit/provider/review gates, separates frozen promotion benchmarks from foundation fixtures, adds deterministic evaluators and capability thresholds, and implements evidence-gated promotion/rollback, on-demand drift and faithful shared AI XAI.
 
-No GitHub-hosted full acceptance ran for ISI-25A/25B under the current owner cost/acceptance policy, so `CI_VERIFIED` is not claimed for ISI-25. Overall ISI-25 status is `IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED`. By explicit owner approval on 2026-10-01, ISI-26 is the next implementation phase; hosted full acceptance remains reserved for the controlled ISI-27 release-candidate checkpoint.
+Accepted checkpoint: `ISI-26-R1 - Full Performance, Load & Resilience Implementation` is implemented and accepted on main SHA `e4b5b7f5927bc553fd616800d37beb5d115bb46e`, tree `9a30b280ba44798b987167c155f0be6ccc13776e`, from human-reviewed candidate fingerprint `98653d20a5223d4f6be66f3ee2017f998865b00ecb08a0950c07123d60dc2e24`. Focused/regression checks, synthetic performance evidence, native PostgreSQL acceptance, full local regression, assistant human review, independent analysis, exact staging, normal push and remote equality all passed. Hosted GitHub Actions were not dispatched; production capacity and live server verification remain unverified by design.
+
+No GitHub-hosted full acceptance ran for ISI-25A/25B or ISI-26 R1 under the current owner cost/acceptance policy, so `CI_VERIFIED` is not claimed for ISI-25 or ISI-26. Overall ISI-25 and ISI-26 are `IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED`. Hosted full acceptance remains reserved for the controlled ISI-27 release-candidate checkpoint.
 
 Shared deployment target authority is central Nginx `central-ingress-nginx-1` (Compose project `central-ingress`, service `nginx`). Caddy is not current ISI target authority. The owner-locked public endpoint is `https://isi.opus.rs:8445/`; Krcuga `:8443` and OralScanXAI `:8444` are strict non-target shared-host services. ISI `api` and `streamlit` retain external `isi_ingress` aliases `isi-api` and `isi-streamlit`; repository `isi-edge` is pre-cutover compatibility only.
 
@@ -121,11 +123,9 @@ Authoritative ISI-24E GitHub Actions: `ISI required acceptance` run #90, run ID 
 
 Overall `ISI-24-ORDO-PRODUCTION-METHODOLOGY` is `COMPLETE / CI_VERIFIED`. The mandatory whole-phase audit is closed: F01 and F02 are resolved, no Phase-24 `REMOVE_BEFORE_NEXT_SLICE` finding remains, and F08 remains explicitly deferred as `REMOVE_IN_NAMED_PHASE(ISI-25/ISI-27)`.
 
-Next action: validate the single R1 candidate through the package runner, independent analyzer and assistant human review. R1 groups implementation execution across the formal ISI-26A/26B/26C/26D coverage/gate checkpoints; it supersedes only a micro-task-per-Codex execution cadence, not the formal gates themselves. ISI-26E remains the planned whole-phase closeout gate and is not a pre-authorized Codex task. Recovery/closeout work is created only from evidence after R1 review. ISI-27 follows ISI-26 whole-phase acceptance. Hosted CI remains manual and undispatched; server mutation remains exclusive to ISI-28.
+ISI-26 whole-phase closeout evidence: R1 is accepted on main SHA `e4b5b7f5927bc553fd616800d37beb5d115bb46e` (tree `9a30b280ba44798b987167c155f0be6ccc13776e`) from candidate fingerprint `98653d20a5223d4f6be66f3ee2017f998865b00ecb08a0950c07123d60dc2e24`. ISI-26A through ISI-26D are satisfied as formal coverage/gate checkpoints through that accepted R1 implementation; ISI-26E closes the whole-phase audit. No `REMOVE_BEFORE_NEXT_SLICE` finding remains open. Timing remains `UNCALIBRATED` exactly where the locked R1 calibration policy requires it, portable resource evidence remains `UNAVAILABLE`, and neither state is converted into a fabricated production SLO.
 
-R1 local acceptance evidence through R1-R1C: focused ISI-26 tests, required regressions, synthetic performance evidence, native PostgreSQL acceptance and one final full local regression are PASS. Production capacity, live server verification and hosted CI remain unverified/undispatched.
-
-R1 renewed-human-review recovery: R1-R1E is locally green. Human review then found two governance/provenance-only blockers: the self-contained historical evidence JSON was hidden by the repository `evidence/` ignore rule, and canonical child tasks incorrectly converted the grouped R1 execution model into formal gate supersession. `ISI-26-R1-R1F` moves the evidence to a visible controlled spec path and restores ISI-26A through ISI-26E as formal coverage/gate identities while keeping R1 as the grouped implementation execution candidate. No runtime/performance change. R1 remains unstaged/uncommitted pending R1-R1F continuation, renewed human review and independent analysis.
+Overall `ISI-26-PERFORMANCE-LOAD-RESILIENCE` is `IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED`. `PRODUCTION_CAPACITY_VERIFIED=false`, `SERVER_VERIFIED=false`, and `GITHUB_ACTIONS_DISPATCH=NO` remain binding. The next action is a fresh ISI-27 bootstrap/audit for the Industrial Release Candidate & Acceptance Pack. ISI-28 remains the exclusive authority for live server/DNS/certificate/central-ingress/SMTP/production-secret/data/server-Ollama mutation. Krcuga and OralScanXAI remain strict non-targets.
 
 ## Mandatory bootstrap rule
 
@@ -150,8 +150,8 @@ A failed required gate returns the active task to implementation/fix state. Requ
 | 23 | SIMPA Production Methodology + Help/User Guide | **COMPLETE / CI_VERIFIED - 23A through 23E complete** |
 | 24 | ORDO Production Methodology + Help/User Guide | **COMPLETE / CI_VERIFIED - 24A through 24E complete** |
 | 25 | Industrial AI / MLOps | **IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN - 25A f004732; 25B 7e11ee2; NOT CI_VERIFIED** |
-| 26 | Performance, Load & Resilience | **IN PROGRESS / R1 FULL IMPLEMENTATION CANDIDATE** |
-| 27 | Industrial Release Candidate & Acceptance Pack | PLANNED |
+| 26 | Performance, Load & Resilience | **IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED - R1 e4b5b7f; 26E closeout complete** |
+| 27 | Industrial Release Candidate & Acceptance Pack | **PLANNED / NEXT - fresh bootstrap required** |
 | 28 | Current Server Controlled Upgrade | **DEFERRED - fresh explicit owner approval required** |
 
 ## Locked execution boundaries

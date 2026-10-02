@@ -34,8 +34,8 @@ The platform currently includes a public institutional website, an authenticated
 | ISI-23 SIMPA Production Methodology + Help/XAI | COMPLETE / CI_VERIFIED |
 | ISI-24 ORDO Production Methodology + Help/XAI | COMPLETE / CI_VERIFIED |
 | ISI-25 Industrial AI / MLOps | IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED |
-| ISI-26 Performance, Load & Resilience | IN PROGRESS / R1 FULL IMPLEMENTATION CANDIDATE |
-| ISI-27 Industrial Release Candidate | PLANNED |
+| ISI-26 Performance, Load & Resilience | IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED |
+| ISI-27 Industrial Release Candidate | PLANNED / NEXT |
 | ISI-28 Current Server Controlled Upgrade | DEFERRED / owner-gated |
 
 ISI-25A is accepted at `f0047321ee4410522697144ecfa464087f1b83bc`. ISI-25B is accepted at `7e11ee2a6f7546eacc3207e15cacfc35f6d04f3e`. Hosted full acceptance was deliberately not run for those development checkpoints under the owner CI-cost policy; `CI_VERIFIED` is therefore not claimed for ISI-25.
@@ -484,15 +484,15 @@ The following are not current ISI production capabilities unless a later owner-a
 - automatic model installation/deployment;
 - automatic causal/policy decisioning.
 
-## 19. Current phase: ISI-26
+## 19. ISI-26 closeout and ISI-27 handoff
 
-ISI-26 is **IN PROGRESS / R1 FULL IMPLEMENTATION CANDIDATE** under the locked `automation/specs/ISI-26-R1-FULL-PERFORMANCE-LOAD-RESILIENCE.md` contract. R1 is one grouped implementation execution slice. ISI-26A/26B/26C/26D remain formal coverage/gate checkpoint identities whose repository implementation evidence is grouped into R1; R1 supersedes only the micro-task execution cadence, not those gates. ISI-26E remains the planned whole-phase closeout gate. Recovery/closeout work is created only from evidence after R1 review; ISI-27 follows whole-phase acceptance.
+ISI-26 is **IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED**. R1 is accepted on main SHA `e4b5b7f5927bc553fd616800d37beb5d115bb46e` (tree `9a30b280ba44798b987167c155f0be6ccc13776e`) from candidate fingerprint `98653d20a5223d4f6be66f3ee2017f998865b00ecb08a0950c07123d60dc2e24` after local acceptance, native PostgreSQL acceptance, assistant human review, independent analysis and owner-approved direct-main finalization. ISI-26A through ISI-26D remain formal coverage/gate identities and are accepted through the grouped R1 implementation; ISI-26E closes the whole-phase audit.
 
 `tools/performance/` defines ten immutable versioned workloads, bounded concurrent execution, nearest-rank percentiles, completed-operation throughput, separate correctness authority and validated sorted JSON evidence. Synthetic in-process APIs preserve authentication and scope checks. Isolated SQLite lanes exercise inspection workers, persisted report rendering and registered AI fallback; deterministic statistical/forecast engines preserve domain semantics. Queue transport/provider timeout tests use doubles, never a real server/model.
 
-Timing budgets remain `UNCALIBRATED` pending accepted stable repeated evidence with a documented safety margin. Portable host resource measurement is `UNAVAILABLE`; Compose memory limits are configuration only. Independent SQLite lanes do not prove shared database/queue capacity. Records explicitly contain `PRODUCTION_CAPACITY_VERIFIED=false` and `SERVER_VERIFIED=false`. The detailed workload and limitation contract is `docs/ops/ISI-26-PERFORMANCE-LOAD-RESILIENCE.md`.
+Timing budgets remain `UNCALIBRATED` where the locked calibration conditions are not met. Portable host resource measurement remains `UNAVAILABLE`; Compose memory limits are configuration only. These truthful repository states do not block closeout and are not production SLOs. `PRODUCTION_CAPACITY_VERIFIED=false`, `SERVER_VERIFIED=false`, `GITHUB_ACTIONS_DISPATCH=NO` and `CI_VERIFIED=NO` remain explicit.
 
-No customer-facing workflow, schema, dependency, runtime behavior or deployment topology is changed. ISI-28 remains the exclusive live-server mutation phase; Krcuga and OralScanXAI are strict non-targets. Hosted full CI remains manual and undispatched.
+No customer-facing workflow, schema, dependency, runtime behavior or deployment topology changed. ISI-27 is current/next for a fresh Industrial Release Candidate bootstrap and controlled hosted acceptance. ISI-28 remains the exclusive live-server mutation/capacity-verification phase; Krcuga and OralScanXAI are strict non-targets.
 
 ## 20. Canonical source index
 
@@ -519,6 +519,7 @@ Historical deployment documents remain useful only when the MasterPlan/ADR class
 
 | Version | Date | Change |
 |---|---|---|
+| 1.3 | 2026-10-02 | ISI-26 R1 accepted on main; 26A-26D formal gates accepted through R1; 26E whole-phase closeout completed; ISI-27 becomes next. |
 | 1.2 | 2026-10-01 | R1 full-slice candidate supersedes active micro-task execution; adds local performance contracts, workload/evidence tooling and explicit capacity limitations. |
 | 1.1 | 2026-10-01 | ISI-26-B0 closed; locks 26A-26E performance/resilience slice model and 26A contract-first/no-false-production-SLO rule. |
 | 1.0 | 2026-10-01 | Initial consolidated technical baseline; closes stale ISI-25B status, establishes ISI-26 as next, records central Nginx as final shared-edge authority, locks `https://isi.opus.rs:8445/`, and preserves ISI-28 as the exclusive live-server mutation phase. |

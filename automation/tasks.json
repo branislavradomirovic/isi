@@ -285,75 +285,80 @@
     {
       "id": "ISI-26-PERFORMANCE-LOAD-RESILIENCE",
       "title": "Performance, Load & Resilience Engineering",
-      "status": "in_progress",
+      "status": "done",
       "depends_on": [
         "ISI-25-INDUSTRIAL-AI-MLOPS"
       ],
       "next": "ISI-27-INDUSTRIAL-RELEASE-CANDIDATE",
-      "note": "One controlled repository-side R1 full implementation candidate. Synthetic/local evidence only; production capacity unverified. Runner acceptance, independent analysis and human review remain required. Recovery/closeout work is created only from evidence after R1 review. ISI-27 follows whole-phase ISI-26 acceptance; ISI-28 exclusively owns live-server mutation.",
-      "phase_status": "IN PROGRESS / R1 FULL IMPLEMENTATION CANDIDATE",
-      "active_checkpoint": "ISI-26-R1-FULL-PERFORMANCE-LOAD-RESILIENCE",
-      "spec": "automation/specs/ISI-26-R1-FULL-PERFORMANCE-LOAD-RESILIENCE.md",
-      "recovery_note": "R1 local acceptance is green through R1-R1E. Renewed human review found two governance/provenance-only blockers: the historical evidence JSON was hidden by the repository evidence/ ignore rule, and canonical child tasks incorrectly described formal 26A-D gates as superseded. ISI-26-R1-R1F moves the evidence to a visible controlled spec path and restores the formal 26A-E gate model without runtime/performance changes. Candidate remains unstaged/uncommitted pending R1-R1F continuation, renewed human review and independent analysis."
+      "note": "ISI-26 repository implementation is accepted on main through R1. Formal 26A-D gates are accepted through the grouped R1 implementation and 26E closes the whole-phase audit. No REMOVE_BEFORE_NEXT_SLICE finding remains. Hosted CI was deliberately not dispatched; production capacity/server verification remain unverified and deferred to ISI-28. ISI-27 is next for a fresh release-candidate bootstrap.",
+      "phase_status": "IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED",
+      "active_checkpoint": "ISI-26E-PERFORMANCE-RESILIENCE-CLOSEOUT",
+      "spec": "automation/specs/ISI-26E-PERFORMANCE-RESILIENCE-CLOSEOUT.md",
+      "recovery_note": "R1-R1 through R1-R1F resolved historical-governance, generated-artifact, shallow-checkout and governance/provenance review findings without changing production runtime semantics. Final human review and independent analysis passed on fingerprint 98653d20a5223d4f6be66f3ee2017f998865b00ecb08a0950c07123d60dc2e24 before owner-approved direct-main finalization.",
+      "accepted_main_sha": "e4b5b7f5927bc553fd616800d37beb5d115bb46e",
+      "accepted_main_tree": "9a30b280ba44798b987167c155f0be6ccc13776e",
+      "accepted_candidate_fingerprint": "98653d20a5223d4f6be66f3ee2017f998865b00ecb08a0950c07123d60dc2e24"
     },
     {
       "id": "ISI-26A-PERFORMANCE-CONTRACT-DETERMINISTIC-HARNESS",
       "title": "Performance Contract + Deterministic Harness",
-      "status": "spec_ready",
+      "status": "done",
       "depends_on": [
         "ISI-25-INDUSTRIAL-AI-MLOPS"
       ],
       "spec": "automation/specs/ISI-26A-PERFORMANCE-CONTRACT-DETERMINISTIC-HARNESS.md",
-      "note": "OWNER_APPROVED / SPEC_READY formal coverage gate. Repository implementation evidence is grouped in the R1 full-slice candidate; no separate Codex invocation is implied.",
+      "note": "Formal ISI-26 coverage/gate checkpoint accepted through the grouped R1 implementation on main SHA e4b5b7f5927bc553fd616800d37beb5d115bb46e; no separate Codex invocation was required. Production/server capacity is not claimed.",
       "next": "ISI-26B-API-AUTH-READINESS-LOAD-RESILIENCE",
       "execution_group": "ISI-26-R1-FULL-PERFORMANCE-LOAD-RESILIENCE",
-      "coverage_status": "R1_CANDIDATE_COVERED"
+      "coverage_status": "ACCEPTED_THROUGH_R1"
     },
     {
       "id": "ISI-26B-API-AUTH-READINESS-LOAD-RESILIENCE",
       "title": "API/Auth/Readiness Load + Dependency Resilience",
-      "status": "planned",
+      "status": "done",
       "depends_on": [
         "ISI-26A-PERFORMANCE-CONTRACT-DETERMINISTIC-HARNESS"
       ],
-      "note": "Formal coverage gate retained. API/auth/readiness implementation evidence is grouped in the R1 full-slice candidate; no live-server/central-ingress mutation.",
+      "note": "Formal ISI-26 coverage/gate checkpoint accepted through the grouped R1 implementation on main SHA e4b5b7f5927bc553fd616800d37beb5d115bb46e; no separate Codex invocation was required. Production/server capacity is not claimed.",
       "next": "ISI-26C-DATA-ANALYTICS-REPORTING-SCALE",
       "execution_group": "ISI-26-R1-FULL-PERFORMANCE-LOAD-RESILIENCE",
-      "coverage_status": "R1_CANDIDATE_COVERED"
+      "coverage_status": "ACCEPTED_THROUGH_R1"
     },
     {
       "id": "ISI-26C-DATA-ANALYTICS-REPORTING-SCALE",
       "title": "Data/Statistics/Forecast/Reporting Scale",
-      "status": "planned",
+      "status": "done",
       "depends_on": [
         "ISI-26B-API-AUTH-READINESS-LOAD-RESILIENCE"
       ],
-      "note": "Formal coverage gate retained. Synthetic ingestion, SIMPA analytics, ORDO forecast and reporting-scale implementation evidence is grouped in the R1 full-slice candidate.",
+      "note": "Formal ISI-26 coverage/gate checkpoint accepted through the grouped R1 implementation on main SHA e4b5b7f5927bc553fd616800d37beb5d115bb46e; no separate Codex invocation was required. Production/server capacity is not claimed.",
       "next": "ISI-26D-AI-CONCURRENCY-RESILIENCE",
       "execution_group": "ISI-26-R1-FULL-PERFORMANCE-LOAD-RESILIENCE",
-      "coverage_status": "R1_CANDIDATE_COVERED"
+      "coverage_status": "ACCEPTED_THROUGH_R1"
     },
     {
       "id": "ISI-26D-AI-CONCURRENCY-RESILIENCE",
       "title": "AI Queue/Concurrency/Timeout/Circuit Resilience",
-      "status": "planned",
+      "status": "done",
       "depends_on": [
         "ISI-26C-DATA-ANALYTICS-REPORTING-SCALE"
       ],
-      "note": "Formal coverage gate retained. AI queue/concurrency/timeout/circuit/fallback implementation evidence is grouped in the R1 full-slice candidate; no model/server installation or mutation.",
+      "note": "Formal ISI-26 coverage/gate checkpoint accepted through the grouped R1 implementation on main SHA e4b5b7f5927bc553fd616800d37beb5d115bb46e; no separate Codex invocation was required. Production/server capacity is not claimed.",
       "next": "ISI-26E-PERFORMANCE-RESILIENCE-CLOSEOUT",
       "execution_group": "ISI-26-R1-FULL-PERFORMANCE-LOAD-RESILIENCE",
-      "coverage_status": "R1_CANDIDATE_COVERED"
+      "coverage_status": "ACCEPTED_THROUGH_R1"
     },
     {
       "id": "ISI-26E-PERFORMANCE-RESILIENCE-CLOSEOUT",
       "title": "Performance & Resilience Whole-Phase Closeout",
-      "status": "planned",
+      "status": "done",
       "depends_on": [
         "ISI-26D-AI-CONCURRENCY-RESILIENCE"
       ],
       "next": "ISI-27-INDUSTRIAL-RELEASE-CANDIDATE",
-      "note": "Planned formal whole-phase closeout gate. It owns final gap/legacy audit, budget/evidence closure and ISI-27 handoff. It is not a pre-authorized separate Codex implementation task; any recovery/closeout execution is created only from evidence after R1 review. Live production capacity remains ISI-28."
+      "note": "Whole-phase closeout complete: accepted R1 main SHA e4b5b7f5927bc553fd616800d37beb5d115bb46e / tree 9a30b280ba44798b987167c155f0be6ccc13776e / fingerprint 98653d20a5223d4f6be66f3ee2017f998865b00ecb08a0950c07123d60dc2e24; human review and independent analysis PASS; no REMOVE_BEFORE_NEXT_SLICE finding remains. CI_VERIFIED, production capacity and live server verification are not claimed. ISI-27 is next; ISI-28 remains server-only authority.",
+      "spec": "automation/specs/ISI-26E-PERFORMANCE-RESILIENCE-CLOSEOUT.md",
+      "coverage_status": "CLOSEOUT_COMPLETE"
     },
     {
       "id": "ISI-27-INDUSTRIAL-RELEASE-CANDIDATE",
@@ -362,7 +367,7 @@
       "depends_on": [
         "ISI-26-PERFORMANCE-LOAD-RESILIENCE"
       ],
-      "note": "Release candidate acceptance must include completeness checks for the SIMPA and ORDO Help/User Guides and explicit DRAFT/PROPOSED versus human-validated methodology state.",
+      "note": "NEXT after completed ISI-26 repository implementation/26E closeout. Start with a fresh bootstrap/audit. Release candidate acceptance must include completeness checks for SIMPA/ORDO Help/User Guides, explicit methodology states, performance acceptance, security/privacy/recovery evidence and the owner-approved manual hosted acceptance checkpoint.",
       "next": "ISI-28-CURRENT-SERVER-CONTROLLED-UPGRADE"
     },
     {
