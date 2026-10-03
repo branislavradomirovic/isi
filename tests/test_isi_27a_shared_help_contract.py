@@ -61,12 +61,15 @@ def test_top_matrix_inventory_and_protected_predecessors():
 def test_governance_keeps_candidate_and_later_gate_boundaries():
     tasks = {t["id"]: t for t in json.loads(Path("automation/tasks.json").read_text())["tasks"]}
     key = "ISI-27A-SHARED-HELP-RELEASE-UX-COMPLETENESS"
-    assert tasks[key]["status"] == "in_progress"
-    assert "implementation-candidate" in tasks[key]["note"] and "NOT CI_VERIFIED" in tasks[key]["note"]
+    assert tasks[key]["status"] == "done"
+    assert tasks[key]["accepted_main_sha"] == "74acd5d9a890733347554633f44a6d5319717ba3"
+    assert tasks[key]["accepted_main_tree"] == "a69b8582a77555611b64a5527548e67a5b0c45cb"
+    assert tasks[key]["accepted_candidate_fingerprint"] == "01ed26dd8e1193606f17c097f88ba0fd68b4f3ce2127de0845468998d3dc8d64"
     assert tasks[key]["spec"] == "automation/specs/ISI-27A-R1-SHARED-HELP-RELEASE-UX-COMPLETENESS.md"
     parent = tasks["ISI-27-INDUSTRIAL-RELEASE-CANDIDATE"]
-    assert parent["status"] == "in_progress" and parent["active_checkpoint"] == key
-    for prefix in ("ISI-27B-", "ISI-27C-", "ISI-27D-"):
+    assert parent["status"] == "in_progress" and parent["active_checkpoint"] == "ISI-27B-RC-EVIDENCE-GOVERNANCE-PACK"
+    assert tasks["ISI-27B-RC-EVIDENCE-GOVERNANCE-PACK"]["status"] == "spec_ready"
+    for prefix in ("ISI-27C-", "ISI-27D-"):
         assert next(t for k, t in tasks.items() if k.startswith(prefix))["status"] == "planned"
     assert tasks["ISI-28-CURRENT-SERVER-CONTROLLED-UPGRADE"]["status"] == "deferred"
     for path in (MASTER, Path("automation/STATUS.md"), Path("TECHNICAL_DOCUMENTATION.md")):
@@ -74,6 +77,12 @@ def test_governance_keeps_candidate_and_later_gate_boundaries():
         assert "ISI-SHARED-USER-GUIDE.md" in text
         for marker in ("STAGE_COMMIT_PUSH=NO", "GITHUB_ACTIONS_DISPATCH=NO", "SERVER_MUTATION=NO", "CI_VERIFIED=NO", "SERVER_VERIFIED=NO"):
             assert marker in text
+    tech = Path("TECHNICAL_DOCUMENTATION.md").read_text()
+    status = Path("automation/STATUS.md").read_text()
+    master = MASTER.read_text()
+    assert "74acd5d9a890733347554633f44a6d5319717ba3" in tech
+    assert "ISI-27B - RC Evidence & Governance Pack` is the current checkpoint" in master
+    assert "Current checkpoint: `ISI-27B - RC Evidence & Governance Pack`" in status
 
 
 def test_shared_navigation_routes_without_private_calls(monkeypatch):

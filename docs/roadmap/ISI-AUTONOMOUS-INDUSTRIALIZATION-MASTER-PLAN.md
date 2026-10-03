@@ -1,6 +1,6 @@
 # ISI Autonomous Industrialization Master Plan
 
-Status: **OWNER_APPROVED canonical architecture/governance/system-inventory baseline - reconciled 2026-10-01**.
+Status: **OWNER_APPROVED canonical architecture/governance/system-inventory baseline - reconciled 2026-10-03**.
 
 This plan is binding for the ISI industrialization track unless the owner explicitly approves a later change.
 
@@ -218,7 +218,7 @@ This inventory is the controlled bridge between the MasterPlan and the as-built 
 | INV-A18 | SIMPA Help, User Guide and XAI interpretation | Help/XAI surface | CURRENT_AS_BUILT | src/streamlit_app/simpa_help_workspace.py; src/domains/simpa/statistical_xai.py; docs/help/SIMPA-USER-GUIDE.md; docs/help/ISI-HELP-COVERAGE-MATRIX.md | Complete SIMPA Help Coverage plus deterministic model/result interpretation for methodology, reference evidence, statistics and bounded AI provenance/review | Validated SIMPA methodology, implemented workflows and governed stored model/evidence outputs | In-app Help + User Guide + faithful XAI/provenance | ISI-23 methodology/UI; ISI-25 shared AI/XAI contracts | SIMPA users; ISI-27 acceptance | Repository Help/User Guide/matrix; no new DB persistence | Must not disclose unauthorized data or fabricate confidence/importance/causality; content matches actual model evidence | YES | YES | tests/test_isi_23d*.py | NONE | ISI-23 / ISI-25 / ISI-27 | Every material SIMPA action is VERIFIED in ISI-23D; shared AI evaluation/promotion/fallback remains ISI-25 |
 | INV-A19 | ORDO Help, User Guide and XAI interpretation | Help/XAI surface | CURRENT_AS_BUILT | src/streamlit_app/ordo_help_workspace.py; src/domains/ordo/analytics_xai.py; docs/help/ORDO-USER-GUIDE.md; docs/help/ISI-HELP-COVERAGE-MATRIX.md | Complete ORDO-owned Help Coverage plus deterministic interpretation of scenario/forecast and the governed 24E specification/execution workflow, with bounded AI provenance/review | Validated ORDO methodology, implemented workflows and governed persisted model/evidence outputs | In-app Help + repository User Guide + faithful XAI/provenance | ISI-24 methodology/UI/workflow; ISI-25 shared AI/XAI contracts | ORDO users; ISI-27 acceptance | Repository Help/User Guide/matrix; no new Help persistence | Must preserve scenario-versus-forecast/NOT_ESTIMATED, authorization and non-causal/non-certainty safeguards; no fabricated values/confidence/importance | YES | YES | tests/test_isi_24d_help_xai_contract.py; tests/test_isi_24d_forecast_xai.py; tests/test_isi_24e_forecast_workflow_ui.py | NONE | ISI-24 / ISI-25 / ISI-27 | ORDO-owned Help/XAI and governed forecast-workflow coverage are VERIFIED through ISI-24E; shared AI evaluation/promotion/fallback remains ISI-25 and ISI-27A supplies current shared Help/presentation authority while 27B/27C/27D release gates remain open |
 | INV-A20 | Commercial checkout/payment surface | User surface | NOT_PRESENT | MasterPlan SYSTEM INVENTORY | Make absence of checkout/subscription/payment UI explicit | Payment intent | No payment UI/output | Users | None | None | No payment authority in ISI | YES | NO | Inventory/policy guard | NONE | OUT_OF_SCOPE | Do not add by analogy with Krcuga/OralScan; requires explicit owner-approved ISI product change |
-| INV-A21 | Cross-product Help Coverage Matrix | Help/XAI governance artifact | CURRENT_AS_BUILT | docs/help/ISI-HELP-COVERAGE-MATRIX.md; tests/test_isi_23d_help_xai_contract.py; tests/test_isi_24d_help_xai_contract.py; src/streamlit_app/shared_help_workspace.py; docs/help/ISI-SHARED-USER-GUIDE.md | Track Help/applicable XAI coverage for every customer-facing inventory row and material user action | Customer-facing inventory + implemented workflows + validated model/evidence contracts | MISSING/PARTIAL/COMPLETE/VERIFIED coverage state, canonical Help location and acceptance evidence | All user-facing SIMPA/ORDO/shared surfaces | ISI-23/24/25 domain completion; ISI-27 release acceptance | Repository-controlled documentation/test evidence | Must not leak unauthorized data; coverage cannot claim support absent from runtime/model evidence | YES | YES | tests/test_isi_23d_help_xai_contract.py; tests/test_isi_24d_help_xai_contract.py; future ISI-25/27 coverage tests; tests/test_isi_27a_shared_help_contract.py; tests/test_isi_27a_auth_ux_contract.py; tests/test_isi_27a_public_help_contract.py | NONE | ISI-23 / ISI-24 / ISI-25 / ISI-27 | Production-critical USER SURFACE Help coverage VERIFIED in the local 27A candidate; A17 runtime NOT_PRESENT; 27B/27C/27D release gates and independent candidate acceptance remain open |
+| INV-A21 | Cross-product Help Coverage Matrix | Help/XAI governance artifact | CURRENT_AS_BUILT | docs/help/ISI-HELP-COVERAGE-MATRIX.md; tests/test_isi_23d_help_xai_contract.py; tests/test_isi_24d_help_xai_contract.py; src/streamlit_app/shared_help_workspace.py; docs/help/ISI-SHARED-USER-GUIDE.md | Track Help/applicable XAI coverage for every customer-facing inventory row and material user action | Customer-facing inventory + implemented workflows + validated model/evidence contracts | MISSING/PARTIAL/COMPLETE/VERIFIED coverage state, canonical Help location and acceptance evidence | All user-facing SIMPA/ORDO/shared surfaces | ISI-23/24/25 domain completion; ISI-27 release acceptance | Repository-controlled documentation/test evidence | Must not leak unauthorized data; coverage cannot claim support absent from runtime/model evidence | YES | YES | tests/test_isi_23d_help_xai_contract.py; tests/test_isi_24d_help_xai_contract.py; future ISI-25/27 coverage tests; tests/test_isi_27a_shared_help_contract.py; tests/test_isi_27a_auth_ux_contract.py; tests/test_isi_27a_public_help_contract.py | NONE | ISI-23 / ISI-24 / ISI-25 / ISI-27 | Production-critical USER SURFACE Help coverage VERIFIED in the accepted ISI-27A implementation; A17 runtime NOT_PRESENT; 27B/27C/27D release gates remain open |
 
 #### B. DOMAIN / PLATFORM SERVICES
 
@@ -875,7 +875,7 @@ Critical rule: no Codex/LLM may invent indicator formulas, LISI weights, thresho
 
 #### ISI-24E accepted checkpoint and Phase-24 closeout
 
-`ISI-24E - ORDO Final Whole-Phase Gap/Legacy Audit + Closeout` is COMPLETE / CI_VERIFIED at the accepted remediation/closeout implementation checkpoint `5937daa2ea7ff9c476bd6a05a04841d1534aefe2` (tree `6e75bf1cd13b95e23f9189b9e94453dd130eaa19`) with `ISI required acceptance` run #90 / `35238623960` attempt 2 completed `success`. The whole-phase audit found F01 stale user-facing wording and F02 incomplete forecast customer reachability as the only `REMOVE_BEFORE_NEXT_SLICE` blockers; both are resolved. No Phase-24 `REMOVE_BEFORE_NEXT_SLICE` item remains. ISI-25 and ISI-26 subsequently completed implementation acceptance on main; ISI-27 B0-R1A bootstrap is closed, scope is locked, and 27A is current. Server/DNS/central-ingress/production mutation remains forbidden until owner-approved ISI-28.
+`ISI-24E - ORDO Final Whole-Phase Gap/Legacy Audit + Closeout` is COMPLETE / CI_VERIFIED at the accepted remediation/closeout implementation checkpoint `5937daa2ea7ff9c476bd6a05a04841d1534aefe2` (tree `6e75bf1cd13b95e23f9189b9e94453dd130eaa19`) with `ISI required acceptance` run #90 / `35238623960` attempt 2 completed `success`. The whole-phase audit found F01 stale user-facing wording and F02 incomplete forecast customer reachability as the only `REMOVE_BEFORE_NEXT_SLICE` blockers; both are resolved. No Phase-24 `REMOVE_BEFORE_NEXT_SLICE` item remains. ISI-25 and ISI-26 subsequently completed implementation acceptance on main; ISI-27A is accepted on main and 27B is current. Server/DNS/central-ingress/production mutation remains forbidden until owner-approved ISI-28.
 
 Goal: convert ORDO evidence/scenario infrastructure into a production destination-intelligence methodology without fabricating predictive capability.
 
@@ -910,7 +910,7 @@ Goal: make statistical/ML, embedding, LLM and VLM behavior measurable, versioned
 
 The canonical evaluation baseline is `docs/roadmap/ISI-AI-MODEL-EVALUATION-PROTOCOL-v1.md` and ADR-0025.
 
-Status: **IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED**. ISI-25A is accepted on main SHA `f0047321ee4410522697144ecfa464087f1b83bc` (tree `06e419ec656ee2fb0bfb74b4a6b10d42ef275f25`) after local deterministic acceptance and assistant human review. ISI-25B is implemented and accepted on main SHA `7e11ee2a6f7546eacc3207e15cacfc35f6d04f3e`; it provides exact-registration-bound fallback, separate frozen promotion benchmarks, deterministic evaluators, capability thresholds, evidence-gated promotion/rollback governance, deterministic circuit state, on-demand drift and shared AI XAI. No hosted full acceptance was run for 25A/25B under the owner cost/acceptance policy, so `CI_VERIFIED` is not claimed. ISI-26 has now also completed repository implementation acceptance on main and ISI-27 B0-R1A bootstrap is closed with scope locked and 27A current; hosted full acceptance remains reserved for the controlled 27D checkpoint. Server verification and all deployment mutation remain deferred to ISI-28.
+Status: **IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED**. ISI-25A is accepted on main SHA `f0047321ee4410522697144ecfa464087f1b83bc` (tree `06e419ec656ee2fb0bfb74b4a6b10d42ef275f25`) after local deterministic acceptance and assistant human review. ISI-25B is implemented and accepted on main SHA `7e11ee2a6f7546eacc3207e15cacfc35f6d04f3e`; it provides exact-registration-bound fallback, separate frozen promotion benchmarks, deterministic evaluators, capability thresholds, evidence-gated promotion/rollback governance, deterministic circuit state, on-demand drift and shared AI XAI. No hosted full acceptance was run for 25A/25B under the owner cost/acceptance policy, so `CI_VERIFIED` is not claimed. ISI-26 has now also completed repository implementation acceptance on main; ISI-27A is accepted on main and 27B is current. Hosted full acceptance remains reserved for the controlled 27D checkpoint. Server verification and all deployment mutation remain deferred to ISI-28.
 
 Required deliverables include:
 
@@ -947,13 +947,13 @@ R1 provides immutable performance/evidence contracts, ten versioned workloads, b
 
 Inventory impact remains INV-M19 repository acceptance tooling only; runtime ownership stays with INV-B25, INV-D01 through INV-D04, INV-C38/C39, INV-E05 and INV-F04. No customer-facing/API/schema/dependency/deployment boundary changed. `PRODUCTION_CAPACITY_VERIFIED=false` and `SERVER_VERIFIED=false` remain explicit. Live capacity/server verification belongs exclusively to ISI-28. Current server, DNS, certificates, central Nginx, production SMTP/data/secrets, server Ollama, Krcuga and OralScanXAI remain outside ISI-26 execution.
 
-ISI-27 B0-R1A bootstrap is CLOSED/PASS; the four-gate scope is locked and `ISI-27A - Shared Help & Release UX Completeness` is the current checkpoint. ISI-27 owns the Industrial Release Candidate & Acceptance Pack, while the explicitly approved hosted full acceptance checkpoint remains 27D. See `automation/specs/ISI-26E-PERFORMANCE-RESILIENCE-CLOSEOUT.md` and `docs/ops/ISI-26-PERFORMANCE-LOAD-RESILIENCE.md` for exact predecessor closeout evidence and retained limitations.
+ISI-27 B0-R1A bootstrap is CLOSED/PASS; ISI-27A Shared Help & Release UX Completeness is accepted on main and `ISI-27B - RC Evidence & Governance Pack` is the current checkpoint. ISI-27 owns the Industrial Release Candidate & Acceptance Pack, while the explicitly approved hosted full acceptance checkpoint remains 27D. See `automation/specs/ISI-26E-PERFORMANCE-RESILIENCE-CLOSEOUT.md` and `docs/ops/ISI-26-PERFORMANCE-LOAD-RESILIENCE.md` for exact predecessor closeout evidence and retained limitations.
 
 ### ISI-27 - Industrial Release Candidate & Acceptance Pack
 
 Goal: produce one release candidate technically ready for controlled deployment.
 
-Status: **IN PROGRESS / SCOPE LOCKED / 27A IMPLEMENTATION CANDIDATE / NOT CI_VERIFIED**. Corrected B0-R1A bootstrap authority is `automation/specs/ISI-27-B0-R1A-BOOTSTRAP-AUDIT-REPORT.md` plus its JSON evidence. On baseline `e46128752e29f46dc6d9b8510198739f88da50e9` it records DONE=6, PARTIAL=8, MISSING=5, DRIFT=0; thirteen release blockers are not DONE. Twelve production-critical shared Help/XAI surfaces are blockers. SBOM/signed provenance/attestation and image vulnerability enforcement are MISSING.
+Status: **IN PROGRESS / 27A ACCEPTED ON MAIN / 27B SPEC_READY / NOT CI_VERIFIED**. Corrected B0-R1A bootstrap authority is `automation/specs/ISI-27-B0-R1A-BOOTSTRAP-AUDIT-REPORT.md` plus its JSON evidence. At bootstrap on baseline `e46128752e29f46dc6d9b8510198739f88da50e9` it recorded DONE=6, PARTIAL=8, MISSING=5, DRIFT=0, thirteen release blockers not DONE and twelve production-critical shared Help/XAI blockers. ISI-27A has since closed those twelve Help/XAI blockers on accepted main `74acd5d9a890733347554633f44a6d5319717ba3`; remaining release-candidate work is owned by 27B/27C/27D. SBOM/signed provenance/attestation and image vulnerability enforcement remain owned by 27C.
 
 Release acceptance must include explicit SIMPA and ORDO methodology states, model/eval provenance, security/privacy acceptance, migration/recovery rehearsals and performance acceptance. Help/XAI remains a hard release gate. The canonical Help Coverage Matrix must show `VERIFIED` for every applicable production-critical action, with checklist-level `NOT_APPLICABLE` only where explicitly justified. `INV-A17` public self-registration remains NOT_PRESENT; ISI-27 must not create public signup merely to satisfy Help coverage.
 
@@ -1189,14 +1189,15 @@ Material changes to these points require a new explicit owner approval and, wher
 - ISI-28 remains the exclusive live-server mutation/capacity-verification phase.
 
 
-## ISI-27A R1 implementation candidate
+## Historical pre-acceptance record — ISI-27A R1 implementation candidate
 
 Baseline: `39dc1d59a74a03c86f68df093cc07e32d41d028c`, tree
 `3c7027b375b041043f7305cdab008aee35f16ef7`. Contract:
 `automation/specs/ISI-27A-R1-SHARED-HELP-RELEASE-UX-COMPLETENESS.md`.
-27A is `in_progress`, an unstaged/uncommitted implementation-candidate, NOT CI_VERIFIED.
-Parent ISI-27 remains in_progress; active checkpoint remains
-`ISI-27A-SHARED-HELP-RELEASE-UX-COMPLETENESS`; 27B/27C/27D stay planned.
+This subsection is retained only as pre-acceptance history and is superseded for live status by the accepted-main closeout below.
+At that checkpoint, 27A was `in_progress`, an unstaged/uncommitted implementation-candidate, NOT CI_VERIFIED.
+At that checkpoint, parent ISI-27 remained in_progress; the active checkpoint was
+`ISI-27A-SHARED-HELP-RELEASE-UX-COMPLETENESS`; 27B/27C/27D were planned.
 
 Shared Help authority: `src/streamlit_app/shared_help_workspace.py`, twelve topics
 ISI-H01..H12, mirrored in `docs/help/ISI-SHARED-USER-GUIDE.md`.
@@ -1217,8 +1218,8 @@ The R0 parser over-read is LEGITIMATE_HISTORY; corrected R0-R1 hashes match.
 Historical tests freezing global PARTIAL are REMOVE_BEFORE_NEXT_SLICE.
 ISI-27A-R1A authorizes only four inherited predecessor Help assertions to converge
 with the current top-level matrix authority; no domain/runtime semantics, predecessor
-acceptance facts, methodology, XAI or authorization behavior are changed. Full local
-acceptance and independent review remain required; no test bypass is permitted.
+acceptance facts, methodology, XAI or authorization behavior are changed. At that checkpoint, full local
+acceptance and independent review were still required; no test bypass was permitted.
 
 Local HEAD and origin/main match baseline; direct remote verification is unavailable
 in this sandbox because GitHub DNS resolution failed. The latest recorded hosted
@@ -1234,3 +1235,12 @@ SMTP and live deployment/capacity remain ISI-28-only, DEFERRED_SERVER_VERIFICATI
 ### ISI-27A-R1A no-Codex inherited Help convergence
 
 R1A continues the existing unstaged R1 candidate after workspace-credit exhaustion. It authorizes only four predecessor test assertions that froze the historical global `INV-A21=PARTIAL` state. Runtime/auth/domain code is frozen to the R1 prestate. The current top-level Help matrix may be `VERIFIED` for the corrected production-critical 27A scope while predecessor phase facts remain historical. `INV-A17` remains `NOT_PRESENT` and onboarding remains invitation-only. Full local regression, independent analysis and human review remain open; `CI_VERIFIED=NO`, `SERVER_VERIFIED=NO`, `STAGE_COMMIT_PUSH=NO`, `GITHUB_ACTIONS_DISPATCH=NO`, `SERVER_MUTATION=NO`.
+
+
+## ISI-27A accepted-main closeout and ISI-27B promotion — 2026-10-03
+
+ISI-27A Shared Help & Release UX Completeness is **ACCEPTED ON MAIN / NOT CI_VERIFIED** on SHA `74acd5d9a890733347554633f44a6d5319717ba3`, tree `a69b8582a77555611b64a5527548e67a5b0c45cb`, accepted candidate fingerprint `01ed26dd8e1193606f17c097f88ba0fd68b4f3ce2127de0845468998d3dc8d64`. Deterministic local acceptance is `1030 passed / 43 skipped / 0 failed`; independent analysis and human review are PASS / REVIEW_VERIFIED.
+
+This closeout is governance-only. It changes no runtime/auth/domain/Help semantics. `INV-A17` remains `NOT_PRESENT` and invitation-only. Hosted GitHub Actions were not dispatched and `CI_VERIFIED=NO`; no live server, DNS, ingress, SMTP, production secret/data or server Ollama mutation occurred and `SERVER_VERIFIED=NO`.
+
+Parent ISI-27 remains `IN PROGRESS`; the active checkpoint is now **ISI-27B — RC Evidence & Governance Pack** (`spec_ready`). ISI-27C and ISI-27D remain planned; ISI-28 remains deferred and is still the only server-mutable phase.

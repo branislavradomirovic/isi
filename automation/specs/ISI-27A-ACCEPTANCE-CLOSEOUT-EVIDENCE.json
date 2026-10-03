@@ -1,0 +1,70 @@
+{
+  "accepted_candidate_fingerprint": "01ed26dd8e1193606f17c097f88ba0fd68b4f3ce2127de0845468998d3dc8d64",
+  "accepted_main_sha": "74acd5d9a890733347554633f44a6d5319717ba3",
+  "accepted_main_tree": "a69b8582a77555611b64a5527548e67a5b0c45cb",
+  "boundaries": {
+    "ci_verified": false,
+    "github_actions_dispatch": false,
+    "server_mutation": false,
+    "server_verified": false
+  },
+  "deterministic_local_acceptance": {
+    "failed": 0,
+    "passed": 1030,
+    "skipped": 43
+  },
+  "human_review": "REVIEW_VERIFIED",
+  "independent_analysis": "PASS",
+  "independent_review_recovery": {
+    "candidate_acceptance": "PENDING_LOCAL_RUNNER_AND_INDEPENDENT_REVIEW",
+    "date": "2026-10-03",
+    "finding": "HISTORICAL_LEDGER_VALIDATION_SCOPE_AND_RESIDUAL_LIVE_SUMMARIES",
+    "historical_ledger": {
+      "allowed_stale_pointer_occurrences": 1,
+      "heading": "### 2026-10-01 ISI-25B closure and shared-ingress governance reconciliation",
+      "preserved_unchanged": true,
+      "sha256": "52747042e67f3c21fb8a8b2be10f8a91688fcbba9833a621ad9e06605211bb87"
+    },
+    "inventory_ownership_change": false,
+    "negative_controls": 21,
+    "recovery_chain": [
+      {
+        "finding": "STALE_LIVE_GOVERNANCE_DUPLICATES",
+        "resolution": "Synchronized live status, technical documentation and Master Plan to accepted 27A / active 27B and marked the pre-acceptance candidate block historical.",
+        "revision": "R1"
+      },
+      {
+        "finding": "TECHNICAL_DOCUMENTATION_LINE7_TRAILING_WHITESPACE_ONLY",
+        "resolution": "Removed two trailing-space bytes from the accepted-main checkpoint line.",
+        "revision": "R2"
+      },
+      {
+        "finding": "ACCEPTANCE_DATE_AUTHORITY_MISMATCH",
+        "resolution": "Aligned three live closeout headings to 2026-10-03 Europe/Belgrade based on GitHub commit creation 2026-10-02T22:18:25Z.",
+        "revision": "R3"
+      },
+      {
+        "finding": "STALE_PREDECESSOR_LIVE_POINTERS",
+        "resolution": "Updated the live ISI-26 registry note and current Phase-24/Phase-25 status paragraphs to accepted 27A / current 27B while preserving the dated 2026-10-01 historical record.",
+        "revision": "R4"
+      },
+      {
+        "finding": "HISTORICAL_LEDGER_VALIDATION_SCOPE_AND_RESIDUAL_LIVE_SUMMARIES",
+        "resolution": "Scope live-pointer checks to current sections and predecessor notes; preserve the exact dated historical owner ledger; reconcile four residual live summaries without changing accepted implementation or release/server boundaries.",
+        "revision": "R4-R1"
+      }
+    ],
+    "residual_live_findings_resolved": [
+      "TASK25_CURRENT26_POINTER",
+      "STATUS26_NEXT27A_POINTER",
+      "TECH15_LOCAL27A_CANDIDATE",
+      "INV_A21_LOCAL27A_CANDIDATE"
+    ],
+    "resolved": true,
+    "runtime_change": false,
+    "scope_paths": 10
+  },
+  "next_checkpoint": "ISI-27B-RC-EVIDENCE-GOVERNANCE-PACK",
+  "schema_version": 1,
+  "task": "ISI-27A-SHARED-HELP-RELEASE-UX-COMPLETENESS"
+}

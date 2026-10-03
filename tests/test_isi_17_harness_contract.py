@@ -216,8 +216,13 @@ def test_live_status_records_phase24_closeout_and_verified_predecessors() -> Non
     assert by_id["ISI-26-PERFORMANCE-LOAD-RESILIENCE"]["status"] == "done"
     phase27 = by_id["ISI-27-INDUSTRIAL-RELEASE-CANDIDATE"]
     assert phase27["status"] == "in_progress"
-    assert phase27["active_checkpoint"] == "ISI-27A-SHARED-HELP-RELEASE-UX-COMPLETENESS"
-    assert by_id["ISI-27A-SHARED-HELP-RELEASE-UX-COMPLETENESS"]["status"] == "in_progress"
+    assert phase27["active_checkpoint"] == "ISI-27B-RC-EVIDENCE-GOVERNANCE-PACK"
+    assert by_id["ISI-27A-SHARED-HELP-RELEASE-UX-COMPLETENESS"]["status"] == "done"
+    assert by_id["ISI-27B-RC-EVIDENCE-GOVERNANCE-PACK"]["status"] == "spec_ready"
+    assert "Last accepted implementation slice: `ISI-27A - Shared Help & Release UX Completeness`" in status
+    assert "27A ACCEPTED ON MAIN / 27B SPEC_READY / NOT CI_VERIFIED" in status
+    assert "Current checkpoint: `ISI-27B - RC Evidence & Governance Pack`" in status
+    assert "SCOPE LOCKED / 27A IMPLEMENTATION CANDIDATE / NOT CI_VERIFIED" not in status
 
 
 def test_canonical_system_inventory_is_complete_and_self_contained() -> None:
