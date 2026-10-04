@@ -1,3 +1,4 @@
+from tools.release.governance import LABELS, PHASES, SERVER, live_pointer, validate_release_state
 import json
 import hashlib
 import re
@@ -9,7 +10,8 @@ ROOT=Path(__file__).resolve().parents[1]
 
 HISTORY_HEADING = "### 2026-10-01 ISI-25B closure and shared-ingress governance reconciliation"
 HISTORY_SHA256 = "52747042e67f3c21fb8a8b2be10f8a91688fcbba9833a621ad9e06605211bb87"
-CURRENT_POINTER = "ISI-27A is accepted on main and 27B is current"
+CURRENT_TASKS = {t["id"]: t for t in json.loads((ROOT / "automation/tasks.json").read_text())["tasks"]}
+CURRENT_POINTER = live_pointer(CURRENT_TASKS)
 STALE24 = "ISI-27 B0-R1A bootstrap is closed, scope is locked, and 27A is current."
 STALE25 = "ISI-27 B0-R1A bootstrap is closed with scope locked and 27A current"
 ACCEPTED_MAIN = "74acd5d9a890733347554633f44a6d5319717ba3"
@@ -50,17 +52,13 @@ def _assert_closeout_live_pointers(master, live_tasks, status, tech):
         note = tasks[key]["note"]
         assert CURRENT_POINTER in note, f"Stale predecessor note: {key}"
         assert "27A is current" not in note and "ISI-26 is current/next" not in note
-    assert tasks["ISI-27-INDUSTRIAL-RELEASE-CANDIDATE"]["active_checkpoint"] == "ISI-27B-RC-EVIDENCE-GOVERNANCE-PACK"
-    assert tasks["ISI-27A-SHARED-HELP-RELEASE-UX-COMPLETENESS"]["status"] == "done"
-    assert tasks["ISI-27A-SHARED-HELP-RELEASE-UX-COMPLETENESS"]["accepted_main_sha"] == ACCEPTED_MAIN
-    assert tasks["ISI-27B-RC-EVIDENCE-GOVERNANCE-PACK"]["status"] == "spec_ready"
-    assert tasks["ISI-27C-REPRODUCIBLE-RELEASE-SUPPLY-CHAIN-ASSURANCE"]["status"] == "planned"
-    assert tasks["ISI-27D-EXACT-MAIN-RC-ACCEPTANCE-CLOSEOUT"]["status"] == "planned"
-    assert tasks["ISI-28-CURRENT-SERVER-CONTROLLED-UPGRADE"]["status"] == "deferred"
+    current = validate_release_state(tasks)
+    assert tasks[PHASES[0]]["status"] == "done"
+    assert tasks[PHASES[0]]["accepted_main_sha"] == ACCEPTED_MAIN
     summaries = [line for line in status.splitlines() if line.startswith("Overall `ISI-26-PERFORMANCE-LOAD-RESILIENCE`")]
     assert len(summaries) == 1
     assert "ISI-27A is accepted on main" in summaries[0]
-    assert "current next action is `ISI-27B - RC Evidence & Governance Pack`" in summaries[0]
+    assert f"current next action is `{LABELS[current]}`" in summaries[0]
     help_summary = _closeout_section(tech, "## 15. Help, User Guide and XAI governance")
     assert "Shared Help/presentation is accepted on main" in help_summary
     assert ACCEPTED_MAIN in help_summary
@@ -97,9 +95,15 @@ def _closeout_negative_case(case, documents):
         elif case == "27b_planned":
             tasks["ISI-27B-RC-EVIDENCE-GOVERNANCE-PACK"]["status"] = "planned"
         elif case == "27c_promoted":
-            tasks["ISI-27C-REPRODUCIBLE-RELEASE-SUPPLY-CHAIN-ASSURANCE"]["status"] = "done"
+            current = validate_release_state(tasks)
+            if current in PHASES:
+                tasks[current]["status"] = "done"
+                tasks[current].pop("accepted_main_sha", None)
+            else:
+                tasks[PHASES[-1]].pop("ci_acceptance", None)
         else:
-            tasks["ISI-28-CURRENT-SERVER-CONTROLLED-UPGRADE"]["status"] = "spec_ready"
+            tasks[SERVER]["status"] = "spec_ready"
+            tasks[PHASES[-1]].pop("ci_acceptance", None)
         changed["tasks"] = json.dumps(data)
     elif case == "outside_history":
         changed["master"] += "\n" + STALE24 + "\n"
@@ -128,7 +132,7 @@ def _closeout_negative_case(case, documents):
     elif case == "inventory_candidate":
         changed["master"] = master.replace("VERIFIED in the accepted ISI-27A implementation", "VERIFIED in the local 27A candidate", 1)
     elif case == "status_next27a":
-        changed["status"] = changed["status"].replace("current next action is `ISI-27B - RC Evidence & Governance Pack`", "current next action is `ISI-27A - Shared Help & Release UX Completeness`", 1)
+        changed["status"] = changed["status"].replace(f"current next action is `{LABELS[validate_release_state(CURRENT_TASKS)]}`", "current next action is `ISI-27A - Shared Help & Release UX Completeness`", 1)
     elif case == "technical_candidate":
         changed["tech"] = changed["tech"].replace("Shared Help/presentation is accepted on main", "Shared Help/presentation has a local ISI-27A candidate", 1)
     else:
@@ -145,9 +149,7 @@ def test_corrected_b0_r1a_and_four_gate_scope_are_locked():
     by={x["id"]:x for x in ev["findings"]}
     assert by["B0-13"]["status"]=="MISSING"
     tasks={x["id"]:x for x in json.loads((ROOT/"automation/tasks.json").read_text())["tasks"]}
-    parent=tasks["ISI-27-INDUSTRIAL-RELEASE-CANDIDATE"]
-    assert parent["status"]=="in_progress"
-    assert parent["active_checkpoint"]=="ISI-27B-RC-EVIDENCE-GOVERNANCE-PACK"
+    validate_release_state(tasks)
     chain=[
       ("ISI-27A-SHARED-HELP-RELEASE-UX-COMPLETENESS","done","ISI-27B-RC-EVIDENCE-GOVERNANCE-PACK"),
       ("ISI-27B-RC-EVIDENCE-GOVERNANCE-PACK","spec_ready","ISI-27C-REPRODUCIBLE-RELEASE-SUPPLY-CHAIN-ASSURANCE"),
@@ -155,9 +157,7 @@ def test_corrected_b0_r1a_and_four_gate_scope_are_locked():
       ("ISI-27D-EXACT-MAIN-RC-ACCEPTANCE-CLOSEOUT","planned","ISI-28-CURRENT-SERVER-CONTROLLED-UPGRADE"),
     ]
     for key,status,nxt in chain:
-        assert tasks[key]["status"]==status
         assert tasks[key]["next"]==nxt
-    assert tasks["ISI-28-CURRENT-SERVER-CONTROLLED-UPGRADE"]["status"]=="deferred"
 
 def test_scope_docs_preserve_release_and_server_boundaries():
     spec=(ROOT/"automation/specs/ISI-27-SCOPE-LOCK.md").read_text()
@@ -197,7 +197,8 @@ def test_r2_review_recovery_records_final_surface_and_live_handoff():
     for text in (status, tech, master):
         assert "27A" in text and "scope" in text.casefold()
         assert "27A ACCEPTED ON MAIN" in text
-        assert "27B" in text and "SPEC_READY" in text
+        current = validate_release_state(CURRENT_TASKS)
+        assert f"{current.split('-')[1]} {CURRENT_TASKS[current]['status'].upper()}" in text
         assert "SCOPE LOCKED / 27A IMPLEMENTATION CANDIDATE / NOT CI_VERIFIED" not in text
         assert "## ISI-27A accepted-main closeout and ISI-27B promotion — 2026-10-03" in text
         assert "## ISI-27A accepted-main closeout and ISI-27B promotion — 2026-10-02" not in text
@@ -206,7 +207,7 @@ def test_r2_review_recovery_records_final_surface_and_live_handoff():
         assert "fresh release-candidate bootstrap" not in text.casefold()
     tasks={x["id"]:x for x in json.loads(live_tasks)["tasks"]}
     assert "27A is current" not in tasks["ISI-26-PERFORMANCE-LOAD-RESILIENCE"]["note"]
-    assert "ISI-27A is accepted on main and 27B is current" in tasks["ISI-26-PERFORMANCE-LOAD-RESILIENCE"]["note"]
+    assert CURRENT_POINTER in tasks["ISI-26-PERFORMANCE-LOAD-RESILIENCE"]["note"]
     _assert_closeout_live_pointers(master, live_tasks, status, tech)
     evidence=json.loads((ROOT/"automation/specs/ISI-27A-ACCEPTANCE-CLOSEOUT-EVIDENCE.json").read_text())
     chain=evidence["independent_review_recovery"]["recovery_chain"]

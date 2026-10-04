@@ -1,6 +1,6 @@
 # ISI Public Portal Audit Remediation R1
 
-Status: **IMPLEMENTED / REVIEW_VERIFIED UNSTAGED CANDIDATE**
+Status: **ACCEPTED ON MAIN / REVIEW_VERIFIED / NOT CI_VERIFIED**
 Baseline: `main` `3e652e392624b3903498a1c2a00024306e6308d1`
 Approval: owner approved the read-only audit findings and `PROPOSED_REMEDIATION_SCOPE`, then directed implementation.
 Canonical system inventory impact: **NONE**. This change stays within the existing public website presentation/catalog boundary and adds no service, data owner, integration, security boundary, or deployment component.
@@ -75,3 +75,5 @@ Run only in the canonical repository on `main`, with the original baseline and `
 The owner explicitly requested implementation of all proposed remaining work, final deployment, and alignment of local/GitHub/server source. This authorizes the outer assistant to finalize reviewed local candidates by exact-file staging and direct main commit/push. The original no-Git-mutation boundary applies to the implementation runner/analyzer, not this later owner-directed finalization. Production still follows 27B, 27C, 27D acceptance and controlled ISI-28 deployment.
 
 The four separately approved unpublished legal-draft paths are allowed companion documents in this candidate: `automation/specs/ISI-PUBLIC-LEGAL-NOTICES-DRAFT-R1.md`, `docs/legal/ISI-PUBLIC-TERMS-DRAFT.md`, `docs/legal/ISI-PRIVACY-NOTICE-DRAFT.md`, and `docs/legal/ISI-LEGAL-NOTICES-RELEASE-CHECKLIST.md`. This reconciliation adds no runtime path or published legal statement. The analyzer continues to reject every other unapproved path.
+
+Historical implementation contract. Accepted on main `c177f9d705efd6f68d95ef7d13847b03a8e19229` after local acceptance and review. Locked baseline analyzers are historical candidate tools; later release assembly owns new exact-source consolidation. NOT CI_VERIFIED / DEFERRED_SERVER_VERIFICATION.

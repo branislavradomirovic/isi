@@ -1,6 +1,6 @@
 # ISI Autonomous Industrialization Master Plan
 
-Status: **OWNER_APPROVED canonical architecture/governance/system-inventory baseline - reconciled 2026-10-03**.
+Status: **OWNER_APPROVED canonical architecture/governance/system-inventory baseline - reconciled 2026-10-04**.
 
 This plan is binding for the ISI industrialization track unless the owner explicitly approves a later change.
 
@@ -413,6 +413,8 @@ This inventory is the controlled bridge between the MasterPlan and the as-built 
 | INV-J29 | staging compose: data-worker | Historical staging Compose service | HISTORICAL | docker-compose.staging.yml | Old ISI-15 split data worker | Historical DB/Redis/S3 | Processed data jobs | staging stores/migrate | data platform | Historical DB/object state | DO NOT EXECUTE as current workflow | NO | NO | tests/test_isi_15_compose_contract.py | LEGITIMATE_HISTORY | ISI-28 | Fresh ISI-28 worker topology supersedes it |
 | INV-J30 | staging compose: ai-worker | Historical staging Compose service | HISTORICAL | docker-compose.staging.yml | Old ISI-15 split AI worker | Historical DB/Redis | AI processing | staging stores/migrate | AI platform | Historical DB/provider state | DO NOT EXECUTE as current workflow | NO | NO | tests/test_isi_15_compose_contract.py | LEGITIMATE_HISTORY | ISI-28 | Fresh ISI-28 worker topology supersedes it |
 | INV-J31 | staging compose: nginx | Historical staging Compose edge service | HISTORICAL | docker-compose.staging.yml; docker/nginx/isi15-staging.conf | Old local ISI-15 TLS/noindex reverse proxy on default 8443 | Historical api/streamlit | Historical local HTTPS | staging app services | historical QA | Nginx config/certs | DO NOT EXECUTE as current ingress authority | NO | NO | tests/test_isi_15_compose_contract.py | LEGITIMATE_HISTORY | ISI-28 | Retire when historical staging acceptance layer is deliberately removed |
+| INV-J32 | Immutable release candidate bundle | Release artifact | DEVELOPMENT_ONLY | tools/release/build.py; tools/release/assemble.py; docs/release/ISI-RELEASE-SUPPLY-CHAIN.md; docker/runtime-base.lock.json | Preserve source, exact pinned-base image, runtime compatibility, evidence and provenance identity | Committed exact main and blocking gate evidence | Archive, manifest, dependency/image SBOMs, image scan, API/Streamlit probe, provenance, checksums | INV-M20 / INV-M21 / INV-J33 | Controlled ISI-28 deployment | Immutable ignored local directory / bounded CI artifacts | Signature verification and artifact hash/runtime compatibility checks required before deployment | NO | YES | tests/test_isi_27c_release_supply_chain.py; tests/test_isi_27c_runtime_image_contract.py | NONE | ISI-27C / ISI-28 | No deployment performed by artifact generation |
+| INV-J33 | Wolfi Python runtime substrate | Image build/runtime component | DEVELOPMENT_ONLY | docker/Dockerfile; docker/runtime-base.lock.json | Pinned minimal glibc runtime base; application build uses a separate stage | Supplier image digest and pinned Python packages | Exact ISI runtime image | Chainguard Wolfi base and Python package repository | API; Streamlit; migration and workers | Release image layers and CycloneDX image SBOM | Same supplier repository; no build tools in final virtual environment; HIGH/CRITICAL image scan blocks | NO | YES | tests/test_isi_27c_runtime_image_contract.py; Trivy 0.75.0; disposable API/Streamlit checks | NONE | ISI-27C / ISI-28 | Development candidate only until exact-source acceptance; production verification and deployment are ISI-28 |
 
 #### K. CONFIGURATION
 
@@ -432,6 +434,7 @@ This inventory is the controlled bridge between the MasterPlan and the as-built 
 | INV-K12 | Auth TTL/session family | Configuration family | CURRENT_AS_BUILT | src/core/config.py | AUTH_SESSION_TTL_SECONDS/AUTH_SESSION_IDLE_TTL_SECONDS/AUTH_EMAIL_VERIFICATION_TTL_SECONDS/AUTH_PASSWORD_RESET_TTL_SECONDS/AUTH_INVITATION_TTL_SECONDS | Token/session lifetimes | Expiry behavior | Security config | AuthService | Environment + AuthSession/AuthToken | Security-critical values | NO | YES | tests/test_isi_14_session_contract.py; tests/test_isi_20_session_management.py | NONE | ISI-20 | Changes require security review |
 | INV-K13 | Login/security host family | Configuration family | CURRENT_AS_BUILT | src/core/config.py | SECURITY_LOGIN_WINDOW_SECONDS/MAX_FAILURES/BLOCK_SECONDS/IDENTIFIER_PEPPER/ALLOWED_HOSTS/TRUST_PROXY_HEADERS | Abuse and request-origin controls | Security decisions | Deployment | SecurityService/API | Environment | Pepper secret; proxy/host trust security-critical | NO | YES | tests/test_isi_14_rate_limit_contract.py; tests/test_isi_14_headers_contract.py | NONE | ISI-20 / ISI-28 | Production proxy/host values from final ingress |
 | INV-K14 | Auth delivery/SMTP family | Configuration family | CURRENT_AS_BUILT | src/core/config.py; src/platform/auth/delivery.py | AUTH_DELIVERY_MODE/SMTP_* | Delivery settings/credentials | Null or SMTP adapter | Deployment | AuthDelivery | Environment + external SMTP | SMTP credentials secret; null forbidden for production delivery | NO | YES | tests/test_isi_15_delivery.py | NONE | ISI-28 | Real SMTP configured only in approved deployment |
+| INV-K15 | Build and release-signing metadata | Configuration family | DEVELOPMENT_ONLY | docker/Dockerfile; docker/runtime-base.lock.json; tools/release/provenance.py; tools/release/allowed_signers | ISI_GIT_SHA/candidate/base-lock OCI identity and isi-release signing namespace | Exact Git commit and existing owner public keys | Image revision and signature validation | Release builder / existing SSH agent | Release verification | OCI metadata / public signer file | No private key committed or hosted; no production credentials | NO | YES | tests/test_isi_27c_release_supply_chain.py | NONE | ISI-27C | Only existing GitHub owner identities are trusted |
 
 #### L. EXTERNAL INTEGRATIONS
 
@@ -471,7 +474,8 @@ This inventory is the controlled bridge between the MasterPlan and the as-built 
 | INV-M18 | Aggregate exact-main CI authority | Acceptance authority | CURRENT_AS_BUILT | .github/workflows/ci.yml; tools/ci/run_isi17_acceptance.sh | Block main acceptance unless all required jobs pass | Committed exact main SHA | CI_VERIFIED evidence | All test/quality/policy jobs | Development lifecycle | GitHub run metadata | No production deployment/secrets | NO | YES | Workflow + harness tests | NONE | ISI-17 / ISI-27 | Cannot be weakened to accept a defect |
 
 | INV-M19 | Repository performance and resilience acceptance | Test authority | DEVELOPMENT_ONLY | tools/performance/**; tests/test_isi_26_*.py; docs/ops/ISI-26-PERFORMANCE-LOAD-RESILIENCE.md | Synthetic bounded workload catalogue, concurrent harness and privacy-safe evidence | Versioned synthetic fixtures | Fingerprinted contracts/counts/latencies | Existing API/data/domain/report/AI surfaces | Local runner; ISI-27 acceptance | Ephemeral SQLite and JSON evidence | No raw identifiers/secrets/payloads; no server/network capacity authority | NO | NO | tests/test_isi_26_*.py | NONE | ISI-26 / ISI-27 | Timing remains UNCALIBRATED until accepted local evidence; live capacity only ISI-28 |
-| INV-M20 | Exact-candidate release evidence | Test authority | DEVELOPMENT_ONLY | tools/release/evidence.py; tools/qa/run_isi27b.py; tools/qa/analyze_isi27b.py; docs/release/ISI-RC-GOVERNANCE-PACK.md | Consolidate domain, model, security/privacy, native recovery and performance acceptance | Exact candidate and synthetic gate reports | Fingerprinted RC governance pack | Existing accepted test authorities | ISI-27B / ISI-27C | Ignored immutable evidence directory | No production data, no model promotion, no server authority | NO | NO | tests/test_isi_27b_release_evidence.py | NONE | ISI-27 | Current candidate; local acceptance and independent review required |
+| INV-M20 | Exact-candidate release evidence | Test authority | DEVELOPMENT_ONLY | tools/release/evidence.py; tools/qa/run_isi27b.py; tools/qa/analyze_isi27b.py; docs/release/ISI-RC-GOVERNANCE-PACK.md | Consolidate domain, model, security/privacy, native recovery and performance acceptance | Exact candidate and synthetic gate reports | Fingerprinted RC governance pack | Existing accepted test authorities | ISI-27B / ISI-27C | Ignored immutable evidence directory | No production data, no model promotion, no server authority | NO | NO | tests/test_isi_27b_release_evidence.py | NONE | ISI-27 | Accepted 27B main 16a928b; local/review evidence recorded; hosted acceptance remains 27D |
+| INV-M21 | Reproducible release and supply-chain assurance | Release/test authority | DEVELOPMENT_ONLY | tools/release/build.py; tools/release/sbom.py; tools/release/provenance.py; tools/release/assemble.py; tools/release/allowed_signers; .github/workflows/ci.yml | Bind exact source, reports, SBOMs, image scan and signed provenance | Clean main and real acceptance outputs | Immutable checksummed release bundle | INV-M20 and blocking CI gates | ISI-27D / ISI-28 | Ignored local bundle and controlled CI artifacts | Pinned owner public identity; private keys never in CI/Git; fail-closed image scan | NO | YES | tests/test_isi_27c_release_supply_chain.py | NONE | ISI-27C / ISI-27D | Candidate acceptance/review required; no server authority |
 
 #### N. LEGACY LEDGER
 
@@ -876,7 +880,7 @@ Critical rule: no Codex/LLM may invent indicator formulas, LISI weights, thresho
 
 #### ISI-24E accepted checkpoint and Phase-24 closeout
 
-`ISI-24E - ORDO Final Whole-Phase Gap/Legacy Audit + Closeout` is COMPLETE / CI_VERIFIED at the accepted remediation/closeout implementation checkpoint `5937daa2ea7ff9c476bd6a05a04841d1534aefe2` (tree `6e75bf1cd13b95e23f9189b9e94453dd130eaa19`) with `ISI required acceptance` run #90 / `35238623960` attempt 2 completed `success`. The whole-phase audit found F01 stale user-facing wording and F02 incomplete forecast customer reachability as the only `REMOVE_BEFORE_NEXT_SLICE` blockers; both are resolved. No Phase-24 `REMOVE_BEFORE_NEXT_SLICE` item remains. ISI-25 and ISI-26 subsequently completed implementation acceptance on main; ISI-27A is accepted on main and 27B is current. Server/DNS/central-ingress/production mutation remains forbidden until owner-approved ISI-28.
+`ISI-24E - ORDO Final Whole-Phase Gap/Legacy Audit + Closeout` is COMPLETE / CI_VERIFIED at the accepted remediation/closeout implementation checkpoint `5937daa2ea7ff9c476bd6a05a04841d1534aefe2` (tree `6e75bf1cd13b95e23f9189b9e94453dd130eaa19`) with `ISI required acceptance` run #90 / `35238623960` attempt 2 completed `success`. The whole-phase audit found F01 stale user-facing wording and F02 incomplete forecast customer reachability as the only `REMOVE_BEFORE_NEXT_SLICE` blockers; both are resolved. No Phase-24 `REMOVE_BEFORE_NEXT_SLICE` item remains. ISI-25 and ISI-26 subsequently completed implementation acceptance on main; ISI-27A is accepted on main and 27C is current. Server/DNS/central-ingress/production mutation remains forbidden until owner-approved ISI-28.
 
 Goal: convert ORDO evidence/scenario infrastructure into a production destination-intelligence methodology without fabricating predictive capability.
 
@@ -911,7 +915,7 @@ Goal: make statistical/ML, embedding, LLM and VLM behavior measurable, versioned
 
 The canonical evaluation baseline is `docs/roadmap/ISI-AI-MODEL-EVALUATION-PROTOCOL-v1.md` and ADR-0025.
 
-Status: **IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED**. ISI-25A is accepted on main SHA `f0047321ee4410522697144ecfa464087f1b83bc` (tree `06e419ec656ee2fb0bfb74b4a6b10d42ef275f25`) after local deterministic acceptance and assistant human review. ISI-25B is implemented and accepted on main SHA `7e11ee2a6f7546eacc3207e15cacfc35f6d04f3e`; it provides exact-registration-bound fallback, separate frozen promotion benchmarks, deterministic evaluators, capability thresholds, evidence-gated promotion/rollback governance, deterministic circuit state, on-demand drift and shared AI XAI. No hosted full acceptance was run for 25A/25B under the owner cost/acceptance policy, so `CI_VERIFIED` is not claimed. ISI-26 has now also completed repository implementation acceptance on main; ISI-27A is accepted on main and 27B is current. Hosted full acceptance remains reserved for the controlled 27D checkpoint. Server verification and all deployment mutation remain deferred to ISI-28.
+Status: **IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED**. ISI-25A is accepted on main SHA `f0047321ee4410522697144ecfa464087f1b83bc` (tree `06e419ec656ee2fb0bfb74b4a6b10d42ef275f25`) after local deterministic acceptance and assistant human review. ISI-25B is implemented and accepted on main SHA `7e11ee2a6f7546eacc3207e15cacfc35f6d04f3e`; it provides exact-registration-bound fallback, separate frozen promotion benchmarks, deterministic evaluators, capability thresholds, evidence-gated promotion/rollback governance, deterministic circuit state, on-demand drift and shared AI XAI. No hosted full acceptance was run for 25A/25B under the owner cost/acceptance policy, so `CI_VERIFIED` is not claimed. ISI-26 has now also completed repository implementation acceptance on main; ISI-27A is accepted on main and 27C is current. Hosted full acceptance remains reserved for the controlled 27D checkpoint. Server verification and all deployment mutation remain deferred to ISI-28.
 
 Required deliverables include:
 
@@ -948,13 +952,13 @@ R1 provides immutable performance/evidence contracts, ten versioned workloads, b
 
 Inventory impact remains INV-M19 repository acceptance tooling only; runtime ownership stays with INV-B25, INV-D01 through INV-D04, INV-C38/C39, INV-E05 and INV-F04. No customer-facing/API/schema/dependency/deployment boundary changed. `PRODUCTION_CAPACITY_VERIFIED=false` and `SERVER_VERIFIED=false` remain explicit. Live capacity/server verification belongs exclusively to ISI-28. Current server, DNS, certificates, central Nginx, production SMTP/data/secrets, server Ollama, Krcuga and OralScanXAI remain outside ISI-26 execution.
 
-ISI-27 B0-R1A bootstrap is CLOSED/PASS; ISI-27A Shared Help & Release UX Completeness is accepted on main and `ISI-27B - RC Evidence & Governance Pack` is the current checkpoint. ISI-27 owns the Industrial Release Candidate & Acceptance Pack, while the explicitly approved hosted full acceptance checkpoint remains 27D. See `automation/specs/ISI-26E-PERFORMANCE-RESILIENCE-CLOSEOUT.md` and `docs/ops/ISI-26-PERFORMANCE-LOAD-RESILIENCE.md` for exact predecessor closeout evidence and retained limitations.
+ISI-27 B0-R1A bootstrap is CLOSED/PASS; ISI-27A Shared Help & Release UX Completeness is accepted on main and `ISI-27C - Reproducible Release & Supply-Chain Assurance` is the current checkpoint. ISI-27 owns the Industrial Release Candidate & Acceptance Pack, while the explicitly approved hosted full acceptance checkpoint remains 27D. See `automation/specs/ISI-26E-PERFORMANCE-RESILIENCE-CLOSEOUT.md` and `docs/ops/ISI-26-PERFORMANCE-LOAD-RESILIENCE.md` for exact predecessor closeout evidence and retained limitations.
 
 ### ISI-27 - Industrial Release Candidate & Acceptance Pack
 
 Goal: produce one release candidate technically ready for controlled deployment.
 
-Status: **IN PROGRESS / 27A ACCEPTED ON MAIN / 27B SPEC_READY / NOT CI_VERIFIED**. Corrected B0-R1A bootstrap authority is `automation/specs/ISI-27-B0-R1A-BOOTSTRAP-AUDIT-REPORT.md` plus its JSON evidence. At bootstrap on baseline `e46128752e29f46dc6d9b8510198739f88da50e9` it recorded DONE=6, PARTIAL=8, MISSING=5, DRIFT=0, thirteen release blockers not DONE and twelve production-critical shared Help/XAI blockers. ISI-27A has since closed those twelve Help/XAI blockers on accepted main `74acd5d9a890733347554633f44a6d5319717ba3`; remaining release-candidate work is owned by 27B/27C/27D. SBOM/signed provenance/attestation and image vulnerability enforcement remain owned by 27C.
+Status: **IN PROGRESS / 27A ACCEPTED ON MAIN / 27B ACCEPTED ON MAIN / 27C IN_PROGRESS / NOT CI_VERIFIED**. Corrected B0-R1A bootstrap authority is `automation/specs/ISI-27-B0-R1A-BOOTSTRAP-AUDIT-REPORT.md` plus its JSON evidence. At bootstrap on baseline `e46128752e29f46dc6d9b8510198739f88da50e9` it recorded DONE=6, PARTIAL=8, MISSING=5, DRIFT=0, thirteen release blockers not DONE and twelve production-critical shared Help/XAI blockers. ISI-27A has since closed those twelve Help/XAI blockers on accepted main `74acd5d9a890733347554633f44a6d5319717ba3`; remaining release-candidate work is owned by 27C/27D. SBOM/signed provenance/attestation and image vulnerability enforcement remain owned by 27C.
 
 Release acceptance must include explicit SIMPA and ORDO methodology states, model/eval provenance, security/privacy acceptance, migration/recovery rehearsals and performance acceptance. Help/XAI remains a hard release gate. The canonical Help Coverage Matrix must show `VERIFIED` for every applicable production-critical action, with checklist-level `NOT_APPLICABLE` only where explicitly justified. `INV-A17` public self-registration remains NOT_PRESENT; ISI-27 must not create public signup merely to satisfy Help coverage.
 
@@ -1246,7 +1250,7 @@ This closeout is governance-only. It changes no runtime/auth/domain/Help semanti
 
 Parent ISI-27 remains `IN PROGRESS`; the active checkpoint is now **ISI-27B — RC Evidence & Governance Pack** (`spec_ready`). ISI-27C and ISI-27D remain planned; ISI-28 remains deferred and is still the only server-mutable phase.
 
-## ISI-27B R1 evidence consolidation candidate — 2026-10-04
+## Historical pre-acceptance record — ISI-27B R1 candidate (2026-10-04)
 
 Public portal remediation is accepted on main `c177f9d705efd6f68d95ef7d13847b03a8e19229`.
 Owner approved reviewed-candidate finalization and final deployment; release order
@@ -1257,3 +1261,55 @@ and independent review remain required before promotion. CI_VERIFIED=NO;
 SERVER_VERIFIED=NO. Public operator information is ISI with GoraNova as confirmed
 by the owner; the Gmail privacy contact is approved. Provider/legal processing
 facts must remain grounded in public records and the ISI-28 runtime audit.
+
+## ISI-27B accepted-main closeout and ISI-27C promotion — 2026-10-04
+
+ISI-27B is ACCEPTED ON MAIN / REVIEW_VERIFIED / NOT CI_VERIFIED on
+`16a928b20907d570df2cf05101a969e1f0cda736` (tree
+`2513af18b6d3a7b338f3a11b63444e7181f95a63`). Local acceptance: 1071 regression
+passes, 43 runner-gated native skips, 45 native PostgreSQL passes with zero skips,
+PostgreSQL 17/object restore PASS, ten accepted performance scenarios. Pack hash
+`9da45b26e811b6320c951e4285f83353aa306413c96052d5a75112b5ec67c8c1`;
+candidate `d97b16ce6f3cd179d8fca5b05e838d6644a6eda1bdff61c2399c4b0952e22a86`.
+Independent analysis, review, committed-file comparison and remote equality PASS.
+Current checkpoint: `ISI-27C - Reproducible Release & Supply-Chain Assurance`.
+ISI-27D remains planned, ISI-28 deferred. No hosted/server acceptance is claimed.
+
+27C contract: `automation/specs/ISI-27C-R1-REPRODUCIBLE-RELEASE-SUPPLY-CHAIN.md`.
+Its candidate introduces portable immutable release packaging, real image SBOM
+and blocking scan, existing-owner SSH-signed provenance and strict serial release
+state validation. GitHub Free/private signing uses local owner identity and makes
+no Enterprise/SLSA certification claim. INV-M21 owns release assurance; INV-K15
+owns build/signing metadata; INV-J32 maps the immutable release bundle. Python 3.11
+stdlib, existing OpenSSH 8.2+ and Docker suffice; Trivy runs as an official pinned
+CI action or disposable scanner container. No host package installation is required.
+
+## 27C R1 partial verification and approved R2 implementation — 2026-10-04
+
+27C is IN_PROGRESS, with an unstaged/uncommitted candidate; it is not accepted.
+An earlier frozen candidate (`17d0801a8fcfe073055e959e52006c429d008a072befc3649a4c1158e2c99d1d`)
+passed 1105 regression tests (43 intentional native skips), 45 native PostgreSQL
+tests (zero skips), PostgreSQL/object restore, all 10 performance scenarios,
+quality, policy, Compose and changed-line checks. Later review/contract changes
+require final rerun; this is not final-candidate acceptance. Evidence:
+`automation/evidence/ISI-27C/local-r1/partial-verification.json`.
+
+Actual image scanning discovered new security drift: urllib3 2.7.0 and build-only
+tooling findings were corrected in the candidate; Python dependency audit and
+real runtime imports pass. The corrected Debian image still has 45 HIGH OS
+findings. Image acceptance FAIL; classified REMOVE_BEFORE_NEXT_SLICE. No finding
+is ignored and no release/server gate is bypassed. The owner approved bounded R2
+implementation using the pinned Wolfi/Python 3.11 supplier in
+`automation/specs/ISI-27C-R2-MINIMAL-RUNTIME-BASE-PROPOSAL.md`. The multistage
+Docker candidate has passed the exact-image runtime probe and Trivy 0.75.0 scan:
+117 CycloneDX components, zero HIGH/CRITICAL findings, API and Streamlit health
+200, and unauthenticated account access 401. The full local gate set passed on
+the recorded candidate: 1,159 regression tests (43 existing skips), 45 native
+PostgreSQL tests (zero skips), recovery, all 10 performance scenarios, policy,
+quality, Compose and diff. The independent analyzer passed. Exact reports are
+retained by candidate fingerprint under `automation/evidence/ISI-27C/`; this
+candidate is still local and
+unstaged/uncommitted, so 27C is not accepted on main or CI_VERIFIED. 27D remains
+planned and ISI-28 deferred.
+GitHub main remains accepted 27B SHA `16a928b20907d570df2cf05101a969e1f0cda736`.
+No new hosted dispatch, 27C commit/push or deployment occurred.

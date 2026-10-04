@@ -1,3 +1,4 @@
+from tools.release.governance import LABELS, last_accepted, validate_release_state
 import json
 import subprocess
 import sys
@@ -52,7 +53,7 @@ def test_industrialization_registry_is_complete_and_server_task_is_deferred() ->
     for number in range(17, 29):
         assert any(task_id.startswith(f"ISI-{number}-") for task_id in by_id)
     server_task = by_id["ISI-28-CURRENT-SERVER-CONTROLLED-UPGRADE"]
-    assert server_task["status"] in {"planned", "deferred"}
+    validate_release_state(by_id)
     assert "owner" in server_task["note"].lower()
 
 
@@ -71,7 +72,7 @@ def test_required_ci_jobs_and_fail_closed_runner_exist() -> None:
         "acceptance",
     ):
         assert f"  {job}:" in workflow
-    assert "needs: [policy, quality, tests, architecture-security, migration, native-postgres, compose, supply-chain, build]" in workflow
+    assert "needs: [policy, quality, tests, architecture-security, migration, native-postgres, compose, supply-chain, build, performance-release, release-bundle]" in workflow
     assert "  workflow_dispatch:" in workflow
     for forbidden_trigger in ("push", "pull_request", "pull_request_target", "schedule", "workflow_run", "merge_group"):
         assert f"  {forbidden_trigger}:" not in workflow
@@ -214,14 +215,11 @@ def test_live_status_records_phase24_closeout_and_verified_predecessors() -> Non
     assert historical["phase25_note_marker"] == "CURRENT/NEXT BOOTSTRAP"
     assert by_id["ISI-25-INDUSTRIAL-AI-MLOPS"]["status"] == "done"
     assert by_id["ISI-26-PERFORMANCE-LOAD-RESILIENCE"]["status"] == "done"
-    phase27 = by_id["ISI-27-INDUSTRIAL-RELEASE-CANDIDATE"]
-    assert phase27["status"] == "in_progress"
-    assert phase27["active_checkpoint"] == "ISI-27B-RC-EVIDENCE-GOVERNANCE-PACK"
+    current = validate_release_state(by_id)
     assert by_id["ISI-27A-SHARED-HELP-RELEASE-UX-COMPLETENESS"]["status"] == "done"
-    assert by_id["ISI-27B-RC-EVIDENCE-GOVERNANCE-PACK"]["status"] == "spec_ready"
-    assert "Last accepted implementation slice: `ISI-27A - Shared Help & Release UX Completeness`" in status
-    assert "27A ACCEPTED ON MAIN / 27B SPEC_READY / NOT CI_VERIFIED" in status
-    assert "Current checkpoint: `ISI-27B - RC Evidence & Governance Pack`" in status
+    assert f"Last accepted implementation slice: `{LABELS[last_accepted(by_id)]}`" in status
+    assert "27A ACCEPTED ON MAIN" in status and "NOT CI_VERIFIED" in status
+    assert f"Current checkpoint: `{LABELS[current]}`" in status
     assert "SCOPE LOCKED / 27A IMPLEMENTATION CANDIDATE / NOT CI_VERIFIED" not in status
 
 

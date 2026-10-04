@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from tools.release.governance import LABELS, validate_release_state
+
 import ast
 import json
 from pathlib import Path
@@ -66,12 +68,7 @@ def test_governance_keeps_candidate_and_later_gate_boundaries():
     assert tasks[key]["accepted_main_tree"] == "a69b8582a77555611b64a5527548e67a5b0c45cb"
     assert tasks[key]["accepted_candidate_fingerprint"] == "01ed26dd8e1193606f17c097f88ba0fd68b4f3ce2127de0845468998d3dc8d64"
     assert tasks[key]["spec"] == "automation/specs/ISI-27A-R1-SHARED-HELP-RELEASE-UX-COMPLETENESS.md"
-    parent = tasks["ISI-27-INDUSTRIAL-RELEASE-CANDIDATE"]
-    assert parent["status"] == "in_progress" and parent["active_checkpoint"] == "ISI-27B-RC-EVIDENCE-GOVERNANCE-PACK"
-    assert tasks["ISI-27B-RC-EVIDENCE-GOVERNANCE-PACK"]["status"] == "spec_ready"
-    for prefix in ("ISI-27C-", "ISI-27D-"):
-        assert next(t for k, t in tasks.items() if k.startswith(prefix))["status"] == "planned"
-    assert tasks["ISI-28-CURRENT-SERVER-CONTROLLED-UPGRADE"]["status"] == "deferred"
+    current = validate_release_state(tasks)
     for path in (MASTER, Path("automation/STATUS.md"), Path("TECHNICAL_DOCUMENTATION.md")):
         text = path.read_text()
         assert "ISI-SHARED-USER-GUIDE.md" in text
@@ -81,8 +78,8 @@ def test_governance_keeps_candidate_and_later_gate_boundaries():
     status = Path("automation/STATUS.md").read_text()
     master = MASTER.read_text()
     assert "74acd5d9a890733347554633f44a6d5319717ba3" in tech
-    assert "ISI-27B - RC Evidence & Governance Pack` is the current checkpoint" in master
-    assert "Current checkpoint: `ISI-27B - RC Evidence & Governance Pack`" in status
+    assert f"{LABELS[current]}` is the current checkpoint" in master
+    assert f"Current checkpoint: `{LABELS[current]}`" in status
 
 
 def test_shared_navigation_routes_without_private_calls(monkeypatch):

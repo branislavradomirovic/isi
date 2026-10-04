@@ -1,3 +1,4 @@
+from tools.release.governance import validate_release_state
 import json
 from pathlib import Path
 
@@ -28,12 +29,9 @@ def test_26e_closeout_accepts_r1_and_formal_coverage_gates():
     assert closeout["status"] == "done"
     assert closeout["spec"].endswith("ISI-26E-PERFORMANCE-RESILIENCE-CLOSEOUT.md")
     assert closeout["coverage_status"] == "CLOSEOUT_COMPLETE"
-    phase27 = tasks["ISI-27-INDUSTRIAL-RELEASE-CANDIDATE"]
-    assert phase27["status"] == "in_progress"
-    assert phase27["active_checkpoint"] == "ISI-27B-RC-EVIDENCE-GOVERNANCE-PACK"
+    validate_release_state(tasks)
     assert tasks["ISI-27A-SHARED-HELP-RELEASE-UX-COMPLETENESS"]["status"] == "done"
     assert tasks["ISI-27A-SHARED-HELP-RELEASE-UX-COMPLETENESS"]["accepted_main_sha"] == "74acd5d9a890733347554633f44a6d5319717ba3"
-    assert tasks["ISI-27B-RC-EVIDENCE-GOVERNANCE-PACK"]["status"] == "spec_ready"
     assert tasks["ISI-27A-SHARED-HELP-RELEASE-UX-COMPLETENESS"]["spec"] == "automation/specs/ISI-27A-R1-SHARED-HELP-RELEASE-UX-COMPLETENESS.md"
     assert tasks["ISI-27-INDUSTRIAL-RELEASE-CANDIDATE"]["depends_on"] == [parent["id"]]
     for path in ("TECHNICAL_DOCUMENTATION.md", "automation/STATUS.md",

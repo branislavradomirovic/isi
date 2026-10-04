@@ -1,0 +1,21 @@
+{
+  "architectures": [
+    "amd64"
+  ],
+  "image": "cgr.dev/chainguard/wolfi-base",
+  "index_digest": "sha256:9c2092b053779e14c82fb50f77b37bcc38b7d2c83972352d5813280f9d035b03",
+  "packages": {
+    "py3.11-pip": "26.2.1-r2",
+    "python-3.11": "3.11.17-r1"
+  },
+  "provenance": "supplier base digest plus exact release image, scan, SBOM and owner signature",
+  "python": "3.11",
+  "repository": "https://apk.cgr.dev/chainguard",
+  "runtime_packages": {
+    "ca-certificates-bundle": "20260909-r2",
+    "tzdata": "2026e-r0"
+  },
+  "runtime_scope": "The image-bound Trivy CycloneDX SBOM records the complete resolved APK and Python component set for the exact image digest; this file pins the base index and explicitly selected package versions.",
+  "schema": "ISI-RUNTIME-BASE-LOCK-v1",
+  "supplier": "Chainguard Wolfi"
+}

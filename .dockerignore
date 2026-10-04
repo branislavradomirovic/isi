@@ -19,3 +19,6 @@ automation/evidence
 data/migration
 runtime
 var
+.isi-data
+test-results
+.cache

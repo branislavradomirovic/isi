@@ -99,3 +99,5 @@ rejected pre-existing Markdown hard breaks in tracked technical documentation.
 For tracked files check changed lines with git diff --check; for new files check
 the whole new file. Preserve historical bytes. Run that scope preflight before
 the deterministic gate cycle, and repeat the final exact-source evidence pack.
+
+Historical implementation contract. Accepted on main `16a928b20907d570df2cf05101a969e1f0cda736` after local acceptance and review. Locked baseline analyzers are historical candidate tools; later release assembly owns new exact-source consolidation. NOT CI_VERIFIED / DEFERRED_SERVER_VERIFICATION.

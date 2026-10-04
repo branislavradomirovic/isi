@@ -141,16 +141,135 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Bind exact source fingerprint
+        id: source
+        run: |
+          python3 - <<'PY'
+          import hashlib, os
+          from pathlib import Path
+          from tools.release.evidence import source_identity
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write('candidate=' + source_identity(Path.cwd())['candidate_sha256'] + '\n')
+              output.write('runtime_lock=' + hashlib.sha256(Path('docker/runtime-base.lock.json').read_bytes()).hexdigest() + '\n')
+          PY
       - uses: docker/setup-buildx-action@v3
       - uses: docker/build-push-action@v6
-        with: {context: ., file: docker/Dockerfile, push: false, tags: "isi:ci"}
+        with:
+          context: .
+          file: docker/Dockerfile
+          load: true
+          tags: isi:ci
+          build-args: |
+            ISI_GIT_SHA=${{ github.sha }}
+            ISI_CANDIDATE_SHA=${{ steps.source.outputs.candidate }}
+            ISI_RUNTIME_BASE_LOCK_SHA256=${{ steps.source.outputs.runtime_lock }}
+      - name: Verify actual runtime image
+        env:
+          ISI_CANDIDATE_SHA: ${{ steps.source.outputs.candidate }}
+        run: >-
+          python3 tools/qa/check_runtime_image.py --image isi:ci
+          --source-sha "${GITHUB_SHA}" --candidate-sha "${ISI_CANDIDATE_SHA}"
+          --lock docker/runtime-base.lock.json --output image-runtime-check.json
+      - name: Blocking installed-image vulnerability scan
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
+        with:
+          version: v0.75.0
+          image-ref: isi:ci
+          format: json
+          output: image-scan.json
+          scanners: vuln
+          severity: HIGH,CRITICAL
+          exit-code: '1'
+          ignore-unfixed: false
+      - name: Installed-image CycloneDX SBOM
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
+        with:
+          version: v0.75.0
+          image-ref: isi:ci
+          format: cyclonedx
+          output: image-sbom.cdx.json
+          scanners: vuln
+      - name: Preserve exact scanned image
+        env:
+          ISI_SOURCE_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          mkdir image-evidence
+          mv image-scan.json image-sbom.cdx.json image-runtime-check.json image-evidence/
+          docker save isi:ci | gzip -n > image-evidence/image.tar.gz
+          docker image inspect isi:ci > image-evidence/inspect.json
+          python - <<'PY'
+          import json, os
+          from tools.release.build import image_archive_identity
+          from tools.release.sbom import sha256_file
+          from pathlib import Path
+          root = Path('image-evidence')
+          image = json.loads((root / 'inspect.json').read_text())[0]
+          identity = image_archive_identity(root / 'image.tar.gz')
+          assert identity['source_sha'] == os.environ['ISI_SOURCE_SHA']
+          identity.update(engine_image_id=image['Id'], archive_sha256=sha256_file(root / 'image.tar.gz'))
+          (root / 'image-identity.json').write_text(json.dumps(identity, sort_keys=True) + '\n')
+          (root / 'inspect.json').unlink()
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isi-exact-image
+          path: image-evidence/
+          retention-days: 1
+
+  performance-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11", cache: pip, cache-dependency-path: requirements.lock}
+      - run: python -m pip install -r requirements.lock && python -m pip install --no-deps -e .
+      - run: mkdir performance-evidence && python -m tools.performance.run_isi26 > performance-evidence/performance.jsonl 2> performance-evidence/performance.stderr
+      - uses: actions/upload-artifact@v4
+        with: {name: performance-results, path: performance-evidence/, retention-days: 1}
+
+  release-bundle:
+    needs: [policy, quality, tests, architecture-security, migration, native-postgres, compose, supply-chain, build, performance-release]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11", cache: pip, cache-dependency-path: requirements.lock}
+      - run: python -m pip install -r requirements.lock && python -m pip install --no-deps -e .
+      - uses: actions/download-artifact@v4
+        with: {name: pytest-results, path: automation/evidence/ISI-27C/incoming/regression}
+      - uses: actions/download-artifact@v4
+        with: {name: native-postgres-results, path: automation/evidence/ISI-27C/incoming/native}
+      - uses: actions/download-artifact@v4
+        with: {name: performance-results, path: automation/evidence/ISI-27C/incoming/performance}
+      - uses: actions/download-artifact@v4
+        with: {name: isi-exact-image, path: automation/evidence/ISI-27C/incoming/image}
+      - name: Assemble exact-source unsigned bundle
+        env:
+          ISI_UPSTREAM_JOBS: ${{ toJSON(needs) }}
+        run: |
+          mkdir -p automation/evidence/ISI-27C/hosted-reports
+          cp automation/evidence/ISI-27C/incoming/regression/pytest.xml automation/evidence/ISI-27C/hosted-reports/pytest.xml
+          cp automation/evidence/ISI-27C/incoming/native/pytest-native-postgres.xml automation/evidence/ISI-27C/hosted-reports/native-postgres.xml
+          cp automation/evidence/ISI-27C/incoming/native/isi19-recovery/rehearsal-summary.json automation/evidence/ISI-27C/hosted-reports/recovery.json
+          cp automation/evidence/ISI-27C/incoming/performance/performance.jsonl automation/evidence/ISI-27C/hosted-reports/performance.jsonl
+          python -m tools.release.assemble --reports automation/evidence/ISI-27C/hosted-reports --image automation/evidence/ISI-27C/incoming/image --output automation/evidence/ISI-27C/hosted-bundle
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isi-unsigned-release-bundle
+          path: |
+            automation/evidence/ISI-27C/hosted-bundle/**
+            !automation/evidence/ISI-27C/hosted-bundle/image.tar.gz
+          retention-days: 1
 
   acceptance:
     if: always()
-    needs: [policy, quality, tests, architecture-security, migration, native-postgres, compose, supply-chain, build]
+    needs: [policy, quality, tests, architecture-security, migration, native-postgres, compose, supply-chain, build, performance-release, release-bundle]
     runs-on: ubuntu-latest
     steps:
       - name: Require every gate
         env:
           RESULTS: ${{ toJSON(needs.*.result) }}
-        run: echo "$RESULTS" | jq -e 'all(. == "success")'
+        run: |
+          set -euo pipefail
+          echo "$RESULTS" | jq -e 'all(. == "success")'

@@ -1,0 +1,25 @@
+{
+  "accepted_main_sha": "16a928b20907d570df2cf05101a969e1f0cda736",
+  "accepted_main_tree": "2513af18b6d3a7b338f3a11b63444e7181f95a63",
+  "candidate_fingerprint": "d97b16ce6f3cd179d8fca5b05e838d6644a6eda1bdff61c2399c4b0952e22a86",
+  "pack_sha256": "9da45b26e811b6320c951e4285f83353aa306413c96052d5a75112b5ec67c8c1",
+  "source_baseline_sha": "c177f9d705efd6f68d95ef7d13847b03a8e19229",
+  "regression": {
+    "passed": 1071,
+    "skipped": 43,
+    "failed": 0
+  },
+  "native_postgres": {
+    "passed": 45,
+    "skipped": 0,
+    "failed": 0
+  },
+  "performance_scenarios": 10,
+  "postgresql17_and_object_restore": "PASS",
+  "independent_analysis": "PASS",
+  "assistant_review": "PASS",
+  "commit_source_vs_candidate": "PASS",
+  "remote_equality": "PASS",
+  "ci_verified": false,
+  "server_verified": false
+}

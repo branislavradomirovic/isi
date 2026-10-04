@@ -85,3 +85,12 @@ The full `ISI required acceptance` workflow remains manual `workflow_dispatch` o
 - PostgreSQL 17.11
 - standard Codex CLI 0.154.0
 - native Redis not installed at audit time; install only after a concrete ISI local-runtime requirement is approved and documented
+
+## ISI-27C release tooling
+
+Portable source packaging uses existing Python 3.11 standard-library hashing, tar
+inspection and deterministic gzip plus Git. Signing/verification requires existing
+OpenSSH 8.2+ with ssh-keygen -Y and the existing owner GitHub identity in the local
+SSH agent. No private key is copied to GitHub or between Macs. Docker supplies
+image build and the disposable official Trivy 0.75.0 scanner; hosted CI uses the
+pinned official action. No new workstation package is installed by this slice.
