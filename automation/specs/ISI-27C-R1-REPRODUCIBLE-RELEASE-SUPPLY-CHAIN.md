@@ -139,6 +139,9 @@ R1 acceptance contract. Source, installed-image SBOM, vulnerability scan, actual
 runtime image and all inherited gates must pass before 27C can be accepted.
 The R2 exact-image and full local acceptance evidence is retained by candidate
 fingerprint under `automation/evidence/ISI-27C/`; the scan/runtime, all local
-gates, independent analysis and human review passed for the current unstaged
-candidate. 27C is not yet accepted on main or CI_VERIFIED. 27D and ISI-28 remain
-locked.
+gates, independent analysis and human review passed. The implementation is
+accepted on main `b6f0bfaf453360da72f866d4bbd1d47b51655bf4` (tree
+`8d52631012121c078d077a39d75e201d4ffadcbd`, candidate fingerprint
+`7dc381dd31d94e6ada447c7cffc945399bddbe4a7ec138ec88ae69e77e9be8ea`). 27C is
+not CI_VERIFIED or SERVER_VERIFIED. 27D is the next specification-ready gate;
+ISI-28 remains locked until 27D closeout and separate owner approval.

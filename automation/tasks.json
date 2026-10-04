@@ -265,7 +265,7 @@
       ],
       "next": "ISI-26-PERFORMANCE-LOAD-RESILIENCE",
       "spec": "automation/specs/ISI-25B-EVALUATION-PROMOTION-RUNTIME.md",
-      "note": "ISI-25 implementation is complete and accepted on main. ISI-25A is accepted at f0047321ee4410522697144ecfa464087f1b83bc; ISI-25B is accepted at 7e11ee2a6f7546eacc3207e15cacfc35f6d04f3e. 25B implements exact-registration fallback, deterministic evaluators, separate frozen promotion benchmarks, capability thresholds, evidence-gated promotion/rollback, circuit state, on-demand drift and shared AI XAI. Hosted full acceptance was deliberately not run under owner policy, so CI_VERIFIED is not claimed. ISI-26 implementation is accepted on main; ISI-27A is accepted on main and 27C is current. No model installation, deployment or server mutation is authorized."
+      "note": "ISI-25 implementation is complete and accepted on main. ISI-25A is accepted at f0047321ee4410522697144ecfa464087f1b83bc; ISI-25B is accepted at 7e11ee2a6f7546eacc3207e15cacfc35f6d04f3e. 25B implements exact-registration fallback, deterministic evaluators, separate frozen promotion benchmarks, capability thresholds, evidence-gated promotion/rollback, circuit state, on-demand drift and shared AI XAI. Hosted full acceptance was deliberately not run under owner policy, so CI_VERIFIED is not claimed. ISI-26 implementation is accepted on main; ISI-27A is accepted on main and 27D is current. No model installation, deployment or server mutation is authorized."
     },
     {
       "id": "ISI-25A-AI-MLOPS-GOVERNANCE-EVALUATION-FOUNDATION",
@@ -297,7 +297,7 @@
         "ISI-25-INDUSTRIAL-AI-MLOPS"
       ],
       "next": "ISI-27-INDUSTRIAL-RELEASE-CANDIDATE",
-      "note": "ISI-26 repository implementation is accepted on main through R1. Formal 26A-D gates are accepted through the grouped R1 implementation and 26E closes the whole-phase audit. No REMOVE_BEFORE_NEXT_SLICE finding remains. Hosted CI was deliberately not dispatched; production capacity/server verification remain unverified and deferred to ISI-28. ISI-27 B0-R1A bootstrap is closed; ISI-27A is accepted on main and 27C is current.",
+      "note": "ISI-26 repository implementation is accepted on main through R1. Formal 26A-D gates are accepted through the grouped R1 implementation and 26E closes the whole-phase audit. No REMOVE_BEFORE_NEXT_SLICE finding remains. Hosted CI was deliberately not dispatched; production capacity/server verification remain unverified and deferred to ISI-28. ISI-27 B0-R1A bootstrap is closed; ISI-27A is accepted on main and 27D is current.",
       "phase_status": "IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED",
       "active_checkpoint": "ISI-26E-PERFORMANCE-RESILIENCE-CLOSEOUT",
       "spec": "automation/specs/ISI-26E-PERFORMANCE-RESILIENCE-CLOSEOUT.md",
@@ -374,10 +374,10 @@
       "depends_on": [
         "ISI-26-PERFORMANCE-LOAD-RESILIENCE"
       ],
-      "note": "ISI-27 B0-R1A corrected read-only bootstrap is CLOSED/PASS on baseline e46128752e29f46dc6d9b8510198739f88da50e9: DONE=6 PARTIAL=8 MISSING=5 DRIFT=0, 13 release blockers not done and 12 real Help/XAI blockers. Execution is locked into four larger gates: 27A shared Help/release UX, 27B RC evidence/governance pack, 27C reproducible release/supply-chain assurance, and 27D owner-controlled exact-main hosted RC acceptance/closeout. Server mutation remains ISI-28-only. ISI-27A is accepted on main 74acd5d9a890733347554633f44a6d5319717ba3, tree a69b8582a77555611b64a5527548e67a5b0c45cb, candidate fingerprint 01ed26dd8e1193606f17c097f88ba0fd68b4f3ce2127de0845468998d3dc8d64, after 1030 passed / 43 skipped / 0 failed, independent analysis and human review PASS. 27B is now the live checkpoint.",
+      "note": "ISI-27 B0-R1A corrected read-only bootstrap is CLOSED/PASS on baseline e46128752e29f46dc6d9b8510198739f88da50e9: DONE=6 PARTIAL=8 MISSING=5 DRIFT=0, 13 release blockers not done and 12 real Help/XAI blockers. Execution is locked into four larger gates: 27A shared Help/release UX, 27B RC evidence/governance pack, 27C reproducible release/supply-chain assurance, and 27D owner-controlled exact-main hosted RC acceptance/closeout. 27A is accepted on main and 27B/27C are accepted on main; 27D is the current specification-ready gate and requires a fresh explicit owner checkpoint approval before any hosted CI dispatch. Server mutation remains ISI-28-only. Parent 27 is not CI_VERIFIED; ISI-28 remains deferred.",
       "next": "ISI-28-CURRENT-SERVER-CONTROLLED-UPGRADE",
-      "phase_status": "IN PROGRESS / 27A ACCEPTED ON MAIN / 27B SPEC_READY / NOT CI_VERIFIED",
-      "active_checkpoint": "ISI-27C-REPRODUCIBLE-RELEASE-SUPPLY-CHAIN-ASSURANCE",
+      "phase_status": "IN PROGRESS / 27A-C ACCEPTED ON MAIN / 27D SPEC_READY / NOT CI_VERIFIED",
+      "active_checkpoint": "ISI-27D-EXACT-MAIN-RC-ACCEPTANCE-CLOSEOUT",
       "spec": "automation/specs/ISI-27-SCOPE-LOCK.md"
     },
     {
@@ -406,7 +406,7 @@
       ],
       "spec": "automation/specs/ISI-27B-R1-RC-EVIDENCE-GOVERNANCE-PACK.md",
       "next": "ISI-27C-REPRODUCIBLE-RELEASE-SUPPLY-CHAIN-ASSURANCE",
-      "note": "Formal gate. Consolidate exact-RC methodology state, model/eval provenance, security/privacy, migration/native-PostgreSQL/recovery evidence, inherited ISI-26 limits, release notes, compatibility, known limitations and rollback/handoff. No server mutation or methodology invention. Live checkpoint after accepted ISI-27A 74acd5d9a890733347554633f44a6d5319717ba3. Dedicated 27B implementation contract/evidence work is next; CI_VERIFIED remains NO and server mutation remains forbidden.",
+      "note": "Formal gate. Consolidate exact-RC methodology state, model/eval provenance, security/privacy, migration/native-PostgreSQL/recovery evidence, inherited ISI-26 limits, release notes, compatibility, known limitations and rollback/handoff. No server mutation or methodology invention. Accepted on main after complete local/native/recovery/performance acceptance, independent analysis and review. Accepted SHA 16a928b20907d570df2cf05101a969e1f0cda736; CI_VERIFIED and server acceptance are not claimed. Live checkpoint: ISI-27A is accepted on main and 27D is current. No server mutation or methodology invention; 27D owns the exact-main hosted acceptance checkpoint.",
       "implementation_contract": "automation/specs/ISI-27B-R1-RC-EVIDENCE-GOVERNANCE-PACK.md",
       "candidate_note": "Accepted on main after complete local/native/recovery/performance gates, independent analysis and review; no hosted/server acceptance claimed.",
       "accepted_main_sha": "16a928b20907d570df2cf05101a969e1f0cda736",
@@ -417,26 +417,29 @@
     {
       "id": "ISI-27C-REPRODUCIBLE-RELEASE-SUPPLY-CHAIN-ASSURANCE",
       "title": "Reproducible Release & Supply-Chain Assurance",
-      "status": "in_progress",
+      "status": "done",
       "depends_on": [
         "ISI-27B-RC-EVIDENCE-GOVERNANCE-PACK"
       ],
       "spec": "automation/specs/ISI-27C-R1-REPRODUCIBLE-RELEASE-SUPPLY-CHAIN.md",
       "next": "ISI-27D-EXACT-MAIN-RC-ACCEPTANCE-CLOSEOUT",
       "note": "Formal gate. Provide portable immutable release builder, exact artifact identity/checksums, real SBOM, provenance/attestation and blocking image vulnerability enforcement while preserving manual workflow_dispatch and inherited blocking CI gates.",
-      "phase_status": "IMPLEMENTED / REVIEW_VERIFIED LOCAL CANDIDATE / NOT CI_VERIFIED",
-      "notes": "Owner-approved R2 Wolfi runtime base is implemented in an unstaged candidate. Exact amd64 image runtime/API/Streamlit/auth checks PASS; Trivy 0.75.0 scanned 35 Wolfi OS packages and 117 total CycloneDX components with zero HIGH/CRITICAL. Exact source regression 1159 passed/43 existing skips, native PostgreSQL 45 passed/0 skipped, recovery, all 10 performance scenarios, policy, diff, quality, Compose and image/runtime gates PASS; independent analysis and human review PASS. Fingerprinted evidence is retained under automation/evidence/ISI-27C/. Not accepted on main, not CI_VERIFIED, not SERVER_VERIFIED; 27D and ISI-28 remain pending."
+      "phase_status": "IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / REVIEW_VERIFIED / NOT CI_VERIFIED",
+      "notes": "Owner-approved R2 Wolfi runtime base is accepted on main b6f0bfaf453360da72f866d4bbd1d47b51655bf4 (tree 8d52631012121c078d077a39d75e201d4ffadcbd), candidate fingerprint 7dc381dd31d94e6ada447c7cffc945399bddbe4a7ec138ec88ae69e77e9be8ea. Exact amd64 image runtime/API/Streamlit/auth checks PASS; Trivy 0.75.0 scanned 35 Wolfi OS packages and 117 total CycloneDX components with zero HIGH/CRITICAL. Local acceptance: regression 1159 passed/43 existing skips, native PostgreSQL 45 passed/0 skipped, recovery, all 10 performance scenarios, policy, diff, quality, Compose and image/runtime gates PASS; independent analysis and human review PASS. Fingerprinted evidence is retained under automation/evidence/ISI-27C/. 27C is not CI_VERIFIED or SERVER_VERIFIED. No hosted CI or deployment was run.",
+      "accepted_main_sha": "b6f0bfaf453360da72f866d4bbd1d47b51655bf4",
+      "accepted_main_tree": "8d52631012121c078d077a39d75e201d4ffadcbd",
+      "accepted_candidate_fingerprint": "7dc381dd31d94e6ada447c7cffc945399bddbe4a7ec138ec88ae69e77e9be8ea"
     },
     {
       "id": "ISI-27D-EXACT-MAIN-RC-ACCEPTANCE-CLOSEOUT",
       "title": "Exact-Main RC Acceptance & Phase Closeout",
-      "status": "planned",
+      "status": "spec_ready",
       "depends_on": [
         "ISI-27C-REPRODUCIBLE-RELEASE-SUPPLY-CHAIN-ASSURANCE"
       ],
       "spec": "automation/specs/ISI-27-SCOPE-LOCK.md",
       "next": "ISI-28-CURRENT-SERVER-CONTROLLED-UPGRADE",
-      "note": "Owner-controlled final gate. After 27A-C acceptance, record Actions usage precheck, obtain explicit owner approval, manually dispatch ISI required acceptance with checkpoint release-candidate on the exact main SHA, require every blocking gate success, bind run/artifact evidence, record usage postcheck, close whole-phase audit, and only then claim exact-RC CI_VERIFIED. No production/server mutation."
+      "note": "Specification-ready, owner-controlled final gate. Before dispatch, refresh Actions usage; obtain explicit owner approval for this exact main SHA and release-candidate checkpoint; manually dispatch ISI required acceptance; require every blocking gate success; bind run/artifact evidence; record usage postcheck; close whole-phase audit; only then claim exact-RC CI_VERIFIED. Current head is b6f0bfaf453360da72f866d4bbd1d47b51655bf4. No hosted dispatch or production/server mutation has occurred."
     },
     {
       "id": "ISI-28-CURRENT-SERVER-CONTROLLED-UPGRADE",

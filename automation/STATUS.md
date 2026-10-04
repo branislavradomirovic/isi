@@ -6,15 +6,15 @@ Last status update: 2026-10-04.
 
 ## Current execution
 
-Last accepted implementation slice: `ISI-27B - RC Evidence & Governance Pack` on main `16a928b20907d570df2cf05101a969e1f0cda736` (`NOT CI_VERIFIED`).
+Last accepted implementation slice: `ISI-27C - Reproducible Release & Supply-Chain Assurance` on main `b6f0bfaf453360da72f866d4bbd1d47b51655bf4` (`NOT CI_VERIFIED`), tree `8d52631012121c078d077a39d75e201d4ffadcbd`, candidate fingerprint `7dc381dd31d94e6ada447c7cffc945399bddbe4a7ec138ec88ae69e77e9be8ea`.
 
 Separate owner-approved public portal audit remediation `ISI-PUBLIC-PORTAL-AUDIT-REMEDIATION-R1` is accepted on main `c177f9d705efd6f68d95ef7d13847b03a8e19229`, with local acceptance and review PASS, NOT CI_VERIFIED and NOT SERVER_VERIFIED. It fixes the icon-only document catalog, English knowledge routes/visible Serbian fallback and the mobile Documents hero. Existing favicon, robots, sitemap, manifest, metadata, 404, accessibility and responsive contracts were checked; desktop and 390px mobile preview passed. No production deployment of this remediation has occurred. Earlier unstaged/no-push wording is superseded accepted history. Evidence: `automation/evidence/ISI-PUBLIC-PORTAL-AUDIT-REMEDIATION-R1/acceptance.json`.
 
 `ISI-PUBLIC-LEGAL-NOTICES-DRAFT-R1` produced internal SR-Latn Terms and Privacy drafts with EN working translations and an owner/legal publication checklist. They are explicitly not publishable until the legal entity, controller/processor roles, processing purposes and bases, cookies, providers/transfers, retention, rights contacts, content licensing, and legal terms are confirmed. The public portal currently has no Terms/Privacy page or footer links. No live page, database, deployment, or production configuration changed. The exact current public site was read-only checked on 2026-10-04; it still shows the document-index claim and existing public content.
 
-Deployment request is recorded, but the release dependency remains **27B ACCEPTED ON MAIN → 27C IN_PROGRESS → 27D planned → ISI-28 deferred**. The owner explicitly authorized final implementation and local/GitHub/server alignment; reviewed candidate commit/push is authorized, while release dependencies are still executed in order. The pre-ISI-28 runbook is historical/superseded, and no current-server audit or mutation has been performed.
+Deployment request is recorded, but the release dependency remains **27A ACCEPTED ON MAIN / 27B ACCEPTED ON MAIN / 27C ACCEPTED ON MAIN → 27D exact-main hosted acceptance → ISI-28 deferred**. The owner explicitly authorized final implementation and local/GitHub/server alignment; 27C is accepted on main after local review. The 27D `release-candidate` workflow still requires a fresh usage precheck and explicit checkpoint approval. The pre-ISI-28 runbook is historical/superseded, and no current-server audit or mutation has been performed.
 
-ISI-26 - Performance, Load & Resilience Engineering is `IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED`. ISI-27 B0-R1A corrected read-only bootstrap is CLOSED/PASS on baseline `e46128752e29f46dc6d9b8510198739f88da50e9`; current phase is `ISI-27 - Industrial Release Candidate & Acceptance Pack` with **27A ACCEPTED ON MAIN / 27B ACCEPTED ON MAIN / 27C IN_PROGRESS / NOT CI_VERIFIED**. Current checkpoint: `ISI-27C - Reproducible Release & Supply-Chain Assurance`.
+ISI-26 - Performance, Load & Resilience Engineering is `IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED`. ISI-27 B0-R1A corrected read-only bootstrap is CLOSED/PASS on baseline `e46128752e29f46dc6d9b8510198739f88da50e9`; current phase is `ISI-27 - Industrial Release Candidate & Acceptance Pack` with **27A ACCEPTED ON MAIN / 27B ACCEPTED ON MAIN / 27C ACCEPTED ON MAIN / 27D SPEC_READY / NOT CI_VERIFIED**. Current checkpoint: `ISI-27D - Exact-Main RC Acceptance & Phase Closeout`.
 
 Accepted checkpoint: `ISI-25A - AI/MLOps Governance + Evaluation Foundation` is accepted on main SHA `f0047321ee4410522697144ecfa464087f1b83bc`, tree `06e419ec656ee2fb0bfb74b4a6b10d42ef275f25`, after local deterministic acceptance and assistant human review.
 
@@ -131,7 +131,7 @@ Overall `ISI-24-ORDO-PRODUCTION-METHODOLOGY` is `COMPLETE / CI_VERIFIED`. The ma
 
 ISI-26 whole-phase closeout evidence: R1 is accepted on main SHA `e4b5b7f5927bc553fd616800d37beb5d115bb46e` (tree `9a30b280ba44798b987167c155f0be6ccc13776e`) from candidate fingerprint `98653d20a5223d4f6be66f3ee2017f998865b00ecb08a0950c07123d60dc2e24`. ISI-26A through ISI-26D are satisfied as formal coverage/gate checkpoints through that accepted R1 implementation; ISI-26E closes the whole-phase audit. No `REMOVE_BEFORE_NEXT_SLICE` finding remains open. Timing remains `UNCALIBRATED` exactly where the locked R1 calibration policy requires it, portable resource evidence remains `UNAVAILABLE`, and neither state is converted into a fabricated production SLO.
 
-Overall `ISI-26-PERFORMANCE-LOAD-RESILIENCE` is `IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED`. `PRODUCTION_CAPACITY_VERIFIED=false`, `SERVER_VERIFIED=false`, and `GITHUB_ACTIONS_DISPATCH=NO` remain binding. ISI-27 B0-R1A bootstrap is CLOSED/PASS, the ISI-27 scope is locked, and ISI-27A is accepted on main; the current next action is `ISI-27C - Reproducible Release & Supply-Chain Assurance`. ISI-28 remains the exclusive authority for live server/DNS/certificate/central-ingress/SMTP/production-secret/data/server-Ollama mutation. Krcuga and OralScanXAI remain strict non-targets.
+Overall `ISI-26-PERFORMANCE-LOAD-RESILIENCE` is `IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED`. `PRODUCTION_CAPACITY_VERIFIED=false`, `SERVER_VERIFIED=false`, and `GITHUB_ACTIONS_DISPATCH=NO` remain binding. ISI-27 B0-R1A bootstrap is CLOSED/PASS, the ISI-27 scope is locked, and ISI-27A is accepted on main and 27D is current; the current next action is `ISI-27D - Exact-Main RC Acceptance & Phase Closeout`. ISI-28 remains the exclusive authority for live server/DNS/certificate/central-ingress/SMTP/production-secret/data/server-Ollama mutation. Krcuga and OralScanXAI remain strict non-targets.
 
 ## ISI-27 scope lock
 
@@ -165,7 +165,7 @@ A failed required gate returns the active task to implementation/fix state. Requ
 | 24 | ORDO Production Methodology + Help/User Guide | **COMPLETE / CI_VERIFIED - 24A through 24E complete** |
 | 25 | Industrial AI / MLOps | **IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN - 25A f004732; 25B 7e11ee2; NOT CI_VERIFIED** |
 | 26 | Performance, Load & Resilience | **IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED - R1 e4b5b7f; 26E closeout complete** |
-| 27 | Industrial Release Candidate & Acceptance Pack | **IN PROGRESS / 27A ACCEPTED ON MAIN / 27B ACCEPTED ON MAIN / 27C IN_PROGRESS / NOT CI_VERIFIED** |
+| 27 | Industrial Release Candidate & Acceptance Pack | **IN PROGRESS / 27A ACCEPTED ON MAIN / 27B ACCEPTED ON MAIN / 27C ACCEPTED ON MAIN / 27D SPEC_READY / NOT CI_VERIFIED** |
 | 28 | Current Server Controlled Upgrade | **DEFERRED - fresh explicit owner approval required** |
 
 ## Locked execution boundaries
@@ -259,18 +259,18 @@ PostgreSQL 17/object restore PASS, ten accepted performance scenarios. Pack hash
 `9da45b26e811b6320c951e4285f83353aa306413c96052d5a75112b5ec67c8c1`;
 candidate `d97b16ce6f3cd179d8fca5b05e838d6644a6eda1bdff61c2399c4b0952e22a86`.
 Independent analysis, review, committed-file comparison and remote equality PASS.
-Current checkpoint: `ISI-27C - Reproducible Release & Supply-Chain Assurance`.
+Current checkpoint: `ISI-27D - Exact-Main RC Acceptance & Phase Closeout`.
 
-The owner-approved 27C R2 local candidate now passes the complete deterministic
-gate set and independent analyzer. Fingerprinted evidence is recorded under
+The owner-approved 27C R2 implementation is accepted on main `b6f0bfaf453360da72f866d4bbd1d47b51655bf4` after the local gate set and independent review passed. Fingerprinted evidence is recorded under
 `automation/evidence/ISI-27C/` and records 1,159 regression tests
 (43 existing skips), 45 native PostgreSQL tests (0 skips), restore/recovery,
 all 10 performance scenarios, quality, policy, diff and Compose PASS. The exact
 amd64 Wolfi image has 117 CycloneDX components, zero HIGH/CRITICAL Trivy 0.75.0
-findings and passing Python/UTC/API/Streamlit/auth-boundary checks. This is a
-reviewed local candidate only: it remains unstaged/uncommitted, is not
-CI_VERIFIED or SERVER_VERIFIED, and 27D/ISI-28 have not run.
-ISI-27D remains planned, ISI-28 deferred. No hosted/server acceptance is claimed.
+findings and passing Python/UTC/API/Streamlit/auth-boundary checks. This is an
+accepted implementation, not CI_VERIFIED or SERVER_VERIFIED. 27D is
+specification-ready but awaits its separate usage precheck and explicit approval;
+ISI-28 has not run.
+No hosted/server acceptance is claimed.
 
 27C contract: `automation/specs/ISI-27C-R1-REPRODUCIBLE-RELEASE-SUPPLY-CHAIN.md`.
 Its candidate introduces portable immutable release packaging, real image SBOM
@@ -281,9 +281,9 @@ owns build/signing metadata; INV-J32 maps the immutable release bundle. Python 3
 stdlib, existing OpenSSH 8.2+ and Docker suffice; Trivy runs as an official pinned
 CI action or disposable scanner container. No host package installation is required.
 
-## 27C R1 partial verification and approved R2 implementation — 2026-10-04
+## 27C R1 partial verification and R2 accepted-main closeout — 2026-10-04
 
-27C is IN_PROGRESS, with an unstaged/uncommitted candidate; it is not accepted.
+At the earlier R1 checkpoint, 27C was IN_PROGRESS with an unstaged candidate.
 An earlier frozen candidate (`17d0801a8fcfe073055e959e52006c429d008a072befc3649a4c1158e2c99d1d`)
 passed 1105 regression tests (43 intentional native skips), 45 native PostgreSQL
 tests (zero skips), PostgreSQL/object restore, all 10 performance scenarios,
@@ -295,9 +295,9 @@ Actual image scanning discovered new security drift: urllib3 2.7.0 and build-onl
 tooling findings were corrected in the candidate; Python dependency audit and
 real runtime imports pass. The corrected Debian image still has 45 HIGH OS
 findings. Image acceptance FAIL; classified REMOVE_BEFORE_NEXT_SLICE. No finding
-is ignored and no release/server gate is bypassed. Owner approved preparation
-of `automation/specs/ISI-27C-R2-MINIMAL-RUNTIME-BASE-PROPOSAL.md`. The Wolfi/Python
-3.11 image is an unstaged candidate under actual vulnerability and runtime
-acceptance; no R2 acceptance or production deployment is claimed. 27D remains planned and ISI-28 deferred.
-GitHub main remains accepted 27B SHA `16a928b20907d570df2cf05101a969e1f0cda736`.
-No new hosted dispatch, 27C commit/push or deployment occurred.
+is ignored and no release/server gate is bypassed. Owner approved the bounded
+R2 proposal in `automation/specs/ISI-27C-R2-MINIMAL-RUNTIME-BASE-PROPOSAL.md`.
+The Wolfi/Python 3.11 implementation passed the full local gates and is accepted
+on main `b6f0bfaf453360da72f866d4bbd1d47b51655bf4`. It is not CI_VERIFIED or
+SERVER_VERIFIED; 27D is specification-ready and ISI-28 deferred. No hosted
+dispatch or production deployment occurred.

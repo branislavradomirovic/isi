@@ -2,7 +2,7 @@
 
 ## Decision status
 
-APPROVED FOR IMPLEMENTATION — the owner authorized this exact bounded runtime-base slice on 2026-10-04. The exact local image/runtime and all deterministic gates now pass; the reviewed candidate remains unstaged and uncommitted. This approval does not authorize bypassing 27D or ISI-28.
+APPROVED AND IMPLEMENTED — the owner authorized this exact bounded runtime-base slice on 2026-10-04. The image/runtime and deterministic gates passed, and the reviewed implementation is accepted on main `b6f0bfaf453360da72f866d4bbd1d47b51655bf4` with candidate fingerprint `7dc381dd31d94e6ada447c7cffc945399bddbe4a7ec138ec88ae69e77e9be8ea`. CI_VERIFIED and SERVER_VERIFIED remain false. This approval does not authorize bypassing 27D or ISI-28.
 
 Canonical main baseline: `16a928b20907d570df2cf05101a969e1f0cda736`.
 Preserve the valid unstaged 27C R1 candidate and all accepted predecessor work.
