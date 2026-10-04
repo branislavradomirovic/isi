@@ -23,12 +23,12 @@ if [[ -z "${DATABASE_URL:-}" ]]; then
     postgres:17-alpine >/dev/null
   port="$(docker port "$postgres_name" 5432/tcp | awk -F: '{print $NF}')"
   for _ in {1..30}; do
-    if docker exec "$postgres_name" pg_isready -U ci_user -d isi_ci >/dev/null 2>&1; then
+    if docker exec "$postgres_name" pg_isready -h 127.0.0.1 -U ci_user -d isi_ci >/dev/null 2>&1; then
       break
     fi
     sleep 1
   done
-  docker exec "$postgres_name" pg_isready -U ci_user -d isi_ci >/dev/null
+  docker exec "$postgres_name" pg_isready -h 127.0.0.1 -U ci_user -d isi_ci >/dev/null
   export DATABASE_URL="postgresql+psycopg://ci_user:ci_password@127.0.0.1:$port/isi_ci"
 fi
 
@@ -50,7 +50,10 @@ python -m tools.ci.prepare_native_postgres_media
 python tools/seed_public_platform_pages.py
 python tools/seed_domain_knowledge_content.py
 
-mapfile -t native_tests < <(find tests -maxdepth 1 -type f -name '*native_postgres*.py' -print | sort)
+native_tests=()
+while IFS= read -r native_test; do
+  native_tests+=("$native_test")
+done < <(find tests -maxdepth 1 -type f -name '*native_postgres*.py' -print | sort)
 if [[ "${#native_tests[@]}" -eq 0 ]]; then
   echo "NATIVE POSTGRES FAIL: no native PostgreSQL test files found" >&2
   exit 1

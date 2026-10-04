@@ -7,10 +7,11 @@ import pytest
 from sqlalchemy import inspect, select
 
 from src.core.database import build_engine, build_session_factory
+from src.platform.access.service import bootstrap_reference_catalog
 from src.platform.data.models import DataRetentionState, DataSourceGovernanceProfile
 from src.platform.data.service import create_source_upload
 from src.platform.data.storage import LocalFilesystemStorage
-from src.platform.identity.models import Membership
+from src.platform.identity.models import Membership, Organization, User
 from src.platform.workspaces.models import Workspace
 
 
@@ -44,15 +45,17 @@ def test_native_postgres_governance_tables_and_constraints(tmp_path):
 
     factory = build_session_factory(engine)
     with factory() as session:
-        workspace = session.scalar(select(Workspace).where(Workspace.status == "active").limit(1))
-        if workspace is None:
-            pytest.skip("native database has no active workspace fixture")
-        actor_id = session.scalar(
-            select(Membership.id).where(
-                Membership.organization_id == workspace.organization_id,
-                Membership.status == "active",
-            ).limit(1)
-        )
+        bootstrap_reference_catalog(session)
+        marker = uuid.uuid4().hex
+        organization = Organization(slug=f"isi21-native-{marker}", name="Synthetic native privacy")
+        user = User(email=f"isi21-{marker}@example.invalid", display_name="Synthetic steward", is_active=True)
+        session.add_all([organization, user])
+        session.flush()
+        actor = Membership(user_id=user.id, organization_id=organization.id, status="active")
+        workspace = Workspace(organization_id=organization.id, product_code="SIMPA", slug=f"ws-{marker}", name="Synthetic privacy", status="active")
+        session.add_all([actor, workspace])
+        session.flush()
+        actor_id = actor.id
         source, version, _job, _reused = create_source_upload(
             session,
             LocalFilesystemStorage(tmp_path),
@@ -66,7 +69,7 @@ def test_native_postgres_governance_tables_and_constraints(tmp_path):
             actor_id=actor_id,
             backend="inline",
         )
-        session.commit()
+        session.flush()
         profile = session.scalar(select(DataSourceGovernanceProfile).where(DataSourceGovernanceProfile.source_id == source.id))
         state = session.scalar(select(DataRetentionState).where(DataRetentionState.version_id == version.id))
         assert profile is not None
@@ -74,5 +77,4 @@ def test_native_postgres_governance_tables_and_constraints(tmp_path):
             "UNCLASSIFIED", "UNKNOWN", "PROHIBITED", "PROHIBITED"
         )
         assert state is not None and state.retention_due_at is None and state.hold_active is False
-        session.delete(source)
-        session.commit()
+        session.rollback()  # the native gate owns no permanent institutional state

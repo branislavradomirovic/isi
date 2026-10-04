@@ -15,3 +15,5 @@ var/media/
 
 runtime/
 evidence/
+# Disposable acceptance reports, media fixtures and synthetic recovery dumps.
+test-results/

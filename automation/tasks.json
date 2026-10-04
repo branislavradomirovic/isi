@@ -406,7 +406,9 @@
       ],
       "spec": "automation/specs/ISI-27-SCOPE-LOCK.md",
       "next": "ISI-27C-REPRODUCIBLE-RELEASE-SUPPLY-CHAIN-ASSURANCE",
-      "note": "Formal gate. Consolidate exact-RC methodology state, model/eval provenance, security/privacy, migration/native-PostgreSQL/recovery evidence, inherited ISI-26 limits, release notes, compatibility, known limitations and rollback/handoff. No server mutation or methodology invention. Live checkpoint after accepted ISI-27A 74acd5d9a890733347554633f44a6d5319717ba3. Dedicated 27B implementation contract/evidence work is next; CI_VERIFIED remains NO and server mutation remains forbidden."
+      "note": "Formal gate. Consolidate exact-RC methodology state, model/eval provenance, security/privacy, migration/native-PostgreSQL/recovery evidence, inherited ISI-26 limits, release notes, compatibility, known limitations and rollback/handoff. No server mutation or methodology invention. Live checkpoint after accepted ISI-27A 74acd5d9a890733347554633f44a6d5319717ba3. Dedicated 27B implementation contract/evidence work is next; CI_VERIFIED remains NO and server mutation remains forbidden.",
+      "implementation_contract": "automation/specs/ISI-27B-R1-RC-EVIDENCE-GOVERNANCE-PACK.md",
+      "candidate_note": "R1 evidence consolidation candidate; deterministic acceptance and independent review required. No CI/server verification claimed."
     },
     {
       "id": "ISI-27C-REPRODUCIBLE-RELEASE-SUPPLY-CHAIN-ASSURANCE",

@@ -24,12 +24,12 @@ for name in "$source_name" "$target_name"; do
     -e POSTGRES_DB=isi_ci -e POSTGRES_USER=ci_user -e POSTGRES_PASSWORD=ci_password \
     postgres:17-alpine >/dev/null
   for _ in {1..30}; do
-    if docker exec "$name" pg_isready -U ci_user -d isi_ci >/dev/null 2>&1; then
+    if docker exec "$name" pg_isready -h 127.0.0.1 -U ci_user -d isi_ci >/dev/null 2>&1; then
       break
     fi
     sleep 1
   done
-  docker exec "$name" pg_isready -U ci_user -d isi_ci >/dev/null
+  docker exec "$name" pg_isready -h 127.0.0.1 -U ci_user -d isi_ci >/dev/null
 done
 
 source_port="$(docker port "$source_name" 5432/tcp | awk -F: '{print $NF}')"

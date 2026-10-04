@@ -471,6 +471,7 @@ This inventory is the controlled bridge between the MasterPlan and the as-built 
 | INV-M18 | Aggregate exact-main CI authority | Acceptance authority | CURRENT_AS_BUILT | .github/workflows/ci.yml; tools/ci/run_isi17_acceptance.sh | Block main acceptance unless all required jobs pass | Committed exact main SHA | CI_VERIFIED evidence | All test/quality/policy jobs | Development lifecycle | GitHub run metadata | No production deployment/secrets | NO | YES | Workflow + harness tests | NONE | ISI-17 / ISI-27 | Cannot be weakened to accept a defect |
 
 | INV-M19 | Repository performance and resilience acceptance | Test authority | DEVELOPMENT_ONLY | tools/performance/**; tests/test_isi_26_*.py; docs/ops/ISI-26-PERFORMANCE-LOAD-RESILIENCE.md | Synthetic bounded workload catalogue, concurrent harness and privacy-safe evidence | Versioned synthetic fixtures | Fingerprinted contracts/counts/latencies | Existing API/data/domain/report/AI surfaces | Local runner; ISI-27 acceptance | Ephemeral SQLite and JSON evidence | No raw identifiers/secrets/payloads; no server/network capacity authority | NO | NO | tests/test_isi_26_*.py | NONE | ISI-26 / ISI-27 | Timing remains UNCALIBRATED until accepted local evidence; live capacity only ISI-28 |
+| INV-M20 | Exact-candidate release evidence | Test authority | DEVELOPMENT_ONLY | tools/release/evidence.py; tools/qa/run_isi27b.py; tools/qa/analyze_isi27b.py; docs/release/ISI-RC-GOVERNANCE-PACK.md | Consolidate domain, model, security/privacy, native recovery and performance acceptance | Exact candidate and synthetic gate reports | Fingerprinted RC governance pack | Existing accepted test authorities | ISI-27B / ISI-27C | Ignored immutable evidence directory | No production data, no model promotion, no server authority | NO | NO | tests/test_isi_27b_release_evidence.py | NONE | ISI-27 | Current candidate; local acceptance and independent review required |
 
 #### N. LEGACY LEDGER
 
@@ -1244,3 +1245,15 @@ ISI-27A Shared Help & Release UX Completeness is **ACCEPTED ON MAIN / NOT CI_VER
 This closeout is governance-only. It changes no runtime/auth/domain/Help semantics. `INV-A17` remains `NOT_PRESENT` and invitation-only. Hosted GitHub Actions were not dispatched and `CI_VERIFIED=NO`; no live server, DNS, ingress, SMTP, production secret/data or server Ollama mutation occurred and `SERVER_VERIFIED=NO`.
 
 Parent ISI-27 remains `IN PROGRESS`; the active checkpoint is now **ISI-27B — RC Evidence & Governance Pack** (`spec_ready`). ISI-27C and ISI-27D remain planned; ISI-28 remains deferred and is still the only server-mutable phase.
+
+## ISI-27B R1 evidence consolidation candidate — 2026-10-04
+
+Public portal remediation is accepted on main `c177f9d705efd6f68d95ef7d13847b03a8e19229`.
+Owner approved reviewed-candidate finalization and final deployment; release order
+remains 27B -> 27C -> 27D -> ISI-28. The locked 27B implementation contract is
+`automation/specs/ISI-27B-R1-RC-EVIDENCE-GOVERNANCE-PACK.md`. INV-M20 owns exact
+candidate/report consolidation. Local full/native/recovery/performance acceptance
+and independent review remain required before promotion. CI_VERIFIED=NO;
+SERVER_VERIFIED=NO. Public operator information is ISI with GoraNova as confirmed
+by the owner; the Gmail privacy contact is approved. Provider/legal processing
+facts must remain grounded in public records and the ISI-28 runtime audit.
