@@ -38,6 +38,12 @@ RETIRED_PUBLIC_TOKENS = (
     "western balkan social inclusion barometer",
 )
 
+KNOWLEDGE_ROUTES = {
+    "documents": "dokumenti",
+    "library": "biblioteka",
+    "inclusive_development": "inkluzivni-razvoj",
+}
+
 
 def preview_enabled(settings: Settings) -> bool:
     return bool(settings.public_preview_drafts and settings.isi_env.casefold() != "production")
@@ -52,6 +58,35 @@ def canonical_route(page: PublicPageView) -> str:
 def _not_retired(item: PublicPageView) -> bool:
     haystack = f"{item.page_key} {item.title} {item.route_path}".casefold()
     return not any(token in haystack for token in RETIRED_PUBLIC_TOKENS)
+
+
+def _knowledge_links(db: Session, *, locale: str, include_drafts: bool) -> dict[str, dict[str, object]]:
+    links: dict[str, dict[str, object]] = {}
+    for key, slug in KNOWLEDGE_ROUTES.items():
+        if locale == "en":
+            translated = get_page_by_route(
+                db,
+                route_path=f"/en/{slug}/",
+                locale="en",
+                include_drafts=include_drafts,
+            )
+            if translated is not None:
+                links[key] = {"path": translated.route_path, "fallback": False}
+                continue
+            source_locale = "sr-Latn"
+        else:
+            source_locale = locale
+        source_page = get_page_by_route(
+            db,
+            route_path=f"/{slug}/",
+            locale=source_locale,
+            include_drafts=include_drafts,
+        )
+        links[key] = {
+            "path": source_page.route_path if source_page is not None else f"/{slug}/",
+            "fallback": locale == "en",
+        }
+    return links
 
 
 def _common_context(
@@ -100,6 +135,7 @@ def _common_context(
         "share_image_url": base_url + "/static/img/brand/isi-logo-transparent.svg",
         "app_url": settings.app_base_url,
         "preview_mode": include_drafts,
+        "knowledge_links": _knowledge_links(db, locale=locale, include_drafts=include_drafts),
         "sections": list_page_sections(db, page_id=page.page_id, locale=locale, include_drafts=include_drafts),
     }
 

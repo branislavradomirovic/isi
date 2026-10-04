@@ -73,6 +73,13 @@
       "next": "ISI-05-AUTHENTICATED-APP-SHELL"
     },
     {
+      "id": "ISI-PUBLIC-PORTAL-AUDIT-REMEDIATION-R1",
+      "title": "Public Portal Audit Remediation R1",
+      "status": "in_progress",
+      "spec": "automation/specs/ISI-PUBLIC-PORTAL-AUDIT-REMEDIATION-R1.md",
+      "note": "IMPLEMENTED / REVIEW_VERIFIED candidate on baseline 3e652e392624b3903498a1c2a00024306e6308d1. Focused readiness package, full local regression and desktop/mobile review pass. Fresh remote main equality was verified on 2026-10-04 outside the network sandbox. Owner explicitly requested final implementation, commit/push alignment and deployment. Unpublished legal drafting companion paths are reconciled in the spec; production remains gated by ISI-27B/C/D and ISI-28."
+    },
+    {
       "id": "ISI-05-AUTHENTICATED-APP-SHELL",
       "title": "Authenticated App Shell",
       "status": "done",
@@ -431,6 +438,13 @@
         "ISI-27-INDUSTRIAL-RELEASE-CANDIDATE"
       ],
       "note": "Only task allowed to touch the current server, DNS, certificates, shared central Nginx ingress, production SMTP, production secrets/data or server Ollama, and only after explicit owner approval. Final owner-locked edge identity is central-ingress-nginx-1 (Compose project central-ingress, service nginx) with ISI target https://isi.opus.rs:8445/. Any ISI-28 mutation must preserve and re-verify Krcuga :8443 and OralScanXAI :8444."
+    },
+    {
+      "id": "ISI-PUBLIC-LEGAL-NOTICES-DRAFT-R1",
+      "title": "Public Legal Notices — Terms and Privacy Draft",
+      "status": "done",
+      "spec": "automation/specs/ISI-PUBLIC-LEGAL-NOTICES-DRAFT-R1.md",
+      "note": "Internal SR-Latn drafts and EN working translations are complete. Publication is blocked pending owner verification of facts and legal review; deployment remains gated by ISI-27B, 27C, 27D and ISI-28. No public content or production state changed."
     }
   ]
 }

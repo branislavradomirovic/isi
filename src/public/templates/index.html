@@ -67,7 +67,7 @@
 <section class="semantic-resource-preview">
   <div class="shell semantic-resource-preview-grid">
     <article class="semantic-preview-panel documents-preview">
-      <header><div><span><svg><use href="/static/img/icons.svg#report"/></svg></span><div><h2>{{ 'Documents' if locale == 'en' else 'Dokumenti' }}</h2><p>{{ 'Organised by source institution.' if locale == 'en' else 'Organizovani prema instituciji izvora.' }}</p></div></div><a href="{{ '/en/dokumenti/' if locale == 'en' else '/dokumenti/' }}">{{ 'Browse all' if locale == 'en' else 'Pregledajte sve' }} →</a></header>
+      <header><div><span><svg><use href="/static/img/icons.svg#report"/></svg></span><div><h2>{{ 'Documents' if locale == 'en' else 'Dokumenti' }}</h2><p>{{ 'Organised by source institution.' if locale == 'en' else 'Organizovani prema instituciji izvora.' }}</p></div></div><a href="{{ knowledge_links.documents.path }}">{{ 'Browse all documents (Serbian)' if knowledge_links.documents.fallback else ('Browse all' if locale == 'en' else 'Pregledajte sve') }} →</a></header>
       <div class="semantic-document-preview-grid">
         {% if home_document_groups %}
           {% for group in home_document_groups[:4] %}
@@ -78,7 +78,7 @@
     </article>
 
     <article class="semantic-preview-panel library-preview">
-      <header><div><span><svg><use href="/static/img/icons.svg#publication"/></svg></span><div><h2>{{ 'Library' if locale == 'en' else 'Biblioteka' }}</h2><p>{{ 'Publications, studies and practical resources.' if locale == 'en' else 'Publikacije, studije i praktični resursi.' }}</p></div></div><a href="{{ '/en/biblioteka/' if locale == 'en' else '/biblioteka/' }}">{{ 'Explore' if locale == 'en' else 'Istražite' }} →</a></header>
+      <header><div><span><svg><use href="/static/img/icons.svg#publication"/></svg></span><div><h2>{{ 'Library' if locale == 'en' else 'Biblioteka' }}</h2><p>{{ 'Publications, studies and practical resources.' if locale == 'en' else 'Publikacije, studije i praktični resursi.' }}</p></div></div><a href="{{ knowledge_links.library.path }}">{{ 'Explore library (Serbian)' if knowledge_links.library.fallback else ('Explore' if locale == 'en' else 'Istražite') }} →</a></header>
       <div class="semantic-mini-search"><svg><use href="/static/img/icons.svg#search"/></svg><span>{{ 'Search the library' if locale == 'en' else 'Pretražite biblioteku' }}</span></div>
       <div class="semantic-library-preview-grid">
         {% if home_library_entries %}
@@ -90,7 +90,7 @@
     </article>
 
     <article class="semantic-preview-panel inclusion-preview">
-      <header><div><span><svg><use href="/static/img/icons.svg#inclusion"/></svg></span><div><h2>{{ 'Inclusive development' if locale == 'en' else 'Inkluzivni razvoj' }}</h2><p>{{ 'Partnerships, tools and practice.' if locale == 'en' else 'Partnerstva, alati i primeri prakse.' }}</p></div></div><a href="{{ '/en/inkluzivni-razvoj/' if locale == 'en' else '/inkluzivni-razvoj/' }}">{{ 'Learn more' if locale == 'en' else 'Saznajte više' }} →</a></header>
+      <header><div><span><svg><use href="/static/img/icons.svg#inclusion"/></svg></span><div><h2>{{ 'Inclusive development' if locale == 'en' else 'Inkluzivni razvoj' }}</h2><p>{{ 'Partnerships, tools and practice.' if locale == 'en' else 'Partnerstva, alati i primeri prakse.' }}</p></div></div><a href="{{ knowledge_links.inclusive_development.path }}">{{ 'Inclusive development (Serbian)' if knowledge_links.inclusive_development.fallback else ('Learn more' if locale == 'en' else 'Saznajte više') }} →</a></header>
       <div class="semantic-inclusion-preview-grid">
         <div><span><svg><use href="/static/img/icons.svg#cooperation"/></svg></span><strong>{{ 'Partnerships' if locale == 'en' else 'Partnerstva' }}</strong><p>{{ 'Institutions, researchers and communities.' if locale == 'en' else 'Institucije, istraživači i zajednice.' }}</p></div>
         <div><span><svg><use href="/static/img/icons.svg#toolkit"/></svg></span><strong>{{ 'ISI tools' if locale == 'en' else 'ISI alati' }}</strong><p>SIMPA · ORDO · {{ 'domain knowledge' if locale == 'en' else 'domensko znanje' }}</p></div>

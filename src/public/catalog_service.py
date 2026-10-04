@@ -189,6 +189,24 @@ def document_catalog_from_html(body_html: str, *, max_items: int = 180) -> list[
     grouped: dict[str, list[DocumentItemView]] = {key: [] for key in INSTITUTIONS}
     for anchor in soup.find_all("a", href=True):
         title = _clean(anchor.get_text(" ", strip=True))
+        if len(title) < 4:
+            # The preserved legacy documents page uses icon-only links. Its
+            # document title is the single preceding h3 in the smallest shared
+            # container; category headings are excluded by requiring uniqueness.
+            heading = anchor.find_previous("h3")
+            if heading is not None:
+                for container in anchor.parents:
+                    headings = container.find_all("h3")
+                    if (
+                        heading in headings
+                        and len(headings) == 1
+                        and heading.parent is not container
+                        and anchor.parent is not heading.parent
+                    ):
+                        title = _clean(heading.get_text(" ", strip=True))
+                        break
+                    if len(headings) > 1:
+                        break
         href = (anchor.get("href") or "").strip()
         if not title or len(title) < 4 or not _valid_href(href):
             continue

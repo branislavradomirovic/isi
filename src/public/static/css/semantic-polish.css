@@ -355,6 +355,8 @@
 }
 @media (max-width: 560px) {
   .semantic-values-grid,.semantic-domain-items,.semantic-domain-items.kind-network,.semantic-domain-items.kind-taxonomy,.semantic-domain-items.kind-indicator-grid{grid-template-columns:1fr}.semantic-system-diagram{display:none}.semantic-resource-preview-grid{display:block}.semantic-preview-panel{margin-bottom:12px}.semantic-activity-card{grid-template-columns:1fr}.semantic-activity-card-image{height:190px}.semantic-activity-meta{grid-template-columns:1fr}.semantic-platform-map-node{font-size:8px;padding:7px}.semantic-platform-map-center{width:105px;height:105px}.semantic-platform-map::before{width:220px;height:220px}.semantic-platform-map::after{width:330px;height:330px}
+  .semantic-documents-hero h1{font-size:clamp(2.3rem,11vw,3.1rem);white-space:nowrap;letter-spacing:-.04em}
+  .semantic-documents-art{display:none}
 }
 
 /* ISI-04B-HOTFIX-8-FLAGSHIP-LOCKUP-SPACING
@@ -396,4 +398,3 @@
     padding-right: 4px;
   }
 }
-

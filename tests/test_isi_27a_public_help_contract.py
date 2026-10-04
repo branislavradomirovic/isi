@@ -15,6 +15,11 @@ def test_public_templates_render_application_help_entry(template, locale, label)
     rendered = env.get_template(template).render(
         locale=locale, app_url="https://example.test/app/", page={"page_key": "home"},
         navigation=[], alternate_path=None,
+        knowledge_links={
+            "documents": {"path": "/dokumenti/", "fallback": locale == "en"},
+            "library": {"path": "/biblioteka/", "fallback": locale == "en"},
+            "inclusive_development": {"path": "/inkluzivni-razvoj/", "fallback": locale == "en"},
+        },
     )
     assert 'href="https://example.test/app/?help=public"' in rendered
     assert label in rendered

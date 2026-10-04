@@ -2,11 +2,17 @@
 
 This is the human-facing live execution ledger. The MasterPlan is the canonical roadmap/architecture/governance authority; `automation/tasks.json`, accepted code, exact-main GitHub Actions and recorded evidence provide synchronized execution proof.
 
-Last status update: 2026-10-03.
+Last status update: 2026-10-04.
 
 ## Current execution
 
 Last accepted implementation slice: `ISI-27A - Shared Help & Release UX Completeness` on main `74acd5d9a890733347554633f44a6d5319717ba3` (`NOT CI_VERIFIED`).
+
+Separate owner-approved public portal audit remediation `ISI-PUBLIC-PORTAL-AUDIT-REMEDIATION-R1` has an **IMPLEMENTED / REVIEW_VERIFIED unstaged candidate** on baseline `3e652e392624b3903498a1c2a00024306e6308d1`. The locked scope fixes the icon-only legacy document catalog, broken English knowledge links with an explicit Serbian fallback, and the mobile Documents hero. Focused and full local tests pass; desktop and 390px mobile preview were checked. Existing ISI-04C favicon, robots, sitemap, manifest, metadata, 404, accessibility and responsive contracts are covered. Fresh direct remote main equality was confirmed on 2026-10-04 using authorized network access; the earlier DNS failure was sandbox-specific. No commit, push, production content change or deployment occurred. Evidence: `automation/evidence/ISI-PUBLIC-PORTAL-AUDIT-REMEDIATION-R1/acceptance.json`.
+
+`ISI-PUBLIC-LEGAL-NOTICES-DRAFT-R1` produced internal SR-Latn Terms and Privacy drafts with EN working translations and an owner/legal publication checklist. They are explicitly not publishable until the legal entity, controller/processor roles, processing purposes and bases, cookies, providers/transfers, retention, rights contacts, content licensing, and legal terms are confirmed. The public portal currently has no Terms/Privacy page or footer links. No live page, database, deployment, or production configuration changed. The exact current public site was read-only checked on 2026-10-04; it still shows the document-index claim and existing public content.
+
+Deployment request is recorded, but the release dependency remains **27B SPEC_READY → 27C planned → 27D planned → ISI-28 deferred**. The owner explicitly authorized final implementation and local/GitHub/server alignment; reviewed candidate commit/push is authorized, while release dependencies are still executed in order. The pre-ISI-28 runbook is historical/superseded, and no current-server audit or mutation has been performed.
 
 ISI-26 - Performance, Load & Resilience Engineering is `IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED`. ISI-27 B0-R1A corrected read-only bootstrap is CLOSED/PASS on baseline `e46128752e29f46dc6d9b8510198739f88da50e9`; current phase is `ISI-27 - Industrial Release Candidate & Acceptance Pack` with **27A ACCEPTED ON MAIN / 27B SPEC_READY / NOT CI_VERIFIED**. Current checkpoint: `ISI-27B - RC Evidence & Governance Pack`.
 

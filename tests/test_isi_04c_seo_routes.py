@@ -50,14 +50,22 @@ def test_readiness_endpoints_and_preview_seo_contract():
         assert sitemap.status_code == 200
         assert "<urlset" in sitemap.text
         assert "https://isi.rs/simpa/" not in sitemap.text  # draft content must not leak
-        assert client.get("/site.webmanifest").status_code == 200
-        assert client.get("/favicon.ico").status_code == 200
+        manifest = client.get("/site.webmanifest")
+        assert manifest.status_code == 200
+        assert manifest.headers["content-type"].startswith("application/manifest+json")
+        assert '"start_url":"/"' in manifest.text
+        favicon = client.get("/favicon.ico")
+        assert favicon.status_code == 200
+        assert favicon.headers["content-type"].startswith("image/svg+xml")
+        assert b"<svg" in favicon.content
         home = client.get("/")
         assert home.status_code == 200
         assert '<meta name="robots" content="noindex,nofollow">' in home.text
         assert 'property="og:title"' in home.text
         assert 'name="twitter:card"' in home.text
         assert 'hreflang="x-default"' in home.text
+        assert '<link rel="icon" href="/static/img/brand/isi-logo-transparent.svg" type="image/svg+xml">' in home.text
+        assert '<link rel="manifest" href="/site.webmanifest">' in home.text
         assert 'aria-current="page"' in home.text
     finally:
         app.dependency_overrides.clear()
