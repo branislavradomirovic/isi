@@ -7,10 +7,17 @@ import hashlib
 import json
 import os
 import subprocess
+import sys
 import time
 import urllib.error
 import urllib.request
 from pathlib import Path
+
+# Direct script execution places tools/qa, rather than the repository root, on
+# sys.path. Keep the checker runnable both as a module and from CI's CLI call.
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 from tools.release.sbom import sha256_file
 

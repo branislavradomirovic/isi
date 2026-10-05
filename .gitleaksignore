@@ -1,0 +1,16 @@
+# Owner-approved on 2026-10-05 for ISI-27D only. These exact historical
+# generic-api-key findings were reviewed as documentation hashes/prose and
+# synthetic test/staging fixtures. No secret values are stored in this file.
+# Each entry uses Gitleaks' commit:path:rule:line fingerprint format.
+# Review evidence: workflow run 37264463204; no wildcard, path, or rule ignores.
+c177f9d705efd6f68d95ef7d13847b03a8e19229:docs/legal/ISI-LEGAL-NOTICES-RELEASE-CHECKLIST.md:generic-api-key:27
+7e11ee2a6f7546eacc3207e15cacfc35f6d04f3e:tests/test_isi_25b_governance_contract.py:generic-api-key:33
+e4b5b7f5927bc553fd616800d37beb5d115bb46e:automation/specs/ISI-26-R1-HISTORICAL-GOVERNANCE-EVIDENCE.json:generic-api-key:24
+ae28c00cee74b7a3e05d1ba5aaea0c32cb1a18bf:automation/evidence/ISI-20/acceptance-summary.md:generic-api-key:9
+f4b3a3c2486a2d3a051a70d582245e199d1b36ba:automation/evidence/ISI-20/penetration-test-readiness.md:generic-api-key:34
+ae28c00cee74b7a3e05d1ba5aaea0c32cb1a18bf:docs/roadmap/ISI-AUTONOMOUS-INDUSTRIALIZATION-MASTER-PLAN.md:generic-api-key:217
+3fa133c93fa752b325fec84859931b159264c55d:tests/test_isi_15_runtime_config.py:generic-api-key:16
+3fa133c93fa752b325fec84859931b159264c55d:tools/staging/probe_smtp.py:generic-api-key:30
+3fa133c93fa752b325fec84859931b159264c55d:tools/staging/probe_smtp.py:generic-api-key:32
+3fa133c93fa752b325fec84859931b159264c55d:tests/test_isi_server_runtime_promotion.py:generic-api-key:16
+503765191e8bea26e000bc4c4e4f582ac7026203:tests/test_isi_02b_security.py:generic-api-key:7

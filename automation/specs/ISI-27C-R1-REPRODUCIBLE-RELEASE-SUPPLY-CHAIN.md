@@ -84,7 +84,10 @@ reconciled with their actual ownership. No new customer-facing capability.
    Trivy 0.75.0, official action pinned to commit
    ed142fd0673e97e23eac54620cfb913e5ce36c25 (v0.36.0). HIGH/CRITICAL image findings
    block, including unfixed findings; inherited dependency/SAST/secret gates stay
-   blocking. No exclusions, soft failure or automatic CI trigger.
+   blocking. No broad exclusions, soft failure or automatic CI trigger. The
+   owner-approved exact historical Gitleaks fingerprint exception recorded in
+   the ISI-27D scope lock applies only to its enumerated findings; it does not
+   exclude paths, rules, commits or any other finding.
 4. Manifest binds RC pack, source archive, both SBOM scopes, image identity/scan
    and checksums. Owner-signed in-toto provenance via existing SSH identity,
    namespace isi-release, pinned existing GitHub owner public keys. Never claim
@@ -145,3 +148,15 @@ accepted on main `b6f0bfaf453360da72f866d4bbd1d47b51655bf4` (tree
 `7dc381dd31d94e6ada447c7cffc945399bddbe4a7ec138ec88ae69e77e9be8ea`). 27C is
 not CI_VERIFIED or SERVER_VERIFIED. 27D is the next specification-ready gate;
 ISI-28 remains locked until 27D closeout and separate owner approval.
+
+## Owner-approved 27D historical secret-scan fingerprint exception — 2026-10-05
+
+During the first 27D run (#91, source SHA
+`61a11c1ff839e66a458ac77ed05d4c860214f267`), Gitleaks reported 11
+`generic-api-key` findings in repository history. The owner approved a baseline
+for only those context-reviewed findings. `.gitleaksignore` records the exact
+commit/path/rule/line fingerprints; `tests/test_isi_27d_gitleaks_baseline.py`
+locks that list to exactly those 11 entries. Full-history scanning remains
+enabled. Any finding not matching one of those exact fingerprints remains a
+blocking failure; dependency, SAST and image-scan gates are unaffected. The
+baseline has not yet been verified by a subsequent hosted acceptance run.

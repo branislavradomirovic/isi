@@ -124,8 +124,22 @@ Create a reproducible immutable release candidate and close missing supply-chain
 Automatic GitHub Actions triggers remain forbidden. Changes to `.github/workflows/ci.yml` may add release-candidate supply-chain gates only while preserving manual `workflow_dispatch` and all inherited blocking jobs.
 
 ## ISI-27D — Exact-Main Release-Candidate Acceptance & Phase Closeout
-Status after scope lock: `PLANNED / OWNER-CONTROLLED FINAL GATE`.
+Status after scope lock: `IN_PROGRESS / OWNER-CONTROLLED FINAL GATE / FIRST HOSTED CHECKPOINT FAILED`.
 Depends on accepted ISI-27C.
+
+First checkpoint: `ISI required acceptance` run #91 on main SHA
+`61a11c1ff839e66a458ac77ed05d4c860214f267` failed in tests, build,
+supply-chain and aggregate acceptance. The test and build failures are bounded
+runner portability defects and have local candidate fixes. Gitleaks reported
+11 historical generic-api-key findings. On 2026-10-05 the owner approved a
+strictly bounded baseline for those exact findings after contextual review.
+`.gitleaksignore` contains only their commit/path/rule/line fingerprints; no
+rule, path, or commit-wide exclusions are allowed. Full-history scanning stays
+enabled, and any finding outside this exact set remains blocking. The baseline
+has not yet been exercised by a hosted run. Run evidence and the Actions usage
+postcheck are recorded in the local ignored `automation/evidence/ISI-27D/`
+directory. The recovery candidate has not been staged, committed, pushed or
+dispatched.
 
 ### Objective
 Qualify one exact main commit as the Industrial Release Candidate and close ISI-27 without touching production.

@@ -376,7 +376,7 @@
       ],
       "note": "ISI-27 B0-R1A corrected read-only bootstrap is CLOSED/PASS on baseline e46128752e29f46dc6d9b8510198739f88da50e9: DONE=6 PARTIAL=8 MISSING=5 DRIFT=0, 13 release blockers not done and 12 real Help/XAI blockers. Execution is locked into four larger gates: 27A shared Help/release UX, 27B RC evidence/governance pack, 27C reproducible release/supply-chain assurance, and 27D owner-controlled exact-main hosted RC acceptance/closeout. 27A is accepted on main and 27B/27C are accepted on main; 27D is the current specification-ready gate and requires a fresh explicit owner checkpoint approval before any hosted CI dispatch. Server mutation remains ISI-28-only. Parent 27 is not CI_VERIFIED; ISI-28 remains deferred.",
       "next": "ISI-28-CURRENT-SERVER-CONTROLLED-UPGRADE",
-      "phase_status": "IN PROGRESS / 27A-C ACCEPTED ON MAIN / 27D SPEC_READY / NOT CI_VERIFIED",
+      "phase_status": "IN PROGRESS / 27A-C ACCEPTED ON MAIN / 27D IN_PROGRESS / NOT CI_VERIFIED",
       "active_checkpoint": "ISI-27D-EXACT-MAIN-RC-ACCEPTANCE-CLOSEOUT",
       "spec": "automation/specs/ISI-27-SCOPE-LOCK.md"
     },
@@ -433,13 +433,13 @@
     {
       "id": "ISI-27D-EXACT-MAIN-RC-ACCEPTANCE-CLOSEOUT",
       "title": "Exact-Main RC Acceptance & Phase Closeout",
-      "status": "spec_ready",
+      "status": "in_progress",
       "depends_on": [
         "ISI-27C-REPRODUCIBLE-RELEASE-SUPPLY-CHAIN-ASSURANCE"
       ],
       "spec": "automation/specs/ISI-27-SCOPE-LOCK.md",
       "next": "ISI-28-CURRENT-SERVER-CONTROLLED-UPGRADE",
-      "note": "Specification-ready, owner-controlled final gate. Before dispatch, refresh Actions usage; obtain explicit owner approval for this exact main SHA and release-candidate checkpoint; manually dispatch ISI required acceptance; require every blocking gate success; bind run/artifact evidence; record usage postcheck; close whole-phase audit; only then claim exact-RC CI_VERIFIED. Current head is b6f0bfaf453360da72f866d4bbd1d47b51655bf4. No hosted dispatch or production/server mutation has occurred."
+      "note": "Owner-controlled final gate is in progress. First release-candidate checkpoint run #91 on exact main SHA 61a11c1ff839e66a458ac77ed05d4c860214f267 failed: tests (hosted interpreter path assumption), build (direct-script repository import path), supply-chain (11 historical Gitleaks findings), and aggregate acceptance. Other required jobs passed. Local candidate fixes the two deterministic runner defects; targeted/full pytest, policy, Compose, diff, and evidence JSON validation pass. On 2026-10-05 the owner approved a strict exact-fingerprint baseline for only the 11 context-reviewed historical findings. Full-history scanning remains active; any different/new finding blocks. The baseline is not yet verified by hosted acceptance. Actions postcheck after run #91: GitHub Free, 88/2000 minutes and 0/0.5 GB storage. Evidence: ignored automation/evidence/ISI-27D/checkpoint-91-failure.json. Any subsequent dispatch needs a fresh Actions usage precheck and explicit owner approval for the exact updated main SHA. No CI_VERIFIED or SERVER_VERIFIED claim; no production/server mutation has occurred."
     },
     {
       "id": "ISI-28-CURRENT-SERVER-CONTROLLED-UPGRADE",

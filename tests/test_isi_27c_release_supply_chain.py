@@ -8,6 +8,7 @@ import hashlib
 import io
 import json
 import subprocess
+import sys
 import tarfile
 from pathlib import Path
 from unittest.mock import patch
@@ -252,7 +253,7 @@ def test_serial_guard_survives_optimized_python():
         validate_release_state(forged)
     command = "import json; from tools.release.governance import validate_release_state; validate_release_state(json.loads(input()))"
     result = subprocess.run(
-        [str(ROOT / ".venv/bin/python"), "-O", "-c", command],
+        [sys.executable, "-O", "-c", command],
         input=json.dumps(forged),
         text=True,
         capture_output=True,

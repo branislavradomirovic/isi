@@ -35,7 +35,7 @@ The platform currently includes a public institutional website, an authenticated
 | ISI-24 ORDO Production Methodology + Help/XAI | COMPLETE / CI_VERIFIED |
 | ISI-25 Industrial AI / MLOps | IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED |
 | ISI-26 Performance, Load & Resilience | IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED |
-| ISI-27 Industrial Release Candidate | IN PROGRESS / 27A ACCEPTED ON MAIN / 27B ACCEPTED ON MAIN / 27C ACCEPTED ON MAIN / 27D SPEC_READY / NOT CI_VERIFIED |
+| ISI-27 Industrial Release Candidate | IN PROGRESS / 27A ACCEPTED ON MAIN / 27B ACCEPTED ON MAIN / 27C ACCEPTED ON MAIN / 27D IN_PROGRESS / NOT CI_VERIFIED |
 | ISI-28 Current Server Controlled Upgrade | DEFERRED / owner-gated |
 
 ISI-25A is accepted at `f0047321ee4410522697144ecfa464087f1b83bc`. ISI-25B is accepted at `7e11ee2a6f7546eacc3207e15cacfc35f6d04f3e`. Hosted full acceptance was deliberately not run for those development checkpoints under the owner CI-cost policy; `CI_VERIFIED` is therefore not claimed for ISI-25.
@@ -667,4 +667,4 @@ Fingerprinted evidence is retained under `automation/evidence/ISI-27C/`. The
 implementation was accepted on main `b6f0bfaf453360da72f866d4bbd1d47b51655bf4`
 (tree `8d52631012121c078d077a39d75e201d4ffadcbd`, candidate fingerprint
 `7dc381dd31d94e6ada447c7cffc945399bddbe4a7ec138ec88ae69e77e9be8ea`). Hosted
-CI and production deployment are not claimed; 27D remains the active gate.
+CI and production deployment are not claimed; 27D remains the active gate. Its first exact-main checkpoint (#91 on `61a11c1ff839e66a458ac77ed05d4c860214f267`) failed in the hosted test/build portability checks and historical Gitleaks scan. The local candidate fixes the two deterministic runner defects and includes the owner-approved exact-fingerprint baseline for the 11 context-reviewed historical findings; the full-history scan remains enabled, and acceptance has not yet verified the baseline. The run and Actions usage postcheck are recorded in local ignored evidence under `automation/evidence/ISI-27D/`.

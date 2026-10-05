@@ -2,7 +2,7 @@
 
 This is the human-facing live execution ledger. The MasterPlan is the canonical roadmap/architecture/governance authority; `automation/tasks.json`, accepted code, exact-main GitHub Actions and recorded evidence provide synchronized execution proof.
 
-Last status update: 2026-10-04.
+Last status update: 2026-10-05.
 
 ## Current execution
 
@@ -12,9 +12,9 @@ Separate owner-approved public portal audit remediation `ISI-PUBLIC-PORTAL-AUDIT
 
 `ISI-PUBLIC-LEGAL-NOTICES-DRAFT-R1` produced internal SR-Latn Terms and Privacy drafts with EN working translations and an owner/legal publication checklist. They are explicitly not publishable until the legal entity, controller/processor roles, processing purposes and bases, cookies, providers/transfers, retention, rights contacts, content licensing, and legal terms are confirmed. The public portal currently has no Terms/Privacy page or footer links. No live page, database, deployment, or production configuration changed. The exact current public site was read-only checked on 2026-10-04; it still shows the document-index claim and existing public content.
 
-Deployment request is recorded, but the release dependency remains **27A ACCEPTED ON MAIN / 27B ACCEPTED ON MAIN / 27C ACCEPTED ON MAIN → 27D exact-main hosted acceptance → ISI-28 deferred**. The owner explicitly authorized final implementation and local/GitHub/server alignment; 27C is accepted on main after local review. The 27D `release-candidate` workflow still requires a fresh usage precheck and explicit checkpoint approval. The pre-ISI-28 runbook is historical/superseded, and no current-server audit or mutation has been performed.
+Deployment request is recorded, but the release dependency remains **27A ACCEPTED ON MAIN / 27B ACCEPTED ON MAIN / 27C ACCEPTED ON MAIN → 27D exact-main hosted acceptance → ISI-28 deferred**. The owner explicitly authorized final implementation and local/GitHub/server alignment; 27C is accepted on main after local review. The first 27D `release-candidate` run (#91, SHA `61a11c1ff839e66a458ac77ed05d4c860214f267`) failed in `tests`, `build`, `supply-chain` and aggregate `acceptance`; all other required jobs passed. Failure evidence and the Actions usage postcheck are retained locally in ignored `automation/evidence/ISI-27D/checkpoint-91-failure.json`. A local recovery candidate fixes the hosted interpreter-path test and direct-script import path; targeted and full local pytest, policy, Compose, diff and JSON checks pass. The owner approved an exact-fingerprint baseline for only the 11 context-reviewed historical Gitleaks findings; the full-history scan remains enabled and this baseline is not yet acceptance-verified. A fresh usage precheck and explicit approval for any changed exact SHA are required before another hosted dispatch. The pre-ISI-28 runbook is historical/superseded, and no current-server audit or mutation has been performed.
 
-ISI-26 - Performance, Load & Resilience Engineering is `IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED`. ISI-27 B0-R1A corrected read-only bootstrap is CLOSED/PASS on baseline `e46128752e29f46dc6d9b8510198739f88da50e9`; current phase is `ISI-27 - Industrial Release Candidate & Acceptance Pack` with **27A ACCEPTED ON MAIN / 27B ACCEPTED ON MAIN / 27C ACCEPTED ON MAIN / 27D SPEC_READY / NOT CI_VERIFIED**. Current checkpoint: `ISI-27D - Exact-Main RC Acceptance & Phase Closeout`.
+ISI-26 - Performance, Load & Resilience Engineering is `IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED`. ISI-27 B0-R1A corrected read-only bootstrap is CLOSED/PASS on baseline `e46128752e29f46dc6d9b8510198739f88da50e9`; current phase is `ISI-27 - Industrial Release Candidate & Acceptance Pack` with **27A ACCEPTED ON MAIN / 27B ACCEPTED ON MAIN / 27C ACCEPTED ON MAIN / 27D IN_PROGRESS / NOT CI_VERIFIED**. Current checkpoint: `ISI-27D - Exact-Main RC Acceptance & Phase Closeout`.
 
 Accepted checkpoint: `ISI-25A - AI/MLOps Governance + Evaluation Foundation` is accepted on main SHA `f0047321ee4410522697144ecfa464087f1b83bc`, tree `06e419ec656ee2fb0bfb74b4a6b10d42ef275f25`, after local deterministic acceptance and assistant human review.
 
@@ -165,7 +165,7 @@ A failed required gate returns the active task to implementation/fix state. Requ
 | 24 | ORDO Production Methodology + Help/User Guide | **COMPLETE / CI_VERIFIED - 24A through 24E complete** |
 | 25 | Industrial AI / MLOps | **IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN - 25A f004732; 25B 7e11ee2; NOT CI_VERIFIED** |
 | 26 | Performance, Load & Resilience | **IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED - R1 e4b5b7f; 26E closeout complete** |
-| 27 | Industrial Release Candidate & Acceptance Pack | **IN PROGRESS / 27A ACCEPTED ON MAIN / 27B ACCEPTED ON MAIN / 27C ACCEPTED ON MAIN / 27D SPEC_READY / NOT CI_VERIFIED** |
+| 27 | Industrial Release Candidate & Acceptance Pack | **IN PROGRESS / 27A ACCEPTED ON MAIN / 27B ACCEPTED ON MAIN / 27C ACCEPTED ON MAIN / 27D IN_PROGRESS / NOT CI_VERIFIED** |
 | 28 | Current Server Controlled Upgrade | **DEFERRED - fresh explicit owner approval required** |
 
 ## Locked execution boundaries
