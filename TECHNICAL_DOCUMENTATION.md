@@ -668,3 +668,25 @@ implementation was accepted on main `b6f0bfaf453360da72f866d4bbd1d47b51655bf4`
 (tree `8d52631012121c078d077a39d75e201d4ffadcbd`, candidate fingerprint
 `7dc381dd31d94e6ada447c7cffc945399bddbe4a7ec138ec88ae69e77e9be8ea`). Hosted
 CI and production deployment are not claimed; 27D remains the active gate. Its first exact-main checkpoint (#91 on `61a11c1ff839e66a458ac77ed05d4c860214f267`) failed in the hosted test/build portability checks and historical Gitleaks scan. The local candidate fixes the two deterministic runner defects and includes the owner-approved exact-fingerprint baseline for the 11 context-reviewed historical findings; the full-history scan remains enabled, and acceptance has not yet verified the baseline. The run and Actions usage postcheck are recorded in local ignored evidence under `automation/evidence/ISI-27D/`.
+
+## ISI-27D checkpoint #92 — 2026-10-05
+
+Owner-approved run [#92](https://github.com/branislavradomirovic/isi/actions/runs/37274367540)
+on exact main `587b8e1e92a4a8a2550cccf4a732a3798f0c312e` completed with
+failure. All ten upstream jobs passed, including regression, native PostgreSQL,
+recovery, runtime/image scans and the owner-approved full-history Gitleaks
+baseline. `release-bundle` failed because the build artifact was named
+`image-runtime-check.json` while the bundle/signer require `runtime-check.json`;
+aggregate acceptance failed. No signed bundle, CI_VERIFIED or SERVER_VERIFIED
+is claimed. The bounded unstaged recovery normalizes the producer filename and
+adds producer/preserve/upload/consumer contract coverage. Validation passed:
+88 targeted tests; full local regression 1,118 passed, 43 existing skips, zero
+failures/errors; policy, Compose, syntax, JSON and diff checks. The first local
+regression invocation lacked Alembic on PATH; the unchanged suite passed after
+activating the existing project environment. No application behavior changed.
+Evidence is local/ignored under `automation/evidence/ISI-27D/checkpoint-92/`.
+Actions postcheck: GitHub Free, 158/2000 minutes, displayed 0/0.5 GB storage;
+reporting may lag. Next gate: validate/review the exact recovery candidate, then
+owner-approved commit/push and a separate exact-SHA hosted checkpoint. Terms/
+Privacy publication and live operational policies remain pending; only ISI-28
+may perform controlled server deployment after release prerequisites pass.

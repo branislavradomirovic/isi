@@ -169,7 +169,7 @@ jobs:
         run: >-
           python3 tools/qa/check_runtime_image.py --image isi:ci
           --source-sha "${GITHUB_SHA}" --candidate-sha "${ISI_CANDIDATE_SHA}"
-          --lock docker/runtime-base.lock.json --output image-runtime-check.json
+          --lock docker/runtime-base.lock.json --output runtime-check.json
       - name: Blocking installed-image vulnerability scan
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
         with:
@@ -195,7 +195,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir image-evidence
-          mv image-scan.json image-sbom.cdx.json image-runtime-check.json image-evidence/
+          mv image-scan.json image-sbom.cdx.json runtime-check.json image-evidence/
           docker save isi:ci | gzip -n > image-evidence/image.tar.gz
           docker image inspect isi:ci > image-evidence/inspect.json
           python - <<'PY'

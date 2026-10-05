@@ -124,7 +124,7 @@ Create a reproducible immutable release candidate and close missing supply-chain
 Automatic GitHub Actions triggers remain forbidden. Changes to `.github/workflows/ci.yml` may add release-candidate supply-chain gates only while preserving manual `workflow_dispatch` and all inherited blocking jobs.
 
 ## ISI-27D — Exact-Main Release-Candidate Acceptance & Phase Closeout
-Status after scope lock: `IN_PROGRESS / OWNER-CONTROLLED FINAL GATE / FIRST HOSTED CHECKPOINT FAILED`.
+Status after scope lock: `IN_PROGRESS / OWNER-CONTROLLED FINAL GATE / CHECKPOINT #92 RELEASE ASSEMBLY FAILED`.
 Depends on accepted ISI-27C.
 
 First checkpoint: `ISI required acceptance` run #91 on main SHA
@@ -136,10 +136,12 @@ strictly bounded baseline for those exact findings after contextual review.
 `.gitleaksignore` contains only their commit/path/rule/line fingerprints; no
 rule, path, or commit-wide exclusions are allowed. Full-history scanning stays
 enabled, and any finding outside this exact set remains blocking. The baseline
-has not yet been exercised by a hosted run. Run evidence and the Actions usage
-postcheck are recorded in the local ignored `automation/evidence/ISI-27D/`
-directory. The recovery candidate has not been staged, committed, pushed or
-dispatched.
+passed the full-history scan in checkpoint #92 on committed recovery SHA
+`587b8e1e92a4a8a2550cccf4a732a3798f0c312e`; that run failed later in release
+assembly, so it does not qualify an RC. Run evidence and Actions usage
+observations are recorded in local ignored `automation/evidence/ISI-27D/`.
+The new artifact-name recovery passed local validation and remains
+unstaged/uncommitted pending exact-candidate owner approval.
 
 ### Objective
 Qualify one exact main commit as the Industrial Release Candidate and close ISI-27 without touching production.
@@ -197,3 +199,37 @@ Required:
 - human review before owner-approved exact staging/commit/push.
 
 No Codex call is authorized for the scope lock.
+
+## 27D checkpoint #92 bounded artifact-name recovery — 2026-10-05
+
+Owner-approved run #92 (37274367540) on exact main
+`587b8e1e92a4a8a2550cccf4a732a3798f0c312e` passed all ten upstream
+jobs, including the actual runtime/vulnerability checks and full-history secret
+scan. Release assembly failed because the build job produced
+`image-runtime-check.json` while the existing bundle and signer contract require
+`runtime-check.json`; aggregate acceptance failed. This finding is
+`REMOVE_BEFORE_NEXT_SLICE`. No accepted RC or signed release is claimed.
+
+Exact mutable surface for this recovery: `.github/workflows/ci.yml` (producer
+output and preserve command only), `tests/test_isi_27c_release_supply_chain.py`
+(artifact-name contract coverage), and this specification, task/status ledgers,
+MasterPlan and technical reference (truthful checkpoint bookkeeping only).
+Normalize the producer to the existing `runtime-check.json` contract. Retain
+all jobs, manual dispatch, image/hash/signature/scan gates and one-day retention.
+No application, domain, schema, dependency, Docker base or server change.
+Canonical system inventory impact: NONE — INV-M21/INV-K15/INV-J32 already own
+this unchanged release artifact mechanism; only a mismatched filename is fixed.
+Validation: prove the added contract test fails on the recorded workflow, then
+passes on the correction; run release/scope/governance regression, policy,
+Compose, JSON and diff checks. Keep candidate unstaged for exact-file owner
+approval; a new committed SHA needs its separately approved hosted checkpoint.
+Evidence: ignored `automation/evidence/ISI-27D/checkpoint-92/`. Actions postcheck
+observed GitHub Free 158/2000 minutes, displayed 0/0.5 GB storage (billing may
+lag). The failed run must never authorize signing or deployment.
+
+Recovery verification: the new regression test failed against the recorded
+workflow and passed after the filename correction. All 88 targeted release/
+runtime/governance tests passed. Full local regression: 1,118 passed, 43 existing
+skips, zero failures/errors. Policy, Compose, syntax, JSON and diff checks passed.
+An initial local invocation lacked Alembic on PATH; the same suite passed with
+the existing project environment activated. Changes remain unstaged on main.

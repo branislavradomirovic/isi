@@ -12,7 +12,7 @@ Separate owner-approved public portal audit remediation `ISI-PUBLIC-PORTAL-AUDIT
 
 `ISI-PUBLIC-LEGAL-NOTICES-DRAFT-R1` produced internal SR-Latn Terms and Privacy drafts with EN working translations and an owner/legal publication checklist. They are explicitly not publishable until the legal entity, controller/processor roles, processing purposes and bases, cookies, providers/transfers, retention, rights contacts, content licensing, and legal terms are confirmed. The public portal currently has no Terms/Privacy page or footer links. No live page, database, deployment, or production configuration changed. The exact current public site was read-only checked on 2026-10-04; it still shows the document-index claim and existing public content.
 
-Deployment request is recorded, but the release dependency remains **27A ACCEPTED ON MAIN / 27B ACCEPTED ON MAIN / 27C ACCEPTED ON MAIN → 27D exact-main hosted acceptance → ISI-28 deferred**. The owner explicitly authorized final implementation and local/GitHub/server alignment; 27C is accepted on main after local review. The first 27D `release-candidate` run (#91, SHA `61a11c1ff839e66a458ac77ed05d4c860214f267`) failed in `tests`, `build`, `supply-chain` and aggregate `acceptance`; all other required jobs passed. Failure evidence and the Actions usage postcheck are retained locally in ignored `automation/evidence/ISI-27D/checkpoint-91-failure.json`. A local recovery candidate fixes the hosted interpreter-path test and direct-script import path; targeted and full local pytest, policy, Compose, diff and JSON checks pass. The owner approved an exact-fingerprint baseline for only the 11 context-reviewed historical Gitleaks findings; the full-history scan remains enabled and this baseline is not yet acceptance-verified. A fresh usage precheck and explicit approval for any changed exact SHA are required before another hosted dispatch. The pre-ISI-28 runbook is historical/superseded, and no current-server audit or mutation has been performed.
+Deployment request is recorded. Current release dependency is **27A/27B/27C ACCEPTED ON MAIN → 27D IN_PROGRESS → ISI-28 deferred**. Latest approved checkpoint #92 on `587b8e1e92a4a8a2550cccf4a732a3798f0c312e` passed all ten upstream jobs but failed release-bundle assembly due to a runtime-report filename mismatch; aggregate acceptance failed. The bounded unstaged recovery passed 88 targeted tests and full local regression (1,118 passed, 43 existing skips), policy, Compose, syntax, JSON and diff checks. Exact evidence and usage postcheck are retained locally under `automation/evidence/ISI-27D/checkpoint-92/`. CI_VERIFIED and SERVER_VERIFIED remain false. Terms/Privacy remain draft-only. No current-server audit or mutation has occurred.
 
 ISI-26 - Performance, Load & Resilience Engineering is `IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED`. ISI-27 B0-R1A corrected read-only bootstrap is CLOSED/PASS on baseline `e46128752e29f46dc6d9b8510198739f88da50e9`; current phase is `ISI-27 - Industrial Release Candidate & Acceptance Pack` with **27A ACCEPTED ON MAIN / 27B ACCEPTED ON MAIN / 27C ACCEPTED ON MAIN / 27D IN_PROGRESS / NOT CI_VERIFIED**. Current checkpoint: `ISI-27D - Exact-Main RC Acceptance & Phase Closeout`.
 
@@ -139,7 +139,7 @@ Corrected B0-R1A authority: DONE=6, PARTIAL=8, MISSING=5, DRIFT=0; 13 release bl
 
 Execution is deliberately grouped into four larger formal gates: **27A Shared Help & Release UX Completeness -> 27B RC Evidence & Governance Pack -> 27C Reproducible Release & Supply-Chain Assurance -> 27D Exact-Main RC Acceptance & Phase Closeout**. 27D is owner-controlled and owns the single explicit hosted release-candidate acceptance cycle. No hosted CI is authorized by scope lock itself.
 
-Current next action: execute the locked ISI-27C reproducible-release contract from accepted ISI-27B main. Server/live-host work remains frozen through ISI-27 and belongs exclusively to ISI-28. Krcuga and OralScanXAI remain strict non-targets.
+Current next action: validate/review the bounded ISI-27D checkpoint #92 artifact-name recovery before an exact-candidate owner-approved commit and separately approved hosted checkpoint. Server/live-host work remains frozen through ISI-27 and belongs exclusively to ISI-28. Krcuga and OralScanXAI remain strict non-targets.
 
 ## Mandatory bootstrap rule
 
@@ -235,7 +235,7 @@ ISI-27A Shared Help & Release UX Completeness is **ACCEPTED ON MAIN / NOT CI_VER
 
 This closeout is governance-only. It changes no runtime/auth/domain/Help semantics. `INV-A17` remains `NOT_PRESENT` and invitation-only. Hosted GitHub Actions were not dispatched and `CI_VERIFIED=NO`; no live server, DNS, ingress, SMTP, production secret/data or server Ollama mutation occurred and `SERVER_VERIFIED=NO`.
 
-Parent ISI-27 remains `IN PROGRESS`; the active checkpoint is now **ISI-27B — RC Evidence & Governance Pack** (`spec_ready`). ISI-27C and ISI-27D remain planned; ISI-28 remains deferred and is still the only server-mutable phase.
+At this historical handoff, parent ISI-27 was `IN PROGRESS` and the active checkpoint was **ISI-27B — RC Evidence & Governance Pack** (`spec_ready`). ISI-27C and ISI-27D were planned; ISI-28 remained deferred as the only server-mutable phase. Current authority is the later ISI-27D checkpoint record below.
 
 ## Historical pre-acceptance record — ISI-27B R1 candidate (2026-10-04)
 
@@ -301,3 +301,25 @@ The Wolfi/Python 3.11 implementation passed the full local gates and is accepted
 on main `b6f0bfaf453360da72f866d4bbd1d47b51655bf4`. It is not CI_VERIFIED or
 SERVER_VERIFIED; 27D is specification-ready and ISI-28 deferred. No hosted
 dispatch or production deployment occurred.
+
+## ISI-27D checkpoint #92 — 2026-10-05
+
+Owner-approved run [#92](https://github.com/branislavradomirovic/isi/actions/runs/37274367540)
+on exact main `587b8e1e92a4a8a2550cccf4a732a3798f0c312e` completed with
+failure. All ten upstream jobs passed, including regression, native PostgreSQL,
+recovery, runtime/image scans and the owner-approved full-history Gitleaks
+baseline. `release-bundle` failed because the build artifact was named
+`image-runtime-check.json` while the bundle/signer require `runtime-check.json`;
+aggregate acceptance failed. No signed bundle, CI_VERIFIED or SERVER_VERIFIED
+is claimed. The bounded unstaged recovery normalizes the producer filename and
+adds producer/preserve/upload/consumer contract coverage. Validation passed:
+88 targeted tests; full local regression 1,118 passed, 43 existing skips, zero
+failures/errors; policy, Compose, syntax, JSON and diff checks. The first local
+regression invocation lacked Alembic on PATH; the unchanged suite passed after
+activating the existing project environment. No application behavior changed.
+Evidence is local/ignored under `automation/evidence/ISI-27D/checkpoint-92/`.
+Actions postcheck: GitHub Free, 158/2000 minutes, displayed 0/0.5 GB storage;
+reporting may lag. Next gate: validate/review the exact recovery candidate, then
+owner-approved commit/push and a separate exact-SHA hosted checkpoint. Terms/
+Privacy publication and live operational policies remain pending; only ISI-28
+may perform controlled server deployment after release prerequisites pass.

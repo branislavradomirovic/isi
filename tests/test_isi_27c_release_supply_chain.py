@@ -7,6 +7,7 @@ import gzip
 import hashlib
 import io
 import json
+import shlex
 import subprocess
 import sys
 import tarfile
@@ -284,3 +285,18 @@ def test_signing_refuses_structural_fixture_without_real_release_materials(tmp_p
     unsigned_bundle(tmp_path)
     with pytest.raises(ValueError, match="missing_or_symlink_artifact"):
         provenance.sign_bundle(tmp_path, Path("unused-public-key"))
+
+
+def test_hosted_runtime_report_matches_bundle_and_signer_contract():
+    jobs = yaml.safe_load((ROOT / ".github/workflows/ci.yml").read_text())["jobs"]
+    producer = next(step for step in jobs["build"]["steps"] if step.get("name") == "Verify actual runtime image")
+    command = shlex.split(producer["run"])
+    output = command[command.index("--output") + 1]
+    assert output == "runtime-check.json"
+    preserve = next(step for step in jobs["build"]["steps"] if step.get("name") == "Preserve exact scanned image")
+    move = next(shlex.split(line) for line in preserve["run"].splitlines() if line.startswith("mv "))
+    assert output in move[1:-1] and move[-1] == "image-evidence/"
+    upload = next(step for step in jobs["build"]["steps"] if step.get("with", {}).get("name") == "isi-exact-image")
+    assert upload["with"]["path"] == "image-evidence/"
+    assert '"runtime-check.json"' in (ROOT / "tools/release/build.py").read_text()
+    assert 'read("runtime-check.json")' in (ROOT / "tools/release/provenance.py").read_text()
