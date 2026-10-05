@@ -127,6 +127,16 @@ def list_platforms(
     return [_view(row) for row in rows if row is not None]
 
 
+def list_legal_pages(session: Session, *, locale: str) -> list[PublicPageView]:
+    """Expose published legal notices only, including outside primary navigation."""
+    rows = session.execute(
+        _base_page_query(locale=locale, include_drafts=False)
+        .where(PublicPage.page_type == "legal")
+        .order_by(PublicPage.navigation_order.asc(), PublicPageTranslation.title.asc())
+    ).all()
+    return [_view(row) for row in rows if row is not None]
+
+
 def alternate_locale_page(
     session: Session,
     *,

@@ -2,6 +2,17 @@
 
 **Current status: BLOCKED / DRAFT ONLY.** Do not publish or link these drafts from the public portal until each item below is verified, recorded, and approved by the Institute.
 
+## Confirmed owner input and current evidence — 2026-10-05
+
+- [x] Institute name: Institut za socijalnu inkluziju (owner confirmed).
+- [x] Operator brand: GoraNova (owner confirmed); exact project legal entity/address still required.
+- [x] Interim privacy contact approved: institutzasocijalnuinkluziju@gmail.com.
+- [ ] Mailbox monitoring/response owner assigned and operationally verified.
+- GoraNova `/terms/` and `/privacy/` defer the contracting legal entity to the project agreement; they do not supply its registered address.
+- The Institute's linked Statut PDF returned HTTP 403 on the current read-only check. No registered address is inferred.
+- Concrete proposed operational periods/processes are in `docs/ops/ISI-28-PRIVACY-OPERATIONS-BASELINE.md`; live enforcement is unverified because SSH authentication was rejected.
+- Local portal wiring supports published localized legal-page footer/sitemap discovery; no draft legal content has been seeded or published.
+
 ## Facts to confirm
 
 - [ ] Full legal name, legal form, registration number, tax identifier and registered office of the entity operating isi.opus.rs and ISI Platform.

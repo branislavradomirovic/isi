@@ -15,6 +15,7 @@ from src.public.content_service import (
     alternate_locale_page,
     get_page_by_key,
     get_page_by_route,
+    list_legal_pages,
     list_navigation,
     list_platforms,
 )
@@ -136,6 +137,7 @@ def _common_context(
         "app_url": settings.app_base_url,
         "preview_mode": include_drafts,
         "knowledge_links": _knowledge_links(db, locale=locale, include_drafts=include_drafts),
+        "legal_pages": list_legal_pages(db, locale=locale),
         "sections": list_page_sections(db, page_id=page.page_id, locale=locale, include_drafts=include_drafts),
     }
 

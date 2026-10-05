@@ -265,7 +265,7 @@
       ],
       "next": "ISI-26-PERFORMANCE-LOAD-RESILIENCE",
       "spec": "automation/specs/ISI-25B-EVALUATION-PROMOTION-RUNTIME.md",
-      "note": "ISI-25 implementation is complete and accepted on main. ISI-25A is accepted at f0047321ee4410522697144ecfa464087f1b83bc; ISI-25B is accepted at 7e11ee2a6f7546eacc3207e15cacfc35f6d04f3e. 25B implements exact-registration fallback, deterministic evaluators, separate frozen promotion benchmarks, capability thresholds, evidence-gated promotion/rollback, circuit state, on-demand drift and shared AI XAI. Hosted full acceptance was deliberately not run under owner policy, so CI_VERIFIED is not claimed. ISI-26 implementation is accepted on main; ISI-27A is accepted on main and 27D is current. No model installation, deployment or server mutation is authorized."
+      "note": "ISI-25 implementation is complete and accepted on main. ISI-25A is accepted at f0047321ee4410522697144ecfa464087f1b83bc; ISI-25B is accepted at 7e11ee2a6f7546eacc3207e15cacfc35f6d04f3e. 25B implements exact-registration fallback, deterministic evaluators, separate frozen promotion benchmarks, capability thresholds, evidence-gated promotion/rollback, circuit state, on-demand drift and shared AI XAI. Hosted full acceptance was deliberately not run under owner policy, so CI_VERIFIED is not claimed. ISI-26 implementation is accepted on main; ISI-27 is CI_VERIFIED and ISI-28 is current. No model installation, deployment or server mutation is authorized."
     },
     {
       "id": "ISI-25A-AI-MLOPS-GOVERNANCE-EVALUATION-FOUNDATION",
@@ -297,7 +297,7 @@
         "ISI-25-INDUSTRIAL-AI-MLOPS"
       ],
       "next": "ISI-27-INDUSTRIAL-RELEASE-CANDIDATE",
-      "note": "ISI-26 repository implementation is accepted on main through R1. Formal 26A-D gates are accepted through the grouped R1 implementation and 26E closes the whole-phase audit. No REMOVE_BEFORE_NEXT_SLICE finding remains. Hosted CI was deliberately not dispatched; production capacity/server verification remain unverified and deferred to ISI-28. ISI-27 B0-R1A bootstrap is closed; ISI-27A is accepted on main and 27D is current.",
+      "note": "ISI-26 repository implementation is accepted on main through R1. Formal 26A-D gates are accepted through the grouped R1 implementation and 26E closes the whole-phase audit. No REMOVE_BEFORE_NEXT_SLICE finding remains. Hosted CI was deliberately not dispatched; production capacity/server verification remain unverified and deferred to ISI-28. ISI-27 B0-R1A bootstrap is closed; ISI-27 is CI_VERIFIED and ISI-28 is current.",
       "phase_status": "IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED",
       "active_checkpoint": "ISI-26E-PERFORMANCE-RESILIENCE-CLOSEOUT",
       "spec": "automation/specs/ISI-26E-PERFORMANCE-RESILIENCE-CLOSEOUT.md",
@@ -370,14 +370,14 @@
     {
       "id": "ISI-27-INDUSTRIAL-RELEASE-CANDIDATE",
       "title": "Industrial Release Candidate & Acceptance Pack",
-      "status": "in_progress",
+      "status": "done",
       "depends_on": [
         "ISI-26-PERFORMANCE-LOAD-RESILIENCE"
       ],
-      "note": "ISI-27 B0-R1A corrected read-only bootstrap is CLOSED/PASS on baseline e46128752e29f46dc6d9b8510198739f88da50e9: DONE=6 PARTIAL=8 MISSING=5 DRIFT=0, 13 release blockers not done and 12 real Help/XAI blockers. Execution is locked into four larger gates: 27A shared Help/release UX, 27B RC evidence/governance pack, 27C reproducible release/supply-chain assurance, and 27D owner-controlled exact-main hosted RC acceptance/closeout. 27A is accepted on main and 27B/27C are accepted on main; 27D is the current specification-ready gate and requires a fresh explicit owner checkpoint approval before any hosted CI dispatch. Server mutation remains ISI-28-only. Parent 27 is not CI_VERIFIED; ISI-28 remains deferred.",
+      "note": "ISI-27A/B/C accepted; ISI-27D completed all 12 required jobs on exact main 2b1f2ef20a2310df23947f2ac2128d16f81a98ea in owner-approved checkpoint #93, run 37277358285. Source/image/SBOM/runtime/scan/provenance verified; owner SSH signature independently verified. Usage pre/post 158/191 of 2000 minutes. Separate legal publication and live production/provider/capacity gates remain ISI-28. Current checkpoint: ISI-28 - Current Server Controlled Upgrade.",
       "next": "ISI-28-CURRENT-SERVER-CONTROLLED-UPGRADE",
-      "phase_status": "IN PROGRESS / 27A-C ACCEPTED ON MAIN / 27D IN_PROGRESS / NOT CI_VERIFIED",
-      "active_checkpoint": "ISI-27D-EXACT-MAIN-RC-ACCEPTANCE-CLOSEOUT",
+      "phase_status": "COMPLETE / CI_VERIFIED ON EXACT RC 2b1f2ef / DEFERRED_SERVER_VERIFICATION",
+      "active_checkpoint": "ISI-28-CURRENT-SERVER-CONTROLLED-UPGRADE",
       "spec": "automation/specs/ISI-27-SCOPE-LOCK.md"
     },
     {
@@ -433,22 +433,37 @@
     {
       "id": "ISI-27D-EXACT-MAIN-RC-ACCEPTANCE-CLOSEOUT",
       "title": "Exact-Main RC Acceptance & Phase Closeout",
-      "status": "in_progress",
+      "status": "done",
       "depends_on": [
         "ISI-27C-REPRODUCIBLE-RELEASE-SUPPLY-CHAIN-ASSURANCE"
       ],
       "spec": "automation/specs/ISI-27-SCOPE-LOCK.md",
       "next": "ISI-28-CURRENT-SERVER-CONTROLLED-UPGRADE",
-      "note": "Checkpoint #91 failed and its bounded portability/fingerprint recovery was owner-approved and committed as 587b8e1e92a4a8a2550cccf4a732a3798f0c312e. Approved checkpoint #92 (37274367540) on that exact SHA passed all ten upstream jobs, including real image/runtime scans, full regression/native/recovery and full-history Gitleaks scan. Release-bundle failed because build produces image-runtime-check.json while bundle/signer require runtime-check.json; aggregate acceptance failed. Bounded unstaged filename recovery passed 88 targeted tests and full local regression (1118 passed, 43 existing skips, zero failures/errors), policy, Compose, syntax, JSON and diff checks. Initial local regression lacked Alembic on PATH; unchanged tests passed with the existing project environment activated. Actions postcheck: GitHub Free 158/2000 minutes and displayed 0/0.5 GB storage, with possible billing latency. Evidence: ignored automation/evidence/ISI-27D/checkpoint-92/. No signed/accepted release, CI_VERIFIED or SERVER_VERIFIED. Next: deterministic validation/review, owner-approved exact-file commit/push and separately approved exact-SHA hosted checkpoint. Terms/Privacy and operational policies remain pending; no server mutation."
+      "note": "CI_VERIFIED / REVIEW_VERIFIED exact RC 2b1f2ef20a2310df23947f2ac2128d16f81a98ea. All 12 blocking jobs passed in #93; signed artifact manifest 8f30a95106f1b1757cac3aa3f2c17e4560cd1bafe2beb5d84a667242ddfedd8b. Local ignored evidence automation/evidence/ISI-27D/checkpoint-93/closeout.json. Failed #91/#92 remain history. Legal publication is a separate ISI-28 preproduction gate; SERVER_VERIFIED=false.",
+      "accepted_main_sha": "2b1f2ef20a2310df23947f2ac2128d16f81a98ea",
+      "accepted_main_tree": "a6dd8b4e0d858e7b9230ea6960f812fb6a5e3783",
+      "accepted_candidate_fingerprint": "58879fc465c2eb78e2cf8c3785a0efcb553b4fd2a3358b248aadd8558d5ee06a",
+      "ci_acceptance": {
+        "workflow": "ISI required acceptance",
+        "status": "completed",
+        "conclusion": "success",
+        "head_sha": "2b1f2ef20a2310df23947f2ac2128d16f81a98ea",
+        "run_id": 37277358285,
+        "url": "https://github.com/branislavradomirovic/isi/actions/runs/37277358285",
+        "owner_checkpoint_approved": true,
+        "usage_precheck_record": "automation/evidence/ISI-27D/actions-usage-precheck-2b1f2ef.json",
+        "usage_postcheck_record": "automation/evidence/ISI-27D/checkpoint-93/actions-usage-postcheck.json"
+      }
     },
     {
       "id": "ISI-28-CURRENT-SERVER-CONTROLLED-UPGRADE",
       "title": "Current Server Controlled Upgrade",
-      "status": "deferred",
+      "status": "in_progress",
       "depends_on": [
         "ISI-27-INDUSTRIAL-RELEASE-CANDIDATE"
       ],
-      "note": "Only task allowed to touch the current server, DNS, certificates, shared central Nginx ingress, production SMTP, production secrets/data or server Ollama, and only after explicit owner approval. Final owner-locked edge identity is central-ingress-nginx-1 (Compose project central-ingress, service nginx) with ISI target https://isi.opus.rs:8445/. Any ISI-28 mutation must preserve and re-verify Krcuga :8443 and OralScanXAI :8444."
+      "note": "Owner explicitly approved continuation to full production on 2026-10-05 after the reviewed recovery candidate. ISI-27D RC 2b1f2ef20a2310df23947f2ac2128d16f81a98ea is CI_VERIFIED and signed. Begin read-only current-server audit under ADR-0026; lock exact backup/migration/rollback/acceptance actions from observed state before mutation. Terms/Privacy factual publication gate remains pending. Only this phase may touch the server; preserve Krcuga :8443 and OralScanXAI :8444. No production mutation or SERVER_VERIFIED claim yet.",
+      "spec": "automation/specs/ISI-28-R1-CONTROLLED-PRODUCTION-UPGRADE.md"
     },
     {
       "id": "ISI-PUBLIC-LEGAL-NOTICES-DRAFT-R1",

@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 
 from src.api.dependencies import get_db
 from src.core.config import Settings, get_settings
-from src.public.content_service import get_page_by_key, list_navigation, list_platforms
+from src.public.content_service import get_page_by_key, list_legal_pages, list_navigation, list_platforms
 
 router = APIRouter()
 PUBLIC_DIR = Path(__file__).resolve().parent
@@ -30,6 +30,8 @@ def _published_routes(db: Session, locale: str) -> list[str]:
     for item in list_navigation(db, locale=locale, include_drafts=False):
         routes.add(item.route_path)
     for item in list_platforms(db, locale=locale, include_drafts=False):
+        routes.add(item.route_path)
+    for item in list_legal_pages(db, locale=locale):
         routes.add(item.route_path)
     return sorted(routes)
 

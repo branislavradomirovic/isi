@@ -614,7 +614,7 @@ PostgreSQL 17/object restore PASS, ten accepted performance scenarios. Pack hash
 `9da45b26e811b6320c951e4285f83353aa306413c96052d5a75112b5ec67c8c1`;
 candidate `d97b16ce6f3cd179d8fca5b05e838d6644a6eda1bdff61c2399c4b0952e22a86`.
 Independent analysis, review, committed-file comparison and remote equality PASS.
-Current checkpoint: `ISI-27D - Exact-Main RC Acceptance & Phase Closeout`.
+Current checkpoint: `ISI-28 - Current Server Controlled Upgrade`.
 ISI-27D is specification-ready; ISI-28 remains deferred. No hosted/server acceptance is claimed.
 
 27C contract: `automation/specs/ISI-27C-R1-REPRODUCIBLE-RELEASE-SUPPLY-CHAIN.md`.
@@ -690,3 +690,49 @@ reporting may lag. Next gate: validate/review the exact recovery candidate, then
 owner-approved commit/push and a separate exact-SHA hosted checkpoint. Terms/
 Privacy publication and live operational policies remain pending; only ISI-28
 may perform controlled server deployment after release prerequisites pass.
+
+## ISI-27D accepted RC and owner-approved ISI-28 start — 2026-10-05
+
+Exact RC `2b1f2ef20a2310df23947f2ac2128d16f81a98ea` is CI_VERIFIED / REVIEW_VERIFIED:
+manual checkpoint #93 (run 37277358285), all 12 required jobs success; signed
+source/image/SBOM/evidence bundle verified against pinned owner trust. Actions
+pre/post observations: 158/191 of 2000 minutes; displayed storage 0/0.5 GB
+(rounded/lagged). Exact identities and whole-phase classification are in
+`automation/specs/ISI-27D-ACCEPTANCE-CLOSEOUT.md`; immutable artifacts/evidence
+remain local under `automation/evidence/ISI-27D/checkpoint-93/`. Earlier #91/#92
+failures and predecessor NOT CI_VERIFIED labels are historical states only.
+
+The owner explicitly instructed continuation to full production. Current
+checkpoint: **ISI-28 - Current Server Controlled Upgrade**, starting with the
+fresh read-only audit in `automation/specs/ISI-28-R1-CONTROLLED-PRODUCTION-UPGRADE.md`.
+Terms/Privacy and live provider/retention/operational facts remain preproduction
+gates. No server mutation or SERVER_VERIFIED is claimed. A later source commit
+does not inherit this exact RC's CI verification.
+
+Accepted predecessor states: **27A ACCEPTED ON MAIN / 27B ACCEPTED ON MAIN / 27C ACCEPTED ON MAIN**; the consolidated exact RC is CI_VERIFIED through #93.
+
+Current execution state: **ISI-28 IN_PROGRESS**; exact ISI-27 RC is CI_VERIFIED, production remains unverified.
+
+### ISI-28 legal portal integration candidate
+
+Published PublicPage records of existing type `legal` are discoverable through
+localized footer links and sitemap even when excluded from primary navigation.
+Draft/archived notices and missing translations produce no public legal link.
+Existing localized page renderer supplies canonical/alternate metadata. This
+adds no schema, seeded legal facts, consent mechanism or authentication change.
+Final legal text and production publication remain pending factual verification.
+
+### ISI-28 observed server and preparation
+
+SSH on port 222 is functional. Observed source main is bf4a648b1e118a0b087b437579d2f3f12ef2db94,
+schema 20260828_0013; API/UI and workers use different old images. Central ISI
+Nginx overrides robots and applies a noindex header. The application itself
+returns production robots internally. Existing aliases/networks match ADR-0026.
+Protected DB backup/isolated restore, logical object recovery and accepted-image
+migration rehearsal passed; the restored copy reached 20260918_0034 without
+decreasing original table counts. Docker containerd reports OCI manifest IDs;
+accepted hosted config digest is verified through the signed archive together
+with loaded rootfs/config/platform. No production schema/runtime replacement
+has occurred. SMTP is owner-deferred To Be Defined and currently uses Mailpit.
+Configured nomic-embed-text is absent from observed host Ollama models.
+Operational plan/evidence boundaries: docs/ops/ISI-28-CONTROLLED-DEPLOYMENT-PLAN.md.

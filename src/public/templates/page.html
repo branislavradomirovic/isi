@@ -2,7 +2,7 @@
 {% block content %}
 <section class="page-hero">
   <div class="shell page-hero-grid">
-    <div><p class="eyebrow">ISI / {{ page.page_type | replace('_', ' ') | upper }}</p><h1>{{ page.title }}</h1></div>
+    <div><p class="eyebrow">ISI / {{ ('Legal information' if locale == 'en' else 'Pravne informacije') if page.page_type == 'legal' else (page.page_type | replace('_', ' ') | upper) }}</p><h1>{{ page.title }}</h1></div>
     {% if page.summary %}<p class="page-summary">{{ page.summary }}</p>{% endif %}
   </div>
 </section>

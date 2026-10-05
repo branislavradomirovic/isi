@@ -198,7 +198,7 @@ This inventory is the controlled bridge between the MasterPlan and the as-built 
 
 | ID | NAME | TYPE | STATUS | CANONICAL PATH(S) | RESPONSIBILITY | INPUTS | OUTPUTS | UPSTREAM | DOWNSTREAM | DATA/PERSISTENCE | SECURITY BOUNDARY | CUSTOMER-FACING | PRODUCTION_CRITICAL | TEST AUTHORITY | LEGACY STATUS | ROADMAP OWNER | REMOVAL/REPLACEMENT RULE |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| INV-A01 | Public website | Web surface | CURRENT_AS_BUILT | src/public/**; src/public_content/**; src/streamlit_app/shared_help_workspace.py; docs/help/ISI-SHARED-USER-GUIDE.md | Public institutional content and product entry surface | HTTP request; published content | HTML/assets | Public content models/service | Browser/users | PostgreSQL public content + static assets | Public-read boundary; draft preview guarded | YES | YES | tests/test_isi_04*.py; tests/test_isi_27a_shared_help_contract.py; tests/test_isi_27a_auth_ux_contract.py; tests/test_isi_27a_public_help_contract.py | NONE | FOUNDATION / ISI-27 | Replace only through approved public-site ADR/task; preserve content provenance; 27A adds shared Help/presentation only, without changing runtime authority |
+| INV-A01 | Public website | Web surface | CURRENT_AS_BUILT | src/public/**; src/public_content/**; src/streamlit_app/shared_help_workspace.py; docs/help/ISI-SHARED-USER-GUIDE.md | Public institutional content, product entry and published legal-page discovery | HTTP request; published content | HTML/assets | Public content models/service | Browser/users | PostgreSQL public content + static assets | Public-read boundary; draft preview guarded | YES | YES | tests/test_isi_04*.py; tests/test_isi_28_public_legal_links.py; tests/test_isi_27a_shared_help_contract.py; tests/test_isi_27a_auth_ux_contract.py; tests/test_isi_27a_public_help_contract.py | NONE | FOUNDATION / ISI-27 / ISI-28 | Replace only through approved public-site ADR/task; preserve content provenance; 27A Help preserved; ISI-28 candidate exposes published legal pages in localized footer/sitemap only; actual legal content publication remains pending |
 | INV-A02 | Login | Authenticated entry surface | CURRENT_AS_BUILT | src/streamlit_app/app.py; src/api/auth_routes.py; src/streamlit_app/shared_help_workspace.py; docs/help/ISI-SHARED-USER-GUIDE.md | Institutional account sign-in | Email; password | Session token + app context | Auth service | Authenticated shell | AuthSession in PostgreSQL | Rate-limited auth boundary; opaque bearer session | YES | YES | tests/test_isi_02b*.py; tests/test_isi_14*.py; tests/test_isi_20_auth_assurance.py; tests/test_isi_27a_shared_help_contract.py; tests/test_isi_27a_auth_ux_contract.py; tests/test_isi_27a_public_help_contract.py | NONE | ISI-20 / ISI-27 | May change only with auth/security contract and migration-safe session handling; 27A adds shared Help/presentation only, without changing runtime authority |
 | INV-A03 | Invitation onboarding | Onboarding surface | CURRENT_AS_BUILT | src/api/auth_routes.py; src/platform/auth/service.py; src/platform/auth/delivery.py; src/streamlit_app/shared_help_workspace.py; docs/help/ISI-SHARED-USER-GUIDE.md; src/streamlit_app/app.py; src/streamlit_app/api_client.py | Invitation-based account creation/join; no public self-registration | One-time invitation token; profile; password | User/membership/session | Administration invitation flow; SMTP/null delivery | Identity/access platform | User; Membership; Invitation; AuthSession | Single-use token; organization-scoped invitation | YES | YES | tests/test_isi_13_invitation_contract.py; tests/test_isi_15_invitation_contract.py; tests/test_isi_27a_shared_help_contract.py; tests/test_isi_27a_auth_ux_contract.py; tests/test_isi_27a_public_help_contract.py | NONE | ISI-13 / ISI-20 | Public self-signup must not be added without explicit product/security decision; 27A adds shared Help/presentation only, without changing runtime authority |
 | INV-A04 | Email verification | Account security surface | CURRENT_AS_BUILT | src/api/auth_routes.py; src/platform/auth/delivery.py; src/streamlit_app/shared_help_workspace.py; docs/help/ISI-SHARED-USER-GUIDE.md; src/streamlit_app/app.py; src/streamlit_app/api_client.py | Verify institutional email using one-time token | Email verification token | Verified account state | Auth service; delivery adapter | Authenticated access | AuthToken; User.email_verified_at | Enumeration-resistant request response; expiring token | YES | YES | tests/test_isi_14_auth_route_contract.py; tests/test_isi_15_delivery.py; tests/test_isi_27a_shared_help_contract.py; tests/test_isi_27a_auth_ux_contract.py; tests/test_isi_27a_public_help_contract.py | NONE | ISI-20 | Preserve one-time/expiry and anti-enumeration properties; 27A adds shared Help/presentation only, without changing runtime authority |
@@ -880,7 +880,7 @@ Critical rule: no Codex/LLM may invent indicator formulas, LISI weights, thresho
 
 #### ISI-24E accepted checkpoint and Phase-24 closeout
 
-`ISI-24E - ORDO Final Whole-Phase Gap/Legacy Audit + Closeout` is COMPLETE / CI_VERIFIED at the accepted remediation/closeout implementation checkpoint `5937daa2ea7ff9c476bd6a05a04841d1534aefe2` (tree `6e75bf1cd13b95e23f9189b9e94453dd130eaa19`) with `ISI required acceptance` run #90 / `35238623960` attempt 2 completed `success`. The whole-phase audit found F01 stale user-facing wording and F02 incomplete forecast customer reachability as the only `REMOVE_BEFORE_NEXT_SLICE` blockers; both are resolved. No Phase-24 `REMOVE_BEFORE_NEXT_SLICE` item remains. ISI-25 and ISI-26 subsequently completed implementation acceptance on main; ISI-27A is accepted on main and 27D is current. Server/DNS/central-ingress/production mutation remains forbidden until owner-approved ISI-28.
+`ISI-24E - ORDO Final Whole-Phase Gap/Legacy Audit + Closeout` is COMPLETE / CI_VERIFIED at the accepted remediation/closeout implementation checkpoint `5937daa2ea7ff9c476bd6a05a04841d1534aefe2` (tree `6e75bf1cd13b95e23f9189b9e94453dd130eaa19`) with `ISI required acceptance` run #90 / `35238623960` attempt 2 completed `success`. The whole-phase audit found F01 stale user-facing wording and F02 incomplete forecast customer reachability as the only `REMOVE_BEFORE_NEXT_SLICE` blockers; both are resolved. No Phase-24 `REMOVE_BEFORE_NEXT_SLICE` item remains. ISI-25 and ISI-26 subsequently completed implementation acceptance on main; ISI-27 is CI_VERIFIED and ISI-28 is current. Server/DNS/central-ingress/production mutation remains forbidden until owner-approved ISI-28.
 
 Goal: convert ORDO evidence/scenario infrastructure into a production destination-intelligence methodology without fabricating predictive capability.
 
@@ -915,7 +915,7 @@ Goal: make statistical/ML, embedding, LLM and VLM behavior measurable, versioned
 
 The canonical evaluation baseline is `docs/roadmap/ISI-AI-MODEL-EVALUATION-PROTOCOL-v1.md` and ADR-0025.
 
-Status: **IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED**. ISI-25A is accepted on main SHA `f0047321ee4410522697144ecfa464087f1b83bc` (tree `06e419ec656ee2fb0bfb74b4a6b10d42ef275f25`) after local deterministic acceptance and assistant human review. ISI-25B is implemented and accepted on main SHA `7e11ee2a6f7546eacc3207e15cacfc35f6d04f3e`; it provides exact-registration-bound fallback, separate frozen promotion benchmarks, deterministic evaluators, capability thresholds, evidence-gated promotion/rollback governance, deterministic circuit state, on-demand drift and shared AI XAI. No hosted full acceptance was run for 25A/25B under the owner cost/acceptance policy, so `CI_VERIFIED` is not claimed. ISI-26 has now also completed repository implementation acceptance on main; ISI-27A is accepted on main and 27D is current. Hosted full acceptance remains reserved for the controlled 27D checkpoint. Server verification and all deployment mutation remain deferred to ISI-28.
+Status: **IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED**. ISI-25A is accepted on main SHA `f0047321ee4410522697144ecfa464087f1b83bc` (tree `06e419ec656ee2fb0bfb74b4a6b10d42ef275f25`) after local deterministic acceptance and assistant human review. ISI-25B is implemented and accepted on main SHA `7e11ee2a6f7546eacc3207e15cacfc35f6d04f3e`; it provides exact-registration-bound fallback, separate frozen promotion benchmarks, deterministic evaluators, capability thresholds, evidence-gated promotion/rollback governance, deterministic circuit state, on-demand drift and shared AI XAI. No hosted full acceptance was run for 25A/25B under the owner cost/acceptance policy, so `CI_VERIFIED` is not claimed. ISI-26 has now also completed repository implementation acceptance on main; ISI-27 is CI_VERIFIED and ISI-28 is current. Hosted full acceptance remains reserved for the controlled 27D checkpoint. Server verification and all deployment mutation remain deferred to ISI-28.
 
 Required deliverables include:
 
@@ -958,7 +958,7 @@ ISI-27 B0-R1A bootstrap is CLOSED/PASS; ISI-27A Shared Help & Release UX Complet
 
 Goal: produce one release candidate technically ready for controlled deployment.
 
-Status: **IN PROGRESS / 27A ACCEPTED ON MAIN / 27B ACCEPTED ON MAIN / 27C ACCEPTED ON MAIN / 27D IN_PROGRESS / NOT CI_VERIFIED**. Corrected B0-R1A bootstrap authority is `automation/specs/ISI-27-B0-R1A-BOOTSTRAP-AUDIT-REPORT.md` plus its JSON evidence. At bootstrap on baseline `e46128752e29f46dc6d9b8510198739f88da50e9` it recorded DONE=6, PARTIAL=8, MISSING=5, DRIFT=0, thirteen release blockers not DONE and twelve production-critical shared Help/XAI blockers. ISI-27A has since closed those twelve Help/XAI blockers on accepted main `74acd5d9a890733347554633f44a6d5319717ba3`; the remaining release-candidate gate is 27D. Reproducible packaging, signed-provenance tooling and image vulnerability enforcement are implemented by accepted 27C. The first exact-main 27D run (#91 on `61a11c1ff839e66a458ac77ed05d4c860214f267`) failed in tests, build, supply-chain and aggregate acceptance. The two deterministic runner defects now have local candidate fixes. The owner approved an exact-fingerprint baseline for only the 11 context-reviewed historical Gitleaks findings; full-history scanning remains enabled, and the baseline is not yet acceptance-verified. The run and Actions usage postcheck are recorded in local ignored evidence under `automation/evidence/ISI-27D/`. Exact-main hosted acceptance and whole-phase closeout remain open. `ISI-27D - Exact-Main RC Acceptance & Phase Closeout` is the current checkpoint.
+Status: **COMPLETE / CI_VERIFIED / REVIEW_VERIFIED** for exact RC `2b1f2ef20a2310df23947f2ac2128d16f81a98ea` only. All 12 jobs passed in owner-approved checkpoint #93 (run 37277358285); source/image/SBOM/report/provenance checks and owner SSH signature verification passed. Actions pre/post checks and whole-phase legacy audit are recorded in `automation/specs/ISI-27D-ACCEPTANCE-CLOSEOUT.md`. Legal publication and live operational/provider/methodology state remain separate ISI-28 gates. Current checkpoint: `ISI-28 - Current Server Controlled Upgrade`.
 
 Release acceptance must include explicit SIMPA and ORDO methodology states, model/eval provenance, security/privacy acceptance, migration/recovery rehearsals and performance acceptance. Help/XAI remains a hard release gate. The canonical Help Coverage Matrix must show `VERIFIED` for every applicable production-critical action, with checklist-level `NOT_APPLICABLE` only where explicitly justified. `INV-A17` public self-registration remains NOT_PRESENT; ISI-27 must not create public signup merely to satisfy Help coverage.
 
@@ -973,7 +973,7 @@ No ISI-27 gate may contact or mutate the current server, DNS, certificates, cent
 
 ### ISI-28 - Current Server Controlled Upgrade
 
-Status: intentionally deferred and not executable during the industrialization track without fresh explicit owner approval.
+Status: **IN_PROGRESS — OWNER-APPROVED READ-ONLY SERVER RECONCILIATION** as of 2026-10-05, after successful ISI-27D checkpoint #93. The owner instructed continuation to full production. Execute `automation/specs/ISI-28-R1-CONTROLLED-PRODUCTION-UPGRADE.md`; server mutation requires the concrete observed-state deployment/backup/rollback plan and all remaining release prerequisites. No SERVER_VERIFIED claim yet.
 
 This is the only phase allowed to touch the current server, DNS, ingress, real SMTP, production secrets or production data.
 
@@ -1335,3 +1335,39 @@ reporting may lag. Next gate: validate/review the exact recovery candidate, then
 owner-approved commit/push and a separate exact-SHA hosted checkpoint. Terms/
 Privacy publication and live operational policies remain pending; only ISI-28
 may perform controlled server deployment after release prerequisites pass.
+
+## ISI-27D accepted RC and owner-approved ISI-28 start — 2026-10-05
+
+Exact RC `2b1f2ef20a2310df23947f2ac2128d16f81a98ea` is CI_VERIFIED / REVIEW_VERIFIED:
+manual checkpoint #93 (run 37277358285), all 12 required jobs success; signed
+source/image/SBOM/evidence bundle verified against pinned owner trust. Actions
+pre/post observations: 158/191 of 2000 minutes; displayed storage 0/0.5 GB
+(rounded/lagged). Exact identities and whole-phase classification are in
+`automation/specs/ISI-27D-ACCEPTANCE-CLOSEOUT.md`; immutable artifacts/evidence
+remain local under `automation/evidence/ISI-27D/checkpoint-93/`. Earlier #91/#92
+failures and predecessor NOT CI_VERIFIED labels are historical states only.
+
+The owner explicitly instructed continuation to full production. Current
+checkpoint: **ISI-28 - Current Server Controlled Upgrade**, starting with the
+fresh read-only audit in `automation/specs/ISI-28-R1-CONTROLLED-PRODUCTION-UPGRADE.md`.
+Terms/Privacy and live provider/retention/operational facts remain preproduction
+gates. No server mutation or SERVER_VERIFIED is claimed. A later source commit
+does not inherit this exact RC's CI verification.
+
+Accepted predecessor states: **27A ACCEPTED ON MAIN / 27B ACCEPTED ON MAIN / 27C ACCEPTED ON MAIN**; the consolidated exact RC is CI_VERIFIED through #93.
+
+Current execution state: **ISI-28 IN_PROGRESS**; exact ISI-27 RC is CI_VERIFIED, production remains unverified.
+
+`ISI-28 - Current Server Controlled Upgrade` is the current checkpoint.
+SSH reconciliation now succeeds after the owner authorized the existing key
+on the server. Server main is `bf4a648b1e118a0b087b437579d2f3f12ef2db94`;
+API/UI and workers have different older image identities. Fresh protected
+database backup/isolated restore and logical object byte recovery passed.
+Accepted-image migration rehearsal passed from `20260828_0013` to
+`20260918_0034`, preserving original table counts. Production database/services
+remain unchanged. Details: `docs/ops/ISI-28-CONTROLLED-DEPLOYMENT-PLAN.md`.
+The live `robots.txt` disallow and noindex header originate in central Nginx's
+ISI block; remove only at the final public release gate. Legal entity/address
+facts remain pending. The owner explicitly deferred real SMTP as
+**To Be Defined**; external email-dependent workflows remain unverified and
+cannot be represented as fully operational. No SERVER_VERIFIED claim yet.

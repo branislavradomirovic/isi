@@ -7,6 +7,17 @@
 
 > This is an operational drafting document, not legal advice. Bracketed items are release blockers. Do not publish this text until the Institute confirms every bracketed fact and obtains its chosen legal review.
 
+## Confirmed owner facts — 5 October 2026
+
+The Institute name is **Institut za socijalnu inkluziju**. The operational
+platform/site brand is **GoraNova**. The owner confirmed
+**institutzasocijalnuinkluziju@gmail.com** for privacy requests. Registered
+addresses, GoraNova contracting legal entity and processing roles remain
+unconfirmed. These facts supersede corresponding contact/name confirmation
+placeholders below; they do not establish controller/processor roles. Proposed
+operational periods are recorded in
+`docs/ops/ISI-28-PRIVACY-OPERATIONS-BASELINE.md` and are not verified live.
+
 ## Serbian (Latin)
 
 ### Uslovi korišćenja

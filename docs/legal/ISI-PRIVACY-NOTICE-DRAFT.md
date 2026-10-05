@@ -7,6 +7,17 @@
 
 > This is a drafting aid, not legal advice. Bracketed items and the release checklist are blockers. Do not publish until ISI verifies the live processing environment, controller/processor roles, recipients, retention, and contact details and completes legal review.
 
+## Confirmed owner facts — 5 October 2026
+
+The Institute name is **Institut za socijalnu inkluziju**. The operational
+platform/site brand is **GoraNova**. The owner confirmed
+**institutzasocijalnuinkluziju@gmail.com** for privacy requests. Registered
+addresses, GoraNova contracting legal entity and processing roles remain
+unconfirmed. These facts supersede corresponding contact/name confirmation
+placeholders below; they do not establish controller/processor roles. Proposed
+operational periods are recorded in
+`docs/ops/ISI-28-PRIVACY-OPERATIONS-BASELINE.md` and are not verified live.
+
 ## Serbian (Latin)
 
 ### Obaveštenje o privatnosti i obradi podataka o ličnosti

@@ -13,5 +13,10 @@
     </div>
     <div><h2>{{ 'Contact' if locale == 'en' else 'Kontakt' }}</h2><a href="mailto:institutzasocijalnuinkluziju@gmail.com">institutzasocijalnuinkluziju@gmail.com</a><p class="approved-footer-note">{{ 'Knowledge is our form of solidarity.' if locale == 'en' else 'Znanje je naš oblik solidarnosti.' }}</p></div>
   </div>
-  <div class="shell approved-footer-bottom"><span>© ISI · Institut za socijalnu inkluziju</span><a href="{{ app_url }}?help=public">{{ 'Help (Serbian)' if locale == 'en' else 'Pomoć' }}</a><span>SIMPA · ORDO</span></div>
+  <div class="shell approved-footer-bottom">
+    <span>© ISI · Institut za socijalnu inkluziju</span>
+    <a href="{{ app_url }}?help=public">{{ 'Help (Serbian)' if locale == 'en' else 'Pomoć' }}</a>
+    {% for legal_page in legal_pages %}<a href="{{ legal_page.route_path }}">{{ legal_page.title }}</a>{% endfor %}
+    <span>SIMPA · ORDO</span>
+  </div>
 </footer>
