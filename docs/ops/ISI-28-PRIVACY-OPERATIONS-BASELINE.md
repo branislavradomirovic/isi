@@ -1,6 +1,6 @@
 # ISI-28 privacy and operations baseline
 
-Status: **PROPOSED OPERATIONAL TARGETS — NOT VERIFIED LIVE** (2026-10-05).
+Status: **OWNER-APPROVED POLICY TARGETS — ENFORCEMENT NOT FULLY VERIFIED** (2026-10-06).
 Prepared under the owner's instruction to propose and implement the missing
 policies. This is the concrete deployment target, not a claim of present server
 configuration or a universal legally mandated retention schedule. It must be
@@ -81,3 +81,48 @@ backup/restore and expiry controls; named operational owners; request/incident
 procedures; appropriate legal review and DPO determination. Public text must
 reflect only the confirmed processing. Do not label this baseline implemented
 or server-verified until these controls operate and have been checked.
+
+## Operational policy activation contract — 6 October 2026
+
+Owner approved these operational policy targets. Approval does not establish
+that every technical enforcement mechanism or human duty is active.
+
+| Responsibility | Accountable role | Procedure / activation evidence |
+|---|---|---|
+| Release/cutover and acceptance | ISI project owner | Exact candidate/checkpoint approval; approved maintenance boundary; rollback decision |
+| Infrastructure, backups and recovery | GoraNova operations role | Daily backup success review, weekly inventory, monthly isolated restore; secondary protected copy location still pending |
+| Security incident handling | GoraNova incident coordinator role | Record detection time; assess scope; contain ISI only; preserve minimal evidence; notify project owner/controller; assess statutory notice obligations |
+| Privacy requests and mailbox | Institute privacy coordinator role | Receipt register; acknowledgment target three working days; identity verification; controller routing; statutory response tracking |
+| Workspace retention and legal holds | Each organization’s authorized data-governance role | Existing request/approve/execute boundaries; no blanket deletion or automatic override of holds |
+
+These are role assignments, not invented personnel or a staffed 24/7 service.
+Duty-holder names, access authorization, monitored channels and handover
+acknowledgment must be recorded before the related operational acceptance.
+SMTP is pending; no automatic outbound alerts or delivery are claimed.
+
+Backup targets: daily consistent database/object checkpoint, 35-day recovery
+window, protected ISI-only storage and a separate encrypted copy outside this
+host. Target RPO 24 hours and target RTO 4 hours are planning targets; measured
+restore evidence is required before advertising them. Preserve pre-cutover
+checkpoints until explicit release-owner disposition; automated cleanup may
+only target verified generated ISI backups and must honor holds.
+
+Incident procedure: identify/triage, contain affected ISI access, preserve
+protected evidence without secrets or document payloads, assess impact and
+controller notification, eradicate cause, restore from verified state, validate
+all boundaries, then record a review and corrective actions. Legal reporting
+obligations depend on applicable facts and roles; public placeholders do not
+resolve them. Privacy processing follows receipt, proportionate identity check,
+scoped assessment/approval, execution, response and minimal closure record.
+
+Monitoring acceptance must cover API/UI, worker liveness and queue age/failures,
+PostgreSQL/Redis/MinIO reachability, disk capacity, backup age/result and
+certificate expiry. Checks are ISI-scoped and do not restart other products.
+Alerts are not operational until a real monitored destination and duty holder
+are verified. No retention purge is scheduled before bounded dry-run, foreign
+key/provenance audit, hold handling and recovery coverage.
+
+References: [NIST CSF 2.0 Small Business Guide](https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=957322),
+[NIST contingency planning](https://csrc.nist.gov/pubs/sp/800/34/r1/upd1/final),
+[Serbian Commissioner duties](https://poverenik.rs/zastita-podataka/obaveze-rukovaoca/).
+These inform controls; they are not an ISI certification.

@@ -121,6 +121,8 @@ def auth_delivery_configured() -> bool:
 def get_auth_delivery() -> AuthDelivery:
     settings = get_settings()
     mode = str(getattr(settings, "auth_delivery_mode", "null") or "null").strip().casefold()
+    if mode == "pending":
+        raise AuthDeliveryError("Authentication email delivery is temporarily unavailable")
     if mode in {"", "null", "none", "development"}:
         return _delivery
     if mode == "smtp":

@@ -52,12 +52,17 @@ def validate_deployment_runtime_settings(settings: Any) -> None:
     if not redis_url.startswith(("redis://", "rediss://")):
         errors.append("REDIS_URL must be explicitly configured")
 
-    if _text(settings, "auth_delivery_mode").casefold() != "smtp":
-        errors.append("AUTH_DELIVERY_MODE must be smtp")
-    _require_non_placeholder(errors, "SMTP_HOST", _text(settings, "smtp_host"), minimum=2)
-    sender = _text(settings, "smtp_from_email")
-    if "@" not in sender:
-        errors.append("SMTP_FROM_EMAIL must be explicitly configured")
+    delivery_mode = _text(settings, "auth_delivery_mode").casefold()
+    if delivery_mode == "pending" and profile == "production":
+        if any(_text(settings, key) for key in ("smtp_host", "smtp_from_email", "smtp_username", "smtp_password")):
+            errors.append("pending auth delivery requires empty SMTP host, sender and credentials")
+    else:
+        if delivery_mode != "smtp":
+            errors.append("AUTH_DELIVERY_MODE must be smtp, or explicit pending in production")
+        _require_non_placeholder(errors, "SMTP_HOST", _text(settings, "smtp_host"), minimum=2)
+        sender = _text(settings, "smtp_from_email")
+        if "@" not in sender:
+            errors.append("SMTP_FROM_EMAIL must be explicitly configured")
 
     if not _bool(settings, "security_trust_proxy_headers"):
         errors.append("SECURITY_TRUST_PROXY_HEADERS must be true behind the staging reverse proxy")
@@ -70,7 +75,7 @@ def validate_deployment_runtime_settings(settings: Any) -> None:
                 errors.append(f"{label} must be a non-local HTTPS URL in production")
 
         smtp_host = _text(settings, "smtp_host").casefold()
-        if smtp_host in {"mailpit", "localhost", "127.0.0.1"}:
+        if delivery_mode == "smtp" and smtp_host in {"mailpit", "localhost", "127.0.0.1"}:
             errors.append("production deployment must not use Mailpit/local SMTP")
 
         bucket = _text(settings, "data_s3_bucket").casefold()

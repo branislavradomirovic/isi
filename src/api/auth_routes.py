@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
 from src.api.dependencies import AuthContext, get_auth_context, get_db
+from src.core.config import get_settings
 from src.platform.auth.delivery import AuthDelivery, get_auth_delivery
 from src.platform.auth.schemas import (
     EmailVerificationRequest,
@@ -47,6 +48,14 @@ from src.platform.security.service import (
 )
 
 router = APIRouter(prefix="/api/v1/auth", tags=["auth"])
+
+
+def _require_email_available() -> None:
+    if get_settings().auth_delivery_mode.strip().casefold() == "pending":
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Authentication email delivery is temporarily unavailable",
+        )
 
 
 def _me(user) -> MeResponse:
@@ -234,7 +243,8 @@ def refresh_password_step_up(
     return PasswordAssuranceResponse()
 
 
-@router.post("/email-verification/request", response_model=MessageResponse, status_code=status.HTTP_202_ACCEPTED)
+@router.post("/email-verification/request", response_model=MessageResponse,
+             status_code=status.HTTP_202_ACCEPTED, dependencies=[Depends(_require_email_available)])
 def request_email_verification(
     payload: EmailVerificationRequest,
     db: Session = Depends(get_db),
@@ -270,7 +280,8 @@ def confirm_verification(payload: TokenConfirmRequest, db: Session = Depends(get
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="invalid or expired token") from None
 
 
-@router.post("/password-reset/request", response_model=MessageResponse, status_code=status.HTTP_202_ACCEPTED)
+@router.post("/password-reset/request", response_model=MessageResponse,
+             status_code=status.HTTP_202_ACCEPTED, dependencies=[Depends(_require_email_available)])
 def request_password_reset(
     payload: PasswordResetRequest,
     db: Session = Depends(get_db),

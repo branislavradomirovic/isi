@@ -1,6 +1,6 @@
 # ISI legal notices — publication checklist
 
-**Current status: BLOCKED / DRAFT ONLY.** Do not publish or link these drafts from the public portal until each item below is verified, recorded, and approved by the Institute.
+**Current status: OWNER-AUTHORIZED PLACEHOLDER PUBLICATION CANDIDATE.** The historical drafts remain internal; publish only the reviewed versioned payload described below. Unknown legal facts remain openly marked.
 
 ## Confirmed owner input and current evidence — 2026-10-05
 
@@ -43,3 +43,15 @@
 ## Publication decision
 
 Keep these Markdown drafts internal. Once the checklist is complete and approved, implement the finalized SR/EN content through the established public content management/seed process, link it in both footer locales, add route and SEO/sitemap coverage, and run targeted public/private boundary, accessibility, desktop/mobile, cookie, route and production-artifact checks. This work must be included in the approved release candidate and may only be deployed under the current ISI-28 gate after ISI-27B, ISI-27C and ISI-27D are complete.
+
+## Owner-authorized placeholder publication — 6 October 2026
+
+The owner explicitly authorized visible placeholders for missing facts and
+publication of SR/EN notices. This supersedes the earlier complete-facts
+publication gate for this release only. Canonical public payload is
+`data/public/legal_notices.json`; earlier drafts remain LEGITIMATE_HISTORY.
+The payload states unknowns and SMTP pending openly, does not certify legal
+compliance, and describes retention as targets rather than proven enforcement.
+Publication uses `tools/publish_isi_legal_notices.py` with an approved SHA256
+and refuses existing-content collisions. Source acceptance and final image
+deployment gates remain mandatory. Publication is not yet executed.

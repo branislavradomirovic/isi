@@ -462,8 +462,8 @@
       "depends_on": [
         "ISI-27-INDUSTRIAL-RELEASE-CANDIDATE"
       ],
-      "note": "Owner explicitly approved continuation to full production on 2026-10-05 after the reviewed recovery candidate. ISI-27D RC 2b1f2ef20a2310df23947f2ac2128d16f81a98ea is CI_VERIFIED and signed. Begin read-only current-server audit under ADR-0026; lock exact backup/migration/rollback/acceptance actions from observed state before mutation. Terms/Privacy factual publication gate remains pending. Only this phase may touch the server; preserve Krcuga :8443 and OralScanXAI :8444. No production mutation or SERVER_VERIFIED claim yet.",
-      "spec": "automation/specs/ISI-28-R1-CONTROLLED-PRODUCTION-UPGRADE.md"
+      "note": "IN_PROGRESS. Accepted baseline3986 checkpoint94; ISI ingress verified, exact-image isolated migration passed. Owner approved explicit SMTP pending, visible-placeholder SR/EN legal publication and operational policy targets. R2 source candidate requires local/full gates, independent review and exact approval. Final source/server alignment, live cutover, legal publication and operational enforcement remain unverified.",
+      "spec": "automation/specs/ISI-28-R2-PRODUCTION-ACTIVATION.md"
     },
     {
       "id": "ISI-PUBLIC-LEGAL-NOTICES-DRAFT-R1",

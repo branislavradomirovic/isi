@@ -359,3 +359,22 @@ SMTP is owner-deferred **To Be Defined**; no external delivery is verified.
 Central ISI Nginx noindex/robots guard remains until final portal publication.
 Final source acceptance, legal facts, operational backup/monitoring and actual
 cutover/server acceptance remain open; ISI-28 is still IN_PROGRESS.
+
+## ISI-28 R2 activation candidate — 2026-10-06
+
+Baseline 3986a03182eed04ba8055a6156d6722bca1504f5 passed exact required
+acceptance #94 (37436821260), all 12 jobs. Signed image was verified and loaded
+on the server without replacing live services. Exact-image isolated migration
+passed 0013 to 0034, 90 to 140 tables; original counts not decreased.
+Owner-approved ISI Nginx candidate is active: public robots/sitemap reachable,
+public global noindex removed; app/API noindex retained. Non-ISI config bytes
+were preserved and Krcuga/OralScanXAI HTTP baselines remained 200.
+
+Owner now authorizes legal publication with visible placeholders and operational
+policy targets, while SMTP remains pending. R2 adds an explicit pending email
+mode with no silent delivery and account-independent unavailable request routes;
+login and token-confirmation semantics remain unchanged. SR/EN versioned legal
+payload and digest-bound collision-safe publisher are source candidates only.
+These new changes do not inherit checkpoint #94 acceptance. No final cutover,
+legal publication, operational enforcement or SERVER_VERIFIED is asserted.
+Exact contract: `automation/specs/ISI-28-R2-PRODUCTION-ACTIVATION.md`.
