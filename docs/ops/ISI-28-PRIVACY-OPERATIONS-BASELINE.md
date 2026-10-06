@@ -126,3 +126,30 @@ References: [NIST CSF 2.0 Small Business Guide](https://tsapps.nist.gov/publicat
 [NIST contingency planning](https://csrc.nist.gov/pubs/sp/800/34/r1/upd1/final),
 [Serbian Commissioner duties](https://poverenik.rs/zastita-podataka/obaveze-rukovaoca/).
 These inform controls; they are not an ISI certification.
+
+## R3 operational implementation boundary — 6 October 2026
+
+New production DB/private versioned bucket and coordinated pre-cutover recovery
+media are verified. Release-bound local monitoring/backup code is an unstaged R3
+candidate, not an installed timer. A daily 03:15 UTC backup would stop only four
+ISI writers briefly after an idle-queue check, then always request their restart;
+busy queues or unmanaged DB writers fail closed. Objects/backups remain server-only.
+Current-state object recovery does not replicate all historical bucket versions.
+The 35-day planner preserves unverified, held/unknown and only-copy media; it
+performs no deletion. Offsite destination/encryption, observed timer execution,
+restore rehearsal, operational alert channel and duty-holder acknowledgment remain
+required. No staffed response or achieved RPO/RTO is claimed.
+
+## Owner-narrowed preproduction test scope — 2026-10-06
+
+Owner explicitly deferred all new backup creation and requested application/server
+testing in pre-production mode. No new backup/cron-backup/offsite/purge is to be
+activated. Preserve existing rollback and recovery media. R3 now contains only
+read-only release-bound monitoring, responsive header repair and optional per-ISI
+provider resource bounds plus tests. Existing data target names isi_production
+and isi-production record where the test candidate runs, not a claim of full
+production acceptance. Keep the production security profile and SMTP pending;
+operational mode is **PREPRODUCTION_TESTING**. Whole ISI-28 stays IN_PROGRESS.
+Offsite recovery/real alerts/duty holders/capacity remain full-production gates
+for later, not prerequisites that block the owner-requested test scope.
+Earlier backup-plan paragraphs are superseded for current execution.

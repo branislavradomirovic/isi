@@ -6,6 +6,7 @@ from typing import Any
 
 import streamlit as st
 
+from src.core.config import get_settings
 from src.streamlit_app import api_client
 from src.streamlit_app.api_client import AccessDenied, ApiUnavailable, AuthenticationRequired
 from src.streamlit_app.selection import Selection, default_selection, organization_by_id, product_by_code
@@ -132,6 +133,9 @@ def _leave_auth_link() -> None:
 
 def _render_recovery_requests() -> None:
     with st.expander("Oporavak naloga"):
+        pending = get_settings().auth_delivery_mode.casefold() == "pending"
+        if pending:
+            st.info("Email dostava još nije aktivirana. Slanje zahteva za promenu lozinke i potvrdu emaila trenutno nije dostupno. Prijava postojećim nalogom ostaje dostupna.")
         for code, title, action in (
             ("reset", "Promena lozinke", api_client.request_password_reset),
             ("verify", "Potvrda emaila", api_client.request_email_verification),
@@ -139,8 +143,8 @@ def _render_recovery_requests() -> None:
             st.markdown(f"**{title}**")
             with st.form(f"isi_recovery_{code}", clear_on_submit=True):
                 email = st.text_input("Email", autocomplete="email", key=f"isi_recovery_email_{code}")
-                submitted = st.form_submit_button("Pošalji zahtev")
-            if submitted:
+                submitted = st.form_submit_button("Pošalji zahtev", disabled=pending)
+            if submitted and not pending:
                 try:
                     action(email)
                 except (api_client.AuthFlowRejected, ApiUnavailable):

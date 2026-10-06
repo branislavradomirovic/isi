@@ -55,8 +55,11 @@ class OllamaProvider:
     provider_name = "ollama"
     local_provider = True
 
-    def __init__(self, base_url: str = "http://127.0.0.1:11434") -> None:
+    def __init__(self, base_url: str = "http://127.0.0.1:11434", *, num_thread: int | None = None) -> None:
+        if num_thread is not None and (type(num_thread) is not int or not 1 <= num_thread <= 64):
+            raise ValueError("Ollama thread limit must be between 1 and 64")
         self.base_url = base_url.rstrip("/")
+        self.num_thread = num_thread
 
     def complete(self, request: CompletionRequest) -> CompletionResult:
         started = time.monotonic()
@@ -68,6 +71,8 @@ class OllamaProvider:
                 {"role": "user", "content": request.user_prompt},
             ],
         }
+        if self.num_thread is not None:
+            payload["options"] = {"num_thread": self.num_thread}
         if request.structured:
             payload["format"] = "json"
         try:
@@ -100,6 +105,8 @@ class OllamaProvider:
         )
         last_status = None
         for path, payload in endpoints:
+            if self.num_thread is not None:
+                payload["options"] = {"num_thread": self.num_thread}
             try:
                 response = httpx.post(f"{self.base_url}{path}", json=payload, timeout=timeout_seconds)
             except httpx.TimeoutException as exc:

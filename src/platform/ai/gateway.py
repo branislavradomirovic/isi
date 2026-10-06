@@ -22,7 +22,10 @@ def provider_for_model(model: AIModel) -> AIProvider:
     settings = get_settings()
     provider_type = model.provider_type
     if provider_type == "ollama":
-        return OllamaProvider(getattr(settings, "ai_ollama_base_url", "http://127.0.0.1:11434"))
+        return OllamaProvider(
+            getattr(settings, "ai_ollama_base_url", "http://127.0.0.1:11434"),
+            num_thread=getattr(settings, "ai_ollama_num_thread", None),
+        )
     if provider_type == "stub":
         if str(getattr(settings, "isi_env", "development")).lower() == "production":
             raise GatewayError("development_stub_forbidden_in_production")

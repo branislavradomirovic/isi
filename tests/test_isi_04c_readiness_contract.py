@@ -23,5 +23,5 @@ def test_reduced_motion_and_focus_contracts_exist():
     assert "prefers-reduced-motion: reduce" in css
     assert ":focus-visible" in css
     assert "min-height: 44px" in css
-    assert "@media (max-width: 980px)" in css
+    assert "@media (max-width: 1380px)" in css
     assert "@media (max-width: 680px)" in css

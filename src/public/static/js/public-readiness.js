@@ -27,12 +27,12 @@
     });
 
     nav.addEventListener('click', (event) => {
-      if (event.target.closest('a') && window.matchMedia('(max-width: 980px)').matches) {
+      if (event.target.closest('a') && window.matchMedia('(max-width: 1380px)').matches) {
         closeNav();
       }
     });
 
-    window.matchMedia('(min-width: 981px)').addEventListener?.('change', (event) => {
+    window.matchMedia('(min-width: 1381px)').addEventListener?.('change', (event) => {
       if (event.matches) closeNav();
     });
   }

@@ -1,5 +1,6 @@
 from functools import lru_cache
 
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -26,6 +27,7 @@ class Settings(BaseSettings):
     ai_ollama_base_url: str = "http://127.0.0.1:11434"
     ai_ollama_chat_model: str = "qwen2.5:7b-instruct"
     ai_ollama_embedding_model: str = "nomic-embed-text"
+    ai_ollama_num_thread: int | None = Field(default=None, ge=1, le=64)
     ai_request_timeout_seconds: int = 120
     ai_default_policy: str = "shared-local-only"
     ai_allow_dev_stub: bool = False

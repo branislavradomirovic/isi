@@ -1,6 +1,8 @@
 # ISI-28 observed-state deployment plan
 
-Status: PREPARATION IN_PROGRESS; no production application/schema replacement.
+Status: R2 DATA/RUNTIME ACTIVATION PASS; R3 OPERATIONAL CLOSEOUT IN_PROGRESS.
+The observed baseline and initial ordered gates below are retained historical
+recovery evidence; the dated activation record at the end supersedes current state.
 Owner authorized continuation through full production and restored SSH access on
 5 October 2026. Target: ubuntu@94.230.189.146:222, ISI :8445 only.
 
@@ -100,3 +102,54 @@ before resolving. SSH blocker: resolved. Earlier public robots observation is
 historical until fresh external/internal responses are reconciled.
 Canonical system inventory impact: NONE for this read-only/transient preparation;
 existing deployment, recovery, provider and public rows retain ownership.
+
+## ISI-28 checkpoint95 activation and R3 closeout — 2026-10-06
+
+Exact accepted main **1bf0552d702c0e6cefc659b38184f505118f11d1**, tree
+514052fa0b0ddc7778068ccb2a94bfc6e0f444ef: all 12 jobs completed success in
+manual checkpoint #95 / 37503549452; owner signature and every bundle/image
+digest passed verification. Actions usage pre/post239/261 of2000 minutes.
+Server source fast-forwarded cleanly to this exact SHA without resetting files.
+Four ISI application runtimes now use the signed accepted image (config digest
+3295bac2a9c36fca204536e3fc146a7051f9be13a571cf98899aa51b9fec94cb;
+loaded OCI manifest6cdbbe13fa49c26d3a862c79fed3f324c93c41ba0148d5e8dca25feb658e848f).
+New database isi_production restored with exact original counts then migrated
+0013 to0034/140tables; old DB remains. New isi-production bucket copied one
+42-byte object with exact key/hash/metadata/tags, private policy and versioning
+enabled; old bucket remains. Fresh coordinated pre-cutover dump/object checkpoint
+and protected config/prior images are retained server-only. First activation
+helper failed by inspecting removed old ISI IDs and safely rolled back; corrected
+activation passed and preserved non-ISI container identities. This history is
+LEGITIMATE_HISTORY, not a waived acceptance failure.
+
+SR/EN Terms/Privacy published from payload9f79b1d2b90825079be6cfb6aae24237fb24f5928b1395c5d9095e55d00fd426.
+Live login/me/context/logout for SIMPA-only/ORDO-only/dual users, database/Redis/S3
+readiness, both real RQ workers and existing storage readback passed. External
+HTTPS (normal TLS validation) returned200 for public/legal/robots/sitemap/favicon/
+manifest/app/API/diagnostics routes; public indexing and private noindex correct.
+Krcuga8443 and OralScanXAI8444 returned200; no additional Nginx mutation.
+
+Whole ISI-28 remains **IN_PROGRESS**, not full SERVER_VERIFIED: default embedding
+execution timed out; a two-thread synthetic probe passed768dimensions in0.33s,
+not domain retrieval quality or champion promotion. R3 adds optional per-ISI
+thread configuration and desktop navigation correction after1280px live drift.
+R3 adds bounded ops code but scheduling/restore/offsite/alerts are not verified.
+Offsite destination and monitored duty-holder/channel require actual owner input.
+SMTP explicitly pending; email-dependent workflows unavailable by design.
+Operational retention periods remain targets until scoped enforcement/hold/recovery
+evidence passes; no blanket institutional purge. Capacity and final operational
+recovery acceptance remain open. Evidence: automation/evidence/ISI-28/r3/.
+
+## Owner-narrowed preproduction test scope — 2026-10-06
+
+Owner explicitly deferred all new backup creation and requested application/server
+testing in pre-production mode. No new backup/cron-backup/offsite/purge is to be
+activated. Preserve existing rollback and recovery media. R3 now contains only
+read-only release-bound monitoring, responsive header repair and optional per-ISI
+provider resource bounds plus tests. Existing data target names isi_production
+and isi-production record where the test candidate runs, not a claim of full
+production acceptance. Keep the production security profile and SMTP pending;
+operational mode is **PREPRODUCTION_TESTING**. Whole ISI-28 stays IN_PROGRESS.
+Offsite recovery/real alerts/duty holders/capacity remain full-production gates
+for later, not prerequisites that block the owner-requested test scope.
+Earlier backup-plan paragraphs are superseded for current execution.

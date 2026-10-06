@@ -1,6 +1,6 @@
 # ISI legal notices — publication checklist
 
-**Current status: OWNER-AUTHORIZED PLACEHOLDER PUBLICATION CANDIDATE.** The historical drafts remain internal; publish only the reviewed versioned payload described below. Unknown legal facts remain openly marked.
+**Current status: OWNER-AUTHORIZED PLACEHOLDER PUBLICATION EXECUTED.** The historical drafts remain internal; publish only the reviewed versioned payload described below. Unknown legal facts remain openly marked.
 
 ## Confirmed owner input and current evidence — 2026-10-05
 
@@ -54,4 +54,6 @@ The payload states unknowns and SMTP pending openly, does not certify legal
 compliance, and describes retention as targets rather than proven enforcement.
 Publication uses `tools/publish_isi_legal_notices.py` with an approved SHA256
 and refuses existing-content collisions. Source acceptance and final image
-deployment gates remain mandatory. Publication is not yet executed.
+deployment gates remain mandatory. Publication executed from exact accepted1bf0552/checkpoint95 into the new production database: two pages/four translations. All four public HTTPS routes, footer/sitemap discovery and approved placeholders verified. Missing facts and mailbox duty-holder confirmation remain explicit; this is not legal-compliance certification.
+
+Earlier draft observations above are LEGITIMATE_HISTORY; current SSH/publication status is governed by the dated ISI-28 activation record.

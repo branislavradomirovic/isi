@@ -462,15 +462,15 @@
       "depends_on": [
         "ISI-27-INDUSTRIAL-RELEASE-CANDIDATE"
       ],
-      "note": "IN_PROGRESS. Accepted baseline3986 checkpoint94; ISI ingress verified, exact-image isolated migration passed. Owner approved explicit SMTP pending, visible-placeholder SR/EN legal publication and operational policy targets. R2 source candidate requires local/full gates, independent review and exact approval. Final source/server alignment, live cutover, legal publication and operational enforcement remain unverified.",
-      "spec": "automation/specs/ISI-28-R2-PRODUCTION-ACTIVATION.md"
+      "note": "IN_PROGRESS. Exact main1bf0552 checkpoint95 all12PASS; signed runtime activated on all4 ISI services. New production DB/schema0034 and private versioned bucket verified; old targets/rollback preserved. SR/EN placeholder legal notices published. Live auth/product contexts/readiness/RQ/storage and external HTTPS/SEO passed. R3 operations/responsive/provider-thread candidate remains unstaged; offsite/alerts/duty holder, scheduled recovery, capacity and native bounded AI remain open. SMTP explicitly pending. No whole-platform SERVER_VERIFIED claim. Owner now defers ALL new backups and requests PREPRODUCTION_TESTING; preserve existing media, do not activate backup/offsite/purge. R3 scope narrowed to read-only monitoring, header correction and optional per-ISI provider resource limit. Full production not claimed.",
+      "spec": "automation/specs/ISI-28-R3-OPERATIONS-AND-RESPONSIVE-CLOSEOUT.md"
     },
     {
       "id": "ISI-PUBLIC-LEGAL-NOTICES-DRAFT-R1",
       "title": "Public Legal Notices — Terms and Privacy Draft",
       "status": "done",
       "spec": "automation/specs/ISI-PUBLIC-LEGAL-NOTICES-DRAFT-R1.md",
-      "note": "Internal SR-Latn drafts and EN working translations are complete. Publication is blocked pending owner verification of facts and legal review; deployment remains gated by ISI-27B, 27C, 27D and ISI-28. No public content or production state changed."
+      "note": "Historical internal drafts complete. Owner superseded complete-facts publication blocker with visible placeholders. Versioned R2 payload published in four translations under exact1bf0552/checkpoint95; known facts/unknowns and SMTP pending explicit. Legal compliance and mailbox operation not certified."
     }
   ]
 }
