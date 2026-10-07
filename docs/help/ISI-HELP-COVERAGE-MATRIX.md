@@ -138,3 +138,14 @@ The independent runner and review gates remain required before IMPLEMENTED/REVIE
 | ORDO-29A-ORIGIN-SELECT | INV-A13 / INV-A22 | ORDO-H10; ORDO-USER-GUIDE.md 29A | PARTIAL | tests/test_isi_29a_xai_ui_contract.py; local keyboard/full gates pending |
 
 All ten mandatory Help fields for these actions extend the existing SIMPA-H11/ORDO-H10 topics. Predecessor VERIFIED rows retain accepted scope. New actions are PARTIAL pending exact-candidate acceptance; SHAP/GIS remain outside 29A.
+
+
+## ISI-29B source geometry API actions — local candidate
+
+| Action | Coverage | Authority | Evidence |
+| --- | --- | --- | --- |
+| ISI-29B-GEOMETRY-REGISTER | PARTIAL | docs/help/ISI-SPATIAL-DATA-GUIDE.md sections1–10 | tests/test_isi_29b_geometry_contract.py; tests/test_isi_29b_spatial_api.py |
+| ISI-29B-GEOMETRY-REVIEW | PARTIAL | docs/help/ISI-SPATIAL-DATA-GUIDE.md sections1–10 | tests/test_isi_29b_spatial_registry.py; tests/test_isi_29b_native_postgres.py |
+| ISI-29B-GEOMETRY-READ | PARTIAL | docs/help/ISI-SPATIAL-DATA-GUIDE.md sections1–10 | tests/test_isi_29b_spatial_api.py |
+
+These rows extend INV-B29/C45/A22 action inventory without promoting GIS frontend, institutional boundary correctness, SHAP or extraction. Existing VERIFIED rows retain accepted scope. Full ten-item checklist present; local/native/exact-review and later hosted release evidence required before production completeness.

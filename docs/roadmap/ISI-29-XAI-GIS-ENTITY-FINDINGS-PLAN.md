@@ -1,6 +1,6 @@
 # ISI-29 — XAI, GIS i entiteti/nalazi sa dokazima
 
-Datum: 2026-10-07. Status: **IN_PROGRESS / 29A unstaged runtime kandidat; 29B–F planirani**.
+Datum: 2026-10-07. Status: **IN_PROGRESS / 29A prihvaćen na main; 29B lokalni kandidat; 29C–F planirani**.
 Owner je zatražio proširenje plana i početak razvoja XAI/GIS i ekstrakcije entiteta/nalaza. „SIMA” u zahtevu odnosi se na postojeći SIMPA; nema trećeg proizvoda.
 MasterPlan je kanonska nadređena vlast; ADR-0025 ostaje arhitekturna osnova.
 
@@ -87,7 +87,7 @@ Zajednički sloj poseduje infrastrukturu: storage, job dispatch/RQ, verzionisanj
 
 Redosled je 29A → 29B → 29C → 29D → 29E → 29F. Pre svake runtime celine zaključati exact allowlist, runner i nezavisni analyzer. 29B/E ulazi mogu se pripremati bez menjanja runtime-a. Ne čekati konačnu punu produkciju da bi lokalni razvoj počeo: owner proširenje omogućava 29 nad potvrđenim preproduction baseline-om, dok otvoreni 28 ops gates ostaju otvoreni.
 
-**29A je IMPLEMENTED / REVIEW_VERIFIED lokalni unstaged kandidat. Sledeći runtime paket je 29B — GIS ugovori.** Ugovor: `automation/specs/ISI-29A-GRAPHICAL-XAI.md`. Owner je zatim odobrio izvršenje 29A–29F. Lokalni 29A runtime kandidat sada postoji; tačan status/gates su u njegovom evidence report-u. 29B–F nisu implementirani.
+**29A je prihvaćen na main cad6892; 29B geometrijski ugovori su lokalni kandidat. Sledeći runtime paket je 29C — GIS korisnički tokovi.** Ugovor: `automation/specs/ISI-29A-GRAPHICAL-XAI.md`. Owner je zatim odobrio izvršenje 29A–29F. Lokalni 29A runtime kandidat sada postoji; tačan status/gates su u njegovom evidence report-u. 29B–F nisu implementirani.
 
 ## 5. Evaluacija, privatnost i release
 
@@ -121,3 +121,18 @@ ISI-29 je IN_PROGRESS; 29A je unstaged kandidat i samo njegovi uspešni exact-ca
 
 
 29A local verification record: IMPLEMENTED / REVIEW_VERIFIED candidate; 23 focused and 1203 regression passes, 43 existing native-lane skips, zero failures/errors. Four responsive widths and keyboard backtest selection verified on synthetic local preview. Exact report/fingerprint: `automation/evidence/ISI-29A/human-review.json`. No CI_VERIFIED or server deployment of 29A. 29B–F remain unimplemented; 29B read-only preparation recorded separately.
+
+
+## ISI-29A approved main checkpoint and 29B continuation — 2026-10-07
+
+Owner approved exact 29A candidate f220dd3dce9b172c05dc6982167f73b2cd848924b0060d48b1da4143970e492a; committed/pushed main `cad6892fd2d710b8263b936c06bb3d8137cdeddc` and direct remote equality verified with clean worktree. This supersedes mutable 29A unstaged/approval-pending wording; predecessor candidate/CI records remain LEGITIMATE_HISTORY. 29A NOT CI_VERIFIED; latest hosted acceptance #96 remains exact predecessor 374dda3. No CI/server action.
+
+29B scoped geometry/storage/API/domain-adapter candidate is IN_PROGRESS. Contract automation/specs/ISI-29B-GIS-CONTRACTS.md; core_spatial_geometry_versions / migration0035; generic immutable geometry provenance and shared storage, separate SIMPA/ORDO adapters. WGS84 explicit lon/lat only; unknown/projected CRS and invalid topology rejected; no reprojection/provider/geocoder/tiles/PostGIS/indicator or AI changes. One geometry per version, human lifecycle, scoped permissions, immutable fingerprint and content hash. Actual approved boundary dataset absent; synthetic software tests only. Shapely2.1.2 added with existing NumPy preserved; no other lock versions upgraded. Help docs/help/ISI-SPATIAL-DATA-GUIDE.md covers source import/review, with GIS user interface still 29C. Native upgrade/downgrade, regression/dependency/independent review are gates, not yet claimed PASS in this record. 29C–F remain unimplemented. No new staging/commit/push or server mutation authorized by prior29A approval.
+
+
+29B final local candidate record: initial focused39/native1/full regression passed; final synchronized candidate adds revocation/Help/duplicate checks and must rerun every gate. IMPLEMENTED is confirmed only by matching final acceptance.json + independent-analysis.json + human-review.json under automation/evidence/ISI-29B. Real institutional boundary dataset/licence and projected CRS reprojection remain unavailable; software infrastructure is implemented without importing invented boundaries. 29C–F runtime remains unimplemented.
+
+
+29B local verification closeout: IMPLEMENTED / REVIEW_VERIFIED unstaged candidate; 42 focused and 1 native PostgreSQL test passed in the pre-final-review cycle (full migration upgrade/downgrade/reupgrade, constraints and stale concurrent write rejection), 1246 regression passes / 43 existing native-lane skips, zero failures/errors. Independent analyzer repeat PASS; runtime dependency audit and fixed musllinux wheel/local import checks PASS. Exact final candidate identity is automation/evidence/ISI-29B/human-review.json, with complete repeated gates on this documentation-synchronized candidate required. This supersedes mutable 29B IN_PROGRESS/verification-pending notes above; previous candidate narratives are LEGITIMATE_HISTORY. No CI/server acceptance or staging/commit/push; institutional geometry dataset/licence and projected CRS remain explicit missing/unsupported states. 29C–F still not implemented.
+
+Final bounded review correction: reject non-string geometry type as a controlled validation failure; require native fixture loopback host before any DB access. Full exact-candidate gates must pass again; final counts/identity in automation/evidence/ISI-29B/human-review.json supersede prior cycle counts. No test gate bypass.

@@ -94,3 +94,8 @@ OpenSSH 8.2+ with ssh-keygen -Y and the existing owner GitHub identity in the lo
 SSH agent. No private key is copied to GitHub or between Macs. Docker supplies
 image build and the disposable official Trivy 0.75.0 scanner; hosted CI uses the
 pinned official action. No new workstation package is installed by this slice.
+
+
+## ISI-29B GIS dependency decision — 2026-10-07
+
+Local feature contract permits pinned Shapely 2.1.2 for bounded geometry topology validation. Existing NumPy retained; binary wheel only, no host GEOS/GDAL/PROJ install. Official requirements Python>=3.10 and platform wheels support canonical Python3.11/macOS and musllinux x86_64 runtime; actual compatibility is an acceptance gate. Shapely BSD3 and bundled GEOS LGPL2.1 notices remain supply-chain obligations. No CRS reprojection, geocoder, tiles or PostGIS. Source: https://shapely.readthedocs.io/en/2.1.2/installation.html . No installation or deployment verified by this planning record.

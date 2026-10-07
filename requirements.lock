@@ -262,6 +262,8 @@ scipy==1.17.1
     # via
     #   formulaic
     #   statsmodels
+shapely==2.1.2
+    # via isi-platform (pyproject.toml)
 six==1.17.0
     # via python-dateutil
 sortedcontainers==2.4.0

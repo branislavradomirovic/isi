@@ -477,22 +477,22 @@
       "title": "XAI, GIS and geographically anchored entities/findings",
       "status": "in_progress",
       "spec": "docs/roadmap/ISI-29-XAI-GIS-ENTITY-FINDINGS-PLAN.md",
-      "note": "Owner authorized sequential 29A–29F local execution. 29A IMPLEMENTED / REVIEW_VERIFIED unstaged candidate; local gates and synthetic visual/keyboard PASS. 29B GIS read-only preparation exists; 29B–F runtime not implemented. Exact candidate commit approval pending; no hosted/server authority.",
-      "next": "ISI-29A-GRAPHICAL-XAI"
+      "note": "29A approved on main cad6892. 29B final local candidate acceptance/review report under automation/evidence/ISI-29B; owner exact commit approval pending. 29C–F unimplemented; no hosted/server action.",
+      "next": "ISI-29C-GIS-WORKFLOWS"
     },
     {
       "id": "ISI-29A-GRAPHICAL-XAI",
       "title": "Graphical XAI for persisted results",
       "status": "implemented",
       "spec": "automation/specs/ISI-29A-GRAPHICAL-XAI.md",
-      "note": "IMPLEMENTED / REVIEW_VERIFIED unstaged local candidate: 23 focused, 1203 regression passes/43 existing native skips, zero failures/errors; independent analyzer repeat stable; synthetic four-width/keyboard review PASS. Exact fingerprint in automation/evidence/ISI-29A/human-review.json. NOT CI_VERIFIED; no staging/commit/push/server action. No numerical/domain/model/API/schema/dependency changes."
+      "note": "OWNER_APPROVED_MAIN_COMMIT cad6892fd2d710b8263b936c06bb3d8137cdeddc; exact candidate f220dd3dce9b172c05dc6982167f73b2cd848924b0060d48b1da4143970e492a locally IMPLEMENTED / REVIEW_VERIFIED, 23 focused/1203 regression passes. NOT CI_VERIFIED; no hosted/server action."
     },
     {
       "id": "ISI-29B-GIS-CONTRACTS",
       "title": "Governed geometry and spatial contracts",
-      "status": "planned",
-      "spec": "docs/roadmap/ISI-29-XAI-GIS-ENTITY-FINDINGS-PLAN.md",
-      "note": "Runtime not implemented. Exact per-package runner/analyzer and scope lock required before execution; later package details remain planning requirements.",
+      "status": "implemented",
+      "spec": "automation/specs/ISI-29B-GIS-CONTRACTS.md",
+      "note": "IMPLEMENTED / REVIEW_VERIFIED local candidate after exact final gates. Native PostgreSQL upgrade/downgrade/concurrency, full regression, dependency audit and repeated readonly analysis required and recorded in automation/evidence/ISI-29B/human-review.json. Final review rejects malformed type and enforces loopback native fixture; counts/identity are report-bound. Institutional boundary dataset/licence missing; projected CRS unsupported. Exact commit approval pending; NOT CI_VERIFIED or server deployed.",
       "depends_on": [
         "ISI-29A-GRAPHICAL-XAI"
       ]

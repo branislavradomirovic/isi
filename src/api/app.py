@@ -13,6 +13,7 @@ from src.api.data_routes import router as data_router
 from src.api.deployment_routes import router as deployment_router
 from src.api.diagnostics_routes import router as diagnostics_router
 from src.api.ordo_analytics_routes import router as ordo_analytics_router
+from src.api.spatial_routes import router as spatial_router
 from src.api.ordo_routes import router as ordo_router
 from src.api.reporting_routes import router as reporting_router
 from src.api.simpa_analytics_routes import router as simpa_analytics_router
@@ -49,6 +50,7 @@ app.include_router(data_router)
 app.include_router(ai_router)
 app.include_router(simpa_router)
 app.include_router(simpa_analytics_router)
+app.include_router(spatial_router)
 app.include_router(ordo_router)
 app.include_router(ordo_analytics_router)
 app.include_router(reporting_router)
