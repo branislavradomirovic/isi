@@ -6,6 +6,7 @@ import streamlit as st
 
 from src.domains.ordo.analytics_xai import build_forecast_xai, build_scenario_xai
 from src.streamlit_app import data_api, ordo_analytics_api
+from src.streamlit_app.xai_charts import MAX_ORIGINS, backtest_chart, forecast_chart, render_chart
 
 
 def _scope(shell: dict[str, Any]) -> tuple[str, str] | None:
@@ -402,6 +403,7 @@ def _render_forecast_results(
     cols[3].metric("Horizon", xai["coverage"].get("horizon") or "—")
     st.caption(identity["interpretation"])
 
+    render_chart(st, forecast_chart(detail))
     if status == "ESTIMATED":
         points = xai["forecast_points"]
         if points:
@@ -422,6 +424,19 @@ def _render_forecast_results(
         st.json(xai["aggregate_backtest_metrics"])
         st.write("**Metric availability**")
         st.json(xai["metric_availability"])
+        origins = xai["backtest_records"]
+        if origins:
+            if len(origins) > MAX_ORIGINS:
+                st.warning(f"Izbor grafikona ograničen je na prvih {MAX_ORIGINS} porekla; puni dokaz ostaje ispod.")
+            position = st.selectbox(
+                "Backtest poreklo / origin", list(range(min(len(origins), MAX_ORIGINS))),
+                format_func=lambda i: f"Zapis {i + 1} · origin_index={origins[i].get('origin_index', '—')}",
+                key=f"ordo_xai_origin_{selected_id}",
+            )
+            chart = backtest_chart(detail, position)
+            render_chart(st, chart)
+            if chart.rows:
+                st.dataframe(list(chart.rows), use_container_width=True, hide_index=True)
         with st.expander("Per-origin backtest evidence"):
             st.json(xai["backtest_records"])
     else:

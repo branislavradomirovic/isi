@@ -28,7 +28,7 @@ Enumerate every repository path Codex/implementation may modify. Everything else
 Identify every affected `INV-*` row in the MasterPlan and describe the required status/path/responsibility/boundary/test/legacy update. If there is no impact, write `Canonical system inventory impact: NONE` and explain why.
 
 ## Implementation-tool authority
-State whether Codex is required. If yes, use only `codex-isi`, locked MD contract + runner + independent analyzer; no generic Codex, staging, commit, push, deploy or production secrets.
+State whether Codex is required. If yes, use standard `codex` with the canonical owner Outlook account, locked MD contract + runner + independent analyzer, per the superseding 2026-09-19 owner decision; no staging, commit, push, deploy or production secrets.
 
 ## Locked boundaries
 Product, tenant, authorization, technology and human-review invariants.

@@ -1,14 +1,20 @@
 # ISI Technical Documentation
 
-**Version:** 1.6
+**Version:** 1.7
 **Status:** Controlled living technical document  
-**Last updated:** 2026-10-03
+**Last updated:** 2026-10-07
 **Canonical repository:** `branislavradomirovic/isi`  
-**As-built feature checkpoint:** `74acd5d9a890733347554633f44a6d5319717ba3` (ISI-27A accepted main; NOT CI_VERIFIED)
+**As-built feature checkpoint:** `374dda3db89f6fb87dde7f5b761642440da17bef` (checkpoint #96: exact required acceptance success; bounded preproduction deployment recorded)
 **Pre-reconciliation governance baseline:** `ff573b3d76cf29581cb19c255821e9b4c4841108`  
 **Current database migration head:** `20260918_0034`
 
 > This document is the concise technical authority for the current ISI as-built platform and its owner-approved deployment target. The MasterPlan remains the canonical architecture/governance/roadmap authority, and code/tests remain the as-built implementation truth. Live production-server state is not inferred from repository source: current-server verification remains deferred to ISI-28.
+
+## Current reconciled snapshot — 2026-10-07
+
+Checkpoint #96 (37515814577) passed all 12 required jobs on the exact as-built SHA above. Local `automation/evidence/ISI-28/checkpoint-96/closeout.json` records signed deployment, scoped auth/runtime/RQ/S3/provider/monitoring/HTTPS checks in PREPRODUCTION_TESTING. No fresh server check occurred for this documentation candidate. Full production is not confirmed: SMTP pending, new backups owner-deferred and real-domain/capacity/operational gates remain open. Earlier current/next/candidate wording below is retained as checkpoint history and superseded by this snapshot.
+
+Accepted deployed XAI exposes table/text/provenance; unstaged 29A adds graphical coefficients/CI and forecast/backtest evidence. SHAP matrices are not implemented. ORDO GIS supports spatial identities and descriptive identity aggregation, without geometry storage/joins/maps. SIMPA has geography codes/labels. Structured record entity resolution is not document geo-NER or claim extraction; PDF/DOCX are registered for later semantic extraction. Owner-requested **ISI-29** target plan is `docs/roadmap/ISI-29-XAI-GIS-ENTITY-FINDINGS-PLAN.md`, first runtime contract `automation/specs/ISI-29A-GRAPHICAL-XAI.md` (unstaged 29A candidate; local gates/review PASS; exact commit approval pending). TARGET inventory rows INV-A22/B29/C45/M22 are separate from as-built. Domain adapters preserve SIMPA/ORDO semantics; shared services remain infrastructure. 29A adds dependency-free bounded SVG via src/streamlit_app/xai_charts.py in existing Streamlit analytics surfaces. No dependency, schema, API or server configuration changes. New GIS/entity/SHAP runtime remains TARGET.
 
 ## 1. Purpose and scope
 
@@ -806,3 +812,6 @@ operational mode is **PREPRODUCTION_TESTING**. Whole ISI-28 stays IN_PROGRESS.
 Offsite recovery/real alerts/duty holders/capacity remain full-production gates
 for later, not prerequisites that block the owner-requested test scope.
 Earlier backup-plan paragraphs are superseded for current execution.
+
+
+29A local verification record: IMPLEMENTED / REVIEW_VERIFIED candidate; 23 focused and 1203 regression passes, 43 existing native-lane skips, zero failures/errors. Four responsive widths and keyboard backtest selection verified on synthetic local preview. Exact report/fingerprint: `automation/evidence/ISI-29A/human-review.json`. No CI_VERIFIED or server deployment of 29A. 29B–F remain unimplemented; 29B read-only preparation recorded separately.

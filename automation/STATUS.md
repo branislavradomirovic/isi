@@ -1,5 +1,12 @@
 # ISI Autonomous Industrialization Status
 
+## Current reconciliation and owner-requested ISI-29 — 2026-10-07
+
+Authoritative current snapshot: main baseline `374dda3db89f6fb87dde7f5b761642440da17bef` equals directly verified GitHub main; required acceptance #96 / 37515814577 completed/success, all 12 jobs green. Local checkpoint96 closeout records the signed scoped test deployment: PREPRODUCTION_TESTING, SMTP pending, no new backups, full_production_claim=false. No new server probe in this planning task. Earlier mutable current/next and R3 candidate text below is checkpoint history, superseded by this snapshot.
+
+ISI-28 remains IN_PROGRESS for full production. Owner requested ISI-29 XAI/GIS/entity-findings expansion and local implementation. **29A has an unstaged runtime candidate**; 29B–F planned. Local runner/analyzer and synthetic visual/keyboard checks PASS; 29A is IMPLEMENTED / REVIEW_VERIFIED, NOT CI_VERIFIED. Exact commit approval remains required. First unfinished runtime step: faithful charts for existing persisted SIMPA coefficients/CI and ORDO forecast/backtest/interval evidence. SHAP, geometry/maps and document geo-entity/claim extraction remain MISSING/PARTIAL as specified in the new plan. Existing Help VERIFIED labels retain their accepted scope only. Plan: `docs/roadmap/ISI-29-XAI-GIS-ENTITY-FINDINGS-PLAN.md`. First locked contract: `automation/specs/ISI-29A-GRAPHICAL-XAI.md`. This documentation candidate stays unstaged; no commit/push, CI dispatch or deployment.
+
+
 This is the human-facing live execution ledger. The MasterPlan is the canonical roadmap/architecture/governance authority; `automation/tasks.json`, accepted code, exact-main GitHub Actions and recorded evidence provide synchronized execution proof.
 
 Last status update: 2026-10-05.
@@ -429,3 +436,11 @@ operational mode is **PREPRODUCTION_TESTING**. Whole ISI-28 stays IN_PROGRESS.
 Offsite recovery/real alerts/duty holders/capacity remain full-production gates
 for later, not prerequisites that block the owner-requested test scope.
 Earlier backup-plan paragraphs are superseded for current execution.
+
+
+## ISI-29A local runtime candidate — 2026-10-07
+
+Graphical SIMPA coefficients/CI and ORDO forecast/backtest read models, scoped integrations and extended ten-field Help are present; new Help actions PARTIAL. Existing tables and domain contracts preserved. Responsive and keyboard checks use synthetic local evidence only. Final exact-candidate gates/report: `automation/evidence/ISI-29A/`. No commit/push, hosted checkpoint or server action. Subsequent 29B–F runtime is not implemented.
+
+
+29A local verification record: IMPLEMENTED / REVIEW_VERIFIED candidate; 23 focused and 1203 regression passes, 43 existing native-lane skips, zero failures/errors. Four responsive widths and keyboard backtest selection verified on synthetic local preview. Exact report/fingerprint: `automation/evidence/ISI-29A/human-review.json`. No CI_VERIFIED or server deployment of 29A. 29B–F remain unimplemented; 29B read-only preparation recorded separately.

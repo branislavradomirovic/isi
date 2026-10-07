@@ -127,3 +127,14 @@ assurance and self-session revocation. No additional runtime capabilities are im
 Candidate acceptance evidence belongs under
 `automation/evidence/ISI-27A-SHARED-HELP-RELEASE-UX-COMPLETENESS/`.
 The independent runner and review gates remain required before IMPLEMENTED/REVIEW_VERIFIED.
+
+
+## ISI-29A new graphical actions (separate from accepted predecessor coverage)
+
+| Action | Surface | Help | State | Evidence authority |
+| --- | --- | --- | --- | --- |
+| SIMPA-29A-COEFFICIENT-CHART | INV-A11 / INV-A22 | SIMPA-H11; SIMPA-USER-GUIDE.md 29A | PARTIAL | tests/test_isi_29a_xai_charts.py; tests/test_isi_29a_xai_help_contract.py; local visual/full gates pending |
+| ORDO-29A-FORECAST-CHART | INV-A13 / INV-A22 | ORDO-H10; ORDO-USER-GUIDE.md 29A | PARTIAL | tests/test_isi_29a_xai_charts.py; tests/test_isi_29a_xai_ui_contract.py; local visual/full gates pending |
+| ORDO-29A-ORIGIN-SELECT | INV-A13 / INV-A22 | ORDO-H10; ORDO-USER-GUIDE.md 29A | PARTIAL | tests/test_isi_29a_xai_ui_contract.py; local keyboard/full gates pending |
+
+All ten mandatory Help fields for these actions extend the existing SIMPA-H11/ORDO-H10 topics. Predecessor VERIFIED rows retain accepted scope. New actions are PARTIAL pending exact-candidate acceptance; SHAP/GIS remain outside 29A.

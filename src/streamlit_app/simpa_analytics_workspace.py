@@ -6,6 +6,7 @@ import streamlit as st
 
 from src.streamlit_app import data_api, simpa_analytics_api
 from src.domains.simpa.statistical_xai import build_statistical_xai
+from src.streamlit_app.xai_charts import coefficient_chart, render_chart
 
 
 def _scope(shell: dict[str, Any]) -> tuple[str, str] | None:
@@ -344,6 +345,7 @@ def render_simpa_analytics(*, token: str, shell: dict[str, Any]) -> None:
                 st.markdown("**Model / cilj / uncertainty contract**")
                 st.json(identity)
                 st.caption(xai["coefficient_interpretation"])
+                render_chart(st, coefficient_chart(item))
                 st.dataframe(xai["coefficients"], use_container_width=True, hide_index=True)
                 st.caption(xai["p_value_interpretation"])
                 st.caption(xai["missing_data_interpretation"])

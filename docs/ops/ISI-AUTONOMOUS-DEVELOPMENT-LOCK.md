@@ -7,7 +7,7 @@ This document is subordinate to the canonical MasterPlan and mirrors its autonom
 - Canonical local repo: `/Users/branislavradomirovic/Applications/Python/ISI`; normal branch `main`; exactly one worktree.
 - Normal workflow is owner-driven direct-main. Branches/PRs require an explicit owner exception.
 - Every new chat/task must complete the MasterPlan-first bootstrap and legacy/drift audit before implementation.
-- ISI Codex may run only through `codex-isi`; generic `codex` is forbidden.
+- ISI uses standard `codex` authenticated with the canonical owner Outlook account, per the superseding 2026-09-19 owner decision. Project-specific wrappers/CODEX_HOME profiles are legacy; locked contract, runner and independent analyzer remain required.
 - Candidates remain unstaged/uncommitted through runner, independent analyzer and assistant human review. Exact staging/commit/push requires explicit owner approval.
 - Repository acceptance is exact-main GitHub Actions `ISI required acceptance` = `completed / success` on the exact committed SHA.
 

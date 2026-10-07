@@ -497,6 +497,17 @@ This inventory is the controlled bridge between the MasterPlan and the as-built 
 | INV-N13 | Fail-closed local staging launcher | Safety sentinel | HISTORICAL | tools/staging/run_isi15_staging_qa.sh | Prevent accidental old local Docker staging execution | Operator invocation | Exit 64 / warning | Old ISI-15 | Safety | None | Safety guard; no production access | NO | NO | tests/test_isi_production_workflow_lock.py | LEGITIMATE_HISTORY | ISI-28 | Keep until old workflow references are fully retired |
 | INV-N14 | Historical tests freezing mutable global state | Legacy anti-pattern | SUPERSEDED | Git history; ISI-22E R1/R2 precedent | Document forbidden test pattern | Old tests | Removed/repaired tests | Historical phases | Governance policy | Git history | No current runtime effect | NO | NO | tests/test_isi_17_harness_contract.py; policy_check | LEGITIMATE_HISTORY | ISI-17 | Never reintroduce tests that assert mutable global Alembic head or stale live status |
 
+### 0.7A Owner-requested XAI/GIS/entity-findings target extension — 2026-10-07
+
+These are TARGET components, not new as-built capability. Existing inventory and accepted historical scopes remain authoritative. Details: `docs/roadmap/ISI-29-XAI-GIS-ENTITY-FINDINGS-PLAN.md`.
+
+| ID | NAME | TYPE | STATUS | CANONICAL PATH(S) | RESPONSIBILITY | INPUTS | OUTPUTS | UPSTREAM | DOWNSTREAM | DATA/PERSISTENCE | SECURITY BOUNDARY | CUSTOMER-FACING | PRODUCTION_CRITICAL | TEST AUTHORITY | LEGACY STATUS | ROADMAP OWNER | REMOVAL/REPLACEMENT RULE |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| INV-A22 | SIMPA/ORDO graphical XAI and GIS-linked findings | Customer surface | PARTIAL | docs/roadmap/ISI-29-XAI-GIS-ENTITY-FINDINGS-PLAN.md; automation/specs/ISI-29A-GRAPHICAL-XAI.md | Linked charts/maps/evidence review; domain semantics remain separate | Governed persisted results and reviewed scoped spatial/claim evidence | Accessible charts/maps/tables and review/report trace | Existing analytics and future 29 spatial/extraction adapters | SIMPA/ORDO users and reporting | Existing results; later versioned artifacts | Existing tenant/product/workspace RBAC and privacy | YES | YES | Planned ISI-29A-F gates; no runtime acceptance yet | NONE | ISI-29 | 29A charts candidate: src/streamlit_app/xai_charts.py; local gates/review PASS; owner exact commit approval pending; GIS/SHAP/extraction still TARGET |
+| INV-B29 | Shared spatial/extraction infrastructure with domain adapters | Service boundary | TARGET | docs/roadmap/ISI-29-XAI-GIS-ENTITY-FINDINGS-PLAN.md | Generic geometry/extraction transport and job infrastructure; SIMPA/ORDO own domain intelligence | Versioned source artifacts and scoped policy | Validated artifact identities and unverified candidates | Data platform/storage/AI gateway/RQ | Separate SIMPA/ORDO adapters and reviewers | Future scoped PostgreSQL metadata and content-addressed artifacts | No cross-product private entity sharing or external geocoder by default | NO | YES | Planned ISI-29B/E migration/security/evaluation gates | NONE | ISI-29B / ISI-29E | No active provider, dependency or worker topology change from plan |
+| INV-C45 | Geometry/entity/claim/XAI artifact extensions | Evidence persistence | TARGET | docs/roadmap/ISI-29-XAI-GIS-ENTITY-FINDINGS-PLAN.md | Immutable geometry versions; anchored mentions/claims/reviews; model-specific attribution | Approved sources/model identities and review actors | Fingerprinted provenance and truthful unresolved/unavailable states | Existing governed output, model and spatial identity contracts | Scoped GIS/XAI/report workflows | Future Alembic-controlled relational metadata plus scoped objects | Source invalidation/privacy and exact product/workspace isolation | NO | YES | Planned ISI-29B/D/E native migration, attribution and extraction gates | NONE | ISI-29 | Never falsely backfill legacy rows; no PostGIS/dependency assumed |
+| INV-M22 | XAI/GIS/entity-findings acceptance authority | Test authority | PARTIAL | automation/specs/ISI-29A-GRAPHICAL-XAI.md; docs/roadmap/ISI-29-XAI-GIS-ENTITY-FINDINGS-PLAN.md | Chart parity, spatial correctness, SHAP fidelity, extraction evaluation and E2E | Exact candidates, approved fixtures and adjudicated corpus | Local evidence then approved exact-main CI | Existing domain/data/security/AI/report authority | Controlled later ISI-28 release | Ignored sanitized task evidence | No production payloads/secrets; fixtures not real-domain certification | NO | YES | Planned deterministic runners and independent analyzers for ISI-29A-F | NONE | ISI-29 | 29A runner/analyzer and tests/test_isi_29a_* pass local acceptance/review; remaining packages TARGET; preserve existing blocking tests |
+
 ### 0.8 Accepted ISI-22E implementation checkpoint - 2026-09-13
 
 At the accepted ISI-22E implementation SHA `44002aa0774a902bdf2d7a0ae56ff3558303571c` (tree `15578107fb21b6aae174a4bf77fc62812377949c`):
@@ -974,9 +985,15 @@ No ISI-27 gate may contact or mutate the current server, DNS, certificates, cent
 
 ### ISI-28 - Current Server Controlled Upgrade
 
-Status: **IN_PROGRESS — R2 DATA/RUNTIME ACTIVATED; R3 PREPRODUCTION TEST CANDIDATE** as of 2026-10-06. Exact checkpoint #95 is CI_VERIFIED. R2 activation and scoped live probes passed; operational/capacity/AI gates remain open. Current contract: `automation/specs/ISI-28-R3-OPERATIONS-AND-RESPONSIVE-CLOSEOUT.md`. No whole-platform SERVER_VERIFIED claim yet.
+Status: **IN_PROGRESS — CHECKPOINT #96 DEPLOYED / PREPRODUCTION_TESTING**. Exact `374dda3db89f6fb87dde7f5b761642440da17bef` passed all 12 required jobs (#96 / 37515814577). Recorded scoped deployment/live probes passed; evidence `automation/evidence/ISI-28/checkpoint-96/closeout.json`. SERVER_VERIFIED applies only to that bounded test release, not full production. SMTP pending; new backups owner-deferred; operational/capacity/domain-quality gates remain open. No fresh server probe performed by the 2026-10-07 planning task.
 
 This is the only phase allowed to touch the current server, DNS, ingress, real SMTP, production secrets or production data.
+
+### ISI-29 — Graphical XAI, GIS and geographically anchored entities/findings
+
+Status: **IN_PROGRESS / 29A UNSTAGED CANDIDATE; 29B–F PLANNED**. Owner explicitly requested this expansion on 2026-10-07. The implementation roadmap and legacy classifications are in `docs/roadmap/ISI-29-XAI-GIS-ENTITY-FINDINGS-PLAN.md`; first exact slice is `automation/specs/ISI-29A-GRAPHICAL-XAI.md`. Packages: 29A persisted-result charts, 29B governed geometry/contracts, 29C GIS workflows, 29D model-appropriate SHAP, 29E entity/claim extraction/review, 29F grounded linked evidence/report/Help/release. Unsupported SHAP remains unavailable until its exact model/data contract is validated. No model-family, formula, risk threshold or dependency is automatically approved by the roadmap.
+
+Local 29 development may proceed from the accepted preproduction #96 baseline while full-production 28 gates remain open. This owner-requested extension does not close/reopen the accepted scope of phases 23/24/25. Server work stays exclusively in a later explicitly approved ISI-28 release task.
 
 ## 7. Task dependency model
 
@@ -1442,3 +1459,18 @@ operational mode is **PREPRODUCTION_TESTING**. Whole ISI-28 stays IN_PROGRESS.
 Offsite recovery/real alerts/duty holders/capacity remain full-production gates
 for later, not prerequisites that block the owner-requested test scope.
 Earlier backup-plan paragraphs are superseded for current execution.
+
+
+## Current owner extension and reconciliation — 2026-10-07
+
+Latest verified repository baseline: exact main `374dda3db89f6fb87dde7f5b761642440da17bef`, tree `13051743a26f78a50f3a664518c643ff540bd9f9`; GitHub remote equality and completed/success #96/all 12 jobs directly checked. Local checkpoint96 closeout records signed deployment and bounded live checks in PREPRODUCTION_TESTING; no new server verification in this task. This current record supersedes earlier mutable candidate/current-next wording; earlier checkpoint narratives remain LEGITIMATE_HISTORY.
+
+Owner authorizes planning and local development of graphical XAI/SHAP, GIS and geographically anchored entity/findings extraction for existing SIMPA/ORDO. New target inventory rows and ISI-29 sequence are recorded above; first runtime slice 29A is IMPLEMENTED / REVIEW_VERIFIED as an unstaged local candidate, NOT CI_VERIFIED. Planning permission does not approve new institutional methodology, external data providers or a production champion. Exact candidate staging/commit/push, hosted checkpoint and later deployment retain their existing approval gates. Full production is not claimed; SMTP and owner-deferred backups remain unchanged.
+
+
+## ISI-29A candidate — 2026-10-07
+
+Owner explicitly authorized sequential 29A–29F execution. 29A graphical read model, two analytics integrations, Help and deterministic runner/read-only analyzer now exist locally. Focused tests and synthetic 1440/1280/768/390 visual/keyboard checks pass; local gates PASS; exact-candidate evidence is under `automation/evidence/ISI-29A/`. INV-A22/M22 are PARTIAL because charts are implemented as a candidate while GIS/SHAP/extraction remain TARGET. No as-built geometry/entity pipeline, schema/API/dependency/model change, hosted CI or server mutation is claimed. Candidate remains unstaged; exact owner commit gate remains.
+
+
+29A local verification record: IMPLEMENTED / REVIEW_VERIFIED candidate; 23 focused and 1203 regression passes, 43 existing native-lane skips, zero failures/errors. Four responsive widths and keyboard backtest selection verified on synthetic local preview. Exact report/fingerprint: `automation/evidence/ISI-29A/human-review.json`. No CI_VERIFIED or server deployment of 29A. 29B–F remain unimplemented; 29B read-only preparation recorded separately.

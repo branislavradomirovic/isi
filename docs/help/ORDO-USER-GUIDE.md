@@ -131,3 +131,22 @@ Open “ORDO Help” only inside the ORDO product and select ORDO-H01 through OR
 If UI behavior and this guide disagree, stop the affected institutional interpretation, preserve a non-sensitive description and report governance drift. Do not improvise formulas, values, permissions or model claims.
 
 The ORDO-owned matrix rows/actions become `VERIFIED` through ISI-24D tests. Global `INV-A21` remains `PARTIAL`: shared Login, Data, AI, Reporting, Administration and Security Help are not made complete merely because this ORDO guide references their boundaries. Server verification remains deferred to owner-approved ISI-28.
+
+
+## 29A Graphical XAI — pregled grafikona sačuvanih rezultata
+
+**Šta/kada:** grafikon pomaže u pregledu postojeće tabele rezultata; nije novo modeliranje. Otvorite Analitika → sačuvani rezultat. **Prava:** ista analysis.read prava i organization/product/workspace scope kao za rezultat.
+
+**Koraci:** pročitajte model/skaliranje i legendu, pregledajte grafikon, uporedite sa izvornom tabelom, proverite fingerprint i metodološka ograničenja, zatim obavite human review.
+
+**Polja/stanja:** numerička nula ostaje zero; missing interval je unavailable. Nepodržani schema/model, neispravni brojevi ili intervali daju poruku umesto izmišljenog grafikona. NOT_ESTIMATED nema nultu prognozu. SHAP ostaje pending 29D.
+
+**Primer:** coefficient estimate=0 je validna tačka; missing CI nije zero-width interval. **Non-goals:** grafikoni nisu uzročni efekti, policy zaključci ili AI confidence score. Nema novih residual/calibration tačaka kada nisu sačuvane.
+
+**Errors / safe recovery:** koristite tabelu/JSON ako grafikon nije dostupan; proverite verziju/format dokaza kroz postojeći workflow. Ne menjajte stari rezultat da biste dobili grafikon.
+
+**Limits:** najviše 24 koeficijenta, 60 tačaka i 40 selectable origins; svaki ograničen prikaz je označen, postojeće pune tabele/JSON ostaju dostupne. Oznake se skraćuju u grafikonu; puni termini su u tabeli. Chart SVG je responsive; tabelarni fallback ostaje pristupačan tastaturom.
+
+**Provenance/review:** prikaz ne refituje model, ne čita nove izvore i ne menja evidence. Methodology/model/input/result identitet i human review ostaju autoritet.
+
+Prognoza prikazuje point i sačuvane lower/upper granice, uz interval method/level. U „Backtest poreklo / origin” izaberite jedan zapis; braon označava actual, plavo forecast. X osa backtesta koristi sačuvani observation index, ne izmišljeni datum. Preklapajući origins se ne spajaju. Empirijski interval ne mora sadržati point; prikazuje se tačno sačuvan.

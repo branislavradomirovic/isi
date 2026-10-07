@@ -462,7 +462,7 @@
       "depends_on": [
         "ISI-27-INDUSTRIAL-RELEASE-CANDIDATE"
       ],
-      "note": "IN_PROGRESS. Exact main1bf0552 checkpoint95 all12PASS; signed runtime activated on all4 ISI services. New production DB/schema0034 and private versioned bucket verified; old targets/rollback preserved. SR/EN placeholder legal notices published. Live auth/product contexts/readiness/RQ/storage and external HTTPS/SEO passed. R3 operations/responsive/provider-thread candidate remains unstaged; offsite/alerts/duty holder, scheduled recovery, capacity and native bounded AI remain open. SMTP explicitly pending. No whole-platform SERVER_VERIFIED claim. Owner now defers ALL new backups and requests PREPRODUCTION_TESTING; preserve existing media, do not activate backup/offsite/purge. R3 scope narrowed to read-only monitoring, header correction and optional per-ISI provider resource limit. Full production not claimed.",
+      "note": "IN_PROGRESS for full production. Exact main 374dda3db89f6fb87dde7f5b761642440da17bef checkpoint96 all12 completed/success. Local closeout records signed scoped deployment and live probes in PREPRODUCTION_TESTING, not full production; no fresh server probe by 2026-10-07 planning. SMTP pending; new backups owner-deferred; preserve prior recovery media. Capacity/domain-quality/operational full-production gates remain open. Owner requested separate ISI-29 local XAI/GIS/entity-findings expansion from this accepted test baseline.",
       "spec": "automation/specs/ISI-28-R3-OPERATIONS-AND-RESPONSIVE-CLOSEOUT.md"
     },
     {
@@ -471,6 +471,71 @@
       "status": "done",
       "spec": "automation/specs/ISI-PUBLIC-LEGAL-NOTICES-DRAFT-R1.md",
       "note": "Historical internal drafts complete. Owner superseded complete-facts publication blocker with visible placeholders. Versioned R2 payload published in four translations under exact1bf0552/checkpoint95; known facts/unknowns and SMTP pending explicit. Legal compliance and mailbox operation not certified."
+    },
+    {
+      "id": "ISI-29-XAI-GIS-ENTITY-FINDINGS",
+      "title": "XAI, GIS and geographically anchored entities/findings",
+      "status": "in_progress",
+      "spec": "docs/roadmap/ISI-29-XAI-GIS-ENTITY-FINDINGS-PLAN.md",
+      "note": "Owner authorized sequential 29A–29F local execution. 29A IMPLEMENTED / REVIEW_VERIFIED unstaged candidate; local gates and synthetic visual/keyboard PASS. 29B GIS read-only preparation exists; 29B–F runtime not implemented. Exact candidate commit approval pending; no hosted/server authority.",
+      "next": "ISI-29A-GRAPHICAL-XAI"
+    },
+    {
+      "id": "ISI-29A-GRAPHICAL-XAI",
+      "title": "Graphical XAI for persisted results",
+      "status": "implemented",
+      "spec": "automation/specs/ISI-29A-GRAPHICAL-XAI.md",
+      "note": "IMPLEMENTED / REVIEW_VERIFIED unstaged local candidate: 23 focused, 1203 regression passes/43 existing native skips, zero failures/errors; independent analyzer repeat stable; synthetic four-width/keyboard review PASS. Exact fingerprint in automation/evidence/ISI-29A/human-review.json. NOT CI_VERIFIED; no staging/commit/push/server action. No numerical/domain/model/API/schema/dependency changes."
+    },
+    {
+      "id": "ISI-29B-GIS-CONTRACTS",
+      "title": "Governed geometry and spatial contracts",
+      "status": "planned",
+      "spec": "docs/roadmap/ISI-29-XAI-GIS-ENTITY-FINDINGS-PLAN.md",
+      "note": "Runtime not implemented. Exact per-package runner/analyzer and scope lock required before execution; later package details remain planning requirements.",
+      "depends_on": [
+        "ISI-29A-GRAPHICAL-XAI"
+      ]
+    },
+    {
+      "id": "ISI-29C-GIS-WORKFLOWS",
+      "title": "GIS maps and linked workflows",
+      "status": "planned",
+      "spec": "docs/roadmap/ISI-29-XAI-GIS-ENTITY-FINDINGS-PLAN.md",
+      "note": "Runtime not implemented. Exact per-package runner/analyzer and scope lock required before execution; later package details remain planning requirements.",
+      "depends_on": [
+        "ISI-29B-GIS-CONTRACTS"
+      ]
+    },
+    {
+      "id": "ISI-29D-MODEL-ATTRIBUTION",
+      "title": "Model-appropriate SHAP and attribution",
+      "status": "planned",
+      "spec": "docs/roadmap/ISI-29-XAI-GIS-ENTITY-FINDINGS-PLAN.md",
+      "note": "Runtime not implemented. Exact per-package runner/analyzer and scope lock required before execution; later package details remain planning requirements.",
+      "depends_on": [
+        "ISI-29C-GIS-WORKFLOWS"
+      ]
+    },
+    {
+      "id": "ISI-29E-ENTITY-CLAIM-EXTRACTION",
+      "title": "Geographically anchored entity and claim extraction",
+      "status": "planned",
+      "spec": "docs/roadmap/ISI-29-XAI-GIS-ENTITY-FINDINGS-PLAN.md",
+      "note": "Runtime not implemented. Exact per-package runner/analyzer and scope lock required before execution; later package details remain planning requirements.",
+      "depends_on": [
+        "ISI-29D-MODEL-ATTRIBUTION"
+      ]
+    },
+    {
+      "id": "ISI-29F-EVIDENCE-RELEASE",
+      "title": "Linked evidence, reporting, Help and release",
+      "status": "planned",
+      "spec": "docs/roadmap/ISI-29-XAI-GIS-ENTITY-FINDINGS-PLAN.md",
+      "note": "Runtime not implemented. Exact per-package runner/analyzer and scope lock required before execution; later package details remain planning requirements.",
+      "depends_on": [
+        "ISI-29E-ENTITY-CLAIM-EXTRACTION"
+      ]
     }
   ]
 }

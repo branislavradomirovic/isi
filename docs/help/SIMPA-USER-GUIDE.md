@@ -133,3 +133,22 @@ Use only data permitted for the active organization/product/workspace. Sensitive
 ## 19. Human accountability
 
 SIMPA is decision support. Methodology validation, interpretation of statistical evidence, policy meaning and institutional decisions remain human responsibilities. No Help/XAI wording changes that boundary.
+
+
+## 29A Graphical XAI — pregled grafikona sačuvanih rezultata
+
+**Šta/kada:** grafikon pomaže u pregledu postojeće tabele rezultata; nije novo modeliranje. Otvorite Analitika → sačuvani rezultat. **Prava:** ista analysis.read prava i organization/product/workspace scope kao za rezultat.
+
+**Koraci:** pročitajte model/skaliranje i legendu, pregledajte grafikon, uporedite sa izvornom tabelom, proverite fingerprint i metodološka ograničenja, zatim obavite human review.
+
+**Polja/stanja:** numerička nula ostaje zero; missing interval je unavailable. Nepodržani schema/model, neispravni brojevi ili intervali daju poruku umesto izmišljenog grafikona. NOT_ESTIMATED nema nultu prognozu. SHAP ostaje pending 29D.
+
+**Primer:** coefficient estimate=0 je validna tačka; missing CI nije zero-width interval. **Non-goals:** grafikoni nisu uzročni efekti, policy zaključci ili AI confidence score. Nema novih residual/calibration tačaka kada nisu sačuvane.
+
+**Errors / safe recovery:** koristite tabelu/JSON ako grafikon nije dostupan; proverite verziju/format dokaza kroz postojeći workflow. Ne menjajte stari rezultat da biste dobili grafikon.
+
+**Limits:** najviše 24 koeficijenta, 60 tačaka i 40 selectable origins; svaki ograničen prikaz je označen, postojeće pune tabele/JSON ostaju dostupne. Oznake se skraćuju u grafikonu; puni termini su u tabeli. Chart SVG je responsive; tabelarni fallback ostaje pristupačan tastaturom.
+
+**Provenance/review:** prikaz ne refituje model, ne čita nove izvore i ne menja evidence. Methodology/model/input/result identitet i human review ostaju autoritet.
+
+Koeficijenti i sačuvani CI prikazuju se na postojećoj family/link skali: OLS u target units, Poisson na log-count, logit/fractional na logit skali. Tačke nisu direktni procentni ili kauzalni efekti.
