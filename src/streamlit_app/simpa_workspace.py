@@ -71,7 +71,7 @@ def render_simpa_overview(*, token: str, shell: dict[str, Any]) -> None:
             with st.form("simpa_actor_form"):
                 actor_type = st.selectbox("Tip lokalnog aktera", ["local_government", "social_work_center", "social_service_provider", "education", "health", "employment", "housing", "civil_society", "other"])
                 actor_name = st.text_input("Naziv aktera")
-                actor_code = st.text_input("Eksterna šifra aktera (opciono)")
+                actor_code = st.text_input("Stabilna šifra aktera (opciono; potrebna za GIS)")
                 if st.form_submit_button("Dodaj aktera", use_container_width=True):
                     if not actor_name.strip(): st.error("Naziv aktera je obavezan.")
                     else:

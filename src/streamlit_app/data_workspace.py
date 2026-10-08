@@ -313,6 +313,10 @@ def render_data_workspace(*, token: str, shell: dict[str, Any]) -> None:
     organization_id, product_code, workspace_id = scope
     st.info(f"Organizacija: {organization['name']} · Platforma: {product_code} · Workspace: {workspace['name']}")
 
+    from src.streamlit_app.spatial_workspace import render_spatial_workspace
+    with st.expander("GIS — karte, geometrija i ljudski pregled"):
+        render_spatial_workspace(token=token, shell=shell)
+
     try:
         sources = data_api.list_data_sources(
             token,

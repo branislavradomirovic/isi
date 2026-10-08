@@ -149,3 +149,6 @@ All ten mandatory Help fields for these actions extend the existing SIMPA-H11/OR
 | ISI-29B-GEOMETRY-READ | PARTIAL | docs/help/ISI-SPATIAL-DATA-GUIDE.md sections1–10 | tests/test_isi_29b_spatial_api.py |
 
 These rows extend INV-B29/C45/A22 action inventory without promoting GIS frontend, institutional boundary correctness, SHAP or extraction. Existing VERIFIED rows retain accepted scope. Full ten-item checklist present; local/native/exact-review and later hosted release evidence required before production completeness.
+
+
+ISI-29C GIS user actions: PARTIAL until exact release/server evidence. Podaci→GIS source import/review, ORDO identity authoring/review, map/table/date/layer/version/keyboard selection, linked revalidated ORDO result and explicit geometry export: docs/help/ISI-SPATIAL-DATA-GUIDE.md; src/streamlit_app/spatial_workspace.py; tests/test_isi_29c_spatial_api.py, test_isi_29c_spatial_view.py, test_isi_29c_spatial_ui.py and test_isi_29c_ordo_link.py. Existing VERIFIED historical topics remain scope-bound.29F Word/browser live screenshots pending; institutional boundary source missing and SIMPA numeric geography binding unavailable.

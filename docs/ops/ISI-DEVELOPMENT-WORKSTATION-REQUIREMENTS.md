@@ -99,3 +99,9 @@ pinned official action. No new workstation package is installed by this slice.
 ## ISI-29B GIS dependency decision — 2026-10-07
 
 Local feature contract permits pinned Shapely 2.1.2 for bounded geometry topology validation. Existing NumPy retained; binary wheel only, no host GEOS/GDAL/PROJ install. Official requirements Python>=3.10 and platform wheels support canonical Python3.11/macOS and musllinux x86_64 runtime; actual compatibility is an acceptance gate. Shapely BSD3 and bundled GEOS LGPL2.1 notices remain supply-chain obligations. No CRS reprojection, geocoder, tiles or PostGIS. Source: https://shapely.readthedocs.io/en/2.1.2/installation.html . No installation or deployment verified by this planning record.
+
+
+### ISI-29C existing renderer declaration
+Installed Streamlit1.63.0 components.v2 renders data-only SVG vectors with fixed trusted code; no extra package/build/host dependency. Pydeck candidate rejected after actual IAB WebGL-disabled blank-canvas finding, removed before acceptance. No tiles/glyphs/sprites/geocoder/provider keys. Final browser selection/pan/zoom/keyboard/mobile and zero-external-source checks required, no GPU requirement. No lock/version change or package installation.
+
+29C minimum supported Streamlit now1.63, matching existing exact dev/runtime1.63.0 pins. Declare>=1.63,<2 to reject unsupported older component APIs. No install/lock/package upgrade.

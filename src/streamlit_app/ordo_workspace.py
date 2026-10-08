@@ -58,7 +58,7 @@ def render_ordo_overview(*, token: str, shell: dict[str, Any]) -> None:
         st.markdown("### Akteri destinacije"); st.dataframe(stakeholders, use_container_width=True, hide_index=True)
     if cycles:
         st.markdown("### Monitoring ciklusi"); st.dataframe(cycles, use_container_width=True, hide_index=True)
-    permissions = set(shell.get("permissions") or [])
+    permissions = set(shell.get("product", {}).get("permission_codes", []))
     if "workspace.manage" in permissions:
         with st.expander("Konfiguracija destinacije", expanded=profile is None):
             with st.form("ordo_profile_form"):
@@ -75,12 +75,13 @@ def render_ordo_overview(*, token: str, shell: dict[str, Any]) -> None:
             with st.form("ordo_asset_form"):
                 asset_type = st.selectbox("Tip resursa", ["natural_resource", "cultural_heritage", "attraction", "experience", "infrastructure", "mobility", "accommodation", "gastronomy", "event", "knowledge", "entrepreneurship", "community", "other"])
                 asset_name = st.text_input("Naziv resursa")
+                external_code = st.text_input("Stabilna šifra resursa (za GIS)")
                 location = st.text_input("Lokacija / područje (opciono)")
                 description = st.text_area("Opis (opciono)")
                 if st.form_submit_button("Dodaj resurs", use_container_width=True):
                     if not asset_name.strip(): st.error("Naziv resursa je obavezan.")
                     else:
-                        result = _safe(ordo_api.create_asset, token, organization_id=organization_id, workspace_id=workspace_id, asset_type=asset_type, name=asset_name, external_code="", location_label=location, description=description)
+                        result = _safe(ordo_api.create_asset, token, organization_id=organization_id, workspace_id=workspace_id, asset_type=asset_type, name=asset_name, external_code=external_code, location_label=location, description=description)
                         if result is not None: st.success("ORDO resurs je dodat."); st.rerun()
             with st.form("ordo_stakeholder_form"):
                 stakeholder_type = st.selectbox("Tip aktera", ["local_government", "tourism_organization", "heritage_institution", "protected_area_manager", "business", "entrepreneur", "education_research", "infrastructure_operator", "civil_society", "community", "other"])

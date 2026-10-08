@@ -477,7 +477,7 @@
       "title": "XAI, GIS and geographically anchored entities/findings",
       "status": "in_progress",
       "spec": "docs/roadmap/ISI-29-XAI-GIS-ENTITY-FINDINGS-PLAN.md",
-      "note": "29A approved on main cad6892. 29B final local candidate acceptance/review report under automation/evidence/ISI-29B; owner exact commit approval pending. 29C–F unimplemented; no hosted/server action.",
+      "note": "29A/B accepted main;29C locked GIS user workflow candidate undergoing exact gates.29D-F unimplemented. Owner standing approval for verified planned commits/pushes through29F, final acceptance/deployment with exact release contracts. No inherited CI or full-production claim.",
       "next": "ISI-29C-GIS-WORKFLOWS"
     },
     {
@@ -492,7 +492,7 @@
       "title": "Governed geometry and spatial contracts",
       "status": "implemented",
       "spec": "automation/specs/ISI-29B-GIS-CONTRACTS.md",
-      "note": "IMPLEMENTED / REVIEW_VERIFIED local candidate after exact final gates. Native PostgreSQL upgrade/downgrade/concurrency, full regression, dependency audit and repeated readonly analysis required and recorded in automation/evidence/ISI-29B/human-review.json. Final review rejects malformed type and enforces loopback native fixture; counts/identity are report-bound. Institutional boundary dataset/licence missing; projected CRS unsupported. Exact commit approval pending; NOT CI_VERIFIED or server deployed.",
+      "note": "OWNER_APPROVED_MAIN_COMMIT0d59f40aa03ab7115041f1c58052d4610aac3a54; exact1c5a531c candidate hashes match.43 focused/native1/regression1247 passes; NOT CI_VERIFIED; no server action.",
       "depends_on": [
         "ISI-29A-GRAPHICAL-XAI"
       ]
@@ -500,9 +500,9 @@
     {
       "id": "ISI-29C-GIS-WORKFLOWS",
       "title": "GIS maps and linked workflows",
-      "status": "planned",
-      "spec": "docs/roadmap/ISI-29-XAI-GIS-ENTITY-FINDINGS-PLAN.md",
-      "note": "Runtime not implemented. Exact per-package runner/analyzer and scope lock required before execution; later package details remain planning requirements.",
+      "status": "implemented",
+      "spec": "automation/specs/ISI-29C-GIS-WORKFLOWS.md",
+      "note": "IMPLEMENTED local GIS candidate:37 focused /1283 regression passes,44 existing native-lane skips; browser desktop/mobile PASS. Exact synchronized acceptance/independent/human evidence under automation/evidence/ISI-29C must match candidate before commit. No institutional boundary set/SIMPA analytical geography binding. NOT CI_VERIFIED; DEFERRED_SERVER_VERIFICATION.",
       "depends_on": [
         "ISI-29B-GIS-CONTRACTS"
       ]

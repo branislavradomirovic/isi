@@ -284,3 +284,62 @@ def get_geometry(db, *, user_id, organization_id, workspace_id, product_code, ge
         raise GeometryError("geometry_not_valid_at_date")
     geometry = verify(db, row, storage or build_storage())
     return {"metadata": metadata(row), "geometry": geometry}
+
+
+def export_geometry(db, *, user_id, organization_id, workspace_id, product_code, geometry_id, at_date):
+    actor = authorize(
+        db,
+        user_id=user_id,
+        organization_id=organization_id,
+        workspace_id=workspace_id,
+        product_code=product_code,
+        permission="data.export",
+    )
+    result = get_geometry(
+        db,
+        user_id=user_id,
+        organization_id=organization_id,
+        workspace_id=workspace_id,
+        product_code=product_code,
+        geometry_id=geometry_id,
+        at_date=at_date,
+    )
+    row = result["metadata"]
+    persisted = scoped_row(
+        db,
+        geometry_id=geometry_id,
+        organization_id=organization_id,
+        workspace_id=workspace_id,
+        product_code=product_code,
+    )
+    audit(db, persisted, actor, "spatial.geometry.exported")
+    return {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "id": row["id"],
+                "geometry": result["geometry"],
+                "properties": {
+                    name: row.get(name)
+                    for name in (
+                        "product_code",
+                        "domain_kind",
+                        "domain_id",
+                        "version",
+                        "source_uri",
+                        "source_version",
+                        "license_identifier",
+                        "valid_from",
+                        "valid_to",
+                        "geometry_sha256",
+                        "fingerprint",
+                        "render_crs",
+                        "source_verification",
+                    )
+                },
+            }
+        ],
+        "geometry_at_date": at_date.isoformat(),
+        "observation_period": "NOT_ASSIGNED",
+    }

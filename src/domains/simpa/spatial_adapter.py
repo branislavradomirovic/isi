@@ -25,3 +25,23 @@ def binding(session, *, organization_id, workspace_id, domain_kind, domain_id, g
     if not code:
         raise GeometryError("geometry_domain_code_required")
     return {"kind": domain_kind, "id": str(row.id), "key": code}
+
+
+def targets(session, *, organization_id, workspace_id):
+    result = []
+    for kind, model in [("local_system", SimpaLocalSystemProfile), ("local_actor", SimpaLocalActor)]:
+        rows = session.scalars(
+            select(model).where(model.organization_id == organization_id, model.workspace_id == workspace_id).limit(101)
+        ).all()
+        for row in rows:
+            code = row.jurisdiction_code if kind == "local_system" else row.external_code
+            if code and (kind != "local_actor" or row.active):
+                result.append(
+                    {
+                        "id": str(row.id),
+                        "kind": kind,
+                        "key": code,
+                        "name": row.jurisdiction_name if kind == "local_system" else row.name,
+                    }
+                )
+    return result
