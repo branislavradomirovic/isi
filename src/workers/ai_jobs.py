@@ -14,7 +14,17 @@ def run_ai_job(job_id: str) -> None:
     factory = build_session_factory()
     try:
         with factory() as session:
-            job = execute_ai_job(session, job_id=uuid.UUID(job_id))
+            from src.platform.extraction.service import worker_guard
+            from src.platform.ai.models import AIJob
+
+            key = uuid.UUID(job_id)
+            if worker_guard(session, key):
+                job = execute_ai_job(session, job_id=key)
+                worker_guard(session, key, after=True)
+            else:
+                job = session.get(AIJob, key)
+            if job is None:
+                raise ValueError("ai_job_missing")
             model = session.get(AIModel, job.model_id)
             prompt_version = session.get(AIPromptVersion, job.prompt_version_id)
             prompt = session.get(AIPrompt, prompt_version.prompt_id) if prompt_version is not None else None

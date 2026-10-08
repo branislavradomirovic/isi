@@ -92,3 +92,5 @@ from src.platform.administration.models import (  # noqa: F401
 from src.platform.security.models import SecurityEvent, SecurityRateLimit  # noqa: F401
 
 from src.platform.spatial.models import SpatialGeometryVersion  # noqa: F401
+
+from src.platform.extraction.models import ExtractionRequest, ExtractionArtifact, ExtractionReview  # noqa: F401

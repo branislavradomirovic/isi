@@ -334,6 +334,10 @@ def render_data_workspace(*, token: str, shell: dict[str, Any]) -> None:
         st.error(str(exc))
         return
 
+    from src.streamlit_app.extraction_workspace import render_extraction_workspace
+    with st.expander("Entiteti i nalazi — ekstrakcija i pregled"):
+        render_extraction_workspace(token=token, shell=shell)
+
     metric_cols = st.columns(3)
     metric_cols[0].metric("Izvori", len(sources))
     succeeded = sum(1 for item in sources if (item.get("latest_version") or {}).get("ingest_status") == "succeeded")

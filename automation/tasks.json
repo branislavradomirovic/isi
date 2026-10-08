@@ -462,7 +462,7 @@
       "depends_on": [
         "ISI-27-INDUSTRIAL-RELEASE-CANDIDATE"
       ],
-      "note": "IN_PROGRESS for full production. Exact main 374dda3db89f6fb87dde7f5b761642440da17bef checkpoint96 all12 completed/success. Local closeout records signed scoped deployment and live probes in PREPRODUCTION_TESTING, not full production; no fresh server probe by 2026-10-07 planning. SMTP pending; new backups owner-deferred; preserve prior recovery media. Capacity/domain-quality/operational full-production gates remain open. Owner requested separate ISI-29 local XAI/GIS/entity-findings expansion from this accepted test baseline.",
+      "note": "29A–29D are CI_VERIFIED / REVIEW_VERIFIED at exact main 95fec43590e9b1d3eb44d55867666581118ec650 (ISI required acceptance run37746165918, all12 completed/success). Recorded signed deployment and scoped server acceptance passed in PREPRODUCTION_TESTING, schema0036; automation/evidence/ISI-29D/release/closeout.json. No fresh server probe in29E. SMTP pending, new backups owner-deferred, institutional/capacity/operational full-production gates remain open.",
       "spec": "automation/specs/ISI-28-R3-OPERATIONS-AND-RESPONSIVE-CLOSEOUT.md"
     },
     {
@@ -477,22 +477,22 @@
       "title": "XAI, GIS and geographically anchored entities/findings",
       "status": "in_progress",
       "spec": "docs/roadmap/ISI-29-XAI-GIS-ENTITY-FINDINGS-PLAN.md",
-      "note": "29A/B/C approved main;29D locked attribution candidate IN_PROGRESS.29E/F unimplemented. Standing verified commit/push approval; final exact release gates remain.",
-      "next": "ISI-29D-MODEL-ATTRIBUTION"
+      "note": "29A-D CI_VERIFIED/reviewed95fec435 and recorded scoped PREPRODUCTION_TESTING deployment.29E local implemented candidate must have matching final8gate/browser/analyzer/review PASS before approved staging;29F next.29E not CI/server verified; no full production claim.",
+      "next": "ISI-29F-EVIDENCE-RELEASE"
     },
     {
       "id": "ISI-29A-GRAPHICAL-XAI",
       "title": "Graphical XAI for persisted results",
-      "status": "implemented",
+      "status": "done",
       "spec": "automation/specs/ISI-29A-GRAPHICAL-XAI.md",
-      "note": "OWNER_APPROVED_MAIN_COMMIT cad6892fd2d710b8263b936c06bb3d8137cdeddc; exact candidate f220dd3dce9b172c05dc6982167f73b2cd848924b0060d48b1da4143970e492a locally IMPLEMENTED / REVIEW_VERIFIED, 23 focused/1203 regression passes. NOT CI_VERIFIED; no hosted/server action."
+      "note": "29A–29D are CI_VERIFIED / REVIEW_VERIFIED at exact main 95fec43590e9b1d3eb44d55867666581118ec650 (ISI required acceptance run37746165918, all12 completed/success). Recorded signed deployment and scoped server acceptance passed in PREPRODUCTION_TESTING, schema0036; automation/evidence/ISI-29D/release/closeout.json. No fresh server probe in29E. SMTP pending, new backups owner-deferred, institutional/capacity/operational full-production gates remain open."
     },
     {
       "id": "ISI-29B-GIS-CONTRACTS",
       "title": "Governed geometry and spatial contracts",
-      "status": "implemented",
+      "status": "done",
       "spec": "automation/specs/ISI-29B-GIS-CONTRACTS.md",
-      "note": "OWNER_APPROVED_MAIN_COMMIT0d59f40aa03ab7115041f1c58052d4610aac3a54; exact1c5a531c candidate hashes match.43 focused/native1/regression1247 passes; NOT CI_VERIFIED; no server action.",
+      "note": "29A–29D are CI_VERIFIED / REVIEW_VERIFIED at exact main 95fec43590e9b1d3eb44d55867666581118ec650 (ISI required acceptance run37746165918, all12 completed/success). Recorded signed deployment and scoped server acceptance passed in PREPRODUCTION_TESTING, schema0036; automation/evidence/ISI-29D/release/closeout.json. No fresh server probe in29E. SMTP pending, new backups owner-deferred, institutional/capacity/operational full-production gates remain open.",
       "depends_on": [
         "ISI-29A-GRAPHICAL-XAI"
       ]
@@ -500,9 +500,9 @@
     {
       "id": "ISI-29C-GIS-WORKFLOWS",
       "title": "GIS maps and linked workflows",
-      "status": "implemented",
+      "status": "done",
       "spec": "automation/specs/ISI-29C-GIS-WORKFLOWS.md",
-      "note": "OWNER_APPROVED_MAIN_COMMIT a77f9f0b4e43038554ee203a0c5ad22cd0b9e981; exact02526373 candidate,37focused/1283regression passes and44existing native skips; independent twice and browser PASS. NOT CI_VERIFIED; DEFERRED_SERVER_VERIFICATION.",
+      "note": "29A–29D are CI_VERIFIED / REVIEW_VERIFIED at exact main 95fec43590e9b1d3eb44d55867666581118ec650 (ISI required acceptance run37746165918, all12 completed/success). Recorded signed deployment and scoped server acceptance passed in PREPRODUCTION_TESTING, schema0036; automation/evidence/ISI-29D/release/closeout.json. No fresh server probe in29E. SMTP pending, new backups owner-deferred, institutional/capacity/operational full-production gates remain open.",
       "depends_on": [
         "ISI-29B-GIS-CONTRACTS"
       ]
@@ -510,9 +510,9 @@
     {
       "id": "ISI-29D-MODEL-ATTRIBUTION",
       "title": "Model-appropriate SHAP and attribution",
-      "status": "in_progress",
+      "status": "done",
       "spec": "automation/specs/ISI-29D-MODEL-ATTRIBUTION.md",
-      "note": "Scoped immutable continuous OLS SHAP candidate; exact local/native/browser gates pending. New browser gate blocked by review workspace credits. No CI/server or phase completion claim.",
+      "note": "29A–29D are CI_VERIFIED / REVIEW_VERIFIED at exact main 95fec43590e9b1d3eb44d55867666581118ec650 (ISI required acceptance run37746165918, all12 completed/success). Recorded signed deployment and scoped server acceptance passed in PREPRODUCTION_TESTING, schema0036; automation/evidence/ISI-29D/release/closeout.json. No fresh server probe in29E. SMTP pending, new backups owner-deferred, institutional/capacity/operational full-production gates remain open.",
       "depends_on": [
         "ISI-29C-GIS-WORKFLOWS"
       ]
@@ -520,9 +520,9 @@
     {
       "id": "ISI-29E-ENTITY-CLAIM-EXTRACTION",
       "title": "Geographically anchored entity and claim extraction",
-      "status": "planned",
-      "spec": "docs/roadmap/ISI-29-XAI-GIS-ENTITY-FINDINGS-PLAN.md",
-      "note": "Runtime not implemented. Exact per-package runner/analyzer and scope lock required before execution; later package details remain planning requirements.",
+      "status": "implemented",
+      "spec": "automation/specs/ISI-29E-ENTITY-CLAIM-EXTRACTION.md",
+      "note": "Scoped entity/claim extraction and final human identity/territory review. IMPLEMENTED / REVIEW_VERIFIED only with matching exact30-file acceptance/browser/independent/human-review evidence, all8 final gates PASS; standing approved verified commit/push. NOT CI_VERIFIED; DEFERRED_SERVER_VERIFICATION. Synthetic software evaluation only; real quality UNCALIBRATED.29F release remains pending.",
       "depends_on": [
         "ISI-29D-MODEL-ATTRIBUTION"
       ]

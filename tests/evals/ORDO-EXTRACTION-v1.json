@@ -1,0 +1,228 @@
+{
+  "schema": "ISI-EXTRACTION-EVAL-v1",
+  "product": "ORDO",
+  "version": "v1",
+  "scope": "Synthetic independently fixed exact spans/transcription; not promotion benchmark",
+  "institutional_quality_certified": false,
+  "cases": [
+    {
+      "language": "en",
+      "text": "Synthetic has 12 services in 2025.",
+      "gold": {
+        "mentions": [
+          {
+            "id": "m1",
+            "kind": "place",
+            "anchor": {
+              "unit": "document",
+              "start": 0,
+              "end": 9,
+              "quote": "Synthetic"
+            }
+          }
+        ],
+        "claims": [
+          {
+            "id": "c1",
+            "kind": "observation",
+            "statement": {
+              "unit": "document",
+              "start": 0,
+              "end": 34,
+              "quote": "Synthetic has 12 services in 2025."
+            },
+            "subject": {
+              "unit": "document",
+              "start": 0,
+              "end": 9,
+              "quote": "Synthetic"
+            },
+            "predicate": {
+              "unit": "document",
+              "start": 10,
+              "end": 13,
+              "quote": "has"
+            },
+            "value": {
+              "unit": "document",
+              "start": 14,
+              "end": 16,
+              "quote": "12"
+            },
+            "unit": {
+              "unit": "document",
+              "start": 17,
+              "end": 25,
+              "quote": "services"
+            },
+            "period": {
+              "unit": "document",
+              "start": 29,
+              "end": 33,
+              "quote": "2025"
+            },
+            "territory_mention": "m1",
+            "citations": [
+              {
+                "relation": "supporting",
+                "anchor": {
+                  "unit": "document",
+                  "start": 0,
+                  "end": 34,
+                  "quote": "Synthetic has 12 services in 2025."
+                }
+              }
+            ],
+            "limitations": "Quoted observation; institutional truth unverified."
+          }
+        ]
+      }
+    },
+    {
+      "language": "sr-Latn",
+      "text": "Primer ima 12 usluga u 2025.",
+      "gold": {
+        "mentions": [
+          {
+            "id": "m1",
+            "kind": "place",
+            "anchor": {
+              "unit": "document",
+              "start": 0,
+              "end": 6,
+              "quote": "Primer"
+            }
+          }
+        ],
+        "claims": [
+          {
+            "id": "c1",
+            "kind": "observation",
+            "statement": {
+              "unit": "document",
+              "start": 0,
+              "end": 28,
+              "quote": "Primer ima 12 usluga u 2025."
+            },
+            "subject": {
+              "unit": "document",
+              "start": 0,
+              "end": 6,
+              "quote": "Primer"
+            },
+            "predicate": {
+              "unit": "document",
+              "start": 7,
+              "end": 10,
+              "quote": "ima"
+            },
+            "value": {
+              "unit": "document",
+              "start": 11,
+              "end": 13,
+              "quote": "12"
+            },
+            "unit": {
+              "unit": "document",
+              "start": 14,
+              "end": 20,
+              "quote": "usluga"
+            },
+            "period": {
+              "unit": "document",
+              "start": 23,
+              "end": 27,
+              "quote": "2025"
+            },
+            "territory_mention": "m1",
+            "citations": [
+              {
+                "relation": "supporting",
+                "anchor": {
+                  "unit": "document",
+                  "start": 0,
+                  "end": 28,
+                  "quote": "Primer ima 12 usluga u 2025."
+                }
+              }
+            ],
+            "limitations": "Quoted observation; institutional truth unverified."
+          }
+        ]
+      }
+    },
+    {
+      "language": "sr-Cyrl",
+      "text": "Пример има 12 услуга у 2025.",
+      "gold": {
+        "mentions": [
+          {
+            "id": "m1",
+            "kind": "place",
+            "anchor": {
+              "unit": "document",
+              "start": 0,
+              "end": 6,
+              "quote": "Пример"
+            }
+          }
+        ],
+        "claims": [
+          {
+            "id": "c1",
+            "kind": "observation",
+            "statement": {
+              "unit": "document",
+              "start": 0,
+              "end": 28,
+              "quote": "Пример има 12 услуга у 2025."
+            },
+            "subject": {
+              "unit": "document",
+              "start": 0,
+              "end": 6,
+              "quote": "Пример"
+            },
+            "predicate": {
+              "unit": "document",
+              "start": 7,
+              "end": 10,
+              "quote": "има"
+            },
+            "value": {
+              "unit": "document",
+              "start": 11,
+              "end": 13,
+              "quote": "12"
+            },
+            "unit": {
+              "unit": "document",
+              "start": 14,
+              "end": 20,
+              "quote": "услуга"
+            },
+            "period": {
+              "unit": "document",
+              "start": 23,
+              "end": 27,
+              "quote": "2025"
+            },
+            "territory_mention": "m1",
+            "citations": [
+              {
+                "relation": "supporting",
+                "anchor": {
+                  "unit": "document",
+                  "start": 0,
+                  "end": 28,
+                  "quote": "Пример има 12 услуга у 2025."
+                }
+              }
+            ],
+            "limitations": "Quoted observation; institutional truth unverified."
+          }
+        ]
+      }
+    }
+  ]
+}

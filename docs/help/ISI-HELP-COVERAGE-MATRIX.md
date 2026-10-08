@@ -154,10 +154,22 @@ These rows extend INV-B29/C45/A22 action inventory without promoting GIS fronten
 ISI-29C GIS user actions: PARTIAL until exact release/server evidence. Podaci→GIS source import/review, ORDO identity authoring/review, map/table/date/layer/version/keyboard selection, linked revalidated ORDO result and explicit geometry export: docs/help/ISI-SPATIAL-DATA-GUIDE.md; src/streamlit_app/spatial_workspace.py; tests/test_isi_29c_spatial_api.py, test_isi_29c_spatial_view.py, test_isi_29c_spatial_ui.py and test_isi_29c_ordo_link.py. Existing VERIFIED historical topics remain scope-bound.29F Word/browser live screenshots pending; institutional boundary source missing and SIMPA numeric geography binding unavailable.
 
 
-### ISI-29D model attribution candidate
+### ISI-29D accepted preproduction attribution
 
 | Customer action | Coverage | Guide | Authority |
 |---|---|---|---|
-| SIMPA stored OLS result → create/read SHAP | PARTIAL | docs/help/ISI-SHAP-GUIDE.md (ten items) | tests/test_isi_29d_*; exact local/native/browser acceptance pending |
+| SIMPA stored OLS result → create/read SHAP | PARTIAL | docs/help/ISI-SHAP-GUIDE.md (ten items) | tests/test_isi_29d_*; accepted95fec435 exact12CI and recorded preproduction server checks |
 | SIMPA sample×feature matrix/heatmap/global ranking/local waterfall | PARTIAL | docs/help/ISI-SHAP-GUIDE.md | source invalidation/additivity/coalition reference/UI parity;29F release/server required |
 | ORDO unsupported attribution | PARTIAL | docs/help/ISI-SHAP-GUIDE.md | existing naive/seasonal explanation retained; no invented SHAP |
+
+
+### ISI-29E locally verified extraction candidate
+
+| Customer action | Coverage | Guide | Authority |
+|---|---|---|---|
+| SIMPA/ORDO governed TXT/snapshot → local queued extraction; cancel pending | PARTIAL | docs/help/ISI-EXTRACTION-GUIDE.md (ten items) | tests/test_isi_29e_*; ai.run + data.read; explicit scoped load; exact candidate gates required |
+| Source quotes, spans/cells, versions, limitations and proposed identity | PARTIAL | docs/help/ISI-EXTRACTION-GUIDE.md | data.read; source invalidation/tenant/product isolation; original SR/EN preserved |
+| Final human accept/reject, resolve identity, separately dated claim territory | PARTIAL | docs/help/ISI-EXTRACTION-GUIDE.md | data.validate; attestation/immutable review/current identity + geometry checks; not truth/methodology certification |
+| Accepted-only exact period/geometry retrieval | PARTIAL | docs/help/ISI-EXTRACTION-GUIDE.md | no unverified/rejected/stale claims;29F report/manual/release pending |
+
+29E local coverage is verified only with matching exact-candidate acceptance/browser/review evidence. Release/server/Word coverage remains PARTIAL until29F; no institutional extraction accuracy certification.
