@@ -477,8 +477,8 @@
       "title": "XAI, GIS and geographically anchored entities/findings",
       "status": "in_progress",
       "spec": "docs/roadmap/ISI-29-XAI-GIS-ENTITY-FINDINGS-PLAN.md",
-      "note": "29A/B accepted main;29C locked GIS user workflow candidate undergoing exact gates.29D-F unimplemented. Owner standing approval for verified planned commits/pushes through29F, final acceptance/deployment with exact release contracts. No inherited CI or full-production claim.",
-      "next": "ISI-29C-GIS-WORKFLOWS"
+      "note": "29A/B/C approved main;29D locked attribution candidate IN_PROGRESS.29E/F unimplemented. Standing verified commit/push approval; final exact release gates remain.",
+      "next": "ISI-29D-MODEL-ATTRIBUTION"
     },
     {
       "id": "ISI-29A-GRAPHICAL-XAI",
@@ -502,7 +502,7 @@
       "title": "GIS maps and linked workflows",
       "status": "implemented",
       "spec": "automation/specs/ISI-29C-GIS-WORKFLOWS.md",
-      "note": "IMPLEMENTED local GIS candidate:37 focused /1283 regression passes,44 existing native-lane skips; browser desktop/mobile PASS. Exact synchronized acceptance/independent/human evidence under automation/evidence/ISI-29C must match candidate before commit. No institutional boundary set/SIMPA analytical geography binding. NOT CI_VERIFIED; DEFERRED_SERVER_VERIFICATION.",
+      "note": "OWNER_APPROVED_MAIN_COMMIT a77f9f0b4e43038554ee203a0c5ad22cd0b9e981; exact02526373 candidate,37focused/1283regression passes and44existing native skips; independent twice and browser PASS. NOT CI_VERIFIED; DEFERRED_SERVER_VERIFICATION.",
       "depends_on": [
         "ISI-29B-GIS-CONTRACTS"
       ]
@@ -510,9 +510,9 @@
     {
       "id": "ISI-29D-MODEL-ATTRIBUTION",
       "title": "Model-appropriate SHAP and attribution",
-      "status": "planned",
-      "spec": "docs/roadmap/ISI-29-XAI-GIS-ENTITY-FINDINGS-PLAN.md",
-      "note": "Runtime not implemented. Exact per-package runner/analyzer and scope lock required before execution; later package details remain planning requirements.",
+      "status": "in_progress",
+      "spec": "automation/specs/ISI-29D-MODEL-ATTRIBUTION.md",
+      "note": "Scoped immutable continuous OLS SHAP candidate; exact local/native/browser gates pending. New browser gate blocked by review workspace credits. No CI/server or phase completion claim.",
       "depends_on": [
         "ISI-29C-GIS-WORKFLOWS"
       ]

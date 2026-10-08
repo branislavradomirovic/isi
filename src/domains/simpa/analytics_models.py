@@ -480,3 +480,32 @@ class SimpaAISynthesis(Base):
         ForeignKey("core_memberships.id", ondelete="SET NULL"), nullable=True
     )
     created_at: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+
+
+class SimpaAttributionArtifact(Base):
+    """Immutable, scope-bound explanation of an existing statistical result."""
+    __tablename__ = "simpa_attribution_artifacts"
+    __table_args__ = (
+        UniqueConstraint("statistical_result_id", "schema_version", name="uq_simpa_attribution_result_schema"),
+        CheckConstraint("schema_version = 'SIMPA-LINEAR-SHAP-v1'", name="ck_simpa_attribution_schema"),
+        CheckConstraint("length(fingerprint) = 64 AND length(result_fingerprint) = 64", name="ck_simpa_attribution_hash"),
+        Index("ix_simpa_attribution_scope", "organization_id", "workspace_id"),
+    )
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    organization_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_organizations.id", ondelete="CASCADE"))
+    workspace_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_workspaces.id", ondelete="CASCADE"))
+    statistical_result_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("simpa_statistical_model_results.id", ondelete="RESTRICT"))
+    result_fingerprint: Mapped[str] = mapped_column(String(64))
+    schema_version: Mapped[str] = mapped_column(String(64))
+    artifact: Mapped[dict] = mapped_column(JSON)
+    fingerprint: Mapped[str] = mapped_column(String(64))
+    created_by_membership_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("core_memberships.id", ondelete="RESTRICT"))
+    created_at: Mapped[object] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+from sqlalchemy import event as _attribution_event  # noqa: E402
+
+
+@_attribution_event.listens_for(SimpaAttributionArtifact, "before_update")
+def _immutable_attribution(_mapper, _connection, _target):
+    raise ValueError("attribution_artifact_immutable")

@@ -342,6 +342,10 @@ def render_simpa_analytics(*, token: str, shell: dict[str, Any]) -> None:
                 f"Rezultat {item['id'][:8]} · contract v{item.get('statistical_contract_version_no')} · "
                 f"production_eligible={item.get('production_eligible')}"
             ):
+                from src.streamlit_app.attribution_view import render_attribution
+
+                render_attribution(st, token=token, organization_id=organization_id, workspace_id=workspace_id,
+                    result=item, permissions=permissions, api=simpa_analytics_api)
                 st.markdown("**Model / cilj / uncertainty contract**")
                 st.json(identity)
                 st.caption(xai["coefficient_interpretation"])
@@ -363,6 +367,7 @@ def render_simpa_analytics(*, token: str, shell: dict[str, Any]) -> None:
                 st.caption(f"result_fingerprint={item.get('result_fingerprint') or '-'}")
                 st.caption(xai["production_eligibility"]["interpretation"])
                 st.markdown("**Unsupported / unavailable XAI states**")
+                st.caption("Ove oznake opisuju osnovni koeficijentni read model; zaseban SHAP dokaz ima sopstveni status iznad. SHAP nije kauzalni efekat ili generička AI pouzdanost.")
                 st.json(xai["unsupported"])
                 st.warning(xai["non_causal_notice"])
                 st.caption(f"Limitations: {xai['limitations']}")

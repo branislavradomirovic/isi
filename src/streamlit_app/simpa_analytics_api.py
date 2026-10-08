@@ -317,3 +317,12 @@ def review_synthesis(
         ),
         unavailable="Nije moguće evidentirati human review.",
     )
+
+
+def attribution(token: str, organization_id: str, workspace_id: str, result_id: str, *, create: bool = False):
+    response = request("POST" if create else "GET",
+        f"/api/v1/simpa/analytics/statistical-model-results/{result_id}/attribution", token=token,
+        params={"organization_id": organization_id, "workspace_id": workspace_id})
+    if response.status_code == 409:
+        return {"status": "UNAVAILABLE", "reason": "Izvor, model ili rezultat ne ispunjavaju SHAP ugovor; nema zamenskih doprinosa."}
+    return _checked(response, unavailable="SHAP servis trenutno nije dostupan.")

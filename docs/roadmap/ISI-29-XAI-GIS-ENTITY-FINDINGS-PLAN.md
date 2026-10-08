@@ -1,6 +1,6 @@
 # ISI-29 — XAI, GIS i entiteti/nalazi sa dokazima
 
-Datum: 2026-10-07. Status: **IN_PROGRESS / 29A/B prihvaćeni na main; 29C lokalno IMPLEMENTED; 29D–F planirani**.
+Datum: 2026-10-07. Status: **IN_PROGRESS / 29A/B prihvaćeni na main; 29C prihvaćen na main;29D kandidat;29E/F planirani**.
 Owner je zatražio proširenje plana i početak razvoja XAI/GIS i ekstrakcije entiteta/nalaza. „SIMA” u zahtevu odnosi se na postojeći SIMPA; nema trećeg proizvoda.
 MasterPlan je kanonska nadređena vlast; ADR-0025 ostaje arhitekturna osnova.
 
@@ -87,7 +87,7 @@ Zajednički sloj poseduje infrastrukturu: storage, job dispatch/RQ, verzionisanj
 
 Redosled je 29A → 29B → 29C → 29D → 29E → 29F. Pre svake runtime celine zaključati exact allowlist, runner i nezavisni analyzer. 29B/E ulazi mogu se pripremati bez menjanja runtime-a. Ne čekati konačnu punu produkciju da bi lokalni razvoj počeo: owner proširenje omogućava 29 nad potvrđenim preproduction baseline-om, dok otvoreni 28 ops gates ostaju otvoreni.
 
-**29A je prihvaćen na main cad6892; 29B geometrijski ugovori su lokalni kandidat. Sledeći runtime paket je 29C — GIS korisnički tokovi.** Ugovor: `automation/specs/ISI-29A-GRAPHICAL-XAI.md`. Owner je zatim odobrio izvršenje 29A–29F. Lokalni 29A runtime kandidat sada postoji; tačan status/gates su u njegovom evidence report-u. 29B–F nisu implementirani.
+**29A/B/C su prihvaćeni na main; aktivni runtime paket je29D — OLS SHAP kandidat.29E/F još nisu implementirani.** Tačni lokalni/CI/server statusi ostaju u aktuelnim ledger/evidence zapisima; istorijski kandidati ispod ne menjaju ovu aktivnu putanju.
 
 ## 5. Evaluacija, privatnost i release
 
@@ -152,3 +152,10 @@ Actual browser WebGL limitation rejected the Pydeck draft renderer (REMOVE_BEFOR
 ## ISI-29C local verification closeout — 2026-10-07
 
 IMPLEMENTED local candidate:37 focused tests and1283 regression tests pass,44 existing native-lane skips, zero failures/errors; lint/policy/mypy/pip/diff gates PASS. Synthetic desktop1280/mobile390 browser checks PASS: map click/Enter/Space, linked selected table/provenance, ORDO result table/chart, zoom/reset, no page overflow or external assets. Exact synchronized candidate requires matching acceptance/browser/independent-analysis/human-review reports under automation/evidence/ISI-29C before approved staging. First unfinished runtime package29D;29E/F planned. Standing owner approval covers verified commit/push. No new CI/server acceptance; DEFERRED_SERVER_VERIFICATION, no full-production claim. Historical pending notes above are LEGITIMATE_HISTORY superseded by this closeout.
+
+
+## ISI-29C approved main / ISI-29D attribution candidate — 2026-10-08
+
+29C accepted main a77f9f0b4e43038554ee203a0c5ad22cd0b9e981, exact26-file candidate025263734c8ff82ef85c01f01a229e8724ea22ed6b13cfffb312426bacf7f82d; repeated local7gate/independent twice/assistant review PASS.37 focused/1283 regression passes,44 existing native-lane skips; main/origin/direct equality and clean one-worktree checkpoint recorded. No hosted/server verification inherited. Mutable prior29C candidate/current-next text superseded (LEGITIMATE_HISTORY).
+
+29D IN_PROGRESS locked automation/specs/ISI-29D-MODEL-ATTRIBUTION.md: additive0036 simpa_attribution_artifacts, exact interventional continuous OLS explanation from stored coefficients and revalidated complete-case training cohort. No refitting/dependency/provider/model-family change. Domain-owned source/result/contract/background/artifact hashes and immutable metadata; read revalidates source/methodology and stored metric/prediction parity. Scoped analysis.read, explicit analysis.run creation, fingerprint-only audit. Existing SIMPA result expander gains matrix/heatmap/global mean-absolute/local waterfall and ten-item Help docs/help/ISI-SHAP-GUIDE.md. Technical1e-8 tolerance is not institutional threshold.512 selected rows/24features bounded; original training cohort only, correlated features limitations visible. ORDO naive/seasonal SHAP remains unsupported; conditional new model execution not automatically selected. NOT CI_VERIFIED; server deferred to29F. Local/native/full/browser/independent/human exact gates required before phase closeout. Browser access restored on 2026-10-08; synthetic desktop1280/mobile390 visual/keyboard/viewer/unsupported/tamper gates passed, with screenshots under automation/evidence/ISI-29D/. Contradictory legacy non-SHAP caption corrected only in the new attribution panel. Native0036 test participates in the existing hosted native lane without skips. Final local gates/independent review are rerun on the exact updated candidate before authorized commit/push.29E/F unimplemented; current owner explicitly requests checkpoint/deployment of verified current source in preproduction-testing mode, separate from29F whole-plan completion.

@@ -939,3 +939,42 @@ def post_review(
     except SimpaAnalyticsError as exc:
         db.rollback()
         raise _error(exc) from None
+
+
+@router.get("/statistical-model-results/{result_id}/attribution")
+def attribution_read(
+    result_id: uuid.UUID, organization_id: uuid.UUID, workspace_id: uuid.UUID,
+    context: AuthContext = Depends(get_auth_context), db: Session = Depends(get_db),
+):
+    from src.domains.simpa import attribution_service
+    from src.domains.simpa.statistical_attribution import AttributionError
+    from src.domains.simpa.statistical_models import StatisticalModelError
+    _require_scope(db, context, organization_id=organization_id, workspace_id=workspace_id,
+                   permission_code="analysis.read")
+    try:
+        return attribution_service.read(db, result_id=result_id, organization_id=organization_id, workspace_id=workspace_id)
+    except (AttributionError, SimpaAnalyticsError, StatisticalModelError, ValueError):
+        raise HTTPException(status_code=409, detail="attribution_unavailable_revalidation_failed") from None
+
+
+@router.post("/statistical-model-results/{result_id}/attribution", status_code=201)
+def attribution_create(
+    result_id: uuid.UUID, organization_id: uuid.UUID, workspace_id: uuid.UUID,
+    context: AuthContext = Depends(get_auth_context), db: Session = Depends(get_db),
+):
+    from sqlalchemy.exc import IntegrityError
+    from src.domains.simpa import attribution_service
+    from src.domains.simpa.statistical_attribution import AttributionError
+    from src.domains.simpa.statistical_models import StatisticalModelError
+    _require_scope(db, context, organization_id=organization_id, workspace_id=workspace_id,
+                   permission_code="analysis.read")
+    _require_scope(db, context, organization_id=organization_id, workspace_id=workspace_id,
+                   permission_code="analysis.run")
+    try:
+        value = attribution_service.create(db, result_id=result_id, organization_id=organization_id,
+            workspace_id=workspace_id, actor_id=actor_membership_id(db, user_id=context.user.id, organization_id=organization_id))
+        db.commit()
+        return value
+    except (AttributionError, SimpaAnalyticsError, StatisticalModelError, ValueError, IntegrityError):
+        db.rollback()
+        raise HTTPException(status_code=409, detail="attribution_unavailable_revalidation_failed") from None

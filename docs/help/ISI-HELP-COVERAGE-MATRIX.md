@@ -152,3 +152,12 @@ These rows extend INV-B29/C45/A22 action inventory without promoting GIS fronten
 
 
 ISI-29C GIS user actions: PARTIAL until exact release/server evidence. Podaci→GIS source import/review, ORDO identity authoring/review, map/table/date/layer/version/keyboard selection, linked revalidated ORDO result and explicit geometry export: docs/help/ISI-SPATIAL-DATA-GUIDE.md; src/streamlit_app/spatial_workspace.py; tests/test_isi_29c_spatial_api.py, test_isi_29c_spatial_view.py, test_isi_29c_spatial_ui.py and test_isi_29c_ordo_link.py. Existing VERIFIED historical topics remain scope-bound.29F Word/browser live screenshots pending; institutional boundary source missing and SIMPA numeric geography binding unavailable.
+
+
+### ISI-29D model attribution candidate
+
+| Customer action | Coverage | Guide | Authority |
+|---|---|---|---|
+| SIMPA stored OLS result → create/read SHAP | PARTIAL | docs/help/ISI-SHAP-GUIDE.md (ten items) | tests/test_isi_29d_*; exact local/native/browser acceptance pending |
+| SIMPA sample×feature matrix/heatmap/global ranking/local waterfall | PARTIAL | docs/help/ISI-SHAP-GUIDE.md | source invalidation/additivity/coalition reference/UI parity;29F release/server required |
+| ORDO unsupported attribution | PARTIAL | docs/help/ISI-SHAP-GUIDE.md | existing naive/seasonal explanation retained; no invented SHAP |
