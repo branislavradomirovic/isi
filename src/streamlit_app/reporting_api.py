@@ -44,16 +44,16 @@ def report(token: str, report_id: str, organization_id: str, workspace_id: str, 
     )
 
 
-def generate(token: str, *, organization_id: str, workspace_id: str, product_code: str, title: str, report_type: str, source_kind: str, source_id: str):
+def generate(token: str, *, organization_id: str, workspace_id: str, product_code: str, title: str, report_type: str, source_kind: str, source_id: str, evidence_link=None):
     return _checked(
-        request("POST", "/api/v1/reporting/reports", token=token, json={"organization_id": organization_id, "workspace_id": workspace_id, "product_code": product_code, "title": title, "report_type": report_type, "source_kind": source_kind, "source_id": source_id}),
+        request("POST", "/api/v1/reporting/reports", token=token, json={"organization_id": organization_id, "workspace_id": workspace_id, "product_code": product_code, "title": title, "report_type": report_type, "source_kind": source_kind, "source_id": source_id, "evidence_link": evidence_link}),
         unavailable="Nije moguće generisati verzionisani izveštaj.",
     )
 
 
-def new_version(token: str, *, report_id: str, organization_id: str, workspace_id: str, product_code: str, source_kind: str, source_id: str):
+def new_version(token: str, *, report_id: str, organization_id: str, workspace_id: str, product_code: str, source_kind: str, source_id: str, evidence_link=None):
     return _checked(
-        request("POST", f"/api/v1/reporting/reports/{report_id}/versions", token=token, json={"organization_id": organization_id, "workspace_id": workspace_id, "product_code": product_code, "source_kind": source_kind, "source_id": source_id}),
+        request("POST", f"/api/v1/reporting/reports/{report_id}/versions", token=token, json={"organization_id": organization_id, "workspace_id": workspace_id, "product_code": product_code, "source_kind": source_kind, "source_id": source_id, "evidence_link": evidence_link}),
         unavailable="Nije moguće kreirati novu verziju izveštaja.",
     )
 
@@ -84,3 +84,10 @@ def export(token: str, *, version_id: str, organization_id: str, workspace_id: s
         request("POST", f"/api/v1/reporting/versions/{version_id}/exports", token=token, json={"organization_id": organization_id, "workspace_id": workspace_id, "product_code": product_code, "format": format}),
         unavailable="Nije moguće generisati reporting artefakt.",
     )
+
+
+def linked_preview(token, *, organization_id, workspace_id, product_code, request_id, evidence_link):
+    return _checked(request("POST", "/api/v1/reporting/linked-preview", token=token,
+                            json={"organization_id": organization_id, "workspace_id": workspace_id,
+                                  "product_code": product_code, "request_id": request_id, "evidence_link": evidence_link}),
+                    unavailable="Povezani dokaz trenutno nije dostupan.")

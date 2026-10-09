@@ -4,13 +4,14 @@ import streamlit as st
 
 from src.streamlit_app.shared_help_workspace import render_topic_summary
 
-from src.streamlit_app import reporting_api
+from src.streamlit_app import reporting_api, linked_reporting_workspace as linked
 from src.streamlit_app.api_client import AccessDenied, ApiUnavailable, AuthenticationRequired
 
 
 REPORT_TYPES = {
-    "SIMPA": {"analytics_run": ("monitoring_summary", "Monitoring summary")},
+    "SIMPA": {"analytics_run": ("monitoring_summary", "Monitoring summary"), "extraction_request": ("linked_evidence", "Povezani nalaz i dokaz")},
     "ORDO": {
+        "extraction_request": ("linked_evidence", "Povezani nalaz i dokaz"),
         "analytics_run": ("destination_snapshot", "Destination snapshot"),
         "scenario_assessment": ("scenario_review", "Scenario review"),
     },
@@ -82,6 +83,16 @@ def render_reporting(*, token: str, shell: dict) -> None:
             report_type, report_label = REPORT_TYPES[product_code][source["kind"]]
             st.caption(f"Tip: {report_label} · source kind: {source['kind']}")
             title = st.text_input("Naslov izveštaja", value=f"{product_code} · {report_label}", key=f"report_title_{product_code}")
+            evidence_link = None
+            prefix = f"linked-{organization_id}-{workspace_id}-{product_code}-{source_id}-"
+            if source["kind"] == "extraction_request":
+                evidence_link = linked.inputs(prefix)
+                if st.button("Pregledaj povezani dokaz", key=prefix + "preview"):
+                    preview = _safe(reporting_api.linked_preview, token, organization_id=organization_id,
+                                    workspace_id=workspace_id, product_code=product_code, request_id=source_id,
+                                    evidence_link=evidence_link)
+                    if preview:
+                        linked.preview(preview["content"], prefix)
             if st.button("Kreiraj draft izveštaj", use_container_width=True, key=f"report_create_{product_code}"):
                 result = _safe(
                     reporting_api.generate,
@@ -93,6 +104,7 @@ def render_reporting(*, token: str, shell: dict) -> None:
                     report_type=report_type,
                     source_kind=source["kind"],
                     source_id=source_id,
+                    evidence_link=evidence_link,
                 )
                 if result is not None:
                     st.success("Draft verzija izveštaja je kreirana iz realnog provenance snapshot-a.")
@@ -111,7 +123,7 @@ def render_reporting(*, token: str, shell: dict) -> None:
             versions = detail.get("versions", [])
             st.caption(f"product={detail['product_code']} · workspace={detail['workspace_id']} · status={detail['status']}")
 
-            if sources and "analysis.run" in permissions:
+            if sources and "analysis.run" in permissions and detail["report_type"] != "linked_evidence":
                 latest_source = sources[0]
                 expected_type, _ = REPORT_TYPES[product_code][latest_source["kind"]]
                 if expected_type == detail["report_type"] and st.button("Nova verzija iz najnovijeg snapshot-a", key=f"new_version_{summary['id']}"):
@@ -134,6 +146,8 @@ def render_reporting(*, token: str, shell: dict) -> None:
                 st.caption(f"content SHA-256: {version['content_sha256']} · provenance SHA-256: {version['source_manifest_sha256']}")
                 for section in (version.get("content") or {}).get("sections", []):
                     _section(section)
+                if (version.get("content") or {}).get("schema") == "ISI-LINKED-EVIDENCE-v1":
+                    linked.preview(version["content"], f"linked-version-{organization_id}-{workspace_id}-{version['id']}")
 
                 st.markdown("**Provenance**")
                 provenance = [
@@ -171,21 +185,14 @@ def render_reporting(*, token: str, shell: dict) -> None:
 
                 if version["status"] in {"approved", "published", "superseded"}:
                     fmt = st.selectbox("Format artefakta", ["html", "markdown", "json"], key=f"export_format_{version['id']}")
-                    if st.button("Pripremi download artefakt", key=f"export_{version['id']}"):
+                    # Fetch and revalidate on each render. Never preserve linked quotation exports in session state.
+                    if st.checkbox("Pripremi download artefakt", key=f"export_{version['id']}"):
                         artifact = _safe(reporting_api.export, token, version_id=version["id"], organization_id=organization_id, workspace_id=workspace_id, product_code=product_code, format=fmt)
-                        if artifact is not None:
-                            st.session_state[f"report_export_{version['id']}"] = artifact
-                    artifact = st.session_state.get(f"report_export_{version['id']}")
-                    if artifact:
-                        st.download_button(
-                            "Preuzmi artefakt",
-                            data=artifact["content_text"],
-                            file_name=artifact["filename"],
-                            mime=artifact["mime_type"],
-                            use_container_width=True,
-                            key=f"download_{version['id']}_{artifact['sha256']}",
-                        )
-                        st.caption(f"Export SHA-256: {artifact['sha256']}")
+                        if artifact:
+                            st.download_button("Preuzmi artefakt", data=artifact["content_text"], file_name=artifact["filename"],
+                                               mime=artifact["mime_type"], use_container_width=True,
+                                               key=f"download_{version['id']}_{artifact['sha256']}")
+                            st.caption(f"Export SHA-256: {artifact['sha256']}")
 
                 reviews = version.get("reviews", [])
                 if reviews:

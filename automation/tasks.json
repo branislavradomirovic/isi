@@ -522,7 +522,7 @@
       "title": "Geographically anchored entity and claim extraction",
       "status": "implemented",
       "spec": "automation/specs/ISI-29E-ENTITY-CLAIM-EXTRACTION.md",
-      "note": "Scoped entity/claim extraction and final human identity/territory review. IMPLEMENTED / REVIEW_VERIFIED only with matching exact30-file acceptance/browser/independent/human-review evidence, all8 final gates PASS; standing approved verified commit/push. NOT CI_VERIFIED; DEFERRED_SERVER_VERIFICATION. Synthetic software evaluation only; real quality UNCALIBRATED.29F release remains pending.",
+      "note": "Committed33e86e6 IMPLEMENTED/REVIEW_VERIFIED exact30-file candidate226544cf;60focused/native1/regression1384 PASS. No exact29E hosted/server acceptance;29F release next.",
       "depends_on": [
         "ISI-29D-MODEL-ATTRIBUTION"
       ]
@@ -530,9 +530,9 @@
     {
       "id": "ISI-29F-EVIDENCE-RELEASE",
       "title": "Linked evidence, reporting, Help and release",
-      "status": "planned",
-      "spec": "docs/roadmap/ISI-29-XAI-GIS-ENTITY-FINDINGS-PLAN.md",
-      "note": "Runtime not implemented. Exact per-package runner/analyzer and scope lock required before execution; later package details remain planning requirements.",
+      "status": "in_progress",
+      "spec": "automation/specs/ISI-29F-EVIDENCE-RELEASE.md",
+      "note": "Owner authorized linked reports/manual/final acceptance/deployment and dual-product test account. Exact local/browser/manual/native/independent/review then standing approved main commit; usage pre/post/exact CI/signed ISI28 deployment mandatory. No full institutional production claim.",
       "depends_on": [
         "ISI-29E-ENTITY-CLAIM-EXTRACTION"
       ]

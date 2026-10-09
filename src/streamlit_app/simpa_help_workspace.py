@@ -211,34 +211,23 @@ def render_simpa_help(*, shell: dict[str, Any]) -> None:
         st.info("SIMPA Help je dostupan samo u aktivnom SIMPA kontekstu.")
         return
     st.markdown('<div class="isi-eyebrow">SIMPA · Help / User Guide</div>', unsafe_allow_html=True)
-    st.markdown('<h1 class="isi-shell-title">SIMPA pomoc, metodologija i XAI</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="isi-shell-title">SIMPA — detaljno uputstvo, metodologija i XAI</h1>', unsafe_allow_html=True)
     st.caption(
-        "Help prati production-completeness contract: svaka tema objasnjava svrhu, permissions, workflow, stanja, primer, non-goals, recovery, ogranicenja i provenance/human review."
+        "Izaberite temu za postupak korak po korak, objašnjenje polja, korisničke ekrane, primere i rešavanje problema."
     )
-    options = [topic["id"] for topic in SIMPA_HELP_TOPICS]
+    from src.streamlit_app.help_manual import chapters, render_chapter, render_topic
+    extra = chapters("SIMPA")
     selected = st.selectbox(
         "Help tema",
-        options,
-        format_func=lambda value: f"{value} · {_topic(value)['title']}",
+        [topic["id"] for topic in SIMPA_HELP_TOPICS] + list(extra),
+        format_func=lambda value: extra[value]["title"] if value in extra else f"{value} · {_topic(value)['title']}",
+        key="simpa_illustrated_help_topic",
     )
-    topic = _topic(selected)
-    st.markdown(f"### {topic['title']}")
-    labels = (
-        ("Sta radi", "what"),
-        ("Kada se koristi", "when"),
-        ("Role i dozvole", "roles_permissions"),
-        ("Koraci", "steps"),
-        ("Polja i stanja", "fields_statuses"),
-        ("Primer", "example"),
-        ("Sta sistem ne radi", "non_goals"),
-        ("Greske i bezbedan oporavak", "errors_recovery"),
-        ("Ogranicenja", "limitations"),
-        ("Provenance i human review", "provenance_review"),
-    )
-    for label, key in labels:
-        st.markdown(f"**{label}**")
-        st.write(topic[key])
-    st.caption(f"Coverage status: {topic['coverage']} · canonical topic: {topic['id']}")
+    if selected in extra:
+        render_chapter(selected, product="SIMPA")
+        return
+    render_topic(_topic(selected))
+
 
 
 __all__ = ["HELP_REQUIRED_FIELDS", "SIMPA_HELP_TOPICS", "render_simpa_help"]

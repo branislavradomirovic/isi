@@ -176,11 +176,9 @@ def shared_help_topic(topic_id: str) -> dict[str, str]:
     return next(topic for topic in SHARED_HELP_TOPICS if topic["id"] == topic_id)
 
 
-def _render_topic(topic: dict[str, str]) -> None:
-    st.markdown(f"### {topic['title']}")
-    for label, field in zip(HELP_LABELS, HELP_REQUIRED_FIELDS):
-        st.markdown(f"**{label}**")
-        st.write(topic[field])
+def _render_topic(topic: dict[str, str], *, public: bool = False) -> None:
+    from src.streamlit_app.help_manual import render_topic
+    render_topic(topic, public=public)
 
 
 def render_shared_help(*, public: bool = False) -> None:
@@ -193,7 +191,7 @@ def render_shared_help(*, public: bool = False) -> None:
         format_func=lambda value: f"{value} · {shared_help_topic(value)['title']}",
         key="isi_public_help_topic" if public else "isi_shared_help_topic",
     )
-    _render_topic(next(topic for topic in topics if topic["id"] == selected))
+    _render_topic(next(topic for topic in topics if topic["id"] == selected), public=public)
 
 
 def render_topic_summary(topic_id: str) -> None:

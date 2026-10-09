@@ -173,3 +173,17 @@ ISI-29C GIS user actions: PARTIAL until exact release/server evidence. Podaci→
 | Accepted-only exact period/geometry retrieval | PARTIAL | docs/help/ISI-EXTRACTION-GUIDE.md | no unverified/rejected/stale claims;29F report/manual/release pending |
 
 29E local coverage is verified only with matching exact-candidate acceptance/browser/review evidence. Release/server/Word coverage remains PARTIAL until29F; no institutional extraction accuracy certification.
+
+## ISI 29F linked report extension
+
+INV-A14/A22 actions: explicit accepted claim selection, human result association,
+source/dated territory/map/XAI preview, draft/version, review/publish and current
+revalidated export. Coverage COMPLETE in docs/help/ISI-LINKED-REPORTS-GUIDE.md
+and src/streamlit_app/linked_reporting_workspace.py;10 checklist items. VERIFIED
+only after matching final focused/browser/manual acceptance under ISI-29F.
+Legacy shared/domain Help coverage remains accepted for its earlier scope.
+No unsupported confidence, ORDO SHAP, domain truth or production quality claim.
+
+## Owner-requested illustrated Help — 2026-10-09
+
+Existing36 canonical shared/SIMPA/ORDO topics gain numbered workflows, documented field tables, dated baseline availability and37 reviewed local screenshots. Product Help includes detailed GIS, extraction and linked-report chapters; SIMPA also includes supported SHAP. Ten-item canonical text remains intact; public six-topic allowlist remains independent of authentication. Images do not read live tenant data and have exact checksums, provenance/date and synthetic/baseline captions. Authority: docs/help/ISI-ILLUSTRATED-MANUAL.json, src/streamlit_app/help_manual.py and tests/test_isi_29f_illustrated_help.py. COMPLETE content candidate; VERIFICATION requires matching final29F gates/browser/manual/review. Existing historical21-row matrix is predecessor evidence, not a claim that illustrated Help was previously shipped.

@@ -2,16 +2,23 @@
 
 ## Current reconciliation and owner-requested ISI-29 — 2026-10-07
 
-Authoritative development baseline: main/origin/main/direct GitHub main `a77f9f0b4e43038554ee203a0c5ad22cd0b9e981`,29A/B/C approved commits. Latest hosted acceptance #96 /37515814577 completed/success applies only to predecessor374dda3; all12 jobs green. Local checkpoint96 closeout records signed scoped test deployment PREPRODUCTION_TESTING, SMTP pending, new backups owner-deferred, full_production_claim=false. No new server probe in29C. Earlier mutable current/next and R3 candidate text below is checkpoint history, superseded by current records.
+Authoritative main/origin/direct GitHub33e86e6 clean single worktree/empty stash.
+29E IMPLEMENTED / REVIEW_VERIFIED exact30file commit:60 focused/native1/1384
+regression passes,45 inherited native-lane skips,0failures. Evidence ISI-29E
+closeout.json. Last exact CI/server95fec435/37746165918/schema0036 preproduction.
+29F IN_PROGRESS: linked reports/current evidence guard, Word/manual,10-item Help,
+final acceptance and controlled ISI28 deployment; full gates not yet claimed.
+Standing verified29A-F commit/push and current final-checkpoint/deployment owner
+approval apply. SMTP pending/new backups deferred/real extraction UNCALIBRATED.
+Earlier current status paragraphs below are LEGITIMATE_HISTORY superseded here.
 
-ISI-28 remains IN_PROGRESS for full production under owner-narrowed PREPRODUCTION_TESTING. 29A–29D are CI_VERIFIED / REVIEW_VERIFIED at exact main 95fec43590e9b1d3eb44d55867666581118ec650 (ISI required acceptance run37746165918, all12 completed/success). Recorded signed deployment and scoped server acceptance passed in PREPRODUCTION_TESTING, schema0036; automation/evidence/ISI-29D/release/closeout.json. No fresh server probe in29E. SMTP pending, new backups owner-deferred, institutional/capacity/operational full-production gates remain open. 29E local IMPLEMENTED / REVIEW_VERIFIED candidate subject to matching final exact evidence;29F next. Standing verified29A-F commit/push approval applies.
 
 
 This is the human-facing live execution ledger. The MasterPlan is the canonical roadmap/architecture/governance authority; `automation/tasks.json`, accepted code, exact-main GitHub Actions and recorded evidence provide synchronized execution proof.
 
 Last status update: 2026-10-05.
 
-## Current execution
+## Historical execution ledger before current reconciliation
 
 Last accepted implementation slice: `ISI-27D - Exact-Main RC Acceptance & Phase Closeout`. Accepted release candidate: `2b1f2ef20a2310df23947f2ac2128d16f81a98ea` — **CI_VERIFIED / REVIEW_VERIFIED**, checkpoint #93, all 12 jobs success. Signed release bundle verified. Current checkpoint: `ISI-28 - Current Server Controlled Upgrade`.
 
@@ -500,3 +507,11 @@ IMPLEMENTED / REVIEW_VERIFIED applies only to the exact30-file candidate with ma
 Standing owner approval covers verified29A-F commit/push. First unfinished package after verified29E is29F (linked evidence/report/Help/Word/final acceptance and controlled deployment). NOT CI_VERIFIED / DEFERRED_SERVER_VERIFICATION for29E; recorded server remains95fec435/schema0036. No new Actions dispatch, server/Nginx/model mutation or SMTP/backups action occurs here. Real adjudicated extraction quality remains UNCALIBRATED; full-production operational gates remain open.
 
 29E final governance review: general AI jobs retain metadata only for extraction; successful raw input/output/structured copies are cleared in the worker transaction. Quotations remain solely in source-revalidated extraction artifacts, preventing general AI/report reads from bypassing source withdrawal (REMOVE_BEFORE_NEXT_SLICE, resolved in this candidate; legacy non-extraction jobs REQUIRED_COMPATIBILITY). Code fingerprint pins service/contracts/models and the selected product extraction/spatial adapter. Empty pending request text and runtime-policy/model parameter drift fail before provider execution. Signed/decimal/date fragments cannot silently become partial numeric value/period tokens; spelling stays verbatim without numerical interpretation or domain formula. Exact final gates required after these bounded corrections.
+
+## ISI-29F exact-candidate verification contract — 2026-10-08
+
+Linked report implementation exists on canonical main as an unstaged candidate. IMPLEMENTED / REVIEW_VERIFIED applies only after matching PASS acceptance.json, browser-verification.json, manual-verification.json, independent-analysis.json and human-review.json under automation/evidence/ISI-29F. Final candidate gates include focused report/numerical/API/UI tests, existing29B/29D/29E native migration lanes, full regression, lint/policy/mypy/pip/diff. Source/review/geometry/result/hash changes block current report quotes and lifecycle/export/download; saved export checksum is checked. Typed text section rows preserve structured packet values while avoiding mixed Arrow cells. Claim structure is an explicit expander.
+
+Word29F extends the reviewed88-page baseline with clearly labeled synthetic GIS/SHAP/extraction/report screens, preserves historical server availability and documents limitations. Every rendered page requires visual review before delivery. No new runtime format/schema/dependency/model/automatic trigger. Hosted and server status are conditional on separate exact-main release evidence in automation/evidence/ISI-29F/release/closeout.json; no inherited CI/server label for29E/F. Current task authorizes final manual checkpoint and controlled ISI28 deployment with usage pre/post. Pending test-account email is owner input; credentials remain local and owner-entered. SMTP pending/backups owner-deferred/PREPRODUCTION_TESTING remain unchanged; full institutional production is not certified.
+
+2026-10-09 owner status/Help steering: first29F cycle passed8gates,26focused/3native/1412regression with43 existing native-lane skips. Candidate expanded before staging to detailed illustrated Help after explicit owner request. Previous acceptance.json is superseded until extended exact candidate passes again. Word render currently exists with79figures; visual QA and final delivery remain pending. No29F commit/push/CI/server mutation occurred yet.

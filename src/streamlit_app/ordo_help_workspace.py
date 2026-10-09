@@ -188,24 +188,21 @@ def render_ordo_help(*, shell: dict[str, Any]) -> None:
         st.info("ORDO Help je dostupan samo u aktivnom ORDO kontekstu.")
         return
     st.markdown('<div class="isi-eyebrow">ORDO · Help / User Guide</div>', unsafe_allow_html=True)
-    st.markdown('<h1 class="isi-shell-title">ORDO pomoc, metodologija i XAI</h1>', unsafe_allow_html=True)
-    st.caption("Svaka tema pokriva svrhu, permissions, korake, stanja, primer, non-goals, recovery, ogranicenja i provenance/human review.")
+    st.markdown('<h1 class="isi-shell-title">ORDO — detaljno uputstvo, metodologija i XAI</h1>', unsafe_allow_html=True)
+    st.caption("Izaberite temu za postupak korak po korak, objašnjenje polja, korisničke ekrane, primere i rešavanje problema.")
+    from src.streamlit_app.help_manual import chapters, render_chapter, render_topic
+    extra = chapters("ORDO")
     selected = st.selectbox(
         "Help tema",
-        [topic["id"] for topic in ORDO_HELP_TOPICS],
-        format_func=lambda value: f"{value} · {_topic(value)['title']}",
+        [topic["id"] for topic in ORDO_HELP_TOPICS] + list(extra),
+        format_func=lambda value: extra[value]["title"] if value in extra else f"{value} · {_topic(value)['title']}",
+        key="ordo_illustrated_help_topic",
     )
-    topic = _topic(selected)
-    st.markdown(f"### {topic['title']}")
-    for label, key in (
-        ("Sta radi", "what"), ("Kada se koristi", "when"), ("Role i dozvole", "roles_permissions"),
-        ("Koraci", "steps"), ("Polja i stanja", "fields_statuses"), ("Primer", "example"),
-        ("Sta sistem ne radi", "non_goals"), ("Greske i bezbedan oporavak", "errors_recovery"),
-        ("Ogranicenja", "limitations"), ("Provenance i human review", "provenance_review"),
-    ):
-        st.markdown(f"**{label}**")
-        st.write(topic[key])
-    st.caption(f"Coverage status: {topic['coverage']} · canonical topic: {topic['id']}")
+    if selected in extra:
+        render_chapter(selected, product="ORDO")
+        return
+    render_topic(_topic(selected))
+
 
 
 __all__ = ["HELP_REQUIRED_FIELDS", "ORDO_HELP_TOPICS", "render_ordo_help"]

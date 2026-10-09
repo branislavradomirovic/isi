@@ -1,12 +1,12 @@
 # ISI Technical Documentation
 
-**Version:** 1.7
+**Version:** 1.8
 **Status:** Controlled living technical document  
 **Last updated:** 2026-10-08
 **Canonical repository:** `branislavradomirovic/isi`  
-**As-built feature checkpoint:** `95fec43590e9b1d3eb44d55867666581118ec650` (run37746165918: exact required acceptance success; bounded preproduction deployment recorded)
+**Last CI and recorded server checkpoint:** `95fec43590e9b1d3eb44d55867666581118ec650` (run37746165918: exact required acceptance success; bounded preproduction deployment recorded)
 **Pre-reconciliation governance baseline:** `ff573b3d76cf29581cb19c255821e9b4c4841108`  
-**Current database migration head:** `20261008_0037` (29E candidate); recorded deployed head `20261008_0036`
+**Current database migration head:** `20261008_0037` (29E accepted main33e86e6); recorded deployed head `20261008_0036`
 
 > This document is the concise technical authority for the current ISI as-built platform and its owner-approved deployment target. The MasterPlan remains the canonical architecture/governance/roadmap authority, and code/tests remain the as-built implementation truth. Live production-server state is not inferred from repository source: current-server verification remains deferred to ISI-28.
 
@@ -14,7 +14,7 @@
 
 29A–29D are CI_VERIFIED / REVIEW_VERIFIED at exact main 95fec43590e9b1d3eb44d55867666581118ec650 (ISI required acceptance run37746165918, all12 completed/success). Recorded signed deployment and scoped server acceptance passed in PREPRODUCTION_TESTING, schema0036; automation/evidence/ISI-29D/release/closeout.json. No fresh server probe in29E. SMTP pending, new backups owner-deferred, institutional/capacity/operational full-production gates remain open.
 
-29A charts,29B geometry,29C maps and29D continuous OLS SHAP are on accepted main.29E extraction candidate is under local verification;29F reports/manual/final release remain planned. No full-production or real institutional model/extraction quality claim.
+29A charts,29B geometry,29C maps and29D continuous OLS SHAP are on accepted main.29E extraction is IMPLEMENTED / REVIEW_VERIFIED on33e86e6 with exact local evidence;29F linked reports/manual/final release is IN_PROGRESS. No full-production or real institutional model/extraction quality claim.
 
 ## 1. Purpose and scope
 
@@ -41,8 +41,8 @@ The platform currently includes a public institutional website, an authenticated
 | ISI-24 ORDO Production Methodology + Help/XAI | COMPLETE / CI_VERIFIED |
 | ISI-25 Industrial AI / MLOps | IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED |
 | ISI-26 Performance, Load & Resilience | IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED |
-| ISI-27 Industrial Release Candidate | IN PROGRESS / 27A ACCEPTED ON MAIN / 27B ACCEPTED ON MAIN / 27C ACCEPTED ON MAIN / 27D IN_PROGRESS / NOT CI_VERIFIED |
-| ISI-28 Current Server Controlled Upgrade | DEFERRED / owner-gated |
+| ISI-27 Industrial Release Candidate | COMPLETE / exact RC CI_VERIFIED;95fec435 later consolidated acceptance |
+| ISI-28 Current Server Controlled Upgrade | IN_PROGRESS /95fec435 recorded preproduction deployment; full production gates open |
 
 ISI-25A is accepted at `f0047321ee4410522697144ecfa464087f1b83bc`. ISI-25B is accepted at `7e11ee2a6f7546eacc3207e15cacfc35f6d04f3e`. Hosted full acceptance was deliberately not run for those development checkpoints under the owner CI-cost policy; `CI_VERIFIED` is therefore not claimed for ISI-25.
 
@@ -871,3 +871,23 @@ IMPLEMENTED / REVIEW_VERIFIED applies only to the exact30-file candidate with ma
 Standing owner approval covers verified29A-F commit/push. First unfinished package after verified29E is29F (linked evidence/report/Help/Word/final acceptance and controlled deployment). NOT CI_VERIFIED / DEFERRED_SERVER_VERIFICATION for29E; recorded server remains95fec435/schema0036. No new Actions dispatch, server/Nginx/model mutation or SMTP/backups action occurs here. Real adjudicated extraction quality remains UNCALIBRATED; full-production operational gates remain open.
 
 29E final governance review: general AI jobs retain metadata only for extraction; successful raw input/output/structured copies are cleared in the worker transaction. Quotations remain solely in source-revalidated extraction artifacts, preventing general AI/report reads from bypassing source withdrawal (REMOVE_BEFORE_NEXT_SLICE, resolved in this candidate; legacy non-extraction jobs REQUIRED_COMPATIBILITY). Code fingerprint pins service/contracts/models and the selected product extraction/spatial adapter. Empty pending request text and runtime-policy/model parameter drift fail before provider execution. Signed/decimal/date fragments cannot silently become partial numeric value/period tokens; spelling stays verbatim without numerical interpretation or domain formula. Exact final gates required after these bounded corrections.
+
+## Linked evidence reports ISI 29F candidate
+
+ISI-LINKED-EVIDENCE-v1 uses existing immutable report version/content/source
+manifest and existing draft/review/approved/published lifecycle. One accepted
+source-anchored claim, separately reviewed polygon/date or UNRESOLVED, optional
+stored SIMPA continuous OLS result with existing SHAP artifact or ORDO forecast
+with faithful XAI. Human note and attestation define contextual association,
+not automated matching/corroboration/causality. Report read/lifecycle/export and
+saved download rebuild current scoped evidence and compare both content/manifest
+hashes. Revoked source/rights and changed geometry/result fail closed. No schema
+change, new inference, parser or dependency. Existing independent reports remain
+compatibility. Streamlit holds no raw export session cache;2MB packet cap.
+HTML/Markdown/JSON reporting unchanged; Word remains screenshot user manual.
+Help docs/help/ISI-LINKED-REPORTS-GUIDE.md and inline10-item guide.
+Full final exact-source acceptance/controlled deployment remains required.
+
+29F review refinement: section cell values are explicit text while the linked packet retains typed JSON. A claim-structure expander keeps map/result review readable. Saved linked export content must match its stored SHA-256 before download. Word29F uses the reviewed baseline plus labeled synthetic feature screens; final artifact/render/review identities live in manual-verification.json. Exact-main acceptance and ISI-only deployment remain conditional on release/closeout.json evidence, with PREPRODUCTION_TESTING, pending SMTP and deferred backups retained.
+
+2026-10-09 owner Help extension: existing shared/product Help renders a trusted local illustrated manual, numbered workflows, field tables and dated baseline availability. 36 existing topics retain canonical content; additional product chapters cover GIS/extraction/linked reports and SIMPA SHAP. 37 local reviewed images are hash-bound in docs/help/ISI-ILLUSTRATED-MANUAL.json; no remote image fetching, runtime/customer data reads or public exposure of private topics. Public six-topic allowlist is retained. Final local/browser/manual gates must be rerun on the extended exact candidate before standing-approved commit/push/checkpoint/deployment.

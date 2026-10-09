@@ -1,0 +1,942 @@
+{
+  "schema": "ISI-HELP-MANUAL-v1",
+  "topics": {
+    "ISI-H01": {
+      "fields": [],
+      "availability": "Dostupnost radnje zavisi od aktivnog konteksta, dozvola i odgovarajućih ulaznih podataka.",
+      "screens": [
+        "screenshots-public-home.jpg"
+      ]
+    },
+    "ISI-H02": {
+      "fields": [],
+      "availability": "Dostupnost radnje zavisi od aktivnog konteksta, dozvola i odgovarajućih ulaznih podataka.",
+      "screens": [
+        "screenshots-login.jpg"
+      ]
+    },
+    "ISI-H03": {
+      "fields": [],
+      "availability": "Dostupnost radnje zavisi od aktivnog konteksta, dozvola i odgovarajućih ulaznih podataka.",
+      "screens": [
+        "screenshots-help-invitation.jpg"
+      ]
+    },
+    "ISI-H04": {
+      "fields": [],
+      "availability": "Dostupnost radnje zavisi od aktivnog konteksta, dozvola i odgovarajućih ulaznih podataka.",
+      "screens": [
+        "screenshots-login-recovery.jpg"
+      ]
+    },
+    "ISI-H05": {
+      "fields": [],
+      "availability": "Dostupnost radnje zavisi od aktivnog konteksta, dozvola i odgovarajućih ulaznih podataka.",
+      "screens": [
+        "screenshots-login-recovery.jpg"
+      ]
+    },
+    "ISI-H06": {
+      "fields": [],
+      "availability": "Dostupnost radnje zavisi od aktivnog konteksta, dozvola i odgovarajućih ulaznih podataka.",
+      "screens": [
+        "screenshots-simpa-overview.jpg"
+      ]
+    },
+    "ISI-H07": {
+      "fields": [],
+      "availability": "Dostupnost radnje zavisi od aktivnog konteksta, dozvola i odgovarajućih ulaznih podataka.",
+      "screens": [
+        "screenshots-data.jpg"
+      ],
+      "sections": [
+        [
+          "Katalog i učitavanje",
+          "Otvorite Podaci u tačnom proizvodu i radnom prostoru. Katalog izvora prikazuje naziv, tip, verziju, format, status, broj redova i kolona i veličinu, kada su ti podaci dostupni. Za učitavanje su potrebni odgovarajuća dozvola i odobreni izvor."
+        ],
+        [
+          "Postupak učitavanja",
+          "Unesite Naziv izvora. Izaberite Datoteka u podržanom formatu CSV, JSON, XLSX, PDF, DOCX ili TXT. Proverite da datoteka pripada izabranom institucionalnom kontekstu, pa izaberite Učitaj i proveri. Ako naziv ili datoteka nedostaju, dopunite unos. Ne učitavajte stvarne osetljive podatke samo radi demonstracije interfejsa."
+        ],
+        [
+          "Status obrade",
+          "uploaded označava primljen izvor; queued čeka obradu; running znači da obrada traje; succeeded da je tehnička obrada završena; failed da je neuspešna. Tehnički uspeh ne označava odobrenu metodologiju, validirane opservacije ili dozvolu za modeliranje."
+        ],
+        [
+          "Registri i poreklo",
+          "Analytical dataset registry i snapshot-i predstavljaju kontrolisane analitičke skupove. Feature registry predstavlja verzionisane karakteristike. U pregledu lineage i provenance izaberite raspoloživi snapshot i proverite izvore i vezu sa daljim rezultatima. Ako nema stavki, učitavanje datoteke samo po sebi nije završilo ove korake."
+        ],
+        [
+          "Provera podobnosti za upotrebu",
+          "Za raspoloživi artefakt izaberite namenu kao što je LOCAL_ANALYSIS, RAG_RETRIEVAL, MODEL_EVALUATION ili MODEL_TRAINING i pokrenite Evaluate deterministic eligibility. Pročitajte odluku, razlog, zahtev za posebnim odobrenjem i ljudskim pregledom. Ova akcija proverava podobnost; ne trenira model i ne izvršava analizu."
+        ],
+        [
+          "Granica korisničkog interfejsa",
+          "Registry governance controls trenutno opisuje servisne kontrole. Ne postoji kompletan obrazac za svaki korak od sirovog izvora do odobrenog skupa. Za korake koji su API-only potreban je ovlašćeni tehnički postupak. Nemojte tražiti nepostojeće dugme ili menjati status radi uklanjanja blokade."
+        ]
+      ]
+    },
+    "ISI-H08": {
+      "fields": [],
+      "availability": "Dostupnost radnje zavisi od aktivnog konteksta, dozvola i odgovarajućih ulaznih podataka.",
+      "screens": [
+        "screenshots-reports.jpg"
+      ],
+      "sections": [
+        [
+          "Izbor izvora",
+          "Otvorite Izveštaji. Dostupan izvor mora biti sačuvan rezultat u aktivnom proizvodu i radnom prostoru. SIMPA monitoring_summary koristi analytics_run; ORDO destination_snapshot koristi analytics_run, dok scenario_review koristi scenario_assessment. Ako nema izvora, prvo završite odgovarajući analitički tok."
+        ],
+        [
+          "Nacrt",
+          "Izaberite Izvor, unesite Naslov i kliknite Kreiraj draft izveštaj. Pregledajte sadržaj i provenance. Verzije su istorijski odvojene; nova verzija ne treba da prepisuje dokaz na kome je prethodna nastala."
+        ],
+        [
+          "Pregled i odluka",
+          "Pošalji na review prebacuje draft u in_review kada postoje potrebne dozvole. Ovlašćeni korisnik daje Review napomena i odobrava ili odbija verziju. Interfejs za ovu odluku proverava organizacijsko ovlašćenje; sama mogućnost čitanja izveštaja nije dozvola za odobravanje."
+        ],
+        [
+          "Publikovanje",
+          "Posle odobravanja koristi se eksplicitna akcija Publikuj verziju. Stanje published označava publikovanu verziju unutar ovog procesa. Ne znači da je izveštaj javno objavljen na institucionalnom sajtu ili poslat emailom. superseded čuva istoriju zamenjene verzije."
+        ],
+        [
+          "Izvoz",
+          "Izvoz je raspoloživ za dozvoljene odobrene, publikovane ili istorijski zamenjene verzije. Dostupni formati su HTML, Markdown i JSON. Aplikacija trenutno ne nudi sopstveni PDF ili DOCX izvoz izveštaja. Ovaj Word priručnik je zaseban dokument. Sa izvozom sačuvajte identitet verzije i otisak kada je prikazan."
+        ],
+        [
+          "Kontrola sadržaja",
+          "Proverite da naslov odgovara izvoru, da nedostajući podaci nisu predstavljeni nulom i da AI tekst ima obavezan ljudski pregled. Publikovanje ne popravlja nevalidnu metodologiju i ne proizvodi novu AI analizu samo po sebi."
+        ]
+      ]
+    },
+    "ISI-H09": {
+      "fields": [],
+      "availability": "Dostupnost radnje zavisi od aktivnog konteksta, dozvola i odgovarajućih ulaznih podataka.",
+      "screens": [
+        "screenshots-admin-overview.jpg"
+      ]
+    },
+    "ISI-H10": {
+      "fields": [],
+      "availability": "Dostupnost radnje zavisi od aktivnog konteksta, dozvola i odgovarajućih ulaznih podataka.",
+      "screens": [
+        "screenshots-security.jpg"
+      ]
+    },
+    "ISI-H11": {
+      "fields": [],
+      "availability": "Dostupnost radnje zavisi od aktivnog konteksta, dozvola i odgovarajućih ulaznih podataka.",
+      "screens": [
+        "screenshots-public-help.jpg"
+      ]
+    },
+    "ISI-H12": {
+      "fields": [],
+      "availability": "Dostupnost radnje zavisi od aktivnog konteksta, dozvola i odgovarajućih ulaznih podataka.",
+      "screens": [
+        "screenshots-shared-help.jpg"
+      ]
+    },
+    "SIMPA-H01": {
+      "fields": [],
+      "availability": "Dostupnost radnje zavisi od aktivnog konteksta, dozvola i odgovarajućih ulaznih podataka.",
+      "screens": [
+        "screenshots-simpa-overview.jpg"
+      ]
+    },
+    "SIMPA-H02": {
+      "fields": [
+        [
+          "Naziv JLS / lokalnog sistema",
+          "Obavezan stvarni naziv lokalnog sistema."
+        ],
+        [
+          "Šifra",
+          "Opcioni identifikator."
+        ],
+        [
+          "Referentna godina",
+          "Celobrojna godina od 1900 do 2200."
+        ],
+        [
+          "Napomena",
+          "Kontekst profila; nije izračunata statistika."
+        ],
+        [
+          "Tip lokalnog aktera",
+          "Kontrolisana kategorija, npr. local_government, social_work_center, health ili civil_society."
+        ],
+        [
+          "Naziv aktera",
+          "Obavezan naziv institucije ili organizacije."
+        ],
+        [
+          "Eksterna šifra aktera",
+          "Opciona veza sa spoljnim registrom."
+        ]
+      ],
+      "availability": "Dostupnost radnje zavisi od aktivnog konteksta, dozvola i odgovarajućih ulaznih podataka.",
+      "screens": [
+        "screenshots-simpa-profile.jpg"
+      ]
+    },
+    "SIMPA-H03": {
+      "fields": [
+        [
+          "Kod ciklusa",
+          "Obavezan identifikator perioda."
+        ],
+        [
+          "Naziv ciklusa",
+          "Obavezan razumljiv naziv."
+        ],
+        [
+          "Početak i kraj perioda",
+          "Kraj ne može biti pre početka."
+        ],
+        [
+          "planned",
+          "Planirani ciklus."
+        ],
+        [
+          "open",
+          "Otvoren ciklus."
+        ],
+        [
+          "closed",
+          "Zatvoren ciklus; nije ocena uspeha politike."
+        ]
+      ],
+      "availability": "Dostupnost radnje zavisi od aktivnog konteksta, dozvola i odgovarajućih ulaznih podataka.",
+      "screens": [
+        "screenshots-simpa-cycle.jpg"
+      ]
+    },
+    "SIMPA-H04": {
+      "fields": [],
+      "availability": "Dostupnost radnje zavisi od aktivnog konteksta, dozvola i odgovarajućih ulaznih podataka.",
+      "screens": [
+        "screenshots-simpa-indicators.jpg"
+      ]
+    },
+    "SIMPA-H05": {
+      "fields": [],
+      "availability": "Trenutno nema prihvatljivog analitičkog snapshot-a niti eligible feature verzije. Prikazan je ekran preduslova; izbor i dalji proračun pojavljuju se tek nakon odobrenja ulaza.",
+      "screens": [
+        "screenshots-simpa-analysis.jpg"
+      ]
+    },
+    "SIMPA-H06": {
+      "fields": [],
+      "availability": "Registar metodologija je trenutno prazan. Sledeći opis predstavlja postojeći lifecycle, a snimak prikazuje stanje bez registrovanih metodologija.",
+      "screens": [
+        "screenshots-simpa-analysis.jpg"
+      ]
+    },
+    "SIMPA-H07": {
+      "fields": [],
+      "availability": "Nema registrovane metodologije ni rezultata referentne provere. PASS se ne može pretpostaviti na osnovu vidljivosti modula.",
+      "screens": [
+        "screenshots-simpa-analysis.jpg"
+      ]
+    },
+    "SIMPA-H08": {
+      "fields": [],
+      "availability": "Nema sačuvanih analitičkih snapshot-a. Dugme za čuvanje zavisi od raspoloživog prihvatljivog ulaza.",
+      "screens": [
+        "screenshots-simpa-analysis.jpg"
+      ]
+    },
+    "SIMPA-H09": {
+      "fields": [],
+      "availability": "Nema statističkih metodoloških ugovora u aktivnom radnom prostoru. Snimak prikazuje prazno stanje, a opis objašnjava postupak nakon njihove pripreme.",
+      "screens": [
+        "screenshots-simpa-statistics.jpg"
+      ]
+    },
+    "SIMPA-H10": {
+      "fields": [],
+      "availability": "Nema ugovora ili prihvatljivog ulaza za izvršenje. Kontrole izbora i pokretanja nisu prikazane u trenutnom praznom kontekstu.",
+      "screens": [
+        "screenshots-simpa-statistics.jpg"
+      ]
+    },
+    "SIMPA-H11": {
+      "fields": [],
+      "availability": "Nema sačuvanih statističkih rezultata. Sledeće objašnjenje služi čitanju budućeg stvarnog rezultata i ne predstavlja rezultat ovog radnog prostora.",
+      "screens": [
+        "screenshots-simpa-statistics.jpg"
+      ]
+    },
+    "SIMPA-H12": {
+      "fields": [],
+      "availability": "Nema lokalnih AI sinteza u radnom prostoru. Potreban je sačuvan monitoring snapshot i odgovarajući raspoloživ model.",
+      "screens": [
+        "screenshots-simpa-analysis.jpg"
+      ]
+    },
+    "ORDO-H01": {
+      "fields": [],
+      "availability": "Dostupnost radnje zavisi od aktivnog konteksta, dozvola i odgovarajućih ulaznih podataka.",
+      "screens": [
+        "screenshots-ordo-overview.jpg"
+      ]
+    },
+    "ORDO-H02": {
+      "fields": [
+        [
+          "Naziv destinacije",
+          "Obavezan stvarni naziv."
+        ],
+        [
+          "Šifra i tip destinacije",
+          "Opcioni identifikator i opis tipa."
+        ],
+        [
+          "Referentna godina i napomena",
+          "Vremenski i institucionalni kontekst profila."
+        ],
+        [
+          "Tip resursa",
+          "Prirodni resurs, nasleđe, atrakcija, iskustvo, infrastruktura, mobilnost, smeštaj, gastronomija, događaj, znanje, preduzetništvo, zajednica ili drugo."
+        ],
+        [
+          "Naziv resursa",
+          "Obavezno polje; lokacija i opis su opcioni."
+        ],
+        [
+          "Tip aktera",
+          "Lokalna uprava, turistička organizacija, ustanova nasleđa, upravljač zaštićenog područja, privreda, preduzetnik, obrazovanje i istraživanje, infrastruktura, civilno društvo, zajednica ili drugo."
+        ],
+        [
+          "Naziv aktera",
+          "Obavezan naziv stvarnog aktera."
+        ]
+      ],
+      "availability": "Na pregledanom administratorskom ekranu ORDO profil nije konfigurisan, a obrasci za konfiguraciju profila, resursa i aktera nisu prikazani. Opis ispod zasnovan je na implementiranim obrascima u kodu; ovo izdanje ne tvrdi da su trenutno dostupni na serveru. Potrebna je provera prikaza tih kontrola pre praktične konfiguracije.",
+      "screens": [
+        "screenshots-ordo-overview.jpg"
+      ]
+    },
+    "ORDO-H03": {
+      "fields": [],
+      "availability": "Na trenutnom ORDO Pregledu obrazac Novi monitoring ciklus nije prikazan. Snimak dokumentuje trenutno stanje; koraci ispod opisuju implementiranu kontrolu kada je dostupna.",
+      "screens": [
+        "screenshots-ordo-overview.jpg"
+      ]
+    },
+    "ORDO-H04": {
+      "fields": [],
+      "availability": "Dostupnost radnje zavisi od aktivnog konteksta, dozvola i odgovarajućih ulaznih podataka.",
+      "screens": [
+        "screenshots-ordo-indicators.jpg"
+      ]
+    },
+    "ORDO-H05": {
+      "fields": [],
+      "availability": "Nema validiranog analitičkog snapshot-a niti eligible feature verzije. Analitika zato prikazuje poruku o preduslovima.",
+      "screens": [
+        "screenshots-ordo-analysis.jpg"
+      ]
+    },
+    "ORDO-H06": {
+      "fields": [],
+      "availability": "Registar odobrenih metodologija i time-series specifikacija je prazan. Nova time-series specifikacija trenutno traži da se prvo sačuva governed ORDO analitički snapshot.",
+      "screens": [
+        "screenshots-ordo-forecast.jpg"
+      ]
+    },
+    "ORDO-H07": {
+      "fields": [],
+      "availability": "Nema sačuvanih ORDO analitičkih snapshot-a. Bez prihvatljivog ulaza nije moguće napraviti stvarni dokazni snimak.",
+      "screens": [
+        "screenshots-ordo-analysis.jpg"
+      ]
+    },
+    "ORDO-H08": {
+      "fields": [
+        [
+          "Kod cilja",
+          "Identifikator razvojnog cilja."
+        ],
+        [
+          "Naziv cilja",
+          "Razumljiv naslov odobrenog razvojnog pravca."
+        ],
+        [
+          "Opis",
+          "Kontekst i namera cilja."
+        ],
+        [
+          "Fokus",
+          "destination_development, competitiveness, sustainability, inclusion, employment, quality_of_life ili custom."
+        ],
+        [
+          "Razvojni cilj scenarija",
+          "Postojeći cilj kome scenario pripada."
+        ],
+        [
+          "Naziv i opis scenarija",
+          "Korisnički opis mogućeg razvojnog pravca."
+        ],
+        [
+          "Pretpostavke",
+          "Jedna pretpostavka po redu; ostaju pretpostavke."
+        ],
+        [
+          "Predložene mere",
+          "Jedna mera po redu; unos nije odobrenje realizacije niti procena efekta."
+        ]
+      ],
+      "availability": "Obrazac Novi razvojni cilj dostupan je u Analitici i prikazan je na snimku. Obrazac Novi scenario pojavljuje se tek kada postoji razvojni cilj; u trenutnom radnom prostoru nema sačuvanog cilja.",
+      "screens": [
+        "screenshots-ordo-goal.jpg"
+      ]
+    },
+    "ORDO-H09": {
+      "fields": [],
+      "availability": "Nema scenarija i sačuvanog analitičkog snapshot-a. Obrazac procene se pojavljuje tek kada postoje oba preduslova.",
+      "screens": [
+        "screenshots-ordo-analysis.jpg"
+      ]
+    },
+    "ORDO-H10": {
+      "fields": [
+        [
+          "Ključ serije i kod ciljnog indikatora",
+          "Identitet vremenske serije i metodološki definisan cilj."
+        ],
+        [
+          "Semantika cilja",
+          "continuous, count ili proportion_rate."
+        ],
+        [
+          "Polje vremenskog indeksa",
+          "Kolona koja predstavlja vreme."
+        ],
+        [
+          "Frekvencija",
+          "daily, weekly, monthly, quarterly ili annual."
+        ],
+        [
+          "Polja identiteta serije",
+          "Jedno polje po redu; backend razrešava raspoložive serije."
+        ],
+        [
+          "Početak kraj i As-of datum",
+          "Opseg posmatranja i datum dostupnosti dokaza."
+        ],
+        [
+          "Minimalan broj perioda",
+          "Najmanje 2; prikazani podrazumevani broj nije odobrena metodologija."
+        ],
+        [
+          "Maksimalni missing ratio",
+          "Od 0 do 1, uz eksplicitno odobreno pravilo za nedostajuće podatke."
+        ],
+        [
+          "Missing pravilo",
+          "fail, exclude_periods ili explicit_gap."
+        ],
+        [
+          "Outlier revision comparability politike",
+          "Eksplicitno postupanje sa ekstremnim vrednostima, revizijama i uporedivošću."
+        ],
+        [
+          "Transformacija i trend",
+          "none, log1p, difference ili seasonal_difference; trend none, allowed ili required."
+        ],
+        [
+          "Sezonalnost",
+          "Period; 0 označava da sezonalnost nije primenljiva."
+        ],
+        [
+          "Porodice modela",
+          "Specifikacija može navesti naive, seasonal_naive, ets, sarima, sarimax ili count_time_series. Ovo izdanje izvršava podržane naive i seasonal_naive; ostale oznake ne potvrđuju raspoloživ runtime."
+        ],
+        [
+          "Horizont i jedinica",
+          "Pozitivan broj perioda i days, weeks, months, quarters ili years."
+        ],
+        [
+          "Rolling-origin",
+          "Početni trening najmanje 2 perioda, korak najmanje 1 i najmanje 2 početne tačke."
+        ],
+        [
+          "Metrike",
+          "MAE, RMSE, sMAPE, MASE, bias, interval_coverage, interval_width_sharpness i seasonal_baseline_comparison prema odobrenom ugovoru."
+        ],
+        [
+          "Interval pri izvršenju",
+          "Izbor 0.8, 0.9 ili 0.95. Nije univerzalna pouzdanost odluke."
+        ],
+        [
+          "Dijagnostika i ograničenja",
+          "Jedan zahtev ili ograničenje po redu; potrebno ih je ljudski pregledati."
+        ]
+      ],
+      "availability": "Nema VALIDATED time-series specifikacije ni persistiranih prognoza. Snimak prikazuje blokadu izvršenja i prazno stanje rezultata.",
+      "screens": [
+        "screenshots-ordo-forecast.jpg"
+      ]
+    },
+    "ORDO-H11": {
+      "fields": [],
+      "availability": "Nema ORDO AI sinteza u radnom prostoru. Izbor snapshot-a i pokretanje zavise od stvarnog raspoloživog analitičkog ulaza.",
+      "screens": [
+        "screenshots-ordo-analysis.jpg"
+      ]
+    },
+    "ORDO-H12": {
+      "fields": [],
+      "availability": "Dostupnost radnje zavisi od aktivnog konteksta, dozvola i odgovarajućih ulaznih podataka.",
+      "screens": [
+        "screenshots-ordo-help.jpg"
+      ]
+    }
+  },
+  "chapters": {
+    "GIS": {
+      "title": "GIS — izvori, geometrija, karta i pregled",
+      "products": [
+        "SIMPA",
+        "ORDO"
+      ],
+      "sections": [
+        [
+          "1. Šta funkcija radi",
+          "Registar čuva privatnu verziju GeoJSON geometrije i metapodatke o poreklu, vremenskom važenju i ljudskom pregledu. SIMPA podržava granice lokalnog sistema i lokaciju institucionalnog objekta; ORDO granice prostorne jedinice i lokaciju asset objekta. Zajednička infrastruktura ne spaja domensku logiku."
+        ],
+        [
+          "2. Kada je koristiti",
+          "Kada postoji konkretan izvor geometrije sa poznatim koordinatnim sistemom, licencom i stabilnim identitetom već registrovanog objekta/jedinice. Ne koristiti izmišljene koordinate ili naziv mesta kao zamenu za potvrđenu lokaciju. Testne figure su sintetičke i ne predstavljaju granice Srbije."
+        ],
+        [
+          "3. Ko može koristiti",
+          "Svaki poziv zahteva prijavu, aktivno članstvo, pravo na proizvod i odgovarajući radni prostor. `data.upload` registruje; `data.governance.manage` predlaže/povlači; `data.validate` potvrđuje; `data.read` čita; `data.export` eksplicitno izvozi uz ponovno čitanje/validaciju; `analysis.read` otvara povezane rezultate. Viewer ne registruje niti potvrđuje. Administrator je ograničen istim tenant/product/workspace pravilima. Dozvola se proverava ponovo za svaki poziv."
+        ],
+        [
+          "4. Koraci",
+          "U aplikaciji izaberite organizaciju, SIMPA/ORDO, workspace i **Podaci → GIS — karte, geometrija i ljudski pregled**.\n- ORDO: u „Prostorne jedinice” registrujte identitet, izvor/granicu/CRS/hash i datume. Predložite/potvrdite identitet uz obrazloženje. Potvrda identiteta nije potvrda koordinata. SIMPA profil/aktivni institucionalni akter i ORDO resurs zahtevaju stabilnu šifru u svojim overview obrascima.\n- Sa `data.upload` otvorite „Uvoz nove verzije geometrije”, izaberite domenski identitet, unesite poreklo/licencu/hash/datume, potvrdite ose i izaberite jednu geometry datoteku. FeatureCollection nije podržani ulaz. Registruj DRAFT ne potvrđuje izvor.\n- „Ljudski pregled” prikazuje poreklo/revision. Predložite, zatim ovlašćeni reviewer proverava i potvrđuje VALIDATED ili povlači RETIRED.\n- Izaberite datum važenja geometrije, slojeve i najviše25 tačnih verzija. Ograničen katalog100 nije kompletan ako postoje dodatni zapisi. Tačka/poligon ima isti ID u karti, tabeli i izboru. Klik na kartu/red ili tastaturni izbor otvara tačnu verziju/provenance.\n- Karte imaju pan/zoom/reset tastere i pomeranje prevlačenjem prazne podloge; Enter/Space bira fokusiranu figuru; legenda plavo=granica, oker=objekat, ljubičasto=izbor. Nema risk bands. Isključite „Prikaži interaktivnu kartu” za tabularni rad; WebGL nije potreban za tabelu/izbor.\n- `analysis.read` prikazuje samo revalidirane ORDO identity-only agregacije sa tačnom jedinicom/graničnom verzijom. Prikazuje se najviše10 najnovijih sačuvanih rezultata uz upozorenje ako postoje dodatni. Izaberite jedan rezultat za tabelu/graf i counts. Nema spatial join-a. SIMPA nema odobrenu vezu rezultata sa geometrijom pa numerički sloj ostaje unavailable. **Datum geometrije nije period opservacija**: stari ORDO ugovor nema period nalaza.\n- Sa `data.export` kliknite „Pripremi izvoz izabrane geometrije”, zatim preuzmite GeoJSON sa poreklom; backend ponovo proverava scope/state/date/integritet i beleži audit sa akterom, bez koordinata. Izvoz ne daje pravo javne objave ili deljenja.\n\nAPI koraci za kontrolisane integracije:\n1. Registrujte SIMPA local_system/local_actor ili ORDO spatial_unit/asset u odgovarajućem radnom prostoru. ORDO prostorna jedinica mora biti validated sa verzijom granice i izvorom.\n2. Pripremite jedan Point za institucionalni objekat ili Polygon/MultiPolygon za granicu; dvodimenzionalne koordinate longitude/latitude u WGS84. Sačuvajte originalni izvor i njegov SHA-256.\n3. U API `POST /api/v1/spatial/{SIMPA|ORDO}/geometries` unesite scope, domain_kind/domain_id, novu version, source_uri/source_version, declared_source_sha256, license_identifier, original_crs, axis_order, valid_from/valid_to i geometry.\n4. Pregledajte DRAFT metapodatke preko scoped liste. Ne postoji otvorena javna biblioteka geometrije.\n5. Pošaljite review sa aktuelnim revision i stanjem PROPOSED. Ovlašćeni reviewer proverava izvor, pravo upotrebe, identitet, lokaciju i vremensko važenje.\n6. Za VALIDATED eksplicitno potvrdite `source_license_location_attested=true`. Sistem proverava topologiju, integritet objekta i domensku vezu; to ne zamenjuje stručnu proveru izvora.\n7. Čitajte potvrđenu geometriju preko scoped detail uz obavezan `at_date`. Pogrešan datum ili povučen/draft izvor neće dati geometriju za upotrebu.\n8. Grešku ispravite novom verzijom; staru RETIRED sačuvajte za istoriju. Nema izmene koordinata iste verzije niti povratka RETIRED u VALIDATED."
+        ],
+        [
+          "5. Polja i stanja",
+          "DRAFT je registrovan neproveren kandidat, PROPOSED kandidat za ljudski pregled, VALIDATED ljudski potvrđen izvor/identitet/lokacija, RETIRED povučena verzija. `revision` sprečava prepisivanje paralelnog pregleda. `version` je naziv nepromenljive verzije geometrije. `declared_source_sha256` je korisnikova izjava o originalnom izvoru; `geometry_sha256` je sistemski izračunat hash tačno sačuvanog GeoJSON-a. `fingerprint` uključuje scope, izvor, licencu, vremensko važenje i domensku vezu. `HUMAN_ATTESTED` označava ljudsku potvrdu, ne nezavisni mrežni pregled licence.\n\n`valid_from` i `valid_to` su uključive granice važenja; prazno valid_to znači otvoren kraj. `OGC:CRS84` i `EPSG:4326` podržani su samo uz izričit `longitude_latitude`; prikaz je CRS84 sa IDENTITY_WGS84_LON_LAT provenance. Ne pretpostavljajte da datoteka sa EPSG oznakom koristi odgovarajući redosled osa."
+        ],
+        [
+          "6. Sintetički primer",
+          "Granica sa tačkama (20,44), (21,44), (21,45), (20,45), (20,44) služi samo testu softvera. Nije stvarna opština/destinacija. Point institucionalnog objekta može biti upotrebljen tek nakon potvrde identiteta i izvorne lokacije; naziv ili LLM odgovor nije dovoljan."
+        ],
+        [
+          "7. Šta sistem ne radi",
+          "Nema automatskog geokodiranja, spoljnih mapa, reprojekcije projektovanog CRS-a, tihog popravljanja geometrije, pojedinačnih građanskih lokacija, prostornog zaključivanja ili matematičkih indeksa/rizika. 29B je API osnova; 29C dodaje kartu i tabelu na Podaci → GIS. Prostorni join i povezivanje sa analizom nisu autoritet ove faze. Prekogranične poligone na antimeridijanu izvor mora eksplicitno podeliti."
+        ],
+        [
+          "8. Greške i oporavak",
+          "- Vektorska karta ne zahteva WebGL. Ako pol na ±90° nije podržan Mercator projekcijom, koristite tabelu/izbor; geometrija se ne menja. Ako izbor prelazi50000 koordinata/1000000 bajtova, smanjite broj verzija; nema tihog uprošćavanja.\n- 403: proverite organizaciju, proizvod, radni prostor i dozvolu; ne pokušavajte tuđi scope.\n- 404: identitet nije u dozvoljenom scope-u; ne dokazuje da tuđi zapis postoji.\n- 409: verzija već postoji ili revision nije aktuelan; ponovo pročitajte metapodatke, ne prepisujte pregled.\n- 400/422: nepoznat CRS, tip, redosled osa, neispravni prstenovi/topologija, opseg, period ili domenska veza; ispravite originalni izvor i kreirajte novu verziju.\n- geometry_not_validated/not_valid_at_date: izaberite potvrđenu verziju koja važi za datum podataka.\n- Integrity/storage greška: prekinite upotrebu, prijavite administratoru; nema fallback-a na tuđu geometriju. Ako se identitet promenio ili izvor povukao, RETIRED ostaje moguć. Ne brišite privatne objekte ručno."
+        ],
+        [
+          "9. Bezbednost, privatnost i ograničenja",
+          "Karta koristi praznu lokalnu podlogu bez spoljnih tiles/glyphs/sprites; nazivi mesta i ulice nisu automatski dostupni. Nema automatskog deljenja između SIMPA/ORDO ili organizacija, slanja geometrije geokoderu ili AI provajderu. Izvorni URL mora biti HTTPS bez korisničkih podataka, query tokena ili fragmenta; sistem ga ne posećuje. Ne unosite tajne, privatne kontakte ili podatke o građanima. Sirova geometrija ograničena je na 200000 bajtova/10000 koordinata; nema automatskog uprošćavanja. Planarna provera topologije nije geodetski obračun udaljenosti/površine. Licencu i institucionalnu primenu odgovorna osoba proverava posebno."
+        ],
+        [
+          "10. Provenance i ljudski pregled",
+          "Sistem čuva scope, izvor/verziju, izjavljeni hash, licencu, originalni/render CRS, tačan transform ugovor, geometrijski hash, identitet domenskog objekta, važenje i fingerprint. Aktor registracije/pregleda i promene stanja auditovani su bez sirovih koordinata/lozinki/tokena. Promena vezanog domenskog identiteta, povlačenje ORDO granice, neispravnost storage hash-a ili datum van važenja blokira upotrebu. Nove verzije ne menjaju stare rezultate. 29C povezuje kartu/tabelu/izbor geometrije i revalidirane ORDO identity-only rezultate; Priručnik i ekrani uključeni su u 29F."
+        ]
+      ],
+      "screens": [
+        "ISI-29C-simpa-desktop.jpg",
+        "ISI-29C-ordo-desktop.jpg",
+        "ISI-29C-simpa-mobile.jpg"
+      ]
+    },
+    "SHAP": {
+      "title": "SIMPA — SHAP matrica i doprinosi",
+      "products": [
+        "SIMPA"
+      ],
+      "sections": [
+        [
+          "1. Šta funkcija radi",
+          "Za sačuvani continuous OLS rezultat kreira nepromenljiv dokaz: baseline, sample×feature matrica, globalna srednja apsolutna vrednost doprinosa i lokalni waterfall. Tačan interventional linear SHAP doprinos je koeficijent × (input − background srednja vrednost). Sistem koristi postojeće koeficijente; ne trenira drugi model."
+        ],
+        [
+          "2. Kada koristiti",
+          "Pri stručnom pregledu numeričkog modela, kada su ulazi, metodologija i rezultat validni i dostupni. Ovo su objašnjenja rezultata za originalni trening skup, ne prognoza budućnosti. SHAP nije potvrda tačnosti LLM zaključka."
+        ],
+        [
+          "3. Ko može koristiti",
+          "Aktivno članstvo, SIMPA entitlement i odgovarajući workspace obavezni su pri svakom pozivu. `analysis.read` čita; `analysis.run` zajedno sa čitanjem eksplicitno kreira. Administratorska rola ne otvara tuđu organizaciju/proizvod. Viewer može čitati dozvoljeni postojeći dokaz, ne kreirati."
+        ],
+        [
+          "4. Koraci",
+          "Otvorite SIMPA → Analitika → sačuvani statistički rezultat → „SHAP — matrica i doprinosi”. Pročitajte Help. Ovlašćeni analitičar bira „Kreiraj SHAP dokaz iz postojećeg rezultata”. To je zaseban ljudski korak; nema automatskog kreiranja ni model fitting-a. Za čitanje označite „Učitaj sačuvani SHAP dokaz”. Pregledajte background, jedinicu, globalnu tabelu/graf i matricu. Izaberite broj uzorka za waterfall; tabela sadrži input, doprinos, početak/kraj koraka i jedinicu. Sačuvani dokaz se revalidira pri svakom novom čitanju."
+        ],
+        [
+          "5. Značenje polja i stanja",
+          "Baseline je očekivani output postojećeg modela na tačnom complete-case trening background-u. Output skala je identity, jedinica dolazi iz validirane ciljne metodologije. Pozitivan SHAP pomera rezultat iznad baseline-a, negativan ispod. Globalni mean-absolute ranking opisuje prosečnu veličinu doprinosa, ne značaj politike. Features imaju tačan redosled modela; boje označavaju znak/veličinu, ne rizik; sivo je numerički nulti doprinos. NOT_CREATED nema dokaz; AVAILABLE ima revalidiran dokaz; UNAVAILABLE znači da ugovor/provenance/pristup nisu podobni. Tehnička tolerancija additivity/parity je 1e-8 apsolutno i relativno, ne prag institucionalne odluke. VALIDATED ugovor pri izvršenju i sada je obavezan; PROPOSED/RETIRED ne dobijaju SHAP."
+        ],
+        [
+          "6. Sintetički primer",
+          "Ako je baseline=10 jedinica, input contribution A=+3 a B=−1, output modela je12. To objašnjava aritmetiku postojećeg modela. Ne tvrdi da promena A uzrokuje poboljšanje institucije. Numerička nula je vrednost; prazni obavezni target/features izostavljaju se istim complete-case pravilom kao pri fit-u."
+        ],
+        [
+          "7. Šta sistem ne radi",
+          "Nema kauzalnog zaključivanja, generičke AI pouzdanosti, građanskog scoring-a, novih težina/indikatora, promenjenog background-a, prognoze ili automatske preporuke. Nekauzalna (non-causal) interpretacija je obavezna. Poisson/logit/fractional modeli trenutno nisu podržani. ORDO naive/seasonal-naive koriste postojeća objašnjenja lagova/backtesta; nema lažnog SHAP-a za neizvršene modele. LLM tvrdnje zahtevaju zasebno proverljive izvore i ljudski pregled."
+        ],
+        [
+          "8. Greške i oporavak",
+          "Proverite sesiju, organizaciju, proizvod, workspace i dozvole kod403. Kod UNAVAILABLE proverite lifecycle/izvor/metodologiju; ne pokušavajte prepisivanje dokaza. Promenjeni/povučeni izvor blokira čitanje i ranijeg artefakta. Nefinitne vrednosti, neusklađen fingerprint, drugačiji feature redosled ili numerička nepodudarnost zaustavljaju prikaz. Granica je512 izabranih zapisa i24 features; nema tihog uzorkovanja. Heatmap prikazuje prvih60 redova uz obaveštenje, puna matrica ostaje tabela."
+        ],
+        [
+          "9. Bezbednost i ograničenja",
+          "Sve se računa lokalno u backend-u, bez spoljnih AI/SHAP servisa. Matrica sadrži samo numeričke agregatne model inputs i lokalni broj uzorka; nema građanskih imena ili source locators. Interventional SHAP zanemaruje korelacije features: rezultat zavisi od izabranog background ugovora i nije conditional attribution. Ovo ne zamenjuje institucionalnu metodologiju, privatnost izvora, procenu modela ili odgovornost stručnog tima. Nema novog unosa budućih perioda; objašnjava se originalni trening cohort."
+        ],
+        [
+          "10. Poreklo i ljudski pregled",
+          "Dokaz vezuje tačan result/run/contract/methodology, organization/workspace, ulazni i dataset fingerprint, background hash, schema/method/unit/tolerance i artefakt hash. Implementacijski i input-reconstruction hash su zabeleženi; originalni fit code SHA nije bio sačuvan u starim rezultatima (NOT_RECORDED_LEGACY_RESULT). Closed-form metoda nema random seed/sampling. Aktor/vreme/ID kreiranja su vezani fingerprint-om; audit beleži fingerprint, ne matrix/input. Ponovna provera obuhvata trenutni izvor, lifecycle i rezultat. Sačuvani dokaz ne menja stare modele, metodologije ili izveštaje. Ljudski stručni pregled i dalje određuje dozvoljenu institucionalnu upotrebu."
+        ]
+      ],
+      "screens": [
+        "ISI-29D-desktop-matrix.jpg",
+        "ISI-29D-desktop-waterfall.jpg",
+        "ISI-29D-mobile-invalid.jpg"
+      ]
+    },
+    "EXTRACTION": {
+      "title": "Entiteti i nalazi — izvor, pregled i obuhvat",
+      "products": [
+        "SIMPA",
+        "ORDO"
+      ],
+      "sections": [
+        [
+          "1. Svrha",
+          "SIMPA i ORDO imaju odvojene domenske instrukcije i registre. Ekstrakcija izvlači originalne citate, entitete i atomske nalaze. Model ne računa nove domenske indikatore niti potvrđuje institucionalne zaključke."
+        ],
+        [
+          "2. Kada koristiti",
+          "Za zbirne nepersonalne izvore sa dozvolom za lokalnu AI analizu. Podržani su digitalni UTF-8 TXT dokumenti i već validirani/zamrznuti governed snapshot-i tabela. PDF/DOCX/OCR/VLM nisu podržani ovom fazom. Realna kvalitetna domenska evaluacija ostaje UNCALIBRATED; sintetičke SR Latinica/Ćirilica/EN evaluacije proveravaju softverski ugovor."
+        ],
+        [
+          "3. Prava i kontekst",
+          "`data.read`: lista, izvori, nalazi. `ai.run`: novi zahtev i otkazivanje pending posla. `data.validate`: konačan ljudski pregled. Organizacija → članstvo → uloga → proizvod → workspace se proveravaju na backend-u. Koristite aktivni SIMPA ili ORDO kontekst; izvor drugog proizvoda ili organizacije nije dozvoljen."
+        ],
+        [
+          "4. Postupak",
+          "U Podacima otvorite „Entiteti i nalazi“. Eksplicitno učitajte listu. Uredite governance izvora pre kreiranja zahteva: aktivan izvor, uspešan ingest, dostupna verzija, klasifikacija, aggregate nonpersonal, svrha, vlasnik i lokalna AI dozvola. Izaberite document/snapshot, tačan UUID verzije/snapshot-a, jezik i registrovani lokalni model. Pokrenite novu ekstrakciju. Osvežite listu i otvorite izabrani zahtev. Pregledajte sve citate i polja. Izaberite konačno prihvatanje ili odbijanje, napišite razlog i potvrdite pregled. Za ispravku napravite novi zahtev; konačni artefakt i pregled su nepromenljivi."
+        ],
+        [
+          "5. Polja i statusi",
+          "`queued/running/failed` su statusi AI posla. `EXTRACTED_UNVERIFIED` čeka pregled; `REVIEWED_ACCEPTED` znači da je čovek pregledao ekstrakciju; `REJECTED` je isključuje iz prihvaćenih nalaza; `CANCELLED` označava zahtev otkazan pre izvršenja. Nalaz ima statement, subject, predicate, value, unit, period, vrstu (observation/model_output/assumption/AI_inference), podržavajuće/protivrečne citate i ograničenja. `null` označava nedostajuće, nula je citirana nula. SR/EN original ostaje neizmenjen; nema automatskog prevoda."
+        ],
+        [
+          "6. Primer i GIS povezivanje",
+          "Sintetičko: „Grad A ima 12 usluga u 2025.“ Broj, jedinica i period moraju ostati originalni. Imena se predlažu samo tačnim poređenjem; AMBIGUOUS/CANDIDATE nisu rešeni identiteti. U pregledu posebno izaberite domenski identitet i napišite dokaz; možete ostaviti UNRESOLVED. Teritoriju svakog nalaza posebno vežite za validiranu polygon/multipolygon verziju sa datumom i dokazom obuhvata. Lokacija ustanove (Point) nije automatski teritorija njenog nalaza. Filteri koriste tačan period citata i UUID pregledane granice; ne rade prostorni join ni nagađanje koordinata."
+        ],
+        [
+          "7. Granice tumačenja",
+          "Prihvatanje ekstrakcije ne potvrđuje istinu, domensku metodologiju, uzročnost ili zakonsku podobnost. SHAP objašnjava postojeći podržani numerički model i ne proverava LLM tvrdnje. Nema personalnog profilisanja, citizen scoring-a, geokodera ni automatske institucionalne preporuke. Izvorni span koristi Unicode offset [start,end); tabela koristi normalizovanu ćeliju, record fingerprint i source locator. Dokument nema izmišljene page/bbox podatke."
+        ],
+        [
+          "8. Greške i oporavak",
+          "Ulaz je ograničen na 200 KB raw TXT, 12.000 znakova, 200 ćelija, 20.000 znakova ukupnog AI request envelope-a, najviše 100 entiteta i 100 nalaza; preveliki ulazi se odbijaju bez tihog skraćivanja. Netačan citat, nezaključen ugovor, promena politike/modela/prompta ili izvora blokiraju rezultat. Posao se proverava pre i posle modela. Pending zahtev može da se otkaže; postojeći request key ne šalje ponovo posao. Failed/odbijen rezultat zahteva eksplicitno novi zahtev. Bez modela kreiranje je onemogućeno. Ako izvor postane nedostupan, otvaranje i aktuelno pronalaženje njegovih nalaza su blokirani."
+        ],
+        [
+          "9. Privatnost i bezbednost",
+          "Samo lokalni AI, registrovana konfiguracija i postojeći worker. Nema slanja spoljnim providerima, unosa novih modela, preuzimanja proizvoljnih URL-ova ili menjanja servera. Izvorne instrukcije su nepoverljivi podaci. Citati ostaju u organizaciji/proizvodu/workspace-u; audit beleži otiske, ne sirovi sadržaj. Promene governance-a, purge ili povlačenje izvora ponovo se proveravaju pri čitanju."
+        ],
+        [
+          "10. Poreklo, ljudski pregled i rezultati",
+          "Proverite source/version/hash, span/cell, jezik, model, prompt, policy, code hash, posao/pokušaj, actor/time i fingerprint. Svako polje dokumenta je u citiranoj tvrdnji; polja tabele mogu biti u različitim ćelijama istog reda uz zasebne tačne podržavajuće citate. Ne smeju spajati redove. Pronalaženje odbija zbir veći od 100 nalaza ili 2 MB; suzite filtere umesto tihog skraćivanja. Pregledani identiteti i granice se ponovo proveravaju pri čitanju. Samo REVIEWED_ACCEPTED ulazi u listu prihvaćenih nalaza. Povezani izveštaji opisani su u temi Povezani izveštaji; postojeći institucionalni izveštaji ne dobijaju automatski neproverene nalaze."
+        ]
+      ],
+      "screens": [
+        "ISI-29E-desktop-source.jpg",
+        "ISI-29E-desktop-review.jpg",
+        "ISI-29E-mobile-review.jpg"
+      ]
+    },
+    "LINKED": {
+      "title": "Povezani izveštaji — nalaz, karta, rezultat i publikacija",
+      "products": [
+        "SIMPA",
+        "ORDO"
+      ],
+      "sections": [
+        [
+          "1. Šta prikazuje funkcija",
+          "Povezani izveštaj prikazuje jedan prihvaćeni nalaz sa izvorom, obuhvatom i opcionim numeričkim rezultatom."
+        ],
+        [
+          "2. Kada se koristi",
+          "Koristite ga kada je ekstrakcija već pregledana; report review i publication su zasebni koraci."
+        ],
+        [
+          "3. Dozvole i odgovornost",
+          "Čitanje zahteva report.read i data.read; rezultat analysis.read; kreiranje analysis.run; review/publication organization.manage."
+        ],
+        [
+          "4. Koraci korisnika",
+          "Izaberite prihvaćenu ekstrakciju, claim ID iz Podataka, opciono result UUID, napišite obrazloženje, potvrdite i pregledajte pa kreirajte draft."
+        ],
+        [
+          "5. Polja i statusi",
+          "REVIEWED_ACCEPTED potvrđuje pregled ekstrakcije. UNRESOLVED znači da obuhvat nije potvrđen. UNAVAILABLE znači da nema podržanog izabranog rezultata."
+        ],
+        [
+          "6. Primer",
+          "Primer: agregirani nalaz za 2025. i ljudski potvrđen poligon uporedite sa postojećim rezultatom; objasnite razliku između izvornog i modelskog perioda."
+        ],
+        [
+          "7. Granice tumačenja",
+          "Veza je kontekst koji korisnik bira. Ne potvrđuje automatski istinitost, slaganje perioda/jedinice/teritorije, kalibraciju ili uzrok."
+        ],
+        [
+          "8. Greške i oporavak",
+          "Ako je izvor povučen, geometrija promenjena ili prava ukinuta, ponovno čitanje/izvoz se blokira. Pripremite novu pregledanu ekstrakciju i novu verziju."
+        ],
+        [
+          "9. Bezbednost i privatnost",
+          "Samo agregatni nepersonalni podaci; odvojeni SIMPA/ORDO scope. Preuzete kopije se ne mogu udaljeno opozvati; postupajte prema institucionalnim pravilima."
+        ],
+        [
+          "10. Poreklo i pregled",
+          "Manifest čuva otiske izvora, izvlačenja, pregleda, granice i rezultata. Kvalitet ekstrakcije UNCALIBRATED; SIMPA SHAP samo podržani OLS, ORDO SHAP unavailable.\n\nHTML JSON i Markdown prenose tačne tekstualne dokaze i manifest; grafički prikaz je u aplikaciji. Word je korisnički priručnik, a ne novi format automatskog report engine-a. Privremene testne geometrije ne predstavljaju zvanične granice."
+        ]
+      ],
+      "screens": [
+        "ISI-29F-desktop-form.jpg",
+        "ISI-29F-desktop-map.jpg",
+        "ISI-29F-desktop-review.jpg",
+        "ISI-29F-desktop-approved.jpg",
+        "ISI-29F-desktop-export.jpg",
+        "ISI-29F-mobile-ordo-map.jpg"
+      ]
+    }
+  },
+  "assets": {
+    "screenshots-public-home.jpg": {
+      "sha256": "3f569b0bd0f2c540d0a64406f0e3a77b80d1f7d7043546e573d7155657159470",
+      "caption": "Javni ISI portal",
+      "kind": "SERVER_BASELINE",
+      "captured": "2026-10-07"
+    },
+    "screenshots-login.jpg": {
+      "sha256": "877e4ec0abf3dc3e96d47df191830b462ad143d62d1dc4b0381311935476f4b0",
+      "caption": "Prijava u platformu",
+      "kind": "SERVER_BASELINE",
+      "captured": "2026-10-07"
+    },
+    "screenshots-help-invitation.jpg": {
+      "sha256": "31a3bd31acdab8f80aacb2237df3c57433abd3c162bd22cc44664f53631cf889",
+      "caption": "Uputstvo za prihvatanje poziva",
+      "kind": "SERVER_BASELINE",
+      "captured": "2026-10-07"
+    },
+    "screenshots-login-recovery.jpg": {
+      "sha256": "92bc1045b90f87f20b1298e7c851fc99817a0e326f0fc14445274b574b17c437",
+      "caption": "Prijava i oporavak pristupa",
+      "kind": "SERVER_BASELINE",
+      "captured": "2026-10-07"
+    },
+    "screenshots-simpa-overview.jpg": {
+      "sha256": "267b8feecd3d3a33a9599c2e92515dc953a1f59847288400b0a0d079cb021e7b",
+      "caption": "SIMPA — pregled radnog prostora",
+      "kind": "SERVER_BASELINE",
+      "captured": "2026-10-07"
+    },
+    "screenshots-data.jpg": {
+      "sha256": "4d1f638c1c0179b855ba81fc11d036dbd8a826dfcba894641a43821db40242fe",
+      "caption": "Zajednički radni prostor za podatke",
+      "kind": "SERVER_BASELINE",
+      "captured": "2026-10-07"
+    },
+    "screenshots-reports.jpg": {
+      "sha256": "5444b888bf8015f79a5f83b9711a79bb70f9e341f13b92a1c1ee866d78dfc828",
+      "caption": "Zajednički izveštaji",
+      "kind": "SERVER_BASELINE",
+      "captured": "2026-10-07"
+    },
+    "screenshots-admin-overview.jpg": {
+      "sha256": "8f0a2b12f7464d7c7f5e23e1964c7eb3c6d5f45eabe76478b7e85fafc720059c",
+      "caption": "Administracija platforme",
+      "kind": "SERVER_BASELINE",
+      "captured": "2026-10-07"
+    },
+    "screenshots-security.jpg": {
+      "sha256": "8831879c4b300704ea674e87e50ffda29b32b8bae3c2018b0adb1e593d39e7dc",
+      "caption": "Bezbednost naloga",
+      "kind": "SERVER_BASELINE",
+      "captured": "2026-10-07"
+    },
+    "screenshots-public-help.jpg": {
+      "sha256": "fd8841fc138e7b97242be061db6109fbd695b33354484618ca5bd4964580fbef",
+      "caption": "Javna pomoć za pristup platformi",
+      "kind": "SERVER_BASELINE",
+      "captured": "2026-10-07"
+    },
+    "screenshots-shared-help.jpg": {
+      "sha256": "7503664089ca8dc1922b13f13bfeadc66c593f7ef7e78c246b852c064bfb06f5",
+      "caption": "Zajednička pomoć",
+      "kind": "SERVER_BASELINE",
+      "captured": "2026-10-07"
+    },
+    "screenshots-simpa-profile.jpg": {
+      "sha256": "2705d8ebb0950593dcbc43de354b88b0e2107cbb429c7e3ee785cb2d4162e76c",
+      "caption": "SIMPA — profil lokalnog sistema",
+      "kind": "SERVER_BASELINE",
+      "captured": "2026-10-07"
+    },
+    "screenshots-simpa-cycle.jpg": {
+      "sha256": "603dedbae76da5193672fba846c9fe7292462e59b0222817c270016e9bc69ad1",
+      "caption": "SIMPA — monitoring ciklusi",
+      "kind": "SERVER_BASELINE",
+      "captured": "2026-10-07"
+    },
+    "screenshots-simpa-indicators.jpg": {
+      "sha256": "8e53b4f78e080379ac45dd57032b63003b96ef815ff1c1dbf988f6eed6fdf487",
+      "caption": "SIMPA — indikatori",
+      "kind": "SERVER_BASELINE",
+      "captured": "2026-10-07"
+    },
+    "screenshots-simpa-analysis.jpg": {
+      "sha256": "0478cbbc7808bfef9907293bb42dade8023459699c941089914cdca4a52efc3e",
+      "caption": "SIMPA — analitički radni prostor",
+      "kind": "SERVER_BASELINE",
+      "captured": "2026-10-07"
+    },
+    "screenshots-simpa-statistics.jpg": {
+      "sha256": "99f7ee8fd8da799eceeb54888eaecf673604cb0f711dc3ac91fc7be8d2c72cbb",
+      "caption": "SIMPA — statistički radni prostor",
+      "kind": "SERVER_BASELINE",
+      "captured": "2026-10-07"
+    },
+    "screenshots-ordo-overview.jpg": {
+      "sha256": "c33a6d81a6b5363fd7533202a55227841bf98d10d0a13e94d5cc1b3f2d17a111",
+      "caption": "ORDO — pregled radnog prostora",
+      "kind": "SERVER_BASELINE",
+      "captured": "2026-10-07"
+    },
+    "screenshots-ordo-indicators.jpg": {
+      "sha256": "8def8813ca2db65e70ed6904d76309fe4ddf36ceebb0a7a48021041501a8e116",
+      "caption": "ORDO — indikatori",
+      "kind": "SERVER_BASELINE",
+      "captured": "2026-10-07"
+    },
+    "screenshots-ordo-analysis.jpg": {
+      "sha256": "0dca77125f3e0c09925406daf1724fc5769b8eafaaa9fc7b2fad07112bdecee5",
+      "caption": "ORDO — analitički radni prostor",
+      "kind": "SERVER_BASELINE",
+      "captured": "2026-10-07"
+    },
+    "screenshots-ordo-forecast.jpg": {
+      "sha256": "d2dd7f6370de48d78e375ded343ab4957392114deff90b21d1b255050ef04b9e",
+      "caption": "ORDO — prognoze",
+      "kind": "SERVER_BASELINE",
+      "captured": "2026-10-07"
+    },
+    "screenshots-ordo-goal.jpg": {
+      "sha256": "aaac0edc540c16d86ffc3e556049eaff402c0ed379944de270fd6bbe2cfdf832",
+      "caption": "ORDO — razvojni ciljevi",
+      "kind": "SERVER_BASELINE",
+      "captured": "2026-10-07"
+    },
+    "screenshots-ordo-help.jpg": {
+      "sha256": "30bf9145b6dc23ae557459b954f2adfb55be902a5a303974c12070c8a4c7c4f6",
+      "caption": "ORDO — izbor pomoći",
+      "kind": "SERVER_BASELINE",
+      "captured": "2026-10-07"
+    },
+    "ISI-29C-simpa-desktop.jpg": {
+      "sha256": "2eb8106121e05936b3505a9047dd28226caf35d66a2aa19d9016b74b79b0041d",
+      "caption": "SIMPA GIS — potvrđena geometrija, izbor i povezana tabela",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-09"
+    },
+    "ISI-29C-ordo-desktop.jpg": {
+      "sha256": "42f5e6eb389d99148dea408bdcb8e663d5e065969e6176308905fd3ee17a8155",
+      "caption": "ORDO karta, tabela i rezultat",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-08"
+    },
+    "ISI-29C-simpa-mobile.jpg": {
+      "sha256": "cc581ab179c367b7b2d2a7e0928a2e18d4caad019d9399ee24a0e3684fd9b819",
+      "caption": "GIS mobilni prikaz",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-08"
+    },
+    "ISI-29D-desktop-matrix.jpg": {
+      "sha256": "f176dcc6cdad389bb80c720405476e1fd81de74d5e47c8b0414fdf485269cb9a",
+      "caption": "SHAP matrica i heatmap",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-08"
+    },
+    "ISI-29D-desktop-waterfall.jpg": {
+      "sha256": "e6db065172375b5420f7c100eadf3aa74bce8b029ea50550045e29f0456ac603",
+      "caption": "Lokalni waterfall izabranog uzorka",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-08"
+    },
+    "ISI-29D-mobile-invalid.jpg": {
+      "sha256": "be928d5606858a650c0c424f55124eb9f8a54ade95f4e29293cc35a8e7d5c59d",
+      "caption": "Blokiran dokaz",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-08"
+    },
+    "ISI-29E-desktop-source.jpg": {
+      "sha256": "0c9f4fe8d9b0e082e142406d98652cd39303cdeb976de1b291aa43543fb2129a",
+      "caption": "Izvor i originalni citati",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-08"
+    },
+    "ISI-29E-desktop-review.jpg": {
+      "sha256": "3b86d177457ba0b4b4abdebd87d7f8797d721099b4d57eab877b56a3023e0912",
+      "caption": "Pregled identiteta i teritorije",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-08"
+    },
+    "ISI-29E-mobile-review.jpg": {
+      "sha256": "738ad73859072310813d972f996edbca543b35fe73fc6aea89c28b551ed124cf",
+      "caption": "Mobilni pregled",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-08"
+    },
+    "ISI-29F-desktop-form.jpg": {
+      "sha256": "f53e69a5b2e24cde215c3fa1da36c9b8f3bba91bc4982bc7632ccae1810f6318",
+      "caption": "Novi povezani izveštaj",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-08"
+    },
+    "ISI-29F-desktop-map.jpg": {
+      "sha256": "a04f5bf87ebf2f057528dde86aa2ac149cb2267ec2c8824a2a15d0a2e0ee816d",
+      "caption": "Pregled nalaza i karte",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-08"
+    },
+    "ISI-29F-desktop-review.jpg": {
+      "sha256": "b2611c73e0d53d89b7f4301b545c1c0a0c65b05534d0ab8eea8caf049e52acaf",
+      "caption": "Review izveštaja",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-08"
+    },
+    "ISI-29F-desktop-approved.jpg": {
+      "sha256": "a601eda9aeda71d3b3308aace92acf89015309033a9c1be96451aeaa4baefd22",
+      "caption": "Eksplicitna publikacija",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-08"
+    },
+    "ISI-29F-desktop-export.jpg": {
+      "sha256": "6b71fdc4026ec7e6125d93d5a2dbabd22421879d0c19d1d68c92c98ba4c5ab9b",
+      "caption": "Preuzimanje odobrenog artefakta",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-08"
+    },
+    "ISI-29F-mobile-ordo-map.jpg": {
+      "sha256": "06a5e4e4825e07fadb901fb4410d8e2d8afda1dad250fa4a45540fb01151d1b7",
+      "caption": "ORDO mobilna karta",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-08"
+    }
+  }
+}

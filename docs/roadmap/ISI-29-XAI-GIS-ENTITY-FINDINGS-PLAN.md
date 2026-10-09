@@ -1,6 +1,6 @@
 # ISI-29 — XAI, GIS i entiteti/nalazi sa dokazima
 
-Datum: 2026-10-07. Status: **IN_PROGRESS / 29A–D CI_VERIFIED i preproduction SERVER_VERIFIED na95fec435;29E lokalni kandidat;29F sledeći**.
+Datum: 2026-10-07. Status: **IN_PROGRESS / 29A–D CI_VERIFIED i preproduction SERVER_VERIFIED na95fec435;29E IMPLEMENTED main33e86e6;29F IN_PROGRESS**.
 Owner je zatražio proširenje plana i početak razvoja XAI/GIS i ekstrakcije entiteta/nalaza. „SIMA” u zahtevu odnosi se na postojeći SIMPA; nema trećeg proizvoda.
 MasterPlan je kanonska nadređena vlast; ADR-0025 ostaje arhitekturna osnova.
 
@@ -177,3 +177,7 @@ IMPLEMENTED / REVIEW_VERIFIED applies only to the exact30-file candidate with ma
 Standing owner approval covers verified29A-F commit/push. First unfinished package after verified29E is29F (linked evidence/report/Help/Word/final acceptance and controlled deployment). NOT CI_VERIFIED / DEFERRED_SERVER_VERIFICATION for29E; recorded server remains95fec435/schema0036. No new Actions dispatch, server/Nginx/model mutation or SMTP/backups action occurs here. Real adjudicated extraction quality remains UNCALIBRATED; full-production operational gates remain open.
 
 29E final governance review: general AI jobs retain metadata only for extraction; successful raw input/output/structured copies are cleared in the worker transaction. Quotations remain solely in source-revalidated extraction artifacts, preventing general AI/report reads from bypassing source withdrawal (REMOVE_BEFORE_NEXT_SLICE, resolved in this candidate; legacy non-extraction jobs REQUIRED_COMPATIBILITY). Code fingerprint pins service/contracts/models and the selected product extraction/spatial adapter. Empty pending request text and runtime-policy/model parameter drift fail before provider execution. Signed/decimal/date fragments cannot silently become partial numeric value/period tokens; spelling stays verbatim without numerical interpretation or domain formula. Exact final gates required after these bounded corrections.
+
+## 29F aktuelni ugovor
+
+29E je potvrđen lokalno i commitovan33e86e6;29F implementacija je IN_PROGRESS po automation/specs/ISI-29F-EVIDENCE-RELEASE.md. Povezani izveštaj prenosi prihvaćeni nalaz, pregledanu granicu/date, opcioni postojeći domain rezultat/XAI i ljudsko obrazloženje; nema automatske provere istinitosti/perioda/teritorije. Read/export revalidacija blokira povučene izvore. Novi Word screenshot manual i finalne provere/release tek treba potvrditi.
