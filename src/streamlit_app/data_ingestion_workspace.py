@@ -187,16 +187,19 @@ def _ingest(token, params, key, chain):
         uploaded = st.file_uploader('Datoteka kontrolisane obrade', type=['csv', 'json', 'xlsx'], max_upload_size=16)
         idempotency = st.text_input('Idempotency ključ', max_chars=200)
         cursor = st.text_input('Novi kursor (opciono)', max_chars=1000)
+        observed = st.text_input('Vreme opažanja (ISO sa UTC pomakom, opciono)', max_chars=80)
         confirmed = st.checkbox('Potvrđujem učitavanje u aktivni lanac ugovora')
         submitted = st.form_submit_button('Pokreni kontrolisanu obradu')
     if submitted:
         if uploaded is None:
             st.error('Izaberite datoteku.')
             return
+        from src.streamlit_app.data_operations_api import observed_time
         _write(lambda: api.create_governed_run(token, **params, fields=dict(
             connector_contract_version_id=str(chain['connector']['id']), schema_mapping_version_id=str(chain['mapping']['id']),
             idempotency_key=idempotency, filename=uploaded.name, content_type=uploaded.type or 'application/octet-stream',
-            content_base64=base64.b64encode(uploaded.getvalue()).decode('ascii'), cursor_after=cursor)), confirmed=confirmed)
+            content_base64=base64.b64encode(uploaded.getvalue()).decode('ascii'), cursor_after=cursor,
+            source_observed_at=observed_time(observed))), confirmed=confirmed)
 
 
 def render_governed_ingestion(*, token: str, shell: dict, source_id: str):

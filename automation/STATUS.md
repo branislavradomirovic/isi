@@ -516,3 +516,6 @@ ISI-30B1 local IMPLEMENTED/REVIEW_VERIFIED committed/pushed be2ae69:24focused/14
 
 
 ISI-30B2 IMPLEMENTED/REVIEW_VERIFIED committed/pushed daa1c6e:31focused/1487regression PASS/46 inherited skips,1280/390 synthetic authoring/activation/upload review.30B3 IN_PROGRESS typed analytical dataset/feature registry, field contracts/activation, governed-output snapshot creation, eligible snapshot feature versions and revision-pinned confirmed lifecycles. Exact automation/specs/ISI-30B3-ANALYTICAL-AUTHORING.md. No raw-source promotion, new methodology/formula/schema/dependency.30B4 operator/privacy,30C/D,30E HelpWord and30F still pending; CI/server f587ed0 unchanged.
+
+
+ISI-30B3 IMPLEMENTED/REVIEW_VERIFIED committed/pushed6a70f46:23focused/1510regression PASS/46 inherited skips,1280/390 synthetic registry/contract/snapshot/feature/lifecycle/read-only checks.30B4A IN_PROGRESS existing backfill/replay/dead-letter operator forms and explicit offset-aware observation time; exact automation/specs/ISI-30B4A-INGESTION-RECOVERY.md.30B4B privacy/record governance,30C/D,30E HelpWord and30F remain pending. No new CI/server claim; f587ed0 remains last proof. Legacy stale30A task registry status REMOVE_BEFORE_NEXT_SLICE corrected to local reviewed completion; task done labels do not confer hosted/server verification.

@@ -230,3 +230,12 @@ shell/scenario GUI has not inherited screenshot/manual or server verification.
 |Governed-output snapshot creation|ISI-ANALYTICAL-AUTHORING-GUIDE.md|PARTIAL|Browser/Word30E|
 |Eligible snapshot feature-version creation|ISI-ANALYTICAL-AUTHORING-GUIDE.md|PARTIAL|Browser/Word30E|
 |Revision-pinned snapshot/feature lifecycle|ISI-ANALYTICAL-AUTHORING-GUIDE.md|PARTIAL|Browser/Word30E|
+
+
+### ISI-30B4A controlled recovery candidate
+
+|Action|Help|Status|Remaining|
+|---|---|---|---|
+|Offset-aware observed timestamp|ISI-INGESTION-RECOVERY-GUIDE.md|PARTIAL|Illustrated Word30E|
+|Policy-bound backfill / replay|ISI-INGESTION-RECOVERY-GUIDE.md|PARTIAL|Browser/Word30E|
+|Dead-letter requeue / reviewed disposition|ISI-INGESTION-RECOVERY-GUIDE.md|PARTIAL|Browser/Word30E|
