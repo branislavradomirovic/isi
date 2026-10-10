@@ -239,3 +239,12 @@ shell/scenario GUI has not inherited screenshot/manual or server verification.
 |Offset-aware observed timestamp|ISI-INGESTION-RECOVERY-GUIDE.md|PARTIAL|Illustrated Word30E|
 |Policy-bound backfill / replay|ISI-INGESTION-RECOVERY-GUIDE.md|PARTIAL|Browser/Word30E|
 |Dead-letter requeue / reviewed disposition|ISI-INGESTION-RECOVERY-GUIDE.md|PARTIAL|Browser/Word30E|
+
+
+### ISI-30B4B source governance candidate
+
+|Action|Help|Status|Remaining|
+|---|---|---|---|
+|Revision-pinned source classification/privacy/AI/export profile|ISI-SOURCE-GOVERNANCE-GUIDE.md|PARTIAL|Browser/Word30E|
+|Governance-only quarantine detail/record comparison|ISI-SOURCE-GOVERNANCE-GUIDE.md|PARTIAL|Browser/Word30E|
+|Human record decision pins reviewed current accepted record|ISI-SOURCE-GOVERNANCE-GUIDE.md|PARTIAL|Browser/Word30E|

@@ -1145,6 +1145,10 @@ def resolve_quarantined_record(
         )
         .with_for_update()
     )
+    if "expected_current_accepted_record_id" in payload.model_fields_set and (
+        (accepted.id if accepted is not None else None) != payload.expected_current_accepted_record_id
+    ):
+        raise DataPlatformError("record_resolution_state_conflict")
     original_quarantine_reason = incoming.quarantine_reason
     if payload.decision == "ACCEPT_INCOMING":
         if incoming.quarantine_reason not in _ACCEPTABLE_RECONCILIATION_REASONS:

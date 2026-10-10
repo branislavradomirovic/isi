@@ -622,6 +622,8 @@ class RecordResolutionCreate(_RecordGovernanceMutationRequest):
     decision: Literal["REJECT_INCOMING", "ACCEPT_INCOMING"]
     resolution_reference: str = Field(min_length=1, max_length=1000)
     reason: str | None = Field(default=None, max_length=1000)
+    # Omitted by historical callers; explicit null pins the absence of a current record.
+    expected_current_accepted_record_id: uuid.UUID | None = None
 
     @field_validator("resolution_reference")
     @classmethod
