@@ -310,6 +310,9 @@ def render_data_workspace(*, token: str, shell: dict[str, Any]) -> None:
     scope = _scope(shell)
     if scope is None:
         return
+    if "data.read" not in set(product.get("permission_codes", [])):
+        st.info("Nemate dozvolu za pregled podataka u aktivnom proizvodu.")
+        return
     organization_id, product_code, workspace_id = scope
     st.info(f"Organizacija: {organization['name']} · Platforma: {product_code} · Workspace: {workspace['name']}")
 
@@ -344,5 +347,7 @@ def render_data_workspace(*, token: str, shell: dict[str, Any]) -> None:
     metric_cols[1].metric("Obrađeno", succeeded)
     metric_cols[2].metric("Aktivni workspace", product_code)
     _render_catalog(sources)
+    from src.streamlit_app.data_source_workspace import render_source_inspection
+    render_source_inspection(token=token, shell=shell, sources=sources)
     _render_upload(token, shell, scope)
     _render_analytical_governance(token, shell, scope)

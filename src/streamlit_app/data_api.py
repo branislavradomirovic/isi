@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import base64
 from typing import Any
+from urllib.parse import quote
 
 from src.streamlit_app.api_client import AccessDenied, ApiUnavailable, AuthenticationRequired, request
 
@@ -125,3 +126,69 @@ def get_analytical_lineage(token: str, *, snapshot_id: str, organization_id: str
 def evaluate_ai_eligibility(token: str, **payload):
     response = request("POST", "/api/v1/data/analytical-ai/eligibility", token=token, json=payload)
     return _checked(response, unavailable="Nije moguće proveriti AI/RAG eligibility.")
+
+
+def get_source_detail(token: str, *, source_id: str, organization_id: str,
+                      product_code: str, workspace_id: str):
+    return _source_request(token, source_id=source_id, organization_id=organization_id,
+                           product_code=product_code, workspace_id=workspace_id)
+
+
+def _source_request(token: str, *, source_id: str, organization_id: str,
+                    product_code: str, workspace_id: str, suffix: str = "",
+                    method: str = "GET", body: dict | None = None):
+    scope = dict(organization_id=organization_id, product_code=product_code, workspace_id=workspace_id)
+    args = {"params": scope} if method == "GET" else {"json": {**(body or {}), **scope}}
+    response = request(method, f"/api/v1/data/sources/{quote(source_id, safe='')}{suffix}",
+                       token=token, **args)
+    return _checked(response, unavailable="Servis obrade nije dostupan. Osvežite stanje pre ponavljanja operacije.")
+
+
+def create_source_version(token: str, *, source_id: str, organization_id: str,
+                          product_code: str, workspace_id: str, filename: str,
+                          content_type: str, payload: bytes):
+    return _source_request(token, source_id=source_id, organization_id=organization_id,
+        product_code=product_code, workspace_id=workspace_id, suffix="/versions", method="POST",
+        body=dict(filename=filename, content_type=content_type,
+                  content_base64=base64.b64encode(payload).decode("ascii")))
+
+
+def list_ingestion_runs(token: str, *, source_id: str, organization_id: str,
+                        product_code: str, workspace_id: str):
+    return _source_request(token, source_id=source_id, organization_id=organization_id,
+        product_code=product_code, workspace_id=workspace_id, suffix="/ingestion-runs")
+
+
+def get_ingestion_run(token: str, *, source_id: str, run_id: str, organization_id: str,
+                       product_code: str, workspace_id: str):
+    return _source_request(token, source_id=source_id, organization_id=organization_id,
+        product_code=product_code, workspace_id=workspace_id,
+        suffix=f"/ingestion-runs/{quote(run_id, safe='')}")
+
+
+def get_run_evaluation(token: str, *, source_id: str, run_id: str, organization_id: str,
+                       product_code: str, workspace_id: str):
+    return _source_request(token, source_id=source_id, organization_id=organization_id,
+        product_code=product_code, workspace_id=workspace_id,
+        suffix=f"/ingestion-runs/{quote(run_id, safe='')}/evaluation")
+
+
+def get_run_governed_output(token: str, *, source_id: str, run_id: str, organization_id: str,
+                            product_code: str, workspace_id: str):
+    return _source_request(token, source_id=source_id, organization_id=organization_id,
+        product_code=product_code, workspace_id=workspace_id,
+        suffix=f"/ingestion-runs/{quote(run_id, safe='')}/governed-output")
+
+
+def retry_ingestion_run(token: str, *, source_id: str, run_id: str, organization_id: str,
+                        product_code: str, workspace_id: str):
+    return _source_request(token, source_id=source_id, organization_id=organization_id,
+        product_code=product_code, workspace_id=workspace_id, method="POST",
+        suffix=f"/ingestion-runs/{quote(run_id, safe='')}/retry")
+
+
+def get_inspection_job(token: str, *, job_id: str, organization_id: str,
+                        product_code: str, workspace_id: str):
+    response = request("GET", f"/api/v1/data/jobs/{quote(job_id, safe='')}", token=token,
+        params=dict(organization_id=organization_id, product_code=product_code, workspace_id=workspace_id))
+    return _checked(response, unavailable="Nije moguće učitati status obrade.")

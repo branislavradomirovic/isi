@@ -198,3 +198,13 @@ shell/scenario GUI has not inherited screenshot/manual or server verification.
 |Dedicated ORDO scenarios entry, existing goal/scenario/assessment creation|PARTIAL|ISI-WORKFLOW-SHELL-GUIDE.md|test_isi_30a_workflow_shell.py; browser/populated screenshots pending|
 |Existing scenario status and assessment human review|PARTIAL|ISI-WORKFLOW-SHELL-GUIDE.md|test_isi_30a_workflow_shell.py; API contracts unchanged; browser pending|
 |SIMPA scenario menu absence|PARTIAL|ISI-WORKFLOW-SHELL-GUIDE.md|Product navigation test; no SIMPA scenario contract created|
+
+
+### ISI-30B1 action coverage (candidate)
+
+|Action|Help|Status|Remaining|
+|---|---|---|---|
+|Source/version quality inspection|ISI-DATA-WORKFLOWS-GUIDE.md|PARTIAL|Exact browser/screens/Word30E|
+|New existing-source version|ISI-DATA-WORKFLOWS-GUIDE.md|PARTIAL|Browser action/Word30E|
+|Run/job/evaluation/governed-output inspection|ISI-DATA-WORKFLOWS-GUIDE.md|PARTIAL|Browser action/Word30E|
+|Confirmed fresh FAILED retry|ISI-DATA-WORKFLOWS-GUIDE.md|PARTIAL|Browser action/Word30E|
