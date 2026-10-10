@@ -22,8 +22,11 @@ def test_simpa_help_topics_fulfil_ten_point_contract_and_are_verified():
 
 def test_simpa_help_navigation_is_product_scoped_and_routed():
     app = Path("src/streamlit_app/app.py").read_text()
-    assert 'code": "simpa_help"' in app
-    assert 'shell.get("product", {}).get("code") == "SIMPA"' in app
+    from src.streamlit_app.workflow_shell import navigation_items
+    simpa = navigation_items({"product": {"code": "SIMPA"}, "navigation": []})
+    ordo = navigation_items({"product": {"code": "ORDO"}, "navigation": []})
+    assert "simpa_help" in [item["code"] for item in simpa]
+    assert "simpa_help" not in [item["code"] for item in ordo]
     assert 'if nav_code == "simpa_help"' in app
     assert "render_simpa_help" in app
 

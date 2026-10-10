@@ -1,181 +1,68 @@
-/* ISI-05 authenticated app shell */
+/* ISI shared application design system: no external fonts or assets. */
 :root {
-  --isi-ink: #173b31;
-  --isi-ink-soft: #36564c;
-  --isi-ivory: #f7f3e9;
-  --isi-paper: #fffdf8;
-  --isi-line: rgba(23, 59, 49, .14);
-  --isi-teal: #187267;
-  --isi-gold: #b98b38;
-  --isi-danger: #9f3434;
+  --isi-ink: #163c34;
+  --isi-ink-soft: #465e58;
+  --isi-ivory: #f3f6f5;
+  --isi-paper: #ffffff;
+  --isi-line: #d6e0dc;
+  --isi-teal: #12675b;
+  --isi-gold: #996b19;
+  --isi-danger: #a02b35;
 }
-html, body, [data-testid="stAppViewContainer"] {
-  background: var(--isi-ivory);
+html, body, [data-testid="stAppViewContainer"] { background: var(--isi-ivory); }
+html { color-scheme: light; }
+[data-testid="stAppViewContainer"] { color: var(--isi-ink); }
+[data-testid="stHeader"] { background: transparent; }
+#MainMenu, footer, [data-testid="stAppDeployButton"] { visibility: hidden; }
+/* The toolbar owns the mobile sidebar opener; never hide its container. */
+/* Keep Streamlit's sidebar open/close controls available at every width. */
+.block-container { max-width: 1440px; padding: 2.2rem 2rem 3rem; }
+[data-testid="stSidebar"] { border-right: 1px solid var(--isi-line); background: var(--isi-paper); }
+[data-testid="stSidebar"] .block-container { padding-top: 1.2rem; }
+.isi-context {
+  display: flex; align-items: center; flex-wrap: wrap; gap: .45rem;
+  padding: .8rem 1rem; margin: 0 0 1.3rem; border: 1px solid var(--isi-line);
+  border-radius: 8px; background: var(--isi-paper); font-size: .82rem;
+  color: var(--isi-ink-soft); overflow-wrap: anywhere;
 }
-[data-testid="stHeader"], #MainMenu, footer {
-  visibility: hidden;
+.isi-context strong { font-weight: 550; }
+.isi-eyebrow { color: var(--isi-teal); font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.isi-shell-title { color: var(--isi-ink); font-family: inherit; font-size: clamp(1.75rem, 2.5vw, 2.8rem); font-weight: 650; line-height: 1.2; margin: 0 0 .65rem; }
+.isi-shell-kicker { color: var(--isi-ink-soft); font-size: .9rem; }
+.isi-product-band, .isi-foundation-card {
+  border: 1px solid var(--isi-line); border-radius: 10px;
+  padding: 1.1rem 1.2rem; background: var(--isi-paper); margin-bottom: .8rem;
 }
-[data-testid="stAppViewContainer"] > .main {
-  background:
-    radial-gradient(circle at 82% 8%, rgba(185,139,56,.07), transparent 25rem),
-    var(--isi-ivory);
-}
-.block-container {
-  max-width: 1440px;
-  padding-top: 2rem;
-  padding-bottom: 3rem;
-}
-[data-testid="stSidebar"] {
-  border-right: 1px solid var(--isi-line);
-  background: rgba(255,253,248,.94);
-}
-[data-testid="stSidebar"] .block-container {
-  padding-top: 1.3rem;
-}
-.isi-login-wrap {
-  max-width: 560px;
-  margin: 5vh auto 0;
-  padding: 2rem 2.1rem 1.4rem;
-  border: 1px solid var(--isi-line);
-  border-radius: 28px;
-  background: rgba(255,253,248,.88);
-  box-shadow: 0 18px 60px rgba(23,59,49,.08);
-}
-.isi-eyebrow {
-  color: var(--isi-teal);
-  text-transform: uppercase;
-  letter-spacing: .14em;
-  font-size: .73rem;
-  font-weight: 700;
-}
-.isi-shell-kicker {
-  color: var(--isi-ink-soft);
-  font-size: .92rem;
-  margin-bottom: .25rem;
-}
-.isi-shell-title {
-  color: var(--isi-ink);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(2rem, 3vw, 3.4rem);
-  line-height: 1.02;
-  margin: 0 0 .5rem;
-}
-.isi-product-band {
-  border: 1px solid var(--isi-line);
-  border-radius: 24px;
-  padding: 1.25rem 1.4rem;
-  background: rgba(255,253,248,.82);
-  margin-bottom: 1rem;
-}
-.isi-product-band.simpa { border-top: 4px solid var(--isi-teal); }
-.isi-product-band.ordo { border-top: 4px solid var(--isi-gold); }
-.isi-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: .35rem;
-  padding: .34rem .62rem;
-  margin: .15rem .25rem .15rem 0;
-  border: 1px solid var(--isi-line);
-  border-radius: 999px;
-  color: var(--isi-ink-soft);
-  background: rgba(255,255,255,.58);
-  font-size: .82rem;
-}
-.isi-foundation-card {
-  min-height: 155px;
-  border: 1px solid var(--isi-line);
-  border-radius: 22px;
-  padding: 1.1rem 1.15rem;
-  background: var(--isi-paper);
-}
-.isi-foundation-card h4 {
-  color: var(--isi-ink);
-  margin: .15rem 0 .4rem;
-}
-.isi-foundation-card p {
-  color: var(--isi-ink-soft);
-  font-size: .92rem;
-}
-.stButton > button, .stFormSubmitButton > button {
-  border-radius: 999px;
-  min-height: 2.65rem;
-}
-.stButton > button[kind="primary"], .stFormSubmitButton > button {
-  background: var(--isi-ink);
-  color: white;
-  border-color: var(--isi-ink);
-}
-.stTextInput input, [data-baseweb="select"] > div {
-  border-radius: 14px !important;
-}
-div[role="radiogroup"] label {
-  border-radius: 14px;
-}
-:focus-visible {
-  outline: 3px solid rgba(24,114,103,.35) !important;
-  outline-offset: 2px;
-}
-@media (max-width: 700px) {
-  .block-container { padding: 1rem .8rem 2rem; }
-  .isi-login-wrap { margin-top: 1rem; padding: 1.25rem; border-radius: 20px; }
-}
-
-/* ISI-05-HOTFIX-2: official brand alignment on Streamlit surfaces */
-.isi-brand-lockup {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto 1.05rem;
-  background: transparent !important;
-}
-.isi-brand-lockup img {
-  display: block;
-  width: min(245px, 82%);
-  height: auto;
-  margin: 0 auto;
-  background: transparent !important;
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
-  /* The official SVG currently carries a white artboard. Multiply visually
-     removes white on the warm ISI surface without editing the source asset. */
-  mix-blend-mode: multiply;
-}
-.isi-brand-lockup.compact {
-  justify-content: center;
-  margin-bottom: .85rem;
-}
-.isi-brand-lockup.compact img {
-  width: min(175px, 88%);
-}
-.isi-brand-fallback {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  color: var(--isi-ink);
-  margin-bottom: 1rem;
-}
+.isi-product-band.simpa { border-left: 4px solid var(--isi-teal); }
+.isi-product-band.ordo { border-left: 4px solid var(--isi-gold); }
+.isi-foundation-card h4 { color: var(--isi-ink); margin: .1rem 0 .45rem; }
+.isi-foundation-card p { color: var(--isi-ink-soft); font-size: .92rem; }
+.isi-chip { display: inline-flex; padding: .25rem .6rem; margin: .15rem .25rem .15rem 0; border: 1px solid var(--isi-line); border-radius: 6px; background: var(--isi-paper); color: var(--isi-ink-soft); font-size: .82rem; }
+[data-testid="stForm"] { border-color: var(--isi-line); border-radius: 10px; background: var(--isi-paper); padding: 1rem; }
+[data-testid="stMetric"] { border: 1px solid var(--isi-line); border-radius: 8px; background: var(--isi-paper); padding: .8rem; }
+[data-testid="stMetricValue"] { font-size: clamp(1.25rem, 2vw, 1.8rem); overflow-wrap: anywhere; }
+[data-testid="stExpander"] { border-color: var(--isi-line); border-radius: 8px; background: var(--isi-paper); }
+.stButton > button, .stFormSubmitButton > button { border-radius: 8px; min-height: 2.75rem; font-weight: 550; }
+.stButton > button[kind="primary"], .stFormSubmitButton > button[kind="primary"] { background: var(--isi-ink); color: white; border-color: var(--isi-ink); }
+[data-testid="stSidebar"] .stButton > button { width: 100%; min-height: 2.75rem; text-align: left; border-radius: 7px; }
+[data-testid="stSidebar"] .stButton > button[kind="secondary"] { background: transparent; color: var(--isi-ink); border-color: var(--isi-line); }
+.stButton > button:hover { border-color: var(--isi-teal); }
+.stTextInput input, [data-baseweb="select"] > div { border-radius: 6px !important; }
+:focus-visible { outline: 3px solid #197b6d !important; outline-offset: 3px; }
+.isi-brand-lockup { display: flex; justify-content: center; align-items: center; margin: 0 auto 1rem; background: transparent !important; }
+.isi-brand-lockup img { display: block; width: min(245px,82%); height: auto; border: 0; box-shadow: none; mix-blend-mode: multiply; }
+.isi-brand-lockup.compact img { width: min(175px,88%); }
+.isi-brand-fallback { display: flex; flex-direction: column; align-items: center; color: var(--isi-ink); margin-bottom: 1rem; }
 .isi-brand-fallback strong { font-size: 1.7rem; }
 .isi-brand-fallback span { font-size: .78rem; color: var(--isi-ink-soft); }
 @media (max-width: 700px) {
-  .isi-brand-lockup img { width: min(220px, 78vw); }
-  .isi-brand-lockup.compact img { width: min(165px, 70vw); }
+  .block-container { padding: 2.5rem .8rem 2rem; }
+  .isi-context { font-size: .78rem; padding: .7rem; gap: .3rem; }
+  .isi-shell-title { font-size: 1.85rem; }
+  [data-testid="stForm"] { padding: .75rem; }
+  .isi-brand-lockup img { width: min(220px,78vw); }
+  .isi-brand-lockup.compact img { width: min(165px,70vw); }
 }
-
-/* ISI-07-HOTFIX-1: button-based sidebar navigation */
-[data-testid="stSidebar"] .stButton > button {
-  width: 100%;
-  min-height: 2.55rem;
-  border-radius: 12px;
-  font-weight: 650;
-}
-[data-testid="stSidebar"] .stButton > button[kind="secondary"] {
-  background: rgba(255,255,255,.38);
-  border-color: var(--isi-line);
-  color: var(--isi-ink);
-}
-[data-testid="stSidebar"] .stButton > button[kind="primary"] {
-  box-shadow: 0 5px 18px rgba(23,59,49,.10);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }

@@ -1,18 +1,10 @@
 # ISI Autonomous Industrialization Status
 
-## Current reconciliation and owner-requested ISI-29 — 2026-10-07
+## Current reconciliation — 2026-10-10
 
-Authoritative main/origin/direct GitHub33e86e6 clean single worktree/empty stash.
-29E IMPLEMENTED / REVIEW_VERIFIED exact30file commit:60 focused/native1/1384
-regression passes,45 inherited native-lane skips,0failures. Evidence ISI-29E
-closeout.json. Last exact CI/server95fec435/37746165918/schema0036 preproduction.
-29F IN_PROGRESS: linked reports/current evidence guard, Word/manual,10-item Help,
-final acceptance and controlled ISI28 deployment; full gates not yet claimed.
-Standing verified29A-F commit/push and current final-checkpoint/deployment owner
-approval apply. SMTP pending/new backups deferred/real extraction UNCALIBRATED.
-Earlier current status paragraphs below are LEGITIMATE_HISTORY superseded here.
+29A–29F software is CI_VERIFIED / REVIEW_VERIFIED at exact main f587ed0a194043cadf7190ceae9f6f29c1d76c55, required acceptance37914718258 completed/success (all12 jobs). Recorded signed ISI-only deployment passed in PREPRODUCTION_TESTING, schema20261008_0037; automation/evidence/ISI-29F/release/closeout.json. No fresh server probe in30A. Full institutional production remains unverified; SMTP pending, new backups owner-deferred, extraction quality UNCALIBRATED.
 
-
+Current local slice ISI-30A workflow shell/design IN_PROGRESS; contract and30A-F plan locked. 29F Word113 pages/82figures and illustrated Help36topics/37assets reviewed/deployed; deeper populated-action Help/GUI remains30E. GoraNova account email supplied, onboarding pending; no credentials stored. Exact candidate remains unstaged; new approval needed only after verification. Historical text below is LEGITIMATE_HISTORY, superseded for live status.
 
 This is the human-facing live execution ledger. The MasterPlan is the canonical roadmap/architecture/governance authority; `automation/tasks.json`, accepted code, exact-main GitHub Actions and recorded evidence provide synchronized execution proof.
 

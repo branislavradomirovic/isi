@@ -22,9 +22,11 @@ def test_ordo_help_topics_are_product_complete_and_verified():
 
 def test_help_navigation_is_strictly_product_isolated():
     app = (ROOT / "src/streamlit_app/app.py").read_text()
-    assert 'code": "simpa_help"' in app and 'code": "ordo_help"' in app
-    assert 'shell.get("product", {}).get("code") == "SIMPA"' in app
-    assert 'shell.get("product", {}).get("code") == "ORDO"' in app
+    from src.streamlit_app.workflow_shell import navigation_items
+    for product, other in (("SIMPA", "ORDO"), ("ORDO", "SIMPA")):
+        codes = [item["code"] for item in navigation_items({"product": {"code": product}, "navigation": []})]
+        assert f"{product.lower()}_help" in codes
+        assert f"{other.lower()}_help" not in codes
     assert 'if nav_code == "ordo_help"' in app and "render_ordo_help" in app
     help_source = (ROOT / "src/streamlit_app/ordo_help_workspace.py").read_text()
     assert '!= "ORDO"' in help_source

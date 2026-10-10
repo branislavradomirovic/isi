@@ -592,85 +592,7 @@ def render_ordo_analytics(*, token: str, shell: dict[str, Any]) -> None:
         runs=runs,
     )
 
-    st.markdown("### Razvojni ciljevi i scenariji")
-    st.caption("Scenario je korisnički definisan razvojni pravac. Sistem ne predstavlja pretpostavke kao činjenice niti računa predviđene efekte bez validiranog modela.")
-    goals = _safe(ordo_analytics_api.goals, token, organization_id, workspace_id) or []
-    scenarios = _safe(ordo_analytics_api.scenarios, token, organization_id, workspace_id) or []
-
-    if "analysis.run" in permissions:
-        with st.expander("Novi razvojni cilj"):
-            goal_code = st.text_input("Kod cilja", key="ordo_goal_code")
-            goal_title = st.text_input("Naziv cilja", key="ordo_goal_title")
-            goal_description = st.text_area("Opis", key="ordo_goal_desc")
-            focus_area = st.selectbox(
-                "Fokus",
-                ["destination_development", "competitiveness", "sustainability", "inclusion", "employment", "quality_of_life", "custom"],
-                key="ordo_goal_focus",
-            )
-            if st.button("Sačuvaj razvojni cilj", use_container_width=True, key="ordo_goal_save"):
-                result = _safe(
-                    ordo_analytics_api.create_goal,
-                    token,
-                    organization_id=organization_id,
-                    workspace_id=workspace_id,
-                    code=goal_code,
-                    title=goal_title,
-                    description=goal_description,
-                    focus_area=focus_area,
-                )
-                if result is not None:
-                    st.success("Razvojni cilj je sačuvan.")
-                    st.rerun()
-
-        if goals:
-            with st.expander("Novi scenario"):
-                goal_map = {item["id"]: item["title"] for item in goals}
-                goal_id = st.selectbox("Razvojni cilj", list(goal_map), format_func=lambda value: goal_map[value], key="ordo_scenario_goal")
-                scenario_name = st.text_input("Naziv scenarija", key="ordo_scenario_name")
-                scenario_description = st.text_area("Opis scenarija", key="ordo_scenario_desc")
-                assumptions_text = st.text_area("Pretpostavke · jedna po redu", key="ordo_scenario_assumptions")
-                measures_text = st.text_area("Predložene mere · jedna po redu", key="ordo_scenario_measures")
-                if st.button("Sačuvaj scenario", use_container_width=True, key="ordo_scenario_save"):
-                    result = _safe(
-                        ordo_analytics_api.create_scenario,
-                        token,
-                        organization_id=organization_id,
-                        workspace_id=workspace_id,
-                        goal_id=goal_id,
-                        name=scenario_name,
-                        description=scenario_description,
-                        assumptions=_lines(assumptions_text),
-                        measures=_lines(measures_text),
-                    )
-                    if result is not None:
-                        st.success("Scenario je sačuvan kao draft.")
-                        st.rerun()
-
-    if goals:
-        st.dataframe(goals, use_container_width=True, hide_index=True)
-    if scenarios:
-        st.dataframe(scenarios, use_container_width=True, hide_index=True)
-
-    assessments = _safe(ordo_analytics_api.assessments, token, organization_id, workspace_id) or []
-    if scenarios and governed_runs and "analysis.run" in permissions:
-        st.markdown("#### Evidence-only procena scenarija")
-        scenario_map = {item["id"]: item["name"] for item in scenarios}
-        run_ids = [item["id"] for item in governed_runs]
-        scenario_id = st.selectbox("Scenario", list(scenario_map), format_func=lambda value: scenario_map[value], key="ordo_assessment_scenario")
-        run_id = st.selectbox("Analitički snapshot", run_ids, format_func=lambda value: f"Snapshot {value[:8]}", key="ordo_assessment_run")
-        if st.button("Kreiraj evidence-only procenu", use_container_width=True, key="ordo_assessment_create"):
-            result = _safe(
-                ordo_analytics_api.create_assessment,
-                token,
-                organization_id=organization_id,
-                workspace_id=workspace_id,
-                scenario_id=scenario_id,
-                analytics_run_id=run_id,
-            )
-            if result is not None:
-                st.success("Procena je sačuvana bez prediktivnog izračunavanja.")
-                st.rerun()
-    _render_scenario_assessments(assessments)
+    scenarios = _render_scenario_workflow(token, organization_id, workspace_id, permissions, governed_runs)
 
     st.markdown("### Lokalna ORDO AI podrška")
     st.warning(
@@ -771,3 +693,146 @@ def render_ordo_analytics(*, token: str, shell: dict[str, Any]) -> None:
                     )
                     if result is not None:
                         st.rerun()
+
+
+def _render_scenario_workflow(token, organization_id, workspace_id, permissions, governed_runs):
+    st.markdown("### Razvojni ciljevi i scenariji")
+    st.caption("Scenario je korisnički definisan razvojni pravac. Sistem ne predstavlja pretpostavke kao činjenice niti računa predviđene efekte bez validiranog modela.")
+    goals = _safe(ordo_analytics_api.goals, token, organization_id, workspace_id) or []
+    scenarios = _safe(ordo_analytics_api.scenarios, token, organization_id, workspace_id) or []
+
+    if "analysis.run" in permissions:
+        with st.expander("Novi razvojni cilj"):
+            goal_code = st.text_input("Kod cilja", key="ordo_goal_code")
+            goal_title = st.text_input("Naziv cilja", key="ordo_goal_title")
+            goal_description = st.text_area("Opis", key="ordo_goal_desc")
+            focus_area = st.selectbox(
+                "Fokus",
+                ["destination_development", "competitiveness", "sustainability", "inclusion", "employment", "quality_of_life", "custom"],
+                key="ordo_goal_focus",
+            )
+            if st.button("Sačuvaj razvojni cilj", use_container_width=True, key="ordo_goal_save"):
+                result = _safe(
+                    ordo_analytics_api.create_goal,
+                    token,
+                    organization_id=organization_id,
+                    workspace_id=workspace_id,
+                    code=goal_code,
+                    title=goal_title,
+                    description=goal_description,
+                    focus_area=focus_area,
+                )
+                if result is not None:
+                    st.success("Razvojni cilj je sačuvan.")
+                    st.rerun()
+
+        if goals:
+            with st.expander("Novi scenario"):
+                goal_map = {item["id"]: item["title"] for item in goals}
+                goal_id = st.selectbox("Razvojni cilj", list(goal_map), format_func=lambda value: goal_map[value], key="ordo_scenario_goal")
+                scenario_name = st.text_input("Naziv scenarija", key="ordo_scenario_name")
+                scenario_description = st.text_area("Opis scenarija", key="ordo_scenario_desc")
+                assumptions_text = st.text_area("Pretpostavke · jedna po redu", key="ordo_scenario_assumptions")
+                measures_text = st.text_area("Predložene mere · jedna po redu", key="ordo_scenario_measures")
+                if st.button("Sačuvaj scenario", use_container_width=True, key="ordo_scenario_save"):
+                    result = _safe(
+                        ordo_analytics_api.create_scenario,
+                        token,
+                        organization_id=organization_id,
+                        workspace_id=workspace_id,
+                        goal_id=goal_id,
+                        name=scenario_name,
+                        description=scenario_description,
+                        assumptions=_lines(assumptions_text),
+                        measures=_lines(measures_text),
+                    )
+                    if result is not None:
+                        st.success("Scenario je sačuvan kao draft.")
+                        st.rerun()
+
+    if goals:
+        st.dataframe(goals, use_container_width=True, hide_index=True)
+    if scenarios:
+        st.dataframe(scenarios, use_container_width=True, hide_index=True)
+
+    assessments = _safe(ordo_analytics_api.assessments, token, organization_id, workspace_id) or []
+    if scenarios and governed_runs and "analysis.run" in permissions:
+        st.markdown("#### Evidence-only procena scenarija")
+        scenario_map = {item["id"]: item["name"] for item in scenarios}
+        run_ids = [item["id"] for item in governed_runs]
+        scenario_id = st.selectbox("Scenario", list(scenario_map), format_func=lambda value: scenario_map[value], key="ordo_assessment_scenario")
+        run_id = st.selectbox("Analitički snapshot", run_ids, format_func=lambda value: f"Snapshot {value[:8]}", key="ordo_assessment_run")
+        if st.button("Kreiraj evidence-only procenu", use_container_width=True, key="ordo_assessment_create"):
+            result = _safe(
+                ordo_analytics_api.create_assessment,
+                token,
+                organization_id=organization_id,
+                workspace_id=workspace_id,
+                scenario_id=scenario_id,
+                analytics_run_id=run_id,
+            )
+            if result is not None:
+                st.success("Procena je sačuvana bez prediktivnog izračunavanja.")
+                st.rerun()
+    _render_scenario_assessments(assessments)
+
+    if "analysis.run" in permissions:
+        if scenarios:
+            with st.expander("Status scenarija"):
+                chosen = st.selectbox("Scenario za promenu statusa", scenarios,
+                    format_func=lambda row: f"{row['name']} · {row['status']}", key="ordo_scenario_status_item")
+                with st.form("ordo_scenario_status_form"):
+                    status_value = st.selectbox("Novi status", ["draft", "review_ready", "accepted", "rejected"])
+                    st.caption("Prihvaćen scenario beleži stručni izbor; ne potvrđuje metodologiju, prognozu ili efekat mera.")
+                    confirmed = st.checkbox("Potvrđujem promenu statusa izabranog scenarija")
+                    if st.form_submit_button("Sačuvaj status scenarija"):
+                        if not confirmed:
+                            st.error("Potvrdite promenu statusa pre čuvanja.")
+                        elif _safe(ordo_analytics_api.scenario_status, token, scenario_id=chosen["id"],
+                                organization_id=organization_id, workspace_id=workspace_id, status=status_value) is not None:
+                            st.success("Status scenarija je sačuvan.")
+                            st.rerun()
+        if assessments:
+            with st.expander("Stručni pregled procene"):
+                chosen = st.selectbox("Procena za pregled", assessments,
+                    format_func=lambda row: f"{row['id'][:8]} · {row.get('status', 'unknown')}", key="ordo_assessment_review_item")
+                with st.form("ordo_assessment_review_form"):
+                    decision = st.selectbox("Odluka o pregledu", ["reviewed", "rejected"])
+                    note = st.text_area("Obrazloženje stručnog pregleda", max_chars=5000)
+                    st.caption("Pregled potvrđuje vaš stav o dokazima; ne pretvara scenario u prognozu. Izvor se ponovo proverava pri čuvanju.")
+                    confirmed = st.checkbox("Pregledao/la sam izvore, ograničenja i izabranu procenu")
+                    if st.form_submit_button("Sačuvaj stručni pregled"):
+                        if not confirmed or not note.strip():
+                            st.error("Unesite obrazloženje i potvrdite pregled izvora.")
+                        elif _safe(ordo_analytics_api.review_assessment, token, assessment_id=chosen["id"],
+                                organization_id=organization_id, workspace_id=workspace_id, decision=decision, reviewer_note=note.strip()) is not None:
+                            st.success("Stručni pregled je sačuvan.")
+                            st.rerun()
+    return scenarios
+
+
+def render_ordo_scenarios(*, token: str, shell: dict[str, Any]) -> None:
+    st.markdown('<div class="isi-eyebrow">ORDO · Planiranje</div>', unsafe_allow_html=True)
+    st.title("Razvojni ciljevi i scenariji")
+    if shell.get("product", {}).get("code") != "ORDO":
+        st.info("Scenariji su dostupni u ORDO radnom prostoru.")
+        return
+    scope = _scope(shell)
+    if scope is None:
+        st.info("Izaberite ORDO radni prostor da biste pregledali ciljeve i scenarije.")
+        return
+    permissions = set(shell["product"].get("permission_codes", []))
+    if "analysis.read" not in permissions:
+        st.info("Pregled scenarija zahteva dozvolu analysis.read; obratite se administratoru.")
+        return
+    organization_id, workspace_id = scope
+    st.info("Cilj → pretpostavke i mere → pregled dokaza → stručna procena. Efekat ostaje NOT_ESTIMATED bez odobrenog modela uticaja.")
+    with st.expander("Uputstvo za scenarije"):
+        st.write("1. Pregledajte ili napravite razvojni cilj. 2. Unesite scenario, pretpostavke i predložene mere. 3. U Analitici sačuvajte analitički snimak iz validiranog izvora. 4. Povežite scenario sa snimkom kroz procenu zasnovanu na dokazima. 5. Pregledajte izvor, ograničenja i status procene. Pisanje zahteva analysis.run; scenario nije prognoza ni procena uzročnog efekta.")
+    artifacts = _eligible_artifacts(token, organization_id, workspace_id)
+    eligible = {(("ANALYTICAL_SNAPSHOT" if row["type"] == "snapshot" else "ANALYTICAL_FEATURE_VERSION"), row["id"]) for row in artifacts}
+    runs = _safe(ordo_analytics_api.runs, token, organization_id, workspace_id) or []
+    governed_runs = [row for row in runs if (row.get("analytical_artifact_type"), row.get("analytical_snapshot_id") or row.get("analytical_feature_version_id")) in eligible]
+    if not governed_runs:
+        st.info("Za novu procenu prvo pripremite validiran analitički izvor u Podacima i sačuvajte njegov snimak u Analitici. Ciljeve i scenarije možete pregledati nezavisno od toga.")
+    _render_scenario_workflow(token, organization_id, workspace_id, permissions, governed_runs)

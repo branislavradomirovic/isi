@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from base64 import b64encode
+from html import escape
 from pathlib import Path
 from typing import Any
 
@@ -11,12 +12,13 @@ from src.streamlit_app import api_client
 from src.streamlit_app.api_client import AccessDenied, ApiUnavailable, AuthenticationRequired
 from src.streamlit_app.selection import Selection, default_selection, organization_by_id, product_by_code
 from src.streamlit_app.style import apply_shell_css
+from src.streamlit_app.workflow_shell import clear_workspace_state, navigation_items, context_markup
 from src.streamlit_app.data_workspace import render_data_workspace
 from src.streamlit_app.ai_workspace import render_ai_workspace
 from src.streamlit_app.simpa_workspace import render_simpa_indicators, render_simpa_overview
 from src.streamlit_app.simpa_analytics_workspace import render_simpa_analytics
 from src.streamlit_app.simpa_help_workspace import render_simpa_help
-from src.streamlit_app.ordo_analytics_workspace import render_ordo_analytics
+from src.streamlit_app.ordo_analytics_workspace import render_ordo_analytics, render_ordo_scenarios
 from src.streamlit_app.ordo_help_workspace import render_ordo_help
 from src.streamlit_app.reporting_workspace import render_reporting
 from src.streamlit_app.administration_workspace import render_administration
@@ -57,8 +59,7 @@ apply_shell_css()
 
 
 def _clear_auth_state() -> None:
-    for key in (TOKEN_KEY, CONTEXT_KEY, ORG_KEY, PRODUCT_KEY, WORKSPACE_KEY, NAV_KEY):
-        st.session_state.pop(key, None)
+    st.session_state.clear()
 
 
 def _token() -> str | None:
@@ -88,7 +89,7 @@ def _render_login() -> None:
         _brand_header()
         st.markdown('<div class="isi-eyebrow">Privatna ISI platforma</div>', unsafe_allow_html=True)
         st.markdown('<h1 class="isi-shell-title">Pristup platformama SIMPA i ORDO</h1>', unsafe_allow_html=True)
-        st.caption("Prijavite se institucionalnim nalogom. Pristup platformama zavisi od organizacije, product entitlement-a i dodeljenih rola.")
+        st.caption("Prijavite se institucionalnim nalogom. Dostupne funkcije zavise od vaše organizacije, radnog prostora i dodeljenih dozvola.")
         if st.session_state.pop("isi_auth_completed", False):
             st.success("Promena je potvrđena. Prijavite se svojim nalogom.")
         with st.form("isi_login_form", clear_on_submit=True):
@@ -267,7 +268,7 @@ def _logout() -> None:
     if token:
         try:
             api_client.logout(token)
-        except ApiUnavailable:
+        except (AuthenticationRequired, ApiUnavailable):
             pass
     _clear_auth_state()
     st.rerun()
@@ -277,7 +278,7 @@ def _render_no_access(context: dict[str, Any]) -> None:
     _brand_header(compact=True)
     st.markdown('<div class="isi-eyebrow">Pristup nije dodeljen</div>', unsafe_allow_html=True)
     st.markdown('<h1 class="isi-shell-title">Nalog je aktivan, ali nema pristup SIMPA ili ORDO platformi.</h1>', unsafe_allow_html=True)
-    st.write("Administrator organizacije treba da dodeli odgovarajući product entitlement, membership product access i rolu.")
+    st.write("Administrator organizacije treba da aktivira pristup proizvodu i dodeli odgovarajuću ulogu.")
     st.caption(f"{context.get('display_name', '')} · {context.get('email', '')}")
     if st.button("Odjavi se"):
         _logout()
@@ -288,6 +289,23 @@ def _render_no_access(context: dict[str, Any]) -> None:
     if token:
         with st.expander("Bezbednost naloga"):
             render_account_security(token=token)
+
+
+def _scope_changed() -> None:
+    clear_workspace_state(st.session_state)
+    st.session_state.pop(WORKSPACE_KEY, None)
+
+
+def _organization_changed() -> None:
+    _scope_changed()
+    st.session_state.pop("isi_workspace_selector", None)
+
+
+def _refresh_access() -> None:
+    token = _token()
+    _clear_auth_state()
+    if token:
+        st.session_state[TOKEN_KEY] = token
 
 
 def _choose_selection(context: dict[str, Any]) -> Selection | None:
@@ -308,6 +326,7 @@ def _choose_selection(context: dict[str, Any]) -> Selection | None:
             org_ids,
             index=org_ids.index(current.organization_id),
             format_func=lambda value: organization_by_id(context, value)["name"],
+            key="isi_org_selector", on_change=_organization_changed,
         )
     else:
         org_id = org_ids[0]
@@ -322,7 +341,7 @@ def _choose_selection(context: dict[str, Any]) -> Selection | None:
     product_code = remembered_product if remembered_product in product_codes else product_codes[0]
 
     if len(products) > 1:
-        st.sidebar.caption("Platforma")
+        st.sidebar.caption("Proizvod")
         product_columns = st.sidebar.columns(len(product_codes))
         selected_product = product_code
         for column, code in zip(product_columns, product_codes):
@@ -334,13 +353,15 @@ def _choose_selection(context: dict[str, Any]) -> Selection | None:
             ):
                 selected_product = code
         if selected_product != product_code:
+            clear_workspace_state(st.session_state)
+            st.session_state.pop("isi_workspace_selector", None)
             st.session_state[PRODUCT_KEY] = selected_product
             st.session_state.pop(WORKSPACE_KEY, None)
             st.session_state.pop(NAV_KEY, None)
             st.rerun()
         product_code = selected_product
     else:
-        st.sidebar.caption("Platforma")
+        st.sidebar.caption("Proizvod")
         st.sidebar.markdown(f"**{product_code}**")
 
     product = product_by_code(organization, product_code)
@@ -349,21 +370,24 @@ def _choose_selection(context: dict[str, Any]) -> Selection | None:
     workspace_id = None
     if len(workspaces) == 1:
         workspace_id = str(workspaces[0]["id"])
-        st.sidebar.caption("Workspace")
+        st.sidebar.caption("Radni prostor")
         st.sidebar.markdown(f"**{workspaces[0]['name']}**")
     elif len(workspaces) > 1:
         workspace_ids = [str(item["id"]) for item in workspaces]
         remembered_workspace = st.session_state.get(WORKSPACE_KEY)
         if remembered_workspace not in workspace_ids:
             remembered_workspace = workspace_ids[0]
+        if st.session_state.get("isi_workspace_selector") not in workspace_ids:
+            st.session_state["isi_workspace_selector"] = remembered_workspace
         workspace_id = st.sidebar.selectbox(
-            "Workspace",
+            "Radni prostor",
             workspace_ids,
             index=workspace_ids.index(remembered_workspace),
             format_func=lambda value: next(item["name"] for item in workspaces if str(item["id"]) == value),
+            key="isi_workspace_selector", on_change=_scope_changed,
         )
     else:
-        st.sidebar.caption("Workspace")
+        st.sidebar.caption("Radni prostor")
         st.sidebar.info("Još nije konfigurisan.")
 
     st.session_state[ORG_KEY] = org_id
@@ -403,18 +427,14 @@ def _sidebar_identity(context: dict[str, Any]) -> None:
     st.sidebar.markdown(_brand_markup(compact=True), unsafe_allow_html=True)
     st.sidebar.markdown(f"**{context['display_name']}**")
     st.sidebar.caption(context["email"])
+    st.sidebar.button("Osveži pristup", on_click=_refresh_access, use_container_width=True,
+                      help="Ponovo učitava organizacije, proizvode i radne prostore; odbacuje nezavršene unose.")
     if st.sidebar.button("Odjavi se", use_container_width=True):
         _logout()
 
 
 def _navigation(shell: dict[str, Any]) -> str:
-    enabled = [item for item in shell.get("navigation", []) if item.get("enabled")]
-    enabled.append({"code": "isi_help", "label_sr": "ISI Help · Pomoć", "enabled": True})
-    enabled.append({"code": "account_security", "label_sr": "Bezbednost naloga", "enabled": True})
-    if shell.get("product", {}).get("code") == "SIMPA":
-        enabled.append({"code": "simpa_help", "label_sr": "SIMPA Help", "enabled": True})
-    if shell.get("product", {}).get("code") == "ORDO":
-        enabled.append({"code": "ordo_help", "label_sr": "ORDO Help", "enabled": True})
+    enabled = navigation_items(shell)
     codes = [item["code"] for item in enabled]
     current = st.session_state.get(NAV_KEY)
     if current not in codes:
@@ -464,13 +484,13 @@ def _render_overview(shell: dict[str, Any]) -> None:
         st.info("Pristup platformi je aktivan, ali workspace još nije konfigurisan ili izabran. Domain operacije ostaju zaključane dok workspace ne postoji.")
     else:
         st.markdown(
-            f'<div class="isi-product-band {product_code.lower()}"><strong>{workspace["name"]}</strong><br><span class="isi-shell-kicker">Aktivni workspace · {product_code}</span></div>',
+            f'<div class="isi-product-band {product_code.lower()}"><strong>{escape(str(workspace["name"]))}</strong><br><span class="isi-shell-kicker">Aktivni workspace · {product_code}</span></div>',
             unsafe_allow_html=True,
         )
 
     role_codes = product.get("role_codes", [])
     permission_codes = product.get("permission_codes", [])
-    st.markdown(" ".join(f'<span class="isi-chip">{role}</span>' for role in role_codes) or '<span class="isi-chip">bez role</span>', unsafe_allow_html=True)
+    st.markdown(" ".join(f'<span class="isi-chip">{escape(str(role))}</span>' for role in role_codes) or '<span class="isi-chip">bez role</span>', unsafe_allow_html=True)
     st.caption(f"Aktivnih dozvola: {len(permission_codes)} · product entitlement: {product_code}")
 
     st.markdown("### Shared platform foundation")
@@ -499,6 +519,14 @@ def _render_future_section(shell: dict[str, Any], nav_code: str) -> None:
 
 
 def _render_shell(shell: dict[str, Any], nav_code: str) -> None:
+    st.markdown(context_markup(shell, nav_code), unsafe_allow_html=True)
+    with st.expander("Pomoć za radni kontekst i scenarije"):
+        st.markdown((REPO_ROOT / "docs/help/ISI-WORKFLOW-SHELL-GUIDE.md").read_text())
+    if nav_code == "scenarios":
+        token = _token()
+        if token:
+            render_ordo_scenarios(token=token, shell=shell)
+        return
     if nav_code == "isi_help":
         render_shared_help()
         return

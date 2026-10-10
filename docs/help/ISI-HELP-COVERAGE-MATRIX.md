@@ -187,3 +187,14 @@ No unsupported confidence, ORDO SHAP, domain truth or production quality claim.
 ## Owner-requested illustrated Help — 2026-10-09
 
 Existing36 canonical shared/SIMPA/ORDO topics gain numbered workflows, documented field tables, dated baseline availability and37 reviewed local screenshots. Product Help includes detailed GIS, extraction and linked-report chapters; SIMPA also includes supported SHAP. Ten-item canonical text remains intact; public six-topic allowlist remains independent of authentication. Images do not read live tenant data and have exact checksums, provenance/date and synthetic/baseline captions. Authority: docs/help/ISI-ILLUSTRATED-MANUAL.json, src/streamlit_app/help_manual.py and tests/test_isi_29f_illustrated_help.py. COMPLETE content candidate; VERIFICATION requires matching final29F gates/browser/manual/review. Existing historical21-row matrix is predecessor evidence, not a claim that illustrated Help was previously shipped.
+# ISI-30A action-level extension — local candidate
+
+Historical VERIFIED rows below refer to their accepted phase scope. The new
+shell/scenario GUI has not inherited screenshot/manual or server verification.
+
+|Action|Status|Help|Test/evidence|
+|---|---|---|---|
+|Organization/product/workspace switch, refresh access, logout|PARTIAL|ISI-WORKFLOW-SHELL-GUIDE.md|test_isi_30a_workflow_shell.py; browser/mobile pending|
+|Dedicated ORDO scenarios entry, existing goal/scenario/assessment creation|PARTIAL|ISI-WORKFLOW-SHELL-GUIDE.md|test_isi_30a_workflow_shell.py; browser/populated screenshots pending|
+|Existing scenario status and assessment human review|PARTIAL|ISI-WORKFLOW-SHELL-GUIDE.md|test_isi_30a_workflow_shell.py; API contracts unchanged; browser pending|
+|SIMPA scenario menu absence|PARTIAL|ISI-WORKFLOW-SHELL-GUIDE.md|Product navigation test; no SIMPA scenario contract created|

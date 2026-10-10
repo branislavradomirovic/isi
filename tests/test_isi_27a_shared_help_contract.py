@@ -91,7 +91,10 @@ def test_shared_navigation_routes_without_private_calls(monkeypatch):
     definitions = ast.unparse(extracted)
     script = '''import streamlit as st
 from typing import Any
+from pathlib import Path
+from src.streamlit_app.workflow_shell import navigation_items, context_markup
 from src.streamlit_app.shared_help_workspace import render_shared_help
+REPO_ROOT = Path.cwd()
 NAV_KEY = "isi_shell_navigation"
 ''' + definitions + '''
 shell = {"product": {"code": "SIMPA"}, "navigation": []}

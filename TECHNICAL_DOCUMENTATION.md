@@ -1,20 +1,20 @@
 # ISI Technical Documentation
 
-**Version:** 1.8
+**Version:** 1.9
 **Status:** Controlled living technical document  
-**Last updated:** 2026-10-08
+**Last updated:** 2026-10-10
 **Canonical repository:** `branislavradomirovic/isi`  
-**Last CI and recorded server checkpoint:** `95fec43590e9b1d3eb44d55867666581118ec650` (run37746165918: exact required acceptance success; bounded preproduction deployment recorded)
+**Last CI and recorded server checkpoint:** `f587ed0a194043cadf7190ceae9f6f29c1d76c55` (run37914718258: all12 exact required jobs success; bounded preproduction deployment recorded)
 **Pre-reconciliation governance baseline:** `ff573b3d76cf29581cb19c255821e9b4c4841108`  
-**Current database migration head:** `20261008_0037` (29E accepted main33e86e6); recorded deployed head `20261008_0036`
+**Current database migration head:** `20261008_0037`; recorded deployed head `20261008_0037`
 
 > This document is the concise technical authority for the current ISI as-built platform and its owner-approved deployment target. The MasterPlan remains the canonical architecture/governance/roadmap authority, and code/tests remain the as-built implementation truth. Live production-server state is not inferred from repository source: current-server verification remains deferred to ISI-28.
 
-## Current reconciled snapshot — 2026-10-08
+## Current reconciled snapshot — 2026-10-10
 
-29A–29D are CI_VERIFIED / REVIEW_VERIFIED at exact main 95fec43590e9b1d3eb44d55867666581118ec650 (ISI required acceptance run37746165918, all12 completed/success). Recorded signed deployment and scoped server acceptance passed in PREPRODUCTION_TESTING, schema0036; automation/evidence/ISI-29D/release/closeout.json. No fresh server probe in29E. SMTP pending, new backups owner-deferred, institutional/capacity/operational full-production gates remain open.
+29A–29F software is CI_VERIFIED / REVIEW_VERIFIED at exact main f587ed0a194043cadf7190ceae9f6f29c1d76c55, required acceptance37914718258 completed/success (all12 jobs). Recorded signed ISI-only deployment passed in PREPRODUCTION_TESTING, schema20261008_0037; automation/evidence/ISI-29F/release/closeout.json. No fresh server probe in30A. Full institutional production remains unverified; SMTP pending, new backups owner-deferred, extraction quality UNCALIBRATED.
 
-29A charts,29B geometry,29C maps and29D continuous OLS SHAP are on accepted main.29E extraction is IMPLEMENTED / REVIEW_VERIFIED on33e86e6 with exact local evidence;29F linked reports/manual/final release is IN_PROGRESS. No full-production or real institutional model/extraction quality claim.
+ISI-30A IN_PROGRESS presentation candidate: context transitions, accessible responsive shared style and reachable existing ORDO scenarios; no schema/API/worker/provider/dependency/model/RBAC change. Backend remains authorization truth. Sequenced remaining customer authoring/Help/manual work in ISI-30 plan; no new CI/server verification inherited.
 
 ## 1. Purpose and scope
 
@@ -41,8 +41,8 @@ The platform currently includes a public institutional website, an authenticated
 | ISI-24 ORDO Production Methodology + Help/XAI | COMPLETE / CI_VERIFIED |
 | ISI-25 Industrial AI / MLOps | IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED |
 | ISI-26 Performance, Load & Resilience | IMPLEMENTATION COMPLETE / ACCEPTED ON MAIN / NOT CI_VERIFIED |
-| ISI-27 Industrial Release Candidate | COMPLETE / exact RC CI_VERIFIED;95fec435 later consolidated acceptance |
-| ISI-28 Current Server Controlled Upgrade | IN_PROGRESS /95fec435 recorded preproduction deployment; full production gates open |
+| ISI-27 Industrial Release Candidate | COMPLETE / exact RC CI_VERIFIED;f587ed0 later consolidated acceptance |
+| ISI-28 Current Server Controlled Upgrade | IN_PROGRESS /f587ed0 recorded preproduction deployment; full production gates open |
 
 ISI-25A is accepted at `f0047321ee4410522697144ecfa464087f1b83bc`. ISI-25B is accepted at `7e11ee2a6f7546eacc3207e15cacfc35f6d04f3e`. Hosted full acceptance was deliberately not run for those development checkpoints under the owner CI-cost policy; `CI_VERIFIED` is therefore not claimed for ISI-25.
 

@@ -220,3 +220,11 @@ def create_synthesis(token: str, *, organization_id: str, workspace_id: str, ana
 
 def review_synthesis(token: str, *, synthesis_id: str, organization_id: str, workspace_id: str, decision: str, reviewer_note: str = ""):
     return _checked(request("POST", f"/api/v1/ordo/analytics/syntheses/{synthesis_id}/review", token=token, json={"organization_id": organization_id, "workspace_id": workspace_id, "decision": decision, "reviewer_note": reviewer_note}), unavailable="Nije moguće evidentirati human review.")
+
+
+def scenario_status(token: str, *, scenario_id: str, organization_id: str, workspace_id: str, status: str):
+    return _checked(request("POST", f"/api/v1/ordo/analytics/scenarios/{scenario_id}/status", token=token, json={"organization_id": organization_id, "workspace_id": workspace_id, "status": status}), unavailable="Nije moguće promeniti status scenarija.")
+
+
+def review_assessment(token: str, *, assessment_id: str, organization_id: str, workspace_id: str, decision: str, reviewer_note: str):
+    return _checked(request("POST", f"/api/v1/ordo/analytics/scenario-assessments/{assessment_id}/review", token=token, json={"organization_id": organization_id, "workspace_id": workspace_id, "decision": decision, "reviewer_note": reviewer_note}), unavailable="Nije moguće sačuvati pregled procene.")
