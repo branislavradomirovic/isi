@@ -894,3 +894,6 @@ Full final exact-source acceptance/controlled deployment remains required.
 
 
 ISI-30 continuation2026-10-10:30A reviewed/local verified19-file candidate360e841e committed/pushed c92bacca870edc04f1a3ef126954f0162f449d5d. Latest hosted/server proof remains f587ed0; no inheritance. Owner authorizes30B–F verified commit/push/final checkpoint/scoped deployment without further confirmation.30B1 source version/quality/ingestion inspection and bounded FAILED retry IN_PROGRESS;30B2–D authoring,30E Help/Word,30F acceptance/deployment remain pending. SMTP pending, no new backups, strict non-target protection.
+
+
+ISI-30B1 local IMPLEMENTED/REVIEW_VERIFIED committed/pushed be2ae69:24focused/1456regression PASS,46 inherited skips,1280/390 synthetic version/upload/evaluation/output/retry/readonly review.30B2 IN_PROGRESS typed existing inbound/batch connector, schema mapping, identity policy, author-entered operational thresholds, activation and idempotent governed upload. Exact contract automation/specs/ISI-30B2-GOVERNED-INGESTION.md; scoped backend remains authority. No formula/schema/dependency/secrets/remote connector added.30B operator/privacy/analytical authoring,30C/D,30E illustrated HelpWord,30F remain pending. Latest CI/server f587ed0 unchanged.

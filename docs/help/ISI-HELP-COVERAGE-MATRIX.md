@@ -208,3 +208,14 @@ shell/scenario GUI has not inherited screenshot/manual or server verification.
 |New existing-source version|ISI-DATA-WORKFLOWS-GUIDE.md|PARTIAL|Browser action/Word30E|
 |Run/job/evaluation/governed-output inspection|ISI-DATA-WORKFLOWS-GUIDE.md|PARTIAL|Browser action/Word30E|
 |Confirmed fresh FAILED retry|ISI-DATA-WORKFLOWS-GUIDE.md|PARTIAL|Browser action/Word30E|
+
+
+### ISI-30B2 candidate action coverage
+
+|Action|Help|Status|Remaining|
+|---|---|---|---|
+|Connector registration/activation|ISI-GOVERNED-INGESTION-GUIDE.md|PARTIAL|Browser/Word30E|
+|Typed field mapping registration/activation|ISI-GOVERNED-INGESTION-GUIDE.md|PARTIAL|Browser/Word30E|
+|Identity policy registration/activation|ISI-GOVERNED-INGESTION-GUIDE.md|PARTIAL|Browser/Word30E|
+|Operational policy registration/activation|ISI-GOVERNED-INGESTION-GUIDE.md|PARTIAL|Browser/Word30E|
+|Active-chain idempotent governed upload|ISI-GOVERNED-INGESTION-GUIDE.md|PARTIAL|Browser/Word30E|

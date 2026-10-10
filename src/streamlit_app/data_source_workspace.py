@@ -105,6 +105,9 @@ def render_source_inspection(*, token: str, shell: dict[str, Any], sources: list
         with st.expander('Nova verzija postojećeg izvora'):
             _version_upload(token, params, source, key)
     st.markdown('**Kontrolisane obrade izvora**')
+    from src.streamlit_app.data_ingestion_workspace import render_governed_ingestion
+    with st.expander('Priprema ugovora i kontrolisano učitavanje'):
+        render_governed_ingestion(token=token, shell=shell, source_id=str(source['id']))
     if not runs:
         st.caption('Nema kontrolisanih obrada. Osnovno učitavanje verzije samo po sebi ne kreira governed output.')
         return

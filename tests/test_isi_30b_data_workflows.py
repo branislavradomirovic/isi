@@ -19,6 +19,8 @@ def script():
 
 
 def app(monkeypatch, permissions=('data.read', 'data.upload'), runs=None):
+    from src.streamlit_app import data_ingestion_api
+    monkeypatch.setattr(data_ingestion_api, 'list_contracts', Mock(return_value=[]))
     for name, value in [('get_source_detail', dict(versions=[])), ('list_ingestion_runs', runs if runs is not None else [RUN]),
                         ('get_ingestion_run', RUN), ('retry_ingestion_run', dict(status='QUEUED'))]:
         monkeypatch.setattr(data_api, name, Mock(return_value=value))
