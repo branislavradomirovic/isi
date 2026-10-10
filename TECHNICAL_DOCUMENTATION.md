@@ -909,3 +909,7 @@ ISI-30B4A IMPLEMENTED/REVIEW_VERIFIED committed/pushed15204d7:33focused/1543regr
 
 
 ISI-30B4B IMPLEMENTED/REVIEW_VERIFIED committed/pushed444238e:17focused/1560regression PASS/46 inherited skips,1280/390 synthetic governance/quarantine/review/readonly checks.30B4C IN_PROGRESS existing retention policy/hold/metadata purge request, external anonymization evidence/proposal/review, scoped allowed export. Governance-only paginated anonymization GET added for retrievable review; final review now uses row lock. No database migration, AI method/provider/formula or permission expansion. Physical purge classified OPERATOR_ONLY: no customer execute button or unverified archive claim; existing operator step-up/retention APIs retained. Sensitive export remains fail-closed with real MFA requirement.30C/D,30E HelpWord,30F remain pending; last CI/server f587ed0 unchanged.
+
+
+## 2026-10-10 — 30B privacy closeout / 30C1 scope lock
+ISI-30B4C IMPLEMENTED/REVIEW_VERIFIED committed/pushed606fc92:21focused/1581regression PASS/46 inherited skips,1280/390 synthetic privacy controls/read-only/ORDO checks.30B customer data workflows locally reviewed; physical purge OPERATOR_ONLY, real sensitive-export MFA remains fail-closed.30C1 IN_PROGRESS typed existing global SIMPA methodology/reference-suite/statistical lifecycle; global registry/supersession disclosed, no formula or automatic approval. Contract automation/specs/ISI-30C1-SIMPA-METHODOLOGY-WORKFLOWS.md.30C2 ORDO,30D,30E illustrated HelpWord,30F pending. Last CI/server f587ed0 unchanged.

@@ -225,6 +225,9 @@ def render_simpa_analytics(*, token: str, shell: dict[str, Any]) -> None:
         )
     st.caption("Detaljno tumacenje lifecycle-a, reference evidence-a, statistike, ogranicenja i recovery koraka nalazi se u SIMPA Help sekciji.")
 
+    from src.streamlit_app.simpa_methodology_workspace import render_methodology_authoring
+    render_methodology_authoring(token=token, shell=shell)
+
     st.markdown("### Monitoring snapshot-i")
     if snapshot and selected_artifact is not None and "analysis.run" in permissions:
         if st.button("Sačuvaj trenutni monitoring snapshot", type="primary", use_container_width=True):

@@ -258,3 +258,8 @@ shell/scenario GUI has not inherited screenshot/manual or server verification.
 |External-output anonymization evidence proposal / human review|ISI-PRIVACY-CONTROLS-GUIDE.md|PARTIAL|Browser/Word30E|
 |Purpose-confirmed allowed version export|ISI-PRIVACY-CONTROLS-GUIDE.md|PARTIAL|Browser/Word30E; real sensitive MFA pending|
 |Purge request and retention metadata|ISI-PRIVACY-CONTROLS-GUIDE.md|PARTIAL|Operator approval/execution; archive not verified|
+
+
+## 30C1 SIMPA authoring — PARTIAL
+
+Existing direct_observation DRAFT/propose/reference-suite/run/human validate/retire and four statistical semantic-family contract/lifecycle forms: docs/help/SIMPA-METHODOLOGY-WORKFLOWS-GUIDE.md. Ten-item action Help added; local/browser evidence and illustrated Word parity remain required. No invented institutional approval; global registry and supersession disclosed.

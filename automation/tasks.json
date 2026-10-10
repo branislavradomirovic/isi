@@ -551,13 +551,24 @@
     {
       "id": "ISI-30B-DATA-WORKFLOWS",
       "title": "Governed data customer workflows",
-      "status": "in_progress",
+      "status": "done",
       "spec": "automation/specs/ISI-30B4C-PRIVACY-CONTROLS.md",
       "depends_on": [
         "ISI-30A-WORKFLOW-SHELL"
       ],
-      "note": "B1 be2ae69/B2 daa1c6e/B3 6a70f46/B4A 15204d7/B4B 444238e local reviewed committed/pushed. B4C privacy/retention/evidence/export in progress. Physical purge operator-only; no customer execution or verified automatic archive. Latest hosted/server f587ed0.",
-      "next": "ISI-30C"
+      "note": "B1/B2/B3/B4A/B4B/B4C606fc92 locally implemented/reviewed and pushed. Customer workflows pass local/regression/browser gates. Physical purge operator-only; no CI/server inheritance.",
+      "next": "ISI-30C-ANALYTICAL-WORKFLOWS"
+    },
+    {
+      "id": "ISI-30C-ANALYTICAL-WORKFLOWS",
+      "title": "Existing SIMPA/ORDO analytical authoring and lifecycle",
+      "status": "in_progress",
+      "spec": "automation/specs/ISI-30C1-SIMPA-METHODOLOGY-WORKFLOWS.md",
+      "depends_on": [
+        "ISI-30B-DATA-WORKFLOWS"
+      ],
+      "note": "30C1 SIMPA in progress;30C2 ORDO pending. Backend methodology/data boundaries retained.",
+      "next": "ISI-30D"
     }
   ]
 }
