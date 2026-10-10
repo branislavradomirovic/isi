@@ -248,3 +248,13 @@ shell/scenario GUI has not inherited screenshot/manual or server verification.
 |Revision-pinned source classification/privacy/AI/export profile|ISI-SOURCE-GOVERNANCE-GUIDE.md|PARTIAL|Browser/Word30E|
 |Governance-only quarantine detail/record comparison|ISI-SOURCE-GOVERNANCE-GUIDE.md|PARTIAL|Browser/Word30E|
 |Human record decision pins reviewed current accepted record|ISI-SOURCE-GOVERNANCE-GUIDE.md|PARTIAL|Browser/Word30E|
+
+
+### ISI-30B4C privacy candidate
+
+|Action|Help|Status|Remaining|
+|---|---|---|---|
+|Retention policy registration / revision-pinned hold|ISI-PRIVACY-CONTROLS-GUIDE.md|PARTIAL|Browser/Word30E|
+|External-output anonymization evidence proposal / human review|ISI-PRIVACY-CONTROLS-GUIDE.md|PARTIAL|Browser/Word30E|
+|Purpose-confirmed allowed version export|ISI-PRIVACY-CONTROLS-GUIDE.md|PARTIAL|Browser/Word30E; real sensitive MFA pending|
+|Purge request and retention metadata|ISI-PRIVACY-CONTROLS-GUIDE.md|PARTIAL|Operator approval/execution; archive not verified|

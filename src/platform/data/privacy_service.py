@@ -372,6 +372,21 @@ def anonymization_response(record: DataAnonymizationRecord) -> AnonymizationReco
     return AnonymizationRecordResponse(**{column.name: getattr(record, column.name) for column in record.__table__.columns})
 
 
+def list_anonymization_records(session: Session, *, organization_id: uuid.UUID,
+                              workspace_id: uuid.UUID, product_code: str,
+                              offset: int = 0, limit: int = 50) -> list[AnonymizationRecordResponse]:
+    validate_scope(session, organization_id=organization_id, workspace_id=workspace_id, product_code=product_code)
+    if offset < 0 or not 1 <= limit <= 100:
+        raise DataPlatformError("invalid_anonymization_page")
+    records = session.scalars(select(DataAnonymizationRecord).where(
+        DataAnonymizationRecord.organization_id == organization_id,
+        DataAnonymizationRecord.workspace_id == workspace_id,
+        DataAnonymizationRecord.product_code == product_code,
+    ).order_by(DataAnonymizationRecord.proposed_at.desc(), DataAnonymizationRecord.id)
+        .offset(offset).limit(limit)).all()
+    return [anonymization_response(record) for record in records]
+
+
 def propose_anonymization(session: Session, *, payload: AnonymizationProposalCreate,
                           actor_id: uuid.UUID | None) -> AnonymizationRecordResponse:
     if (
@@ -424,7 +439,7 @@ def review_anonymization(session: Session, *, record_id: uuid.UUID, organization
     record = session.scalar(select(DataAnonymizationRecord).where(
         DataAnonymizationRecord.id == record_id, DataAnonymizationRecord.organization_id == organization_id,
         DataAnonymizationRecord.workspace_id == workspace_id, DataAnonymizationRecord.product_code == product_code,
-    ))
+    ).with_for_update())
     if record is None:
         raise DataPlatformError("anonymization_record_not_accessible")
     if record.status != AnonymizationStatus.PROPOSED or decision not in {AnonymizationStatus.VERIFIED, AnonymizationStatus.REJECTED}:

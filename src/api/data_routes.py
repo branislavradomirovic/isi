@@ -153,6 +153,7 @@ from src.platform.data.privacy_service import (
     get_retention_state,
     inspect_export,
     place_hold,
+    list_anonymization_records,
     propose_anonymization,
     record_export_failure,
     record_export_denial,
@@ -641,9 +642,11 @@ def post_ingestion_operational_policy_version(source_id: uuid.UUID,
         result = create_ingestion_operational_policy_version(db, source_id=source_id,
             payload=payload, actor_id=actor_membership_id(db, user_id=context.user.id,
                                                          organization_id=payload.organization_id))
-        db.commit(); return result
+        db.commit()
+        return result
     except DataPlatformError as exc:
-        db.rollback(); raise _platform_error(exc) from None
+        db.rollback()
+        raise _platform_error(exc) from None
 
 
 @router.get("/sources/{source_id}/ingestion-operational-policy-versions",
@@ -675,9 +678,11 @@ def post_ingestion_operational_policy_activation(source_id: uuid.UUID,
             workspace_id=payload.workspace_id, product_code=payload.product_code,
             actor_id=actor_membership_id(db, user_id=context.user.id,
                                          organization_id=payload.organization_id))
-        db.commit(); return result
+        db.commit()
+        return result
     except DataPlatformError as exc:
-        db.rollback(); raise _platform_error(exc) from None
+        db.rollback()
+        raise _platform_error(exc) from None
 
 
 @router.post("/sources/{source_id}/ingestion-runs/backfill",
@@ -697,15 +702,18 @@ def post_backfill_ingestion_run(source_id: uuid.UUID, payload: IngestionBackfill
             actor_id=actor_membership_id(db, user_id=context.user.id,
                                          organization_id=payload.organization_id),
             backend=getattr(settings, "data_job_backend", "inline"))
-        db.commit(); response.status_code = status.HTTP_200_OK if result.reused else status.HTTP_201_CREATED
-        if not result.reused or result.run.status == "QUEUED": _dispatch_or_503(result.run.inspection_job_id)
+        db.commit()
+        response.status_code = status.HTTP_200_OK if result.reused else status.HTTP_201_CREATED
+        if not result.reused or result.run.status == "QUEUED":
+            _dispatch_or_503(result.run.inspection_job_id)
         db.expire_all()
         refreshed = get_ingestion_run_service(db, source_id=source_id, run_id=result.run.id,
             organization_id=payload.organization_id, workspace_id=payload.workspace_id,
             product_code=payload.product_code)
         return IngestionRunCreateResponse(run=refreshed, reused=result.reused)
     except DataPlatformError as exc:
-        db.rollback(); raise _platform_error(exc) from None
+        db.rollback()
+        raise _platform_error(exc) from None
 
 
 @router.post("/sources/{source_id}/ingestion-runs/{run_id}/replay",
@@ -723,15 +731,18 @@ def post_replay_ingestion_run(source_id: uuid.UUID, run_id: uuid.UUID,
             actor_id=actor_membership_id(db, user_id=context.user.id,
                                          organization_id=payload.organization_id),
             backend=getattr(settings, "data_job_backend", "inline"))
-        db.commit(); response.status_code = status.HTTP_200_OK if result.reused else status.HTTP_201_CREATED
-        if not result.reused or result.run.status == "QUEUED": _dispatch_or_503(result.run.inspection_job_id)
+        db.commit()
+        response.status_code = status.HTTP_200_OK if result.reused else status.HTTP_201_CREATED
+        if not result.reused or result.run.status == "QUEUED":
+            _dispatch_or_503(result.run.inspection_job_id)
         db.expire_all()
         refreshed = get_ingestion_run_service(db, source_id=source_id, run_id=result.run.id,
             organization_id=payload.organization_id, workspace_id=payload.workspace_id,
             product_code=payload.product_code)
         return IngestionRunCreateResponse(run=refreshed, reused=result.reused)
     except DataPlatformError as exc:
-        db.rollback(); raise _platform_error(exc) from None
+        db.rollback()
+        raise _platform_error(exc) from None
 
 
 @router.get("/sources/{source_id}/ingestion-runs/{run_id}/evaluation",
@@ -745,7 +756,8 @@ def get_run_evaluation(source_id: uuid.UUID, run_id: uuid.UUID,
     try:
         return get_ingestion_evaluation(db, source_id=source_id, run_id=run_id,
             organization_id=organization_id, workspace_id=workspace_id, product_code=product_code)
-    except DataPlatformError as exc: raise _platform_error(exc) from None
+    except DataPlatformError as exc:
+        raise _platform_error(exc) from None
 
 
 @router.get("/sources/{source_id}/ingestion-runs/{run_id}/governed-output",
@@ -759,7 +771,8 @@ def get_run_governed_output(source_id: uuid.UUID, run_id: uuid.UUID,
     try:
         return get_governed_ingestion_output(db, source_id=source_id, run_id=run_id,
             organization_id=organization_id, workspace_id=workspace_id, product_code=product_code)
-    except DataPlatformError as exc: raise _platform_error(exc) from None
+    except DataPlatformError as exc:
+        raise _platform_error(exc) from None
 
 
 @router.get("/sources/{source_id}/ingestion-dead-letters",
@@ -773,7 +786,8 @@ def get_source_ingestion_dead_letters(source_id: uuid.UUID,
     try:
         return list_ingestion_dead_letters(db, source_id=source_id,
             organization_id=organization_id, workspace_id=workspace_id, product_code=product_code)
-    except DataPlatformError as exc: raise _platform_error(exc) from None
+    except DataPlatformError as exc:
+        raise _platform_error(exc) from None
 
 
 @router.post("/sources/{source_id}/ingestion-dead-letters/{dead_letter_id}/requeue",
@@ -793,10 +807,12 @@ def post_ingestion_dead_letter_requeue(source_id: uuid.UUID, dead_letter_id: uui
             backend=getattr(settings, "data_job_backend", "inline"))
         replacement = db.get(DataIngestionRun, result.replacement_run_id)
         db.commit()
-        if replacement is not None: _dispatch_or_503(replacement.inspection_job_id)
+        if replacement is not None:
+            _dispatch_or_503(replacement.inspection_job_id)
         return result
     except DataPlatformError as exc:
-        db.rollback(); raise _platform_error(exc) from None
+        db.rollback()
+        raise _platform_error(exc) from None
 
 
 @router.post("/sources/{source_id}/ingestion-dead-letters/{dead_letter_id}/resolve",
@@ -812,9 +828,11 @@ def post_ingestion_dead_letter_resolve(source_id: uuid.UUID, dead_letter_id: uui
             dead_letter_id=dead_letter_id, request=payload,
             actor_id=actor_membership_id(db, user_id=context.user.id,
                                          organization_id=payload.organization_id))
-        db.commit(); return result
+        db.commit()
+        return result
     except DataPlatformError as exc:
-        db.rollback(); raise _platform_error(exc) from None
+        db.rollback()
+        raise _platform_error(exc) from None
 
 
 @router.post(
@@ -1467,6 +1485,22 @@ def post_purge_approve(version_id: uuid.UUID, payload: RetentionMutationRequest,
 def post_purge_execute(version_id: uuid.UUID, payload: RetentionMutationRequest,
                        context: AuthContext = Depends(get_auth_context), db: Session = Depends(get_db)):
     return _retention_mutation(db, context, version_id, payload, "execute")
+
+
+@router.get("/anonymization-records", response_model=list[AnonymizationRecordResponse])
+def get_anonymization_records(
+    organization_id: uuid.UUID = Query(...), workspace_id: uuid.UUID = Query(...),
+    product_code: str = Query(...), offset: int = Query(0, ge=0), limit: int = Query(50, ge=1, le=100),
+    context: AuthContext = Depends(get_auth_context), db: Session = Depends(get_db),
+):
+    _require_scope(db, context, organization_id=organization_id, workspace_id=workspace_id,
+                   product_code=product_code, permission_code="data.governance.manage")
+    try:
+        return list_anonymization_records(db, organization_id=organization_id,
+                                         workspace_id=workspace_id, product_code=product_code,
+                                         offset=offset, limit=limit)
+    except DataPlatformError as exc:
+        raise _platform_error(exc) from None
 
 
 @router.post("/anonymization-records", response_model=AnonymizationRecordResponse, status_code=status.HTTP_201_CREATED)

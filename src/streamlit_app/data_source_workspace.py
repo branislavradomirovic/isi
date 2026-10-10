@@ -111,6 +111,9 @@ def render_source_inspection(*, token: str, shell: dict[str, Any], sources: list
     from src.streamlit_app.data_governance_workspace import render_source_governance
     with st.expander('Governance izvora i karantin'):
         render_source_governance(token=token, shell=shell, source_id=str(source['id']))
+    from src.streamlit_app.data_privacy_workspace import render_source_privacy
+    with st.expander('Čuvanje, anonimizacija i izvoz izvora'):
+        render_source_privacy(token=token, shell=shell, source_id=str(source['id']), versions=versions)
     from src.streamlit_app.data_operations_workspace import render_ingestion_operations
     with st.expander('Operativni oporavak obrade'):
         render_ingestion_operations(token=token, shell=shell, source_id=str(source['id']), runs=runs)

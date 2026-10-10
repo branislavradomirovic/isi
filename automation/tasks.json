@@ -552,11 +552,11 @@
       "id": "ISI-30B-DATA-WORKFLOWS",
       "title": "Governed data customer workflows",
       "status": "in_progress",
-      "spec": "automation/specs/ISI-30B4B-SOURCE-GOVERNANCE.md",
+      "spec": "automation/specs/ISI-30B4C-PRIVACY-CONTROLS.md",
       "depends_on": [
         "ISI-30A-WORKFLOW-SHELL"
       ],
-      "note": "B1 be2ae69/B2 daa1c6e/B3 6a70f46/B4A 15204d7 local reviewed committed/pushed. B4B source governance/record adjudication in progress; B4C retention/privacy remaining. Latest hosted/server f587ed0.",
+      "note": "B1 be2ae69/B2 daa1c6e/B3 6a70f46/B4A 15204d7/B4B 444238e local reviewed committed/pushed. B4C privacy/retention/evidence/export in progress. Physical purge operator-only; no customer execution or verified automatic archive. Latest hosted/server f587ed0.",
       "next": "ISI-30C"
     }
   ]
