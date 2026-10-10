@@ -219,3 +219,14 @@ shell/scenario GUI has not inherited screenshot/manual or server verification.
 |Identity policy registration/activation|ISI-GOVERNED-INGESTION-GUIDE.md|PARTIAL|Browser/Word30E|
 |Operational policy registration/activation|ISI-GOVERNED-INGESTION-GUIDE.md|PARTIAL|Browser/Word30E|
 |Active-chain idempotent governed upload|ISI-GOVERNED-INGESTION-GUIDE.md|PARTIAL|Browser/Word30E|
+
+
+### ISI-30B3 analytical authoring candidate
+
+|Action|Help|Status|Remaining|
+|---|---|---|---|
+|Dataset/feature registry creation|ISI-ANALYTICAL-AUTHORING-GUIDE.md|PARTIAL|Browser/Word30E|
+|Typed field contract/activation|ISI-ANALYTICAL-AUTHORING-GUIDE.md|PARTIAL|Browser/Word30E|
+|Governed-output snapshot creation|ISI-ANALYTICAL-AUTHORING-GUIDE.md|PARTIAL|Browser/Word30E|
+|Eligible snapshot feature-version creation|ISI-ANALYTICAL-AUTHORING-GUIDE.md|PARTIAL|Browser/Word30E|
+|Revision-pinned snapshot/feature lifecycle|ISI-ANALYTICAL-AUTHORING-GUIDE.md|PARTIAL|Browser/Word30E|

@@ -513,3 +513,6 @@ ISI-30 continuation2026-10-10:30A reviewed/local verified19-file candidate360e84
 
 
 ISI-30B1 local IMPLEMENTED/REVIEW_VERIFIED committed/pushed be2ae69:24focused/1456regression PASS,46 inherited skips,1280/390 synthetic version/upload/evaluation/output/retry/readonly review.30B2 IN_PROGRESS typed existing inbound/batch connector, schema mapping, identity policy, author-entered operational thresholds, activation and idempotent governed upload. Exact contract automation/specs/ISI-30B2-GOVERNED-INGESTION.md; scoped backend remains authority. No formula/schema/dependency/secrets/remote connector added.30B operator/privacy/analytical authoring,30C/D,30E illustrated HelpWord,30F remain pending. Latest CI/server f587ed0 unchanged.
+
+
+ISI-30B2 IMPLEMENTED/REVIEW_VERIFIED committed/pushed daa1c6e:31focused/1487regression PASS/46 inherited skips,1280/390 synthetic authoring/activation/upload review.30B3 IN_PROGRESS typed analytical dataset/feature registry, field contracts/activation, governed-output snapshot creation, eligible snapshot feature versions and revision-pinned confirmed lifecycles. Exact automation/specs/ISI-30B3-ANALYTICAL-AUTHORING.md. No raw-source promotion, new methodology/formula/schema/dependency.30B4 operator/privacy,30C/D,30E HelpWord and30F still pending; CI/server f587ed0 unchanged.

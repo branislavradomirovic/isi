@@ -295,7 +295,9 @@ def _render_analytical_governance(token: str, shell: dict[str, Any], scope: tupl
 
     if "data.governance.manage" in set(shell["product"].get("permission_codes", [])):
         with st.expander("Registry governance controls"):
-            st.caption("Mutations are submitted to API endpoints that enforce data.governance.manage server-side.")
+            from src.streamlit_app.data_analytical_workspace import render_analytical_authoring
+            render_analytical_authoring(token=token, shell=shell, datasets=datasets,
+                features=features, snapshots=snapshots, feature_versions=feature_versions)
 
 
 def render_data_workspace(*, token: str, shell: dict[str, Any]) -> None:
