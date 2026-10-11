@@ -4,7 +4,7 @@ import uuid
 from datetime import datetime
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 ProductCodeValue = Literal["SIMPA", "ORDO"]
@@ -299,9 +299,19 @@ class AIEvaluationTerminalRequest(AIScope):
 
 
 class AIEvaluationReviewCreateRequest(AIScope):
+    # Optional for accepted legacy callers; new UI supplies both reviewed fields.
+    reviewed_status: Literal["created", "running", "completed", "failed"] | None = None
+    reviewed_result_fingerprint: str | None = Field(default=None, min_length=64, max_length=64)
     decision: Literal["pending", "approved", "changes_requested", "rejected"]
     notes: str = Field(default="", max_length=5000)
     evidence_reference: str = Field(default="", max_length=500)
+
+
+    @model_validator(mode="after")
+    def require_reviewed_status_with_fingerprint(self):
+        if self.reviewed_result_fingerprint is not None and self.reviewed_status is None:
+            raise ValueError("reviewed status required with result fingerprint")
+        return self
 
 
 class AIEvaluationReviewResponse(BaseModel):

@@ -1,10 +1,14 @@
 from __future__ import annotations
 
 from typing import Any
+import hashlib
+import json
 
 import streamlit as st
 
 from src.streamlit_app import ai_api
+from src.streamlit_app.ai_governance_workspace import render_ai_governance
+from src.streamlit_app.evidence_view import render_evidence
 from src.streamlit_app.api_client import AccessDenied, ApiUnavailable, AuthenticationRequired
 
 
@@ -55,7 +59,7 @@ def _render_registry(models: list[dict[str, Any]], prompts: list[dict[str, Any]]
                     }
                     for item in models
                 ],
-                use_container_width=True,
+                width="stretch",
                 hide_index=True,
             )
         if prompts:
@@ -70,7 +74,7 @@ def _render_registry(models: list[dict[str, Any]], prompts: list[dict[str, Any]]
                     }
                     for item in prompts
                 ],
-                use_container_width=True,
+                width="stretch",
                 hide_index=True,
             )
 
@@ -94,50 +98,61 @@ def _render_jobs(jobs: list[dict[str, Any]]) -> None:
             }
             for item in jobs
         ],
-        use_container_width=True,
+        width="stretch",
         hide_index=True,
     )
-    latest = jobs[0]
-    if latest.get("structured_output"):
-        st.caption("Najnoviji strukturirani rezultat")
-        st.json(latest["structured_output"])
+    st.caption("Sačuvani AI izlaz zahteva ljudski pregled; stanje job-a nije institucionalni zaključak.")
 
 
-def _render_local_ollama_diagnostic(
-    token: str,
-    shell: dict[str, Any],
-    scope: tuple[str, str, str],
-    capability: dict[str, Any],
-    models: list[dict[str, Any]],
-) -> None:
+def _render_local_ollama_diagnostic(token, shell, scope, capability, models) -> None:
     organization_id, product_code, workspace_id = scope
-    ollama_models = [
-        item
-        for item in models
-        if item.get("provider_type") == "ollama" and item.get("purpose") == "chat"
-    ]
-    if not ollama_models:
-        st.info("Lokalni Ollama chat model nije registrovan za aktivni proizvod.")
-        return
-    model = next(
-        (item for item in ollama_models if item.get("model_key") == "isi-ollama-chat-default"),
-        ollama_models[0],
-    )
     st.markdown("### Lokalni Ollama foundation test")
     st.caption(
-        f"Privremeni QA model: {model['model_name']} · provider: Ollama. "
-        "Ovo proverava shared AI infrastrukturu; produkcijski SIMPA/ORDO modeli biće izabrani kasnije."
+        "Infrastrukturna dijagnostika sa fiksnim sintetičkim unosom. Ne analizira institucionalne podatke i ne potvrđuje spremnost domenskog modela."
     )
-    sensitivity = st.selectbox("Sensitivity", ["internal", "sensitive"], index=0, key="isi07_sensitivity")
+    if "analysis.run" not in shell["product"].get("permission_codes", []):
+        st.info("Za pokretanje dijagnostike potrebno je analysis.run.")
+        return
+    # REQUIRED_COMPATIBILITY registry identity "isi-ollama-chat-default"; never auto-select.
+    local = {
+        item["model_key"]: item
+        for item in models
+        if item.get("provider_type") == "ollama" and item.get("purpose") == "chat" and item.get("enabled", True)
+    }
+    if not local:
+        st.info("Lokalni Ollama chat model nije registrovan za aktivni proizvod.")
+        return
+    key = "ai_diagnostic:" + hashlib.sha256(json.dumps(scope).encode()).hexdigest()
+    if st.session_state.get("ai_diagnostic:active") != key:
+        st.session_state["ai_diagnostic:active"] = key
+        st.session_state[key + ":generation"] = st.session_state.get(key + ":generation", 0) + 1
+    generation = st.session_state.get(key + ":generation", 0)
+    fields = key + f":{generation}"
+    if st.session_state.get(key + ":receipt"):
+        st.success(st.session_state[key + ":receipt"])
+    model_key = st.selectbox(
+        "Lokalni model za dijagnostiku",
+        list(local),
+        index=None,
+        format_func=lambda v: local[v]["model_name"],
+        key=fields + ":model",
+    )
+    sensitivity = st.selectbox("Sensitivity", ["internal", "sensitive"], index=None, key=fields + ":sensitivity")
     if product_code == "SIMPA" and sensitivity == "sensitive":
-        st.caption("SIMPA sensitive zahtev ostaje prinudno local_only i zahteva human review.")
-    if capability.get("development_stub_enabled"):
-        st.caption("Deterministički QA stub ostaje dostupan samo za automatske policy/namespace kontrole.")
+        st.caption("SIMPA sensitive zahtev ostaje local_only uz obavezni ljudski pregled.")
+    binding = hashlib.sha256(
+        json.dumps([model_key, sensitivity, local, generation], sort_keys=True).encode()
+    ).hexdigest()
+    previous, revision = st.session_state.get(key + ":binding", (None, 0))
+    if previous != binding:
+        revision += 1
+        st.session_state[key + ":binding"] = (binding, revision)
+    confirmed = st.checkbox(
+        "Potvrđujem samo infrastrukturnu AI dijagnostiku izabranim lokalnim modelom",
+        key=fields + f":confirm:{revision}",
+    )
     if st.button(
-        "Pokreni lokalni Ollama test",
-        key="isi07_ollama_diagnostic_button",
-        type="primary",
-        use_container_width=True,
+        "Pokreni lokalni Ollama test", key=fields + ":submit", disabled=not (confirmed and model_key and sensitivity)
     ):
         result = _safe_call(
             ai_api.create_job,
@@ -147,22 +162,26 @@ def _render_local_ollama_diagnostic(
             workspace_id=workspace_id,
             input_text=f"Local Ollama infrastructure diagnostic for {product_code}",
             sensitivity=sensitivity,
-            model_key=model["model_key"],
+            model_key=model_key,
         )
         if result is not None:
-            st.success(
-                f"Ollama test završen: status={result['status']} · policy={result['effective_provider_policy']} · "
-                f"provider={result.get('provider_name') or '—'} · model={result.get('model_name') or '—'}"
+            st.session_state[key + ":receipt"] = (
+                f"Dijagnostički zahtev registrovan: {result['id']} · status {result['status']}. Osvežite istoriju za rezultat; nema automatskog ponavljanja."
             )
+            st.session_state[key + ":generation"] = generation + 1
             st.rerun()
+
 
 def render_ai_workspace(*, token: str, shell: dict[str, Any]) -> None:
     product = shell["product"]
     organization = shell["organization"]
     workspace = shell.get("workspace")
     st.markdown(f'<div class="isi-eyebrow">{product["code"]} · AI</div>', unsafe_allow_html=True)
-    st.markdown('<h1 class="isi-shell-title">Shared AI Foundation</h1>', unsafe_allow_html=True)
-    st.caption("Provider gateway, model/prompt registry, policy guard, provenance, structured output i RAG namespace izolacija.")
+    # Shared AI Foundation is the accepted infrastructure authority.
+    st.subheader("AI pomoć i pregled dokaza")
+    st.caption(
+        "Provider gateway, model/prompt registry, policy guard, provenance, structured output i RAG namespace izolacija."
+    )
 
     scope = _scope(shell)
     if scope is None:
@@ -206,4 +225,40 @@ def render_ai_workspace(*, token: str, shell: dict[str, Any]) -> None:
     _render_capability(capability)
     _render_registry(models, prompts)
     _render_jobs(jobs)
+    selection_key = "ai_job:" + hashlib.sha256(json.dumps(scope).encode()).hexdigest()
+    if st.session_state.get("ai_job:active") != selection_key:
+        st.session_state["ai_job:active"] = selection_key
+        st.session_state[selection_key + ":generation"] = st.session_state.get(selection_key + ":generation", 0) + 1
+    if jobs:
+        identities = {item["id"]: item for item in jobs}
+        selected = st.selectbox(
+            "AI job za pregled rezultata",
+            list(identities),
+            index=None,
+            key=selection_key + ":" + str(st.session_state.get(selection_key + ":generation", 0)),
+        )
+        if selected:
+            current = _safe_call(
+                ai_api.job,
+                token,
+                scope=dict(organization_id=organization_id, product_code=product_code, workspace_id=workspace_id),
+                job_id=selected,
+            )
+            if current is not None:
+                render_evidence("Izabrani AI rezultat i trag", current)
+            if "analysis.read" in product.get("permission_codes", []):
+                explanation = _safe_call(
+                    ai_api.evidence_get,
+                    token,
+                    scope=dict(organization_id=organization_id, product_code=product_code, workspace_id=workspace_id),
+                    kind="job_xai",
+                    record_id=selected,
+                )
+                if explanation is not None:
+                    render_evidence("Pokušaji, fallback i nedostupna objašnjenja", explanation)
+    render_ai_governance(
+        token=token,
+        shell=shell,
+        scope=dict(organization_id=organization_id, product_code=product_code, workspace_id=workspace_id),
+    )
     _render_local_ollama_diagnostic(token, shell, scope, capability, models)

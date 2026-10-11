@@ -995,6 +995,13 @@ def post_evaluation_review(
     )
     try:
         run = _scoped_run_for_payload(db, run_id=run_id, payload=payload)
+        db.refresh(run, with_for_update=True)
+        if payload.reviewed_status is not None and (
+            run.status != payload.reviewed_status
+            or run.result_fingerprint != payload.reviewed_result_fingerprint
+        ):
+            db.rollback()
+            raise HTTPException(status_code=409, detail="evaluation_reviewed_evidence_changed")
         actor_id = actor_membership_id(db, user_id=context.user.id, organization_id=payload.organization_id)
         if actor_id is None:
             raise AIEvaluationError("evaluation_reviewer_membership_required")
