@@ -1625,3 +1625,14 @@ ISI-30B4C IMPLEMENTED/REVIEW_VERIFIED committed/pushed606fc92:21focused/1581regr
 ## 2026-10-11 — 30E local illustrated Help and Word closeout
 
 30E locally IMPLEMENTED/REVIEW_VERIFIED: seven local gates PASS,6 focused/1812 regression passes/46 inherited skips, native1280/390 keyboard/public/product Help checks,197/197 individually reviewed Word pages and152 figures.36 basic topics/19 chapters/138 dated assets include101 new30 workflow images. Five stale Help regression assertions reconciled with delivered SHAP/product boundaries; no skipped or weakened domain gate. No backend/schema/provider/dependency change. Word hash089cbc886486c7a1be13a5c888c4ab839a44db03ad7295e1892b3464eeffefce. Final exact-main hosted checkpoint, signed ISI-only deployment and real GoraNova onboarding remain30F; last CI/server f587ed0/37914718258 unchanged. SMTP pending, new backups owner-deferred, institutional/MFA/calibration/legal facts remain separately unverified.
+
+## 2026-10-11 — 30F final release execution lock
+
+30E reviewed/pushed main29a75eafec93af92cb5a7c4302c089f6bf053d86: seven local gates,
+1812 regression passes /46 environment-dependent skips, six focused passes,
+independent analysis/exact review, native desktop/mobile Help and all197 Word
+pages reviewed. 30F is ACTIVE under automation/specs/ISI-30F-FINAL-ACCEPTANCE-DEPLOYMENT.md.
+The final exact-main hosted checkpoint and ISI-only server activation are pending;
+last confirmed hosted/server remains f587ed0a194043cadf7190ceae9f6f29c1d76c55.
+SMTPpending, owner-deferred new backups and PREPRODUCTION_TESTING remain in force.
+Canonical system inventory impact: NONE (existing components/boundaries unchanged).

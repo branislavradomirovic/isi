@@ -591,6 +591,16 @@
       ],
       "note": "30E locally IMPLEMENTED/REVIEW_VERIFIED: seven local gates PASS,6 focused/1812 regression passes/46 inherited skips, native1280/390 keyboard/public/product Help checks,197/197 individually reviewed Word pages and152 figures.36 basic topics/19 chapters/138 dated assets include101 new30 workflow images. Five stale Help regression assertions reconciled with delivered SHAP/product boundaries; no skipped or weakened domain gate. No backend/schema/provider/dependency change. Word hash089cbc886486c7a1be13a5c888c4ab839a44db03ad7295e1892b3464eeffefce. Final exact-main hosted checkpoint, signed ISI-only deployment and real GoraNova onboarding remain30F; last CI/server f587ed0/37914718258 unchanged. SMTP pending, new backups owner-deferred, institutional/MFA/calibration/legal facts remain separately unverified.",
       "next": "ISI-30F"
+    },
+    {
+      "id": "ISI-30F-FINAL-ACCEPTANCE-DEPLOYMENT",
+      "title": "Final exact-main acceptance and controlled ISI release",
+      "status": "in_progress",
+      "spec": "automation/specs/ISI-30F-FINAL-ACCEPTANCE-DEPLOYMENT.md",
+      "depends_on": [
+        "ISI-30E-ILLUSTRATED-HELP-MANUAL"
+      ],
+      "note": "Exact-main hosted acceptance, signed ISI-only activation and GoraNova dual-product onboarding pending; standing owner authority; SMTP pending; new backups deferred; PREPRODUCTION_TESTING."
     }
   ]
 }
