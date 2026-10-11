@@ -2,10 +2,13 @@ from __future__ import annotations
 
 from typing import Any
 
+from pydantic import ValidationError
+
 import streamlit as st
 
 from src.domains.ordo.analytics_xai import build_forecast_xai, build_scenario_xai
 from src.streamlit_app import data_api, ordo_analytics_api
+from src.streamlit_app.ordo_methodology_workspace import render_ordo_methodology
 from src.streamlit_app.xai_charts import MAX_ORIGINS, backtest_chart, forecast_chart, render_chart
 
 
@@ -19,6 +22,9 @@ def _scope(shell: dict[str, Any]) -> tuple[str, str] | None:
 def _safe(call, *args, **kwargs):
     try:
         return call(*args, **kwargs)
+    except ValidationError:
+        st.error("Proverite obavezna polja i tipove. Zahtev nije poslat.")
+        return None
     except Exception as exc:
         st.error(str(exc))
         return None
@@ -35,34 +41,80 @@ def _lines(value: str) -> list[str]:
 def _eligible_artifacts(token: str, organization_id: str, workspace_id: str) -> list[dict]:
     items: list[dict] = []
     eligible_snapshot_ids: set[str] = set()
-    datasets = _safe(data_api.list_analytical_datasets, token, organization_id=organization_id,
-                     product_code="ORDO", workspace_id=workspace_id) or []
+    datasets = (
+        _safe(
+            data_api.list_analytical_datasets,
+            token,
+            organization_id=organization_id,
+            product_code="ORDO",
+            workspace_id=workspace_id,
+        )
+        or []
+    )
     for dataset in datasets:
-        snapshots = _safe(data_api.list_analytical_snapshots, token, dataset_id=dataset["id"],
-                          organization_id=organization_id, product_code="ORDO",
-                          workspace_id=workspace_id) or []
-        eligible = [row for row in snapshots if row.get("state") in {"VALIDATED", "FROZEN"}
-                    and not row.get("invalidated")]
+        snapshots = (
+            _safe(
+                data_api.list_analytical_snapshots,
+                token,
+                dataset_id=dataset["id"],
+                organization_id=organization_id,
+                product_code="ORDO",
+                workspace_id=workspace_id,
+            )
+            or []
+        )
+        eligible = [
+            row for row in snapshots if row.get("state") in {"VALIDATED", "FROZEN"} and not row.get("invalidated")
+        ]
         eligible_snapshot_ids.update(row["id"] for row in eligible)
-        items.extend({"type": "snapshot", "id": row["id"], "fingerprint": row["fingerprint"]}
-                     for row in eligible)
-    features = _safe(data_api.list_analytical_features, token, organization_id=organization_id,
-                     product_code="ORDO", workspace_id=workspace_id) or []
+        items.extend({"type": "snapshot", "id": row["id"], "fingerprint": row["fingerprint"]} for row in eligible)
+    features = (
+        _safe(
+            data_api.list_analytical_features,
+            token,
+            organization_id=organization_id,
+            product_code="ORDO",
+            workspace_id=workspace_id,
+        )
+        or []
+    )
     for feature in features:
-        versions = _safe(data_api.list_analytical_feature_versions, token, feature_id=feature["id"],
-                         organization_id=organization_id, product_code="ORDO",
-                         workspace_id=workspace_id) or []
-        items.extend({"type": "feature_version", "id": row["id"], "fingerprint": row["fingerprint"]}
-                     for row in versions if row.get("state") in {"GOVERNED", "FROZEN"}
-                     and not row.get("invalidated") and len(row.get("snapshot_inputs") or []) == 1
-                     and row["snapshot_inputs"][0].get("snapshot_id") in eligible_snapshot_ids)
+        versions = (
+            _safe(
+                data_api.list_analytical_feature_versions,
+                token,
+                feature_id=feature["id"],
+                organization_id=organization_id,
+                product_code="ORDO",
+                workspace_id=workspace_id,
+            )
+            or []
+        )
+        items.extend(
+            {"type": "feature_version", "id": row["id"], "fingerprint": row["fingerprint"]}
+            for row in versions
+            if row.get("state") in {"GOVERNED", "FROZEN"}
+            and not row.get("invalidated")
+            and len(row.get("snapshot_inputs") or []) == 1
+            and row["snapshot_inputs"][0].get("snapshot_id") in eligible_snapshot_ids
+        )
     return items
 
 
 def _render_time_series_workflow(
-    *, token: str, organization_id: str, workspace_id: str,
-    permissions: set[str], runs: list[dict],
+    *,
+    token: str,
+    organization_id: str,
+    workspace_id: str,
+    permissions: set[str],
+    runs: list[dict],
 ) -> None:
+    state_key = organization_id + "_" + workspace_id + "_ordo_spec_generation"
+    context_key = organization_id + "_" + workspace_id
+    if permissions & {"indicator.manage", "analysis.run"}:
+        if st.button("Osveži specifikacije i resetuj potvrde", key=state_key + "_refresh"):
+            st.session_state[state_key] = st.session_state.get(state_key, 0) + 1
+        context_key += "_g" + str(st.session_state.get(state_key, 0))
     # Forecast execution form remains governed by backend scope and analysis.run authorization.
     st.markdown("### Time-series specifikacije i forecast izvršenje")
     st.caption(
@@ -72,14 +124,17 @@ def _render_time_series_workflow(
     specs = _safe(ordo_analytics_api.time_series_specs, token, organization_id, workspace_id) or []
     if specs:
         st.dataframe(
-            [{
-                "series_key": item.get("series_key"),
-                "version": item.get("version_no"),
-                "indicator": item.get("target_indicator_code"),
-                "status": item.get("status"),
-                "contract_fingerprint": item.get("contract_fingerprint"),
-                "analytics_run_id": item.get("analytics_run_id"),
-            } for item in specs],
+            [
+                {
+                    "series_key": item.get("series_key"),
+                    "version": item.get("version_no"),
+                    "indicator": item.get("target_indicator_code"),
+                    "status": item.get("status"),
+                    "contract_fingerprint": item.get("contract_fingerprint"),
+                    "analytics_run_id": item.get("analytics_run_id"),
+                }
+                for item in specs
+            ],
             use_container_width=True,
             hide_index=True,
         )
@@ -91,82 +146,108 @@ def _render_time_series_workflow(
                 f"{spec_by_id[value].get('series_key')} v{spec_by_id[value].get('version_no')} · "
                 f"{spec_by_id[value].get('target_indicator_code')} · {spec_by_id[value].get('status')}"
             ),
-            key="ordo_time_series_spec_review",
+            key="ordo_time_series_spec_review_" + context_key,
         )
-        detail = _safe(
-            ordo_analytics_api.time_series_spec_detail,
-            token,
-            time_series_spec_id=review_id,
-            organization_id=organization_id,
-            workspace_id=workspace_id,
-        ) or spec_by_id[review_id]
-        st.json({
-            "binding": {
-                "analytics_run_id": detail.get("analytics_run_id"),
-                "target_methodology_id": detail.get("target_methodology_id"),
-                "target_methodology_version": detail.get("target_methodology_version"),
-                "methodology_fingerprint": detail.get("methodology_fingerprint"),
-                "input_snapshot_sha256": detail.get("input_snapshot_sha256"),
-            },
-            "contract": detail.get("contract_json"),
-            "contract_fingerprint": detail.get("contract_fingerprint"),
-            "locked_semantics": {
-                "forecast_execution": detail.get("forecast_execution"),
-                "automatic_model_selection": detail.get("automatic_model_selection"),
-                "non_causal": detail.get("non_causal"),
-            },
-            "lifecycle": {
-                "status": detail.get("status"),
-                "proposed_by_membership_id": detail.get("proposed_by_membership_id"),
-                "proposed_at": detail.get("proposed_at"),
-                "approved_by_membership_id": detail.get("approved_by_membership_id"),
-                "approved_at": detail.get("approved_at"),
-                "validation_note": detail.get("validation_note"),
-                "validation_evidence_reference": detail.get("validation_evidence_reference"),
-                "retired_by_membership_id": detail.get("retired_by_membership_id"),
-                "retired_at": detail.get("retired_at"),
-                "retirement_note": detail.get("retirement_note"),
-            },
-        })
+        detail = (
+            _safe(
+                ordo_analytics_api.time_series_spec_detail,
+                token,
+                time_series_spec_id=review_id,
+                organization_id=organization_id,
+                workspace_id=workspace_id,
+            )
+            or spec_by_id[review_id]
+        )
+        st.json(
+            {
+                "binding": {
+                    "analytics_run_id": detail.get("analytics_run_id"),
+                    "target_methodology_id": detail.get("target_methodology_id"),
+                    "target_methodology_version": detail.get("target_methodology_version"),
+                    "methodology_fingerprint": detail.get("methodology_fingerprint"),
+                    "input_snapshot_sha256": detail.get("input_snapshot_sha256"),
+                },
+                "contract": detail.get("contract_json"),
+                "contract_fingerprint": detail.get("contract_fingerprint"),
+                "locked_semantics": {
+                    "forecast_execution": detail.get("forecast_execution"),
+                    "automatic_model_selection": detail.get("automatic_model_selection"),
+                    "non_causal": detail.get("non_causal"),
+                },
+                "lifecycle": {
+                    "status": detail.get("status"),
+                    "proposed_by_membership_id": detail.get("proposed_by_membership_id"),
+                    "proposed_at": detail.get("proposed_at"),
+                    "approved_by_membership_id": detail.get("approved_by_membership_id"),
+                    "approved_at": detail.get("approved_at"),
+                    "validation_note": detail.get("validation_note"),
+                    "validation_evidence_reference": detail.get("validation_evidence_reference"),
+                    "retired_by_membership_id": detail.get("retired_by_membership_id"),
+                    "retired_at": detail.get("retired_at"),
+                    "retirement_note": detail.get("retirement_note"),
+                },
+            }
+        )
         if "indicator.manage" in permissions:
             status_value = detail.get("status")
+            confirmation = st.checkbox(
+                "Potvrđujem prelaz pregledane time-series specifikacije",
+                key=f"ordo_spec_confirm_{context_key}_{review_id}_{status_value}_{detail.get('contract_fingerprint')}",
+            )
             if status_value == "draft" and st.button(
-                "Predloži specifikaciju", key=f"ordo_spec_propose_{review_id}"
+                "Predloži specifikaciju", key=f"ordo_spec_propose_{review_id}_{context_key}", disabled=not confirmation
             ):
                 result = _safe(
-                    ordo_analytics_api.propose_time_series_spec, token,
-                    time_series_spec_id=review_id, organization_id=organization_id,
+                    ordo_analytics_api.propose_time_series_spec,
+                    token,
+                    time_series_spec_id=review_id,
+                    organization_id=organization_id,
                     workspace_id=workspace_id,
                 )
                 if result is not None:
+                    st.session_state[state_key] = st.session_state.get(state_key, 0) + 1
                     st.rerun()
             elif status_value == "proposed":
                 validation_note = st.text_area(
-                    "Napomena ljudske validacije", key=f"ordo_spec_validation_note_{review_id}"
+                    "Napomena ljudske validacije", key=f"ordo_spec_validation_note_{review_id}_{context_key}"
                 )
                 validation_evidence = st.text_input(
-                    "Referenca dokaza validacije", key=f"ordo_spec_validation_evidence_{review_id}"
+                    "Referenca dokaza validacije", key=f"ordo_spec_validation_evidence_{review_id}_{context_key}"
                 )
-                if st.button("Validiraj specifikaciju", key=f"ordo_spec_validate_{review_id}"):
+                if st.button(
+                    "Validiraj specifikaciju",
+                    key=f"ordo_spec_validate_{review_id}_{context_key}",
+                    disabled=not confirmation,
+                ):
                     result = _safe(
-                        ordo_analytics_api.validate_time_series_spec, token,
-                        time_series_spec_id=review_id, organization_id=organization_id,
-                        workspace_id=workspace_id, validation_note=validation_note,
+                        ordo_analytics_api.validate_time_series_spec,
+                        token,
+                        time_series_spec_id=review_id,
+                        organization_id=organization_id,
+                        workspace_id=workspace_id,
+                        validation_note=validation_note,
                         validation_evidence_reference=validation_evidence,
                     )
                     if result is not None:
+                        st.session_state[state_key] = st.session_state.get(state_key, 0) + 1
                         st.rerun()
             elif status_value == "validated":
                 retirement_note = st.text_area(
-                    "Napomena povlačenja", key=f"ordo_spec_retirement_note_{review_id}"
+                    "Napomena povlačenja", key=f"ordo_spec_retirement_note_{review_id}_{context_key}"
                 )
-                if st.button("Povuci specifikaciju", key=f"ordo_spec_retire_{review_id}"):
+                if st.button(
+                    "Povuci specifikaciju", key=f"ordo_spec_retire_{review_id}_{context_key}", disabled=not confirmation
+                ):
                     result = _safe(
-                        ordo_analytics_api.retire_time_series_spec, token,
-                        time_series_spec_id=review_id, organization_id=organization_id,
-                        workspace_id=workspace_id, retirement_note=retirement_note,
+                        ordo_analytics_api.retire_time_series_spec,
+                        token,
+                        time_series_spec_id=review_id,
+                        organization_id=organization_id,
+                        workspace_id=workspace_id,
+                        retirement_note=retirement_note,
                     )
                     if result is not None:
+                        st.session_state[state_key] = st.session_state.get(state_key, 0) + 1
                         st.rerun()
     else:
         st.info("Nema time-series specifikacija u aktivnom ORDO workspace-u.")
@@ -181,109 +262,192 @@ def _render_time_series_workflow(
                     "Governed analitički run",
                     [str(row["id"]) for row in governed_runs],
                     format_func=lambda value: f"Run {value[:8]}",
-                    key="ordo_spec_run",
+                    key="ordo_spec_run_" + context_key,
                 )
-                series_key = st.text_input("Ključ serije", key="ordo_spec_series_key")
-                indicator_code = st.text_input("Kod ciljnog indikatora", key="ordo_spec_indicator")
-                target_semantic = st.selectbox(
-                    "Semantika cilja", ["continuous", "count", "proportion_rate"],
-                    key="ordo_spec_target_semantic",
-                )
-                time_index_field = st.text_input("Polje vremenskog indeksa", key="ordo_spec_time_field")
-                frequency = st.selectbox(
-                    "Frekvencija", ["daily", "weekly", "monthly", "quarterly", "annual"],
-                    key="ordo_spec_frequency",
-                )
-                series_fields = _lines(st.text_area(
-                    "Polja identiteta serije · jedno po redu", key="ordo_spec_series_fields"
-                ))
-                start = st.date_input("Početak posmatranja", key="ordo_spec_start")
-                end = st.date_input("Kraj posmatranja", key="ordo_spec_end")
-                as_of = st.date_input("As-of datum", key="ordo_spec_as_of")
-                minimum_history = st.number_input(
-                    "Minimalan broj perioda", min_value=2, value=12, key="ordo_spec_min_history"
-                )
-                maximum_missing_ratio = st.number_input(
-                    "Maksimalni missing ratio", min_value=0.0, max_value=1.0,
-                    value=0.0, step=0.05, key="ordo_spec_missing_ratio",
-                )
-                missing_rule = st.selectbox(
-                    "Eksplicitno pravilo za missing podatke",
-                    ["fail", "exclude_periods", "explicit_gap"], key="ordo_spec_missing_rule",
-                )
-                outlier_policy = st.text_area("Outlier politika", key="ordo_spec_outlier")
-                revision_policy = st.text_area("Revision politika", key="ordo_spec_revision")
-                comparability_policy = st.text_area("Comparability politika", key="ordo_spec_comparability")
-                transformation = st.selectbox(
-                    "Transformacija", ["none", "log1p", "difference", "seasonal_difference"],
-                    key="ordo_spec_transformation",
-                )
-                trend_requirement = st.selectbox(
-                    "Trend zahtev", ["none", "allowed", "required"], key="ordo_spec_trend"
-                )
-                seasonality_period = st.number_input(
-                    "Seasonality period · 0 znači nije primenljivo", min_value=0, value=0,
-                    key="ordo_spec_seasonality",
-                )
-                families = st.multiselect(
-                    "Dozvoljene kandidat porodice",
-                    ["naive", "seasonal_naive", "ets", "sarima", "sarimax", "count_time_series"],
-                    default=["naive"], key="ordo_spec_families",
-                )
-                horizon = st.number_input("Horizont", min_value=1, value=1, key="ordo_spec_horizon")
-                horizon_unit = st.selectbox(
-                    "Jedinica horizonta", ["days", "weeks", "months", "quarters", "years"],
-                    key="ordo_spec_horizon_unit",
-                )
-                diagnostic_requirements = _lines(st.text_area(
-                    "Dijagnostički zahtevi · jedan po redu", key="ordo_spec_diagnostics"
-                ))
-                limitations = _lines(st.text_area(
-                    "Ograničenja · jedno po redu", key="ordo_spec_limitations"
-                ))
-                initial_train = st.number_input(
-                    "Rolling-origin početni train periodi", min_value=2, value=8,
-                    key="ordo_spec_initial_train",
-                )
-                step_size = st.number_input(
-                    "Rolling-origin korak", min_value=1, value=1, key="ordo_spec_step"
-                )
-                minimum_origins = st.number_input(
-                    "Minimalan broj origin-a", min_value=2, value=3, key="ordo_spec_origins"
-                )
-                required_metrics = st.multiselect(
-                    "Obavezne backtest metrike",
-                    ["MAE", "RMSE", "sMAPE", "MASE", "bias", "interval_coverage",
-                     "interval_width_sharpness", "seasonal_baseline_comparison"],
-                    default=["MAE", "RMSE"], key="ordo_spec_metrics",
-                )
-                if st.button("Kreiraj DRAFT specifikaciju", key="ordo_spec_create"):
-                    spec_payload = {
-                        "analytics_run_id": run_id, "series_key": series_key,
-                        "target_indicator_code": indicator_code, "target_semantic": target_semantic,
-                        "time_index_field": time_index_field, "frequency": frequency,
-                        "series_key_fields": series_fields,
-                        "observation_window_start": start.isoformat(),
-                        "observation_window_end": end.isoformat(), "observation_as_of": as_of.isoformat(),
-                        "minimum_history_periods": int(minimum_history),
-                        "maximum_missing_ratio": float(maximum_missing_ratio),
-                        "missing_data_rule": missing_rule, "outlier_policy": outlier_policy,
-                        "revision_policy": revision_policy, "comparability_policy": comparability_policy,
-                        "transformation": transformation, "trend_requirement": trend_requirement,
-                        "seasonality_period": int(seasonality_period) or None,
-                        "candidate_families": families, "horizon": int(horizon),
-                        "horizon_unit": horizon_unit,
-                        "diagnostic_requirements": diagnostic_requirements,
-                        "limitations": limitations, "initial_train_periods": int(initial_train),
-                        "step_size": int(step_size), "minimum_origins": int(minimum_origins),
-                        "required_metrics": required_metrics,
-                    }
-                    result = _safe(
-                        ordo_analytics_api.create_time_series_spec, token,
-                        organization_id=organization_id, workspace_id=workspace_id, spec=spec_payload,
+                with st.form("ordo_spec_create_" + context_key + "_" + run_id):
+                    series_key = st.text_input("Ključ serije", key="ordo_spec_series_key_" + context_key + "_" + run_id)
+                    indicator_code = st.text_input(
+                        "Kod ciljnog indikatora", key="ordo_spec_indicator_" + context_key + "_" + run_id
                     )
-                    if result is not None:
-                        st.rerun()
+                    target_semantic = st.selectbox(
+                        "Semantika cilja",
+                        ["continuous", "count", "proportion_rate"],
+                        index=None,
+                        key="ordo_spec_target_semantic_" + context_key + "_" + run_id,
+                    )
+                    time_index_field = st.text_input(
+                        "Polje vremenskog indeksa", key="ordo_spec_time_field_" + context_key + "_" + run_id
+                    )
+                    frequency = st.selectbox(
+                        "Frekvencija",
+                        ["daily", "weekly", "monthly", "quarterly", "annual"],
+                        index=None,
+                        key="ordo_spec_frequency_" + context_key + "_" + run_id,
+                    )
+                    series_fields = _lines(
+                        st.text_area(
+                            "Polja identiteta serije · jedno po redu",
+                            key="ordo_spec_series_fields_" + context_key + "_" + run_id,
+                        )
+                    )
+                    start = st.date_input(
+                        "Početak posmatranja", value=None, key="ordo_spec_start_" + context_key + "_" + run_id
+                    )
+                    end = st.date_input(
+                        "Kraj posmatranja", value=None, key="ordo_spec_end_" + context_key + "_" + run_id
+                    )
+                    as_of = st.date_input(
+                        "As-of datum", value=None, key="ordo_spec_as_of_" + context_key + "_" + run_id
+                    )
+                    minimum_history = st.number_input(
+                        "Minimalan broj perioda",
+                        min_value=2,
+                        value=None,
+                        key="ordo_spec_min_history_" + context_key + "_" + run_id,
+                    )
+                    maximum_missing_ratio = st.number_input(
+                        "Maksimalni missing ratio",
+                        min_value=0.0,
+                        max_value=1.0,
+                        value=None,
+                        step=0.05,
+                        key="ordo_spec_missing_ratio_" + context_key + "_" + run_id,
+                    )
+                    missing_rule = st.selectbox(
+                        "Eksplicitno pravilo za missing podatke",
+                        ["fail", "exclude_periods", "explicit_gap"],
+                        index=None,
+                        key="ordo_spec_missing_rule_" + context_key + "_" + run_id,
+                    )
+                    outlier_policy = st.text_area(
+                        "Outlier politika", key="ordo_spec_outlier_" + context_key + "_" + run_id
+                    )
+                    revision_policy = st.text_area(
+                        "Revision politika", key="ordo_spec_revision_" + context_key + "_" + run_id
+                    )
+                    comparability_policy = st.text_area(
+                        "Comparability politika", key="ordo_spec_comparability_" + context_key + "_" + run_id
+                    )
+                    transformation = st.selectbox(
+                        "Transformacija",
+                        ["none", "log1p", "difference", "seasonal_difference"],
+                        index=None,
+                        key="ordo_spec_transformation_" + context_key + "_" + run_id,
+                    )
+                    trend_requirement = st.selectbox(
+                        "Trend zahtev",
+                        ["none", "allowed", "required"],
+                        index=None,
+                        key="ordo_spec_trend_" + context_key + "_" + run_id,
+                    )
+                    seasonality_period = st.number_input(
+                        "Seasonality period · prazno znači nije primenljivo",
+                        min_value=2,
+                        value=None,
+                        key="ordo_spec_seasonality_" + context_key + "_" + run_id,
+                    )
+                    families = st.multiselect(
+                        "Dozvoljene kandidat porodice",
+                        ["naive", "seasonal_naive", "ets", "sarima", "sarimax", "count_time_series"],
+                        default=[],
+                        key="ordo_spec_families_" + context_key + "_" + run_id,
+                    )
+                    horizon = st.number_input(
+                        "Horizont", min_value=1, value=None, key="ordo_spec_horizon_" + context_key + "_" + run_id
+                    )
+                    horizon_unit = st.selectbox(
+                        "Jedinica horizonta",
+                        ["days", "weeks", "months", "quarters", "years"],
+                        index=None,
+                        key="ordo_spec_horizon_unit_" + context_key + "_" + run_id,
+                    )
+                    diagnostic_requirements = _lines(
+                        st.text_area(
+                            "Dijagnostički zahtevi · jedan po redu",
+                            key="ordo_spec_diagnostics_" + context_key + "_" + run_id,
+                        )
+                    )
+                    limitations = _lines(
+                        st.text_area(
+                            "Ograničenja · jedno po redu", key="ordo_spec_limitations_" + context_key + "_" + run_id
+                        )
+                    )
+                    initial_train = st.number_input(
+                        "Rolling-origin početni train periodi",
+                        min_value=2,
+                        value=None,
+                        key="ordo_spec_initial_train_" + context_key + "_" + run_id,
+                    )
+                    step_size = st.number_input(
+                        "Rolling-origin korak",
+                        min_value=1,
+                        value=None,
+                        key="ordo_spec_step_" + context_key + "_" + run_id,
+                    )
+                    minimum_origins = st.number_input(
+                        "Minimalan broj origin-a",
+                        min_value=2,
+                        value=None,
+                        key="ordo_spec_origins_" + context_key + "_" + run_id,
+                    )
+                    required_metrics = st.multiselect(
+                        "Obavezne backtest metrike",
+                        [
+                            "MAE",
+                            "RMSE",
+                            "sMAPE",
+                            "MASE",
+                            "bias",
+                            "interval_coverage",
+                            "interval_width_sharpness",
+                            "seasonal_baseline_comparison",
+                        ],
+                        default=[],
+                        key="ordo_spec_metrics_" + context_key + "_" + run_id,
+                    )
+                    confirmed = st.checkbox("Potvrđujem autorstvo time-series DRAFT parametara")
+                    submitted = st.form_submit_button("Kreiraj DRAFT specifikaciju")
+                    if submitted and confirmed:
+                        spec_payload = {
+                            "analytics_run_id": run_id,
+                            "series_key": series_key,
+                            "target_indicator_code": indicator_code,
+                            "target_semantic": target_semantic,
+                            "time_index_field": time_index_field,
+                            "frequency": frequency,
+                            "series_key_fields": series_fields,
+                            "observation_window_start": start.isoformat() if start else None,
+                            "observation_window_end": end.isoformat() if end else None,
+                            "observation_as_of": as_of.isoformat() if as_of else None,
+                            "minimum_history_periods": minimum_history,
+                            "maximum_missing_ratio": maximum_missing_ratio,
+                            "missing_data_rule": missing_rule,
+                            "outlier_policy": outlier_policy,
+                            "revision_policy": revision_policy,
+                            "comparability_policy": comparability_policy,
+                            "transformation": transformation,
+                            "trend_requirement": trend_requirement,
+                            "seasonality_period": seasonality_period,
+                            "candidate_families": families,
+                            "horizon": horizon,
+                            "horizon_unit": horizon_unit,
+                            "diagnostic_requirements": diagnostic_requirements,
+                            "limitations": limitations,
+                            "initial_train_periods": initial_train,
+                            "step_size": step_size,
+                            "minimum_origins": minimum_origins,
+                            "required_metrics": required_metrics,
+                        }
+                        result = _safe(
+                            ordo_analytics_api.create_time_series_spec,
+                            token,
+                            organization_id=organization_id,
+                            workspace_id=workspace_id,
+                            spec=spec_payload,
+                        )
+                        if result is not None:
+                            st.session_state[state_key] = st.session_state.get(state_key, 0) + 1
+                            st.rerun()
 
     validated_specs = [item for item in specs if item.get("status") == "validated"]
     if "analysis.run" in permissions:
@@ -300,38 +464,63 @@ def _render_time_series_workflow(
                     f"v{validated_by_id[value].get('version_no')} · "
                     f"{validated_by_id[value].get('target_indicator_code')}"
                 ),
-                key="ordo_forecast_spec",
+                key="ordo_forecast_spec_" + context_key,
             )
-            identities = _safe(
-                ordo_analytics_api.time_series_identities, token,
-                time_series_spec_id=selected_id, organization_id=organization_id,
-                workspace_id=workspace_id,
-            ) or []
+            identities = (
+                _safe(
+                    ordo_analytics_api.time_series_identities,
+                    token,
+                    time_series_spec_id=selected_id,
+                    organization_id=organization_id,
+                    workspace_id=workspace_id,
+                )
+                or []
+            )
             if not identities:
                 st.info("Nema eligible identiteta serije u exact governed binding-u.")
             else:
                 identity = st.selectbox(
-                    "Otkriveni identitet serije", identities,
+                    "Otkriveni identitet serije",
+                    identities,
                     format_func=lambda value: ", ".join(f"{key}={item}" for key, item in value.items()),
-                    key="ordo_forecast_identity",
+                    key="ordo_forecast_identity_" + context_key + "_" + selected_id,
                 )
                 contract = validated_by_id[selected_id].get("contract_json") or {}
                 family = st.selectbox(
-                    "Eksplicitno zahtevana porodica", contract.get("candidate_families") or [],
-                    key="ordo_forecast_family",
+                    "Eksplicitno zahtevana porodica",
+                    contract.get("candidate_families") or [],
+                    index=None,
+                    key="ordo_forecast_family_" + context_key + "_" + selected_id,
                 )
                 interval_level = st.selectbox(
-                    "Nivo intervala", [0.80, 0.90, 0.95], key="ordo_forecast_interval"
+                    "Nivo intervala",
+                    [0.80, 0.90, 0.95],
+                    index=None,
+                    key="ordo_forecast_interval_" + context_key + "_" + selected_id,
                 )
-                if st.button("Pokreni forecast", type="primary", key="ordo_forecast_execute"):
+                confirmed = st.checkbox(
+                    "Potvrđujem izvršenje forecast-a iz pregledane specifikacije",
+                    key=f"ordo_forecast_confirm_{context_key}_{selected_id}_{identity}_{family}_{interval_level}",
+                )
+                if st.button(
+                    "Pokreni forecast",
+                    type="primary",
+                    key="ordo_forecast_execute_" + context_key,
+                    disabled=not confirmed or family is None or interval_level is None,
+                ):
                     result = _safe(
-                        ordo_analytics_api.execute_forecast, token,
-                        organization_id=organization_id, workspace_id=workspace_id,
-                        time_series_spec_id=selected_id, requested_family=family,
-                        series_identity=identity, interval_level=interval_level,
+                        ordo_analytics_api.execute_forecast,
+                        token,
+                        organization_id=organization_id,
+                        workspace_id=workspace_id,
+                        time_series_spec_id=selected_id,
+                        requested_family=family,
+                        series_identity=identity,
+                        interval_level=interval_level,
                     )
                     if result is not None:
                         st.success(f"Forecast ishod je sačuvan: {result.get('result_status')}.")
+                        st.session_state[state_key] = st.session_state.get(state_key, 0) + 1
                         st.rerun()
 
 
@@ -497,6 +686,7 @@ def render_ordo_analytics(*, token: str, shell: dict[str, Any]) -> None:
         return
     organization_id, workspace_id = scope
     permissions = set(shell.get("product", {}).get("permission_codes", []))
+    render_ordo_methodology(token=token, shell=shell)
     runs = _safe(ordo_analytics_api.runs, token, organization_id, workspace_id) or []
 
     artifacts = _eligible_artifacts(token, organization_id, workspace_id)

@@ -263,3 +263,8 @@ shell/scenario GUI has not inherited screenshot/manual or server verification.
 ## 30C1 SIMPA authoring — PARTIAL
 
 Existing direct_observation DRAFT/propose/reference-suite/run/human validate/retire and four statistical semantic-family contract/lifecycle forms: docs/help/SIMPA-METHODOLOGY-WORKFLOWS-GUIDE.md. Ten-item action Help added; local/browser evidence and illustrated Word parity remain required. No invented institutional approval; global registry and supersession disclosed.
+
+
+## 30C2A ORDO authoring — PARTIAL
+
+Existing global direct_observation method DRAFT/propose/human validate/retire; optional identity-based spatial-rule metadata, full source_requirements review; explicit time-series authoring/lifecycle and validated-spec/discovered-identity forecast: docs/help/ORDO-METHODOLOGY-WORKFLOWS-GUIDE.md. Local/browser and illustrated Word30E required. Statistical/spatial execution customer reachability remains named30C2B. No automatic champion or institutional conclusion.

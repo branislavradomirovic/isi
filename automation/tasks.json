@@ -462,12 +462,12 @@
       "depends_on": [
         "ISI-27-INDUSTRIAL-RELEASE-CANDIDATE"
       ],
-      "note": "29A–29F software is CI_VERIFIED / REVIEW_VERIFIED at exact main f587ed0a194043cadf7190ceae9f6f29c1d76c55, required acceptance37914718258 completed/success (all12 jobs). Recorded signed ISI-only deployment passed in PREPRODUCTION_TESTING, schema20261008_0037; automation/evidence/ISI-29F/release/closeout.json. No fresh server probe in30A. Full institutional production remains unverified; SMTP pending, new backups owner-deferred, extraction quality UNCALIBRATED.",
+      "note": "29A\u201329F software is CI_VERIFIED / REVIEW_VERIFIED at exact main f587ed0a194043cadf7190ceae9f6f29c1d76c55, required acceptance37914718258 completed/success (all12 jobs). Recorded signed ISI-only deployment passed in PREPRODUCTION_TESTING, schema20261008_0037; automation/evidence/ISI-29F/release/closeout.json. No fresh server probe in30A. Full institutional production remains unverified; SMTP pending, new backups owner-deferred, extraction quality UNCALIBRATED.",
       "spec": "automation/specs/ISI-28-R3-OPERATIONS-AND-RESPONSIVE-CLOSEOUT.md"
     },
     {
       "id": "ISI-PUBLIC-LEGAL-NOTICES-DRAFT-R1",
-      "title": "Public Legal Notices — Terms and Privacy Draft",
+      "title": "Public Legal Notices \u2014 Terms and Privacy Draft",
       "status": "done",
       "spec": "automation/specs/ISI-PUBLIC-LEGAL-NOTICES-DRAFT-R1.md",
       "note": "Historical internal drafts complete. Owner superseded complete-facts publication blocker with visible placeholders. Versioned R2 payload published in four translations under exact1bf0552/checkpoint95; known facts/unknowns and SMTP pending explicit. Legal compliance and mailbox operation not certified."
@@ -477,7 +477,7 @@
       "title": "XAI, GIS and geographically anchored entities/findings",
       "status": "done",
       "spec": "docs/roadmap/ISI-29-XAI-GIS-ENTITY-FINDINGS-PLAN.md",
-      "note": "29A–29F software is CI_VERIFIED / REVIEW_VERIFIED at exact main f587ed0a194043cadf7190ceae9f6f29c1d76c55, required acceptance37914718258 completed/success (all12 jobs). Recorded signed ISI-only deployment passed in PREPRODUCTION_TESTING, schema20261008_0037; automation/evidence/ISI-29F/release/closeout.json. No fresh server probe in30A. Full institutional production remains unverified; SMTP pending, new backups owner-deferred, extraction quality UNCALIBRATED.",
+      "note": "29A\u201329F software is CI_VERIFIED / REVIEW_VERIFIED at exact main f587ed0a194043cadf7190ceae9f6f29c1d76c55, required acceptance37914718258 completed/success (all12 jobs). Recorded signed ISI-only deployment passed in PREPRODUCTION_TESTING, schema20261008_0037; automation/evidence/ISI-29F/release/closeout.json. No fresh server probe in30A. Full institutional production remains unverified; SMTP pending, new backups owner-deferred, extraction quality UNCALIBRATED.",
       "next": "ISI-30A-WORKFLOW-SHELL"
     },
     {
@@ -485,14 +485,14 @@
       "title": "Graphical XAI for persisted results",
       "status": "done",
       "spec": "automation/specs/ISI-29A-GRAPHICAL-XAI.md",
-      "note": "29A–29F software is CI_VERIFIED / REVIEW_VERIFIED at exact main f587ed0a194043cadf7190ceae9f6f29c1d76c55, required acceptance37914718258 completed/success (all12 jobs). Recorded signed ISI-only deployment passed in PREPRODUCTION_TESTING, schema20261008_0037; automation/evidence/ISI-29F/release/closeout.json. No fresh server probe in30A. Full institutional production remains unverified; SMTP pending, new backups owner-deferred, extraction quality UNCALIBRATED."
+      "note": "29A\u201329F software is CI_VERIFIED / REVIEW_VERIFIED at exact main f587ed0a194043cadf7190ceae9f6f29c1d76c55, required acceptance37914718258 completed/success (all12 jobs). Recorded signed ISI-only deployment passed in PREPRODUCTION_TESTING, schema20261008_0037; automation/evidence/ISI-29F/release/closeout.json. No fresh server probe in30A. Full institutional production remains unverified; SMTP pending, new backups owner-deferred, extraction quality UNCALIBRATED."
     },
     {
       "id": "ISI-29B-GIS-CONTRACTS",
       "title": "Governed geometry and spatial contracts",
       "status": "done",
       "spec": "automation/specs/ISI-29B-GIS-CONTRACTS.md",
-      "note": "29A–29F software is CI_VERIFIED / REVIEW_VERIFIED at exact main f587ed0a194043cadf7190ceae9f6f29c1d76c55, required acceptance37914718258 completed/success (all12 jobs). Recorded signed ISI-only deployment passed in PREPRODUCTION_TESTING, schema20261008_0037; automation/evidence/ISI-29F/release/closeout.json. No fresh server probe in30A. Full institutional production remains unverified; SMTP pending, new backups owner-deferred, extraction quality UNCALIBRATED.",
+      "note": "29A\u201329F software is CI_VERIFIED / REVIEW_VERIFIED at exact main f587ed0a194043cadf7190ceae9f6f29c1d76c55, required acceptance37914718258 completed/success (all12 jobs). Recorded signed ISI-only deployment passed in PREPRODUCTION_TESTING, schema20261008_0037; automation/evidence/ISI-29F/release/closeout.json. No fresh server probe in30A. Full institutional production remains unverified; SMTP pending, new backups owner-deferred, extraction quality UNCALIBRATED.",
       "depends_on": [
         "ISI-29A-GRAPHICAL-XAI"
       ]
@@ -502,7 +502,7 @@
       "title": "GIS maps and linked workflows",
       "status": "done",
       "spec": "automation/specs/ISI-29C-GIS-WORKFLOWS.md",
-      "note": "29A–29F software is CI_VERIFIED / REVIEW_VERIFIED at exact main f587ed0a194043cadf7190ceae9f6f29c1d76c55, required acceptance37914718258 completed/success (all12 jobs). Recorded signed ISI-only deployment passed in PREPRODUCTION_TESTING, schema20261008_0037; automation/evidence/ISI-29F/release/closeout.json. No fresh server probe in30A. Full institutional production remains unverified; SMTP pending, new backups owner-deferred, extraction quality UNCALIBRATED.",
+      "note": "29A\u201329F software is CI_VERIFIED / REVIEW_VERIFIED at exact main f587ed0a194043cadf7190ceae9f6f29c1d76c55, required acceptance37914718258 completed/success (all12 jobs). Recorded signed ISI-only deployment passed in PREPRODUCTION_TESTING, schema20261008_0037; automation/evidence/ISI-29F/release/closeout.json. No fresh server probe in30A. Full institutional production remains unverified; SMTP pending, new backups owner-deferred, extraction quality UNCALIBRATED.",
       "depends_on": [
         "ISI-29B-GIS-CONTRACTS"
       ]
@@ -512,7 +512,7 @@
       "title": "Model-appropriate SHAP and attribution",
       "status": "done",
       "spec": "automation/specs/ISI-29D-MODEL-ATTRIBUTION.md",
-      "note": "29A–29F software is CI_VERIFIED / REVIEW_VERIFIED at exact main f587ed0a194043cadf7190ceae9f6f29c1d76c55, required acceptance37914718258 completed/success (all12 jobs). Recorded signed ISI-only deployment passed in PREPRODUCTION_TESTING, schema20261008_0037; automation/evidence/ISI-29F/release/closeout.json. No fresh server probe in30A. Full institutional production remains unverified; SMTP pending, new backups owner-deferred, extraction quality UNCALIBRATED.",
+      "note": "29A\u201329F software is CI_VERIFIED / REVIEW_VERIFIED at exact main f587ed0a194043cadf7190ceae9f6f29c1d76c55, required acceptance37914718258 completed/success (all12 jobs). Recorded signed ISI-only deployment passed in PREPRODUCTION_TESTING, schema20261008_0037; automation/evidence/ISI-29F/release/closeout.json. No fresh server probe in30A. Full institutional production remains unverified; SMTP pending, new backups owner-deferred, extraction quality UNCALIBRATED.",
       "depends_on": [
         "ISI-29C-GIS-WORKFLOWS"
       ]
@@ -522,7 +522,7 @@
       "title": "Geographically anchored entity and claim extraction",
       "status": "done",
       "spec": "automation/specs/ISI-29E-ENTITY-CLAIM-EXTRACTION.md",
-      "note": "29A–29F software is CI_VERIFIED / REVIEW_VERIFIED at exact main f587ed0a194043cadf7190ceae9f6f29c1d76c55, required acceptance37914718258 completed/success (all12 jobs). Recorded signed ISI-only deployment passed in PREPRODUCTION_TESTING, schema20261008_0037; automation/evidence/ISI-29F/release/closeout.json. No fresh server probe in30A. Full institutional production remains unverified; SMTP pending, new backups owner-deferred, extraction quality UNCALIBRATED.",
+      "note": "29A\u201329F software is CI_VERIFIED / REVIEW_VERIFIED at exact main f587ed0a194043cadf7190ceae9f6f29c1d76c55, required acceptance37914718258 completed/success (all12 jobs). Recorded signed ISI-only deployment passed in PREPRODUCTION_TESTING, schema20261008_0037; automation/evidence/ISI-29F/release/closeout.json. No fresh server probe in30A. Full institutional production remains unverified; SMTP pending, new backups owner-deferred, extraction quality UNCALIBRATED.",
       "depends_on": [
         "ISI-29D-MODEL-ATTRIBUTION"
       ]
@@ -532,7 +532,7 @@
       "title": "Linked evidence, reporting, Help and release",
       "status": "done",
       "spec": "automation/specs/ISI-29F-EVIDENCE-RELEASE.md",
-      "note": "29A–29F software is CI_VERIFIED / REVIEW_VERIFIED at exact main f587ed0a194043cadf7190ceae9f6f29c1d76c55, required acceptance37914718258 completed/success (all12 jobs). Recorded signed ISI-only deployment passed in PREPRODUCTION_TESTING, schema20261008_0037; automation/evidence/ISI-29F/release/closeout.json. No fresh server probe in30A. Full institutional production remains unverified; SMTP pending, new backups owner-deferred, extraction quality UNCALIBRATED.",
+      "note": "29A\u201329F software is CI_VERIFIED / REVIEW_VERIFIED at exact main f587ed0a194043cadf7190ceae9f6f29c1d76c55, required acceptance37914718258 completed/success (all12 jobs). Recorded signed ISI-only deployment passed in PREPRODUCTION_TESTING, schema20261008_0037; automation/evidence/ISI-29F/release/closeout.json. No fresh server probe in30A. Full institutional production remains unverified; SMTP pending, new backups owner-deferred, extraction quality UNCALIBRATED.",
       "depends_on": [
         "ISI-29E-ENTITY-CLAIM-EXTRACTION"
       ]
@@ -563,11 +563,11 @@
       "id": "ISI-30C-ANALYTICAL-WORKFLOWS",
       "title": "Existing SIMPA/ORDO analytical authoring and lifecycle",
       "status": "in_progress",
-      "spec": "automation/specs/ISI-30C1-SIMPA-METHODOLOGY-WORKFLOWS.md",
+      "spec": "automation/specs/ISI-30C2A-ORDO-METHODOLOGY-WORKFLOWS.md",
       "depends_on": [
         "ISI-30B-DATA-WORKFLOWS"
       ],
-      "note": "30C1 SIMPA in progress;30C2 ORDO pending. Backend methodology/data boundaries retained.",
+      "note": "30C1 ef2b1c0 locally reviewed/pushed;30C2A in progress,30C2B statistical/spatial reachability pending; no hosted/server inheritance.",
       "next": "ISI-30D"
     }
   ]

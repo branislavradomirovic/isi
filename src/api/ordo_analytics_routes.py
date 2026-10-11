@@ -502,10 +502,12 @@ def post_run(
             monitoring_cycle_id=payload.monitoring_cycle_id,
             actor_id=actor_id,
         )
-        db.commit(); db.refresh(row)
+        db.commit()
+        db.refresh(row)
         return _run_dict(row)
     except (OrdoAnalyticsError, ValueError) as exc:
-        db.rollback(); raise _error(exc) from None
+        db.rollback()
+        raise _error(exc) from None
 
 
 @router.get("/methodologies")
@@ -525,6 +527,7 @@ def get_methodologies(
             "status": method.status,
             "computation_type": method.computation_type,
             "methodology_note": method.methodology_note,
+            "source_requirements": method.source_requirements,
             "proposed_at": method.proposed_at,
             "validation_note": method.validation_note,
             "approved_at": method.approved_at,
@@ -552,10 +555,12 @@ def post_methodology(
             source_requirements=payload.source_requirements,
             actor_id=actor_id,
         )
-        db.commit(); db.refresh(row)
+        db.commit()
+        db.refresh(row)
         return {"id": str(row.id), "version_no": row.version_no, "status": row.status, "computation_type": row.computation_type}
     except OrdoAnalyticsError as exc:
-        db.rollback(); raise _error(exc) from None
+        db.rollback()
+        raise _error(exc) from None
 
 
 @router.post("/methodologies/{methodology_id}/validate")
@@ -569,10 +574,12 @@ def post_validate_methodology(
     try:
         actor_id = actor_membership_id(db, user_id=context.user.id, organization_id=payload.organization_id)
         row = validate_methodology(db, methodology_id=methodology_id, validation_note=payload.validation_note, actor_id=actor_id)
-        db.commit(); db.refresh(row)
+        db.commit()
+        db.refresh(row)
         return {"id": str(row.id), "status": row.status, "approved_at": row.approved_at}
     except OrdoAnalyticsError as exc:
-        db.rollback(); raise _error(exc) from None
+        db.rollback()
+        raise _error(exc) from None
 
 
 @router.post("/methodologies/{methodology_id}/propose")
@@ -586,10 +593,12 @@ def post_propose_methodology(
     try:
         actor_id = actor_membership_id(db, user_id=context.user.id, organization_id=payload.organization_id)
         row = propose_methodology(db, methodology_id=methodology_id, actor_id=actor_id)
-        db.commit(); db.refresh(row)
+        db.commit()
+        db.refresh(row)
         return {"id": str(row.id), "status": row.status, "proposed_at": row.proposed_at}
     except OrdoAnalyticsError as exc:
-        db.rollback(); raise _error(exc) from None
+        db.rollback()
+        raise _error(exc) from None
 
 
 @router.post("/methodologies/{methodology_id}/retire")
@@ -605,10 +614,12 @@ def post_retire_methodology(
         row = retire_methodology(
             db, methodology_id=methodology_id, retirement_note=payload.retirement_note, actor_id=actor_id
         )
-        db.commit(); db.refresh(row)
+        db.commit()
+        db.refresh(row)
         return {"id": str(row.id), "status": row.status, "retired_at": row.retired_at}
     except OrdoAnalyticsError as exc:
-        db.rollback(); raise _error(exc) from None
+        db.rollback()
+        raise _error(exc) from None
 
 
 @router.post("/compute", status_code=status.HTTP_201_CREATED)
@@ -629,7 +640,8 @@ def post_compute(
             analytics_run_id=payload.analytics_run_id,
             actor_id=actor_id,
         )
-        db.commit(); db.refresh(row)
+        db.commit()
+        db.refresh(row)
         return {
             "id": str(row.id),
             "value_numeric": row.value_numeric,
@@ -641,7 +653,8 @@ def post_compute(
             "computation_trace": row.computation_trace,
         }
     except OrdoAnalyticsError as exc:
-        db.rollback(); raise _error(exc) from None
+        db.rollback()
+        raise _error(exc) from None
 
 
 @router.get("/goals")
@@ -671,10 +684,12 @@ def post_goal(
     try:
         actor_id = actor_membership_id(db, user_id=context.user.id, organization_id=payload.organization_id)
         row = create_goal(db, actor_id=actor_id, **payload.model_dump())
-        db.commit(); db.refresh(row)
+        db.commit()
+        db.refresh(row)
         return {"id": str(row.id), "code": row.code, "title": row.title, "focus_area": row.focus_area, "status": row.status}
     except (OrdoAnalyticsError, ValueError) as exc:
-        db.rollback(); raise _error(exc) from None
+        db.rollback()
+        raise _error(exc) from None
 
 
 @router.get("/scenarios")
@@ -704,10 +719,12 @@ def post_scenario(
     try:
         actor_id = actor_membership_id(db, user_id=context.user.id, organization_id=payload.organization_id)
         row = create_scenario(db, actor_id=actor_id, **payload.model_dump())
-        db.commit(); db.refresh(row)
+        db.commit()
+        db.refresh(row)
         return {"id": str(row.id), "goal_id": str(row.goal_id), "name": row.name, "status": row.status}
     except (OrdoAnalyticsError, ValueError) as exc:
-        db.rollback(); raise _error(exc) from None
+        db.rollback()
+        raise _error(exc) from None
 
 
 @router.post("/scenarios/{scenario_id}/status")
@@ -726,10 +743,12 @@ def post_scenario_status(
             workspace_id=payload.workspace_id,
             status=payload.status,
         )
-        db.commit(); db.refresh(row)
+        db.commit()
+        db.refresh(row)
         return {"id": str(row.id), "status": row.status}
     except OrdoAnalyticsError as exc:
-        db.rollback(); raise _error(exc) from None
+        db.rollback()
+        raise _error(exc) from None
 
 
 @router.get("/scenario-assessments")
@@ -765,7 +784,8 @@ def post_scenario_assessment(
     try:
         actor_id = actor_membership_id(db, user_id=context.user.id, organization_id=payload.organization_id)
         row = create_scenario_assessment(db, actor_id=actor_id, **payload.model_dump())
-        db.commit(); db.refresh(row)
+        db.commit()
+        db.refresh(row)
         return {
             "id": str(row.id), "scenario_id": str(row.scenario_id), "analytics_run_id": str(row.analytics_run_id),
             "assessment": row.assessment, "forecast_performed": row.forecast_performed, "status": row.status,
@@ -776,7 +796,8 @@ def post_scenario_assessment(
             "impact_model_reference": row.impact_model_reference,
         }
     except (OrdoAnalyticsError, ValueError) as exc:
-        db.rollback(); raise _error(exc) from None
+        db.rollback()
+        raise _error(exc) from None
 
 
 @router.post("/scenario-assessments/{assessment_id}/review")
@@ -798,10 +819,12 @@ def post_scenario_assessment_review(
             reviewer_note=payload.reviewer_note,
             actor_id=actor_id,
         )
-        db.commit(); db.refresh(row)
+        db.commit()
+        db.refresh(row)
         return {"id": str(row.id), "status": row.status, "reviewed_at": row.reviewed_at}
     except OrdoAnalyticsError as exc:
-        db.rollback(); raise _error(exc) from None
+        db.rollback()
+        raise _error(exc) from None
 
 
 @router.get("/syntheses")
@@ -847,16 +870,20 @@ def post_synthesis(
             model_key=payload.model_key,
             actor_id=actor_id,
         )
-        db.commit(); synthesis_id = row.id; job_id = job.id
+        db.commit()
+        synthesis_id = row.id
+        job_id = job.id
         try:
             dispatch_ai_job(job_id)
         except AIQueueError as exc:
             raise HTTPException(status_code=503, detail="ai job queue unavailable") from exc
         db.expire_all()
-        row = db.get(type(row), synthesis_id); job = db.get(type(job), job_id)
+        row = db.get(type(row), synthesis_id)
+        job = db.get(type(job), job_id)
         return {"id": str(row.id), "review_status": row.review_status, "job": job_response(db, job).model_dump(mode="json")}
     except (OrdoAnalyticsError, AIServiceError, ValueError) as exc:
-        db.rollback(); raise _error(exc) from None
+        db.rollback()
+        raise _error(exc) from None
 
 
 @router.post("/syntheses/{synthesis_id}/review")
@@ -878,7 +905,10 @@ def post_review(
             reviewer_note=payload.reviewer_note,
             actor_id=actor_id,
         )
-        db.commit(); db.refresh(row); db.refresh(job)
+        db.commit()
+        db.refresh(row)
+        db.refresh(job)
         return {"id": str(row.id), "review_status": row.review_status, "human_review_status": job.human_review_status, "reviewed_at": row.reviewed_at}
     except OrdoAnalyticsError as exc:
-        db.rollback(); raise _error(exc) from None
+        db.rollback()
+        raise _error(exc) from None
