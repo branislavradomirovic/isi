@@ -274,3 +274,5 @@ ORDO-SPATIAL-AGGREGATION-GUIDE.md: explicit scoped load/selection/reviewed metho
 
 ## 30C2B2 ORDO statistical specifications — PARTIAL
 ORDO-STATISTICAL-SPECIFICATION-GUIDE.md ten-item typed authoring/pagination/review/lifecycle/role/recovery and no-fitting/no-results distinction. Action illustrations/Word parity pending30E.
+
+30D1 action guide: `ISI-ADMINISTRATION-WORKFLOWS-GUIDE.md` (ten sections). Scoped administrative confirmation, safe error/receipt and session boundaries; illustrated parity pending30E.

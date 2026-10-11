@@ -562,13 +562,24 @@
     {
       "id": "ISI-30C-ANALYTICAL-WORKFLOWS",
       "title": "Existing SIMPA/ORDO analytical authoring and lifecycle",
-      "status": "in_progress",
+      "status": "done",
       "spec": "automation/specs/ISI-30C2B2-ORDO-STATISTICAL-WORKFLOW.md",
       "depends_on": [
         "ISI-30B-DATA-WORKFLOWS"
       ],
-      "note": "C1/C2A/C2B1 5c90be1 locally reviewed/pushed;C2B2 statistical metadata reachability in progress;30D/E/F pending; no hosted/server inheritance.",
+      "note": "C1/C2A/C2B1/C2B2 53d29bd locally reviewed/pushed;23focused/1686regression latest PASS; no hosted/server inheritance.",
       "next": "ISI-30D"
+    },
+    {
+      "id": "ISI-30D-ADMIN-AI-WORKFLOWS",
+      "title": "Administration AI review and account workflows",
+      "status": "in_progress",
+      "spec": "automation/specs/ISI-30D1-ADMINISTRATION-WORKFLOWS.md",
+      "depends_on": [
+        "ISI-30C-ANALYTICAL-WORKFLOWS"
+      ],
+      "note": "D1 scoped administration and member sessions in progress;D2 AI/results/onboarding pending.",
+      "next": "ISI-30E"
     }
   ]
 }
