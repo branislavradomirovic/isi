@@ -282,3 +282,7 @@ ORDO-STATISTICAL-SPECIFICATION-GUIDE.md ten-item typed authoring/pagination/revi
 30D3A ten-item action guide: `ISI-RESULT-EVIDENCE-GUIDE.md`; faithful typed domain/source/provenance/SHAP/unsupported views; no new numerical support, illustrated parity pending30E.
 
 30D3B ISI-REPORTING-WORKFLOWS-GUIDE.md covers ten reporting workflow items; explicit selections/current evidence confirmations; action-level illustrations/Word parity pending30E.
+
+
+## 2026-10-11 — 30D3B reviewed closeout and30D4 scope lock
+30D3B IMPLEMENTED/REVIEW_VERIFIED b6812a4:40focused/1781regression PASS/46 inherited skips, seven gates and1280/390/native reporting QA.30D4 IN_PROGRESS typed self-session inventory, fresh identity/status-bound revoke confirmations and safe receipts; existing invitation/recovery/pending SMTP preserved. Exact automation/specs/ISI-30D4-ACCOUNT-SECURITY-WORKFLOWS.md. No auth backend/schema/provider/role expansion; GoraNova real onboarding remains controlled30F, owner credential entry. Illustrated HelpWord30E and final30F pending; hosted/server f587ed0 unchanged.

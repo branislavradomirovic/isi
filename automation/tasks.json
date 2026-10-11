@@ -574,11 +574,11 @@
       "id": "ISI-30D-ADMIN-AI-WORKFLOWS",
       "title": "Administration AI review and account workflows",
       "status": "in_progress",
-      "spec": "automation/specs/ISI-30D3B-REPORTING-WORKFLOWS.md",
+      "spec": "automation/specs/ISI-30D4-ACCOUNT-SECURITY-WORKFLOWS.md",
       "depends_on": [
         "ISI-30C-ANALYTICAL-WORKFLOWS"
       ],
-      "note": "D1/D2/D3A eabdc3f locally reviewed/pushed;D3B reporting workflows in progress;D4 account/security/onboarding pending.",
+      "note": "D1/D2/D3A/D3B b6812a4 locally reviewed/pushed;D4 self-account security in progress; real GoraNova onboarding at controlled30F, illustrated HelpWord30E pending.",
       "next": "ISI-30E"
     }
   ]

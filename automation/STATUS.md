@@ -553,3 +553,7 @@ ISI-30B4C IMPLEMENTED/REVIEW_VERIFIED committed/pushed606fc92:21focused/1581regr
 
 ## 2026-10-11 — 30D3A reviewed closeout and30D3B scope lock
 30D3A IMPLEMENTED/REVIEW_VERIFIED eabdc3f:17focused/1741regression PASS/46 inherited skips, seven gates and1280/390/native typed-evidence QA.30D3B IN_PROGRESS explicit report source/version/lifecycle confirmations and optional reviewed-evidence preconditions under scoped report/version locks; exact automation/specs/ISI-30D3B-REPORTING-WORKFLOWS.md. Legacy callers/linked revalidation/permissions retained; no schema migration/formula/provider expansion.30D4 account/security/onboarding,30E illustrated HelpWord,30F checkpoint/deployment pending; hosted/server f587ed0 unchanged.
+
+
+## 2026-10-11 — 30D3B reviewed closeout and30D4 scope lock
+30D3B IMPLEMENTED/REVIEW_VERIFIED b6812a4:40focused/1781regression PASS/46 inherited skips, seven gates and1280/390/native reporting QA.30D4 IN_PROGRESS typed self-session inventory, fresh identity/status-bound revoke confirmations and safe receipts; existing invitation/recovery/pending SMTP preserved. Exact automation/specs/ISI-30D4-ACCOUNT-SECURITY-WORKFLOWS.md. No auth backend/schema/provider/role expansion; GoraNova real onboarding remains controlled30F, owner credential entry. Illustrated HelpWord30E and final30F pending; hosted/server f587ed0 unchanged.
