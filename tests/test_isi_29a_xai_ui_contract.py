@@ -25,7 +25,7 @@ def test_existing_ui_consumes_scoped_result_and_preserves_tables():
     assert 'render_chart(st, forecast_chart(detail))' in ordo
     assert 'backtest_chart(detail, position)' in ordo
     assert 'key=f"ordo_xai_origin_{selected_id}"' in ordo
-    assert 'st.dataframe(points' in ordo and 'st.json(xai["backtest_records"])' in ordo
+    assert 'st.dataframe(points' in ordo and 'render_evidence("Dokazi po backtest poreklu", xai["backtest_records"])' in ordo
     for source in (simpa, ordo):
         assert 'def _scope' in source and 'workspace' in source
 

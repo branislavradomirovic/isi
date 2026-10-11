@@ -1,6 +1,7 @@
 """Accessible bounded SHAP tables/heatmap/waterfall; data never becomes HTML."""
 
 from __future__ import annotations
+from src.streamlit_app.evidence_view import render_evidence
 
 from html import escape
 import math
@@ -212,7 +213,8 @@ def render_attribution(st, *, token, organization_id, workspace_id, result, perm
         st.caption(
             f"Baseline + ΣSHAP = {sample['prediction']:.8g}; additivity greška={sample['additivity_error']:.3g}, tehnička tolerancija={artifact['tolerance']}. Nije prag institucionalne odluke."
         )
-        st.json(
+        render_evidence(
+            "Dokaz, izvor i ograničenja",
             {
                 "schema": artifact["schema"],
                 "method": artifact["method"],
@@ -220,5 +222,6 @@ def render_attribution(st, *, token, organization_id, workspace_id, result, perm
                 "background_fingerprint": artifact["background_fingerprint"],
                 "background_policy": artifact["background_policy"],
                 "provenance": artifact["provenance"],
-            }
+            },
+            ui=st,
         )

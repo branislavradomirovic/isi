@@ -40,6 +40,7 @@ def evidence_rows(value: Any, *, maximum: int = 200, max_depth: int = 8) -> list
     return rows
 
 
-def render_evidence(title: str, value: Any) -> None:
-    st.markdown("#### " + title)
-    st.dataframe(evidence_rows(value), width="stretch", hide_index=True)
+def render_evidence(title: str, value: Any, *, ui=None) -> None:
+    ui = st if ui is None else ui
+    ui.markdown("#### " + title)
+    ui.dataframe(evidence_rows(value), width="stretch", hide_index=True)

@@ -1,5 +1,7 @@
 """Linked report inputs and safe map/XAI preview on live API responses."""
+
 import streamlit as st
+from src.streamlit_app.evidence_view import render_evidence
 from src.streamlit_app.spatial_workspace import render_map_table
 from src.streamlit_app.attribution_view import matrix_rows, heatmap, waterfall, render_chart as render_attribution_chart
 from src.streamlit_app.xai_charts import render_chart, coefficient_chart, forecast_chart
@@ -24,18 +26,24 @@ def inputs(prefix):
             st.write(f"{i}. {text}")
     claim_id = st.text_input("ID prihvaćenog nalaza iz Podataka", value="c1", key=prefix + "claim")
     result_id = st.text_input("UUID numeričkog rezultata — opciono", key=prefix + "result")
-    st.caption("SIMPA: validirani continuous OLS rezultat. ORDO: sačuvana prognoza. Ostavite prazno kada nema podržanog rezultata.")
+    st.caption(
+        "SIMPA: validirani continuous OLS rezultat. ORDO: sačuvana prognoza. Ostavite prazno kada nema podržanog rezultata."
+    )
     note = st.text_area("Obrazloženje veze i razlika u periodu ili teritoriji", key=prefix + "note")
-    attested = st.checkbox("Potvrđujem ljudski izbor veze; ovo nije automatska potvrda istinitosti", key=prefix + "attested")
+    attested = st.checkbox(
+        "Potvrđujem ljudski izbor veze; ovo nije automatska potvrda istinitosti", key=prefix + "attested"
+    )
     return {"claim_id": claim_id, "result_id": result_id.strip() or None, "note": note, "attested": attested}
 
 
 def preview(content, scope):
     packet = content["packet"]
-    st.warning("Kontekstualna veza — bez automatske potvrde istinitosti ili institucionalne odluke. Ekstrakcija UNCALIBRATED.")
+    st.warning(
+        "Kontekstualna veza — bez automatske potvrde istinitosti ili institucionalne odluke. Ekstrakcija UNCALIBRATED."
+    )
     st.text(packet["claim"]["statement"]["quote"])
     with st.expander("Struktura i citati nalaza"):
-        st.json(packet["claim"])
+        render_evidence("Citirani nalaz i struktura", packet["claim"])
     geo = packet.get("geometry")
     if geo:
         render_map_table([geo], scope=scope, at_date=packet["territory"]["at_date"])
@@ -48,7 +56,14 @@ def preview(content, scope):
         if attribution.get("status") == "AVAILABLE":
             artifact = attribution["artifact"]
             st.dataframe(matrix_rows(artifact), hide_index=True, width="stretch")
-            st.bar_chart([{ "feature": f, "mean_absolute_SHAP": v} for f, v in zip(artifact["features"], artifact["global_mean_absolute"])], x="feature", y="mean_absolute_SHAP")
+            st.bar_chart(
+                [
+                    {"feature": f, "mean_absolute_SHAP": v}
+                    for f, v in zip(artifact["features"], artifact["global_mean_absolute"])
+                ],
+                x="feature",
+                y="mean_absolute_SHAP",
+            )
             render_attribution_chart(st, heatmap(artifact))
             sample = st.selectbox("Uzorak za lokalni doprinos", range(len(artifact["samples"])), key=scope + "-sample")
             render_attribution_chart(st, waterfall(artifact, sample))
@@ -60,4 +75,7 @@ def preview(content, scope):
     else:
         st.info("Numerički rezultat UNAVAILABLE — nije izabran.")
     with st.expander("Izvor i pregled nalaza"):
-        st.json({"source": packet["source"], "review": packet["review"], "provenance": packet["extraction_provenance"]})
+        render_evidence(
+            "Dokaz, izvor i ograničenja",
+            {"source": packet["source"], "review": packet["review"], "provenance": packet["extraction_provenance"]},
+        )

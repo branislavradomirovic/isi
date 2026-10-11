@@ -574,11 +574,11 @@
       "id": "ISI-30D-ADMIN-AI-WORKFLOWS",
       "title": "Administration AI review and account workflows",
       "status": "in_progress",
-      "spec": "automation/specs/ISI-30D2-AI-REVIEW-WORKFLOWS.md",
+      "spec": "automation/specs/ISI-30D3A-TYPED-RESULT-VIEWS.md",
       "depends_on": [
         "ISI-30C-ANALYTICAL-WORKFLOWS"
       ],
-      "note": "D1 174b57b locally reviewed/pushed;D2 AI evidence/review in progress;D3 result/auth/onboarding pending.",
+      "note": "D1 174b57b/D2 48e452d locally reviewed/pushed;D3A typed domain result views in progress;D3B reports/accounts pending.",
       "next": "ISI-30E"
     }
   ]

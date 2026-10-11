@@ -3,6 +3,7 @@
 from uuid import uuid4
 from datetime import date
 import streamlit as st
+from src.streamlit_app.evidence_view import render_evidence
 from src.streamlit_app import extraction_api, spatial_api, ai_api
 from src.streamlit_app.api_client import AuthenticationRequired, AccessDenied, ApiUnavailable
 
@@ -53,8 +54,8 @@ HELP = (
 def safe(fn, *args, **kwargs):
     try:
         return fn(*args, **kwargs)
-    except (AuthenticationRequired, AccessDenied, ApiUnavailable) as exc:
-        st.error(str(exc))
+    except (AuthenticationRequired, AccessDenied, ApiUnavailable):
+        st.error("Ekstrakcija nije dostupna. Proverite sesiju, ovlašćenja i verziju izvora; osvežite pre ponavljanja.")
         return None
 
 
@@ -68,7 +69,10 @@ def render_detail(value):
     for mention in artifact["output"]["mentions"]:
         with st.expander("Entitet " + mention["id"]):
             st.text(mention["anchor"]["quote"])
-            st.json({"anchor": mention["anchor"], "kind": mention["kind"], "link": artifact["links"][mention["id"]]})
+            render_evidence(
+                "Dokaz, izvor i ograničenja",
+                {"anchor": mention["anchor"], "kind": mention["kind"], "link": artifact["links"][mention["id"]]},
+            )
     for claim in artifact["output"]["claims"]:
         with st.expander("Nalaz " + claim["id"], expanded=True):
             st.text(claim["statement"]["quote"])
@@ -88,12 +92,14 @@ def render_detail(value):
                     + citation["anchor"]["quote"]
                 )
             with st.expander("Tačni citati i lokatori " + claim["id"]):
-                st.json(claim)
+                render_evidence("Tačni citati i lokatori nalaza", claim)
     with st.expander("Verzije i poreklo"):
-        st.json({k: v for k, v in artifact.items() if k not in {"output", "links"}})
+        render_evidence(
+            "Dokaz, izvor i ograničenja", {k: v for k, v in artifact.items() if k not in {"output", "links"}}
+        )
         st.text(value["artifact_fingerprint"])
         if value.get("review"):
-            st.json(value["review"])
+            render_evidence("Ljudski pregled ekstrakcije", value["review"])
 
 
 def render_extraction_workspace(*, token, shell):
@@ -244,4 +250,4 @@ def render_extraction_workspace(*, token, shell):
         if st.button("Učitaj samo prihvaćene nalaze", key=prefix + ":retrieve"):
             values = call("claims", filters={k: v for k, v in {"period": period, "geometry_id": geo_id}.items() if v})
             if values is not None:
-                st.json(values)
+                render_evidence("Pregledani nalazi i obuhvat", values)

@@ -120,7 +120,7 @@ render_attribution(st,token="synthetic",organization_id="synthetic-org",workspac
     at = AppTest.from_string(code).run(timeout=30)
     assert not at.exception and not at.button and not at.dataframe
     at.checkbox[0].check().run(timeout=30)
-    assert not at.exception and len(at.dataframe) == 3
+    assert not at.exception and len(at.dataframe) == 4
     assert not any("SHAP atribucija nije dostupna" in x.value for x in at.caption)
     assert any("SHAP objašnjava doprinos modelu" in x.value for x in at.caption)
     assert at.selectbox[0].value == 0

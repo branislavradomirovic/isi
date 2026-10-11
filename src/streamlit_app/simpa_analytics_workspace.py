@@ -1,4 +1,5 @@
 from __future__ import annotations
+from src.streamlit_app.evidence_view import render_evidence
 
 from typing import Any
 
@@ -19,8 +20,10 @@ def _scope(shell: dict[str, Any]) -> tuple[str, str] | None:
 def _safe(call, *args, **kwargs):
     try:
         return call(*args, **kwargs)
-    except Exception as exc:
-        st.error(str(exc))
+    except Exception:
+        st.error(
+            "Dokaz ili operacija nisu dostupni. Proverite sesiju, ovlašćenja i aktuelan ulaz; osvežite pre ponavljanja."
+        )
         return None
 
 
@@ -223,9 +226,12 @@ def render_simpa_analytics(*, token: str, shell: dict[str, Any]) -> None:
         st.info(
             "Nema draft, proposed, validated ili retired metodologija u analytics registru. SIMPA ne izmišlja formule niti automatski validira konceptualne indikatore."
         )
-    st.caption("Detaljno tumacenje lifecycle-a, reference evidence-a, statistike, ogranicenja i recovery koraka nalazi se u SIMPA Help sekciji.")
+    st.caption(
+        "Detaljno tumacenje lifecycle-a, reference evidence-a, statistike, ogranicenja i recovery koraka nalazi se u SIMPA Help sekciji."
+    )
 
     from src.streamlit_app.simpa_methodology_workspace import render_methodology_authoring
+
     render_methodology_authoring(token=token, shell=shell)
 
     st.markdown("### Monitoring snapshot-i")
@@ -263,11 +269,11 @@ def render_simpa_analytics(*, token: str, shell: dict[str, Any]) -> None:
 
     st.markdown("### Statistički metodološki ugovori i rezultati")
     st.caption("Statistički izlazi slede dokaze i indikatore, a prikazuju se pre AI interpretacije.")
-    st.caption("PROPOSED = samo kontrolisano testiranje; VALIDATED = ljudski odobrena metodologija, ne champion niti automatska potvrda performansi.")
-    st.warning("Statistical association or feature contribution does not by itself establish causal effect.")
-    contracts = (
-        _safe(simpa_analytics_api.statistical_model_contracts, token, organization_id, workspace_id) or []
+    st.caption(
+        "PROPOSED = samo kontrolisano testiranje; VALIDATED = ljudski odobrena metodologija, ne champion niti automatska potvrda performansi."
     )
+    st.warning("Statistical association or feature contribution does not by itself establish causal effect.")
+    contracts = _safe(simpa_analytics_api.statistical_model_contracts, token, organization_id, workspace_id) or []
     statistical_results = (
         _safe(simpa_analytics_api.statistical_model_results, token, organization_id, workspace_id) or []
     )
@@ -347,31 +353,40 @@ def render_simpa_analytics(*, token: str, shell: dict[str, Any]) -> None:
             ):
                 from src.streamlit_app.attribution_view import render_attribution
 
-                render_attribution(st, token=token, organization_id=organization_id, workspace_id=workspace_id,
-                    result=item, permissions=permissions, api=simpa_analytics_api)
+                render_attribution(
+                    st,
+                    token=token,
+                    organization_id=organization_id,
+                    workspace_id=workspace_id,
+                    result=item,
+                    permissions=permissions,
+                    api=simpa_analytics_api,
+                )
                 st.markdown("**Model / cilj / uncertainty contract**")
-                st.json(identity)
+                render_evidence("Identitet modela i cilj", identity)
                 st.caption(xai["coefficient_interpretation"])
                 render_chart(st, coefficient_chart(item))
                 st.dataframe(xai["coefficients"], use_container_width=True, hide_index=True)
                 st.caption(xai["p_value_interpretation"])
                 st.caption(xai["missing_data_interpretation"])
                 st.markdown("**Fit / error metrics**")
-                st.json(xai["metrics"])
+                render_evidence("Metrike modela", xai["metrics"])
                 st.caption(xai["metrics_interpretation"])
                 st.markdown("**Diagnostics**")
-                st.json(xai["diagnostics"])
+                render_evidence("Dijagnostika modela", xai["diagnostics"])
                 st.caption(xai["diagnostics_interpretation"])
                 st.markdown("**Calibration / error summary**")
-                st.json(xai["calibration"])
+                render_evidence("Kalibracija i greška", xai["calibration"])
                 st.caption(xai["calibration_interpretation"])
                 st.markdown("**Reproducibility / provenance**")
-                st.json(xai["provenance"])
+                render_evidence("Poreklo i ponovljivost dokaza", xai["provenance"])
                 st.caption(f"result_fingerprint={item.get('result_fingerprint') or '-'}")
                 st.caption(xai["production_eligibility"]["interpretation"])
                 st.markdown("**Unsupported / unavailable XAI states**")
-                st.caption("Ove oznake opisuju osnovni koeficijentni read model; zaseban SHAP dokaz ima sopstveni status iznad. SHAP nije kauzalni efekat ili generička AI pouzdanost.")
-                st.json(xai["unsupported"])
+                st.caption(
+                    "Ove oznake opisuju osnovni koeficijentni read model; zaseban SHAP dokaz ima sopstveni status iznad. SHAP nije kauzalni efekat ili generička AI pouzdanost."
+                )
+                render_evidence("Nepodržana ili nedostupna objašnjenja", xai["unsupported"])
                 st.warning(xai["non_causal_notice"])
                 st.caption(f"Limitations: {xai['limitations']}")
                 if not detail.get("coefficients"):
@@ -429,10 +444,16 @@ def render_simpa_analytics(*, token: str, shell: dict[str, Any]) -> None:
             st.caption(
                 f"provider={job.get('provider_name') or '-'} · model={job.get('model_name') or '-'} · policy={job.get('effective_provider_policy')} · prompt={job.get('prompt_key')} v{job.get('prompt_version')}"
             )
-            st.caption(f"source_snapshot_sha256={item.get('source_snapshot_sha256') or '-'} · request_sha256={job.get('request_sha256') or '-'}")
+            st.caption(
+                f"source_snapshot_sha256={item.get('source_snapshot_sha256') or '-'} · request_sha256={job.get('request_sha256') or '-'}"
+            )
             structured = job.get("structured_output")
-            structured_output_state = "present" if structured else ("failed" if job.get("error_code") else "unavailable")
-            st.caption(f"structured_output_state={structured_output_state} · job_status={job.get('status')} · human_review_status={job.get('human_review_status')} · review={item.get('review_status')}")
+            structured_output_state = (
+                "present" if structured else ("failed" if job.get("error_code") else "unavailable")
+            )
+            st.caption(
+                f"structured_output_state={structured_output_state} · job_status={job.get('status')} · human_review_status={job.get('human_review_status')} · review={item.get('review_status')}"
+            )
             if structured:
                 st.markdown("**Sažetak**")
                 st.write(structured.get("executive_summary", ""))

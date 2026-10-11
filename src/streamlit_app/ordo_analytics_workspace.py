@@ -1,4 +1,5 @@
 from __future__ import annotations
+from src.streamlit_app.evidence_view import render_evidence
 
 from typing import Any
 
@@ -27,8 +28,10 @@ def _safe(call, *args, **kwargs):
     except ValidationError:
         st.error("Proverite obavezna polja i tipove. Zahtev nije poslat.")
         return None
-    except Exception as exc:
-        st.error(str(exc))
+    except Exception:
+        st.error(
+            "Dokaz ili operacija nisu dostupni. Proverite sesiju, ovlašćenja i aktuelan ulaz; osvežite pre ponavljanja."
+        )
         return None
 
 
@@ -160,7 +163,8 @@ def _render_time_series_workflow(
             )
             or spec_by_id[review_id]
         )
-        st.json(
+        render_evidence(
+            "Dokaz, izvor i ograničenja",
             {
                 "binding": {
                     "analytics_run_id": detail.get("analytics_run_id"),
@@ -188,7 +192,7 @@ def _render_time_series_workflow(
                     "retired_at": detail.get("retired_at"),
                     "retirement_note": detail.get("retirement_note"),
                 },
-            }
+            },
         )
         if "indicator.manage" in permissions:
             status_value = detail.get("status")
@@ -527,17 +531,22 @@ def _render_time_series_workflow(
 
 
 def _render_forecast_results(
-    *, token: str, organization_id: str, workspace_id: str,
-    permissions: set[str], runs: list[dict],
+    *,
+    token: str,
+    organization_id: str,
+    workspace_id: str,
+    permissions: set[str],
+    runs: list[dict],
 ) -> None:
     _render_time_series_workflow(
-        token=token, organization_id=organization_id, workspace_id=workspace_id,
-        permissions=permissions, runs=runs,
+        token=token,
+        organization_id=organization_id,
+        workspace_id=workspace_id,
+        permissions=permissions,
+        runs=runs,
     )
     st.markdown("### Persistirani forecast rezultati")
-    st.caption(
-        "Pregled sačuvanih ESTIMATED/NOT_ESTIMATED ishoda, backtest dokaza, intervala i provenance-a."
-    )
+    st.caption("Pregled sačuvanih ESTIMATED/NOT_ESTIMATED ishoda, backtest dokaza, intervala i provenance-a.")
     items = _safe(ordo_analytics_api.forecasts, token, organization_id, workspace_id) or []
     if not items:
         st.info("Nema persistiranih forecast rezultata u aktivnom ORDO workspace-u.")
@@ -563,8 +572,7 @@ def _render_forecast_results(
         "Forecast rezultat za detaljan pregled",
         list(by_id),
         format_func=lambda value: (
-            f"{value[:8]} · {by_id[value].get('result_status')} · "
-            f"{by_id[value].get('requested_family')}"
+            f"{value[:8]} · {by_id[value].get('result_status')} · {by_id[value].get('requested_family')}"
         ),
         key="ordo_forecast_result_detail",
     )
@@ -582,10 +590,7 @@ def _render_forecast_results(
     if status == "ESTIMATED":
         st.success("ESTIMATED · prikazane su samo persistirane tacke i intervali.")
     else:
-        st.warning(
-            f"{status or 'UNKNOWN'} · reason_code={xai['reason_code'] or '—'} · "
-            f"{xai['reason_interpretation']}"
-        )
+        st.warning(f"{status or 'UNKNOWN'} · reason_code={xai['reason_code'] or '—'} · {xai['reason_interpretation']}")
     identity = xai["model_identity"]
     cols = st.columns(4)
     cols[0].metric("Status", status or "—")
@@ -606,21 +611,24 @@ def _render_forecast_results(
         st.info("NOT_ESTIMATED nema point/interval vrednosti; UI ne prikazuje nule ili praznu zamensku seriju.")
 
     st.markdown("#### Interval i rolling-origin/backtest dokaz")
-    st.write(xai["interval"])
+    render_evidence("Interval prognoze i tumačenje", xai["interval"])
     st.caption(xai["interval"]["interpretation"])
     st.write("**Observation/training window i rolling-origin plan**")
-    st.json({"coverage": xai["coverage"], "rolling_origin_plan": xai["rolling_origin_plan"]})
+    render_evidence(
+        "Dokaz, izvor i ograničenja", {"coverage": xai["coverage"], "rolling_origin_plan": xai["rolling_origin_plan"]}
+    )
     if status == "ESTIMATED":
         st.write("**Aggregate backtest metrics**")
-        st.json(xai["aggregate_backtest_metrics"])
+        render_evidence("Zbirne backtest metrike", xai["aggregate_backtest_metrics"])
         st.write("**Metric availability**")
-        st.json(xai["metric_availability"])
+        render_evidence("Dostupnost metrika", xai["metric_availability"])
         origins = xai["backtest_records"]
         if origins:
             if len(origins) > MAX_ORIGINS:
                 st.warning(f"Izbor grafikona ograničen je na prvih {MAX_ORIGINS} porekla; puni dokaz ostaje ispod.")
             position = st.selectbox(
-                "Backtest poreklo / origin", list(range(min(len(origins), MAX_ORIGINS))),
+                "Backtest poreklo / origin",
+                list(range(min(len(origins), MAX_ORIGINS))),
                 format_func=lambda i: f"Zapis {i + 1} · origin_index={origins[i].get('origin_index', '—')}",
                 key=f"ordo_xai_origin_{selected_id}",
             )
@@ -629,20 +637,20 @@ def _render_forecast_results(
             if chart.rows:
                 st.dataframe(list(chart.rows), use_container_width=True, hide_index=True)
         with st.expander("Per-origin backtest evidence"):
-            st.json(xai["backtest_records"])
+            render_evidence("Dokazi po backtest poreklu", xai["backtest_records"])
     else:
         st.write("**Metric availability**")
-        st.json(xai["metric_availability"])
+        render_evidence("Dostupnost metrika", xai["metric_availability"])
     st.caption(xai["backtest_interpretation"])
 
     st.markdown("#### Dijagnostika i upozorenja")
-    st.json({"diagnostics": xai["diagnostics"], "warnings": xai["warnings"]})
+    render_evidence("Dokaz, izvor i ograničenja", {"diagnostics": xai["diagnostics"], "warnings": xai["warnings"]})
     st.caption(xai["diagnostics_interpretation"])
     st.markdown("#### Provenance i metodoloske granice")
-    st.json(xai["provenance"])
+    render_evidence("Poreklo i ponovljivost dokaza", xai["provenance"])
     st.write(xai["safety"]["interpretation"])
     st.write("**Eksplicitno nepodrzano**")
-    st.json(xai["unsupported"])
+    render_evidence("Nepodržana ili nedostupna objašnjenja", xai["unsupported"])
 
 
 def _render_scenario_assessments(assessments: list[dict]) -> None:
@@ -670,15 +678,19 @@ def _render_scenario_assessments(assessments: list[dict]) -> None:
                     "Persistirani impact",
                     f"{xai['impact_estimate_numeric']} {xai['impact_estimate_unit'] or ''}",
                 )
-            st.json({"provenance": xai["provenance"], "limitations": xai["limitations"]})
+            render_evidence(
+                "Dokaz, izvor i ograničenja", {"provenance": xai["provenance"], "limitations": xai["limitations"]}
+            )
             st.write("**Eksplicitno nepodrzano**")
-            st.json(xai["unsupported"])
+            render_evidence("Nepodržana ili nedostupna objašnjenja", xai["unsupported"])
 
 
 def render_ordo_analytics(*, token: str, shell: dict[str, Any]) -> None:
     scope = _scope(shell)
     st.markdown('<div class="isi-eyebrow">ORDO · Analitika + AI</div>', unsafe_allow_html=True)
-    st.markdown('<h1 class="isi-shell-title">Inteligencija odlučivanja bez lažne predikcije</h1>', unsafe_allow_html=True)
+    st.markdown(
+        '<h1 class="isi-shell-title">Inteligencija odlučivanja bez lažne predikcije</h1>', unsafe_allow_html=True
+    )
     st.caption(
         "ORDO povezuje razvojni cilj, kvalitet dokaza, validirane indikatorske metodologije, scenarije i lokalnu AI sintezu. "
         "Scenario procena je evidence-readiness pregled, ne prognoza efekata."
@@ -700,11 +712,15 @@ def render_ordo_analytics(*, token: str, shell: dict[str, Any]) -> None:
         st.info("Nema validiranog governed analytical snapshot-a ili eligible feature verzije za analitiku.")
     else:
         selected_artifact = st.selectbox(
-            "Governed analytical artefakt", artifacts,
+            "Governed analytical artefakt",
+            artifacts,
             format_func=lambda row: f"{row['type']} · {row['id']} · {row['fingerprint']}",
         )
         snapshot = _safe(
-            ordo_analytics_api.summary, token, organization_id, workspace_id,
+            ordo_analytics_api.summary,
+            token,
+            organization_id,
+            workspace_id,
             analytical_artifact_type=selected_artifact["type"],
             analytical_artifact_id=selected_artifact["id"],
         )
@@ -739,11 +755,25 @@ def render_ordo_analytics(*, token: str, shell: dict[str, Any]) -> None:
     if methods:
         st.dataframe(methods, use_container_width=True, hide_index=True)
     else:
-        st.info("Nema validiranih metodologija. ORDO ne izmišlja formule niti automatski validira konceptualne indikatore.")
+        st.info(
+            "Nema validiranih metodologija. ORDO ne izmišlja formule niti automatski validira konceptualne indikatore."
+        )
 
     st.markdown("### Analitički snapshot")
-    if snapshot and selected_artifact is not None and "analysis.run" in permissions and st.button("Sačuvaj trenutni ORDO snapshot", type="primary", use_container_width=True):
-        result = _safe(ordo_analytics_api.create_run, token, organization_id=organization_id, workspace_id=workspace_id, analytical_artifact_type=selected_artifact["type"], analytical_artifact_id=selected_artifact["id"])
+    if (
+        snapshot
+        and selected_artifact is not None
+        and "analysis.run" in permissions
+        and st.button("Sačuvaj trenutni ORDO snapshot", type="primary", use_container_width=True)
+    ):
+        result = _safe(
+            ordo_analytics_api.create_run,
+            token,
+            organization_id=organization_id,
+            workspace_id=workspace_id,
+            analytical_artifact_type=selected_artifact["type"],
+            analytical_artifact_id=selected_artifact["id"],
+        )
         if result is not None:
             st.success("ORDO snapshot je sačuvan.")
             st.rerun()
@@ -771,11 +801,13 @@ def render_ordo_analytics(*, token: str, shell: dict[str, Any]) -> None:
         for item in artifacts
     }
     governed_runs = [
-        item for item in runs
+        item
+        for item in runs
         if (
             item.get("analytical_artifact_type"),
             item.get("analytical_snapshot_id") or item.get("analytical_feature_version_id"),
-        ) in eligible_artifacts
+        )
+        in eligible_artifacts
     ]
 
     _render_forecast_results(
@@ -797,7 +829,9 @@ def render_ordo_analytics(*, token: str, shell: dict[str, Any]) -> None:
     )
     if governed_runs and "analysis.run" in permissions:
         run_ids = [item["id"] for item in governed_runs]
-        selected_run = st.selectbox("Snapshot za AI sintezu", run_ids, format_func=lambda value: f"Snapshot {value[:8]}", key="ordo_ai_run")
+        selected_run = st.selectbox(
+            "Snapshot za AI sintezu", run_ids, format_func=lambda value: f"Snapshot {value[:8]}", key="ordo_ai_run"
+        )
         mode = st.radio("Vrsta sinteze", ["monitoring", "scenario_review"], horizontal=True, key="ordo_ai_mode")
         selected_scenario = None
         if mode == "scenario_review":
@@ -805,7 +839,12 @@ def render_ordo_analytics(*, token: str, shell: dict[str, Any]) -> None:
                 st.info("Za scenario review prvo kreiraj razvojni cilj i scenario.")
             else:
                 scenario_map = {item["id"]: item["name"] for item in scenarios}
-                selected_scenario = st.selectbox("Scenario za AI pregled", list(scenario_map), format_func=lambda value: scenario_map[value], key="ordo_ai_scenario")
+                selected_scenario = st.selectbox(
+                    "Scenario za AI pregled",
+                    list(scenario_map),
+                    format_func=lambda value: scenario_map[value],
+                    key="ordo_ai_scenario",
+                )
         disabled = mode == "scenario_review" and not selected_scenario
         if st.button("Pokreni lokalnu ORDO AI sintezu", use_container_width=True, disabled=disabled):
             result = _safe(
@@ -828,7 +867,9 @@ def render_ordo_analytics(*, token: str, shell: dict[str, Any]) -> None:
 
     for item in syntheses:
         job = item.get("job", {})
-        with st.expander(f"{item.get('synthesis_type')} · {item['id'][:8]} · {job.get('status', 'unknown')} · review: {item.get('review_status')}"):
+        with st.expander(
+            f"{item.get('synthesis_type')} · {item['id'][:8]} · {job.get('status', 'unknown')} · review: {item.get('review_status')}"
+        ):
             st.caption(
                 f"provider={job.get('provider_name') or '-'} · model={job.get('model_name') or '-'} · policy={job.get('effective_provider_policy')} · prompt={job.get('prompt_key')} v{job.get('prompt_version')}"
             )
@@ -854,13 +895,19 @@ def render_ordo_analytics(*, token: str, shell: dict[str, Any]) -> None:
                         st.markdown(f"**{title}**")
                         for value in values:
                             st.write(f"- {value}")
-                st.caption(f"forecast_performed={structured.get('forecast_performed')} · human_review_required={structured.get('human_review_required')}")
+                st.caption(
+                    f"forecast_performed={structured.get('forecast_performed')} · human_review_required={structured.get('human_review_required')}"
+                )
             elif job.get("error_message"):
                 st.error(job.get("error_message"))
             else:
                 st.caption("AI rezultat još nije dostupan.")
 
-            if item.get("review_status") == "pending" and job.get("status") in {"review_required", "succeeded"} and "analysis.run" in permissions:
+            if (
+                item.get("review_status") == "pending"
+                and job.get("status") in {"review_required", "succeeded"}
+                and "analysis.run" in permissions
+            ):
                 note = st.text_area("Napomena review-a", key=f"ordo_review_note_{item['id']}")
                 accept, reject = st.columns(2)
                 if accept.button("Prihvati kao pregledano", key=f"ordo_accept_{item['id']}", use_container_width=True):
@@ -891,7 +938,9 @@ def render_ordo_analytics(*, token: str, shell: dict[str, Any]) -> None:
 
 def _render_scenario_workflow(token, organization_id, workspace_id, permissions, governed_runs):
     st.markdown("### Razvojni ciljevi i scenariji")
-    st.caption("Scenario je korisnički definisan razvojni pravac. Sistem ne predstavlja pretpostavke kao činjenice niti računa predviđene efekte bez validiranog modela.")
+    st.caption(
+        "Scenario je korisnički definisan razvojni pravac. Sistem ne predstavlja pretpostavke kao činjenice niti računa predviđene efekte bez validiranog modela."
+    )
     goals = _safe(ordo_analytics_api.goals, token, organization_id, workspace_id) or []
     scenarios = _safe(ordo_analytics_api.scenarios, token, organization_id, workspace_id) or []
 
@@ -902,7 +951,15 @@ def _render_scenario_workflow(token, organization_id, workspace_id, permissions,
             goal_description = st.text_area("Opis", key="ordo_goal_desc")
             focus_area = st.selectbox(
                 "Fokus",
-                ["destination_development", "competitiveness", "sustainability", "inclusion", "employment", "quality_of_life", "custom"],
+                [
+                    "destination_development",
+                    "competitiveness",
+                    "sustainability",
+                    "inclusion",
+                    "employment",
+                    "quality_of_life",
+                    "custom",
+                ],
                 key="ordo_goal_focus",
             )
             if st.button("Sačuvaj razvojni cilj", use_container_width=True, key="ordo_goal_save"):
@@ -923,7 +980,9 @@ def _render_scenario_workflow(token, organization_id, workspace_id, permissions,
         if goals:
             with st.expander("Novi scenario"):
                 goal_map = {item["id"]: item["title"] for item in goals}
-                goal_id = st.selectbox("Razvojni cilj", list(goal_map), format_func=lambda value: goal_map[value], key="ordo_scenario_goal")
+                goal_id = st.selectbox(
+                    "Razvojni cilj", list(goal_map), format_func=lambda value: goal_map[value], key="ordo_scenario_goal"
+                )
                 scenario_name = st.text_input("Naziv scenarija", key="ordo_scenario_name")
                 scenario_description = st.text_area("Opis scenarija", key="ordo_scenario_desc")
                 assumptions_text = st.text_area("Pretpostavke · jedna po redu", key="ordo_scenario_assumptions")
@@ -954,8 +1013,15 @@ def _render_scenario_workflow(token, organization_id, workspace_id, permissions,
         st.markdown("#### Evidence-only procena scenarija")
         scenario_map = {item["id"]: item["name"] for item in scenarios}
         run_ids = [item["id"] for item in governed_runs]
-        scenario_id = st.selectbox("Scenario", list(scenario_map), format_func=lambda value: scenario_map[value], key="ordo_assessment_scenario")
-        run_id = st.selectbox("Analitički snapshot", run_ids, format_func=lambda value: f"Snapshot {value[:8]}", key="ordo_assessment_run")
+        scenario_id = st.selectbox(
+            "Scenario",
+            list(scenario_map),
+            format_func=lambda value: scenario_map[value],
+            key="ordo_assessment_scenario",
+        )
+        run_id = st.selectbox(
+            "Analitički snapshot", run_ids, format_func=lambda value: f"Snapshot {value[:8]}", key="ordo_assessment_run"
+        )
         if st.button("Kreiraj evidence-only procenu", use_container_width=True, key="ordo_assessment_create"):
             result = _safe(
                 ordo_analytics_api.create_assessment,
@@ -973,33 +1039,64 @@ def _render_scenario_workflow(token, organization_id, workspace_id, permissions,
     if "analysis.run" in permissions:
         if scenarios:
             with st.expander("Status scenarija"):
-                chosen = st.selectbox("Scenario za promenu statusa", scenarios,
-                    format_func=lambda row: f"{row['name']} · {row['status']}", key="ordo_scenario_status_item")
+                chosen = st.selectbox(
+                    "Scenario za promenu statusa",
+                    scenarios,
+                    format_func=lambda row: f"{row['name']} · {row['status']}",
+                    key="ordo_scenario_status_item",
+                )
                 with st.form("ordo_scenario_status_form"):
                     status_value = st.selectbox("Novi status", ["draft", "review_ready", "accepted", "rejected"])
-                    st.caption("Prihvaćen scenario beleži stručni izbor; ne potvrđuje metodologiju, prognozu ili efekat mera.")
+                    st.caption(
+                        "Prihvaćen scenario beleži stručni izbor; ne potvrđuje metodologiju, prognozu ili efekat mera."
+                    )
                     confirmed = st.checkbox("Potvrđujem promenu statusa izabranog scenarija")
                     if st.form_submit_button("Sačuvaj status scenarija"):
                         if not confirmed:
                             st.error("Potvrdite promenu statusa pre čuvanja.")
-                        elif _safe(ordo_analytics_api.scenario_status, token, scenario_id=chosen["id"],
-                                organization_id=organization_id, workspace_id=workspace_id, status=status_value) is not None:
+                        elif (
+                            _safe(
+                                ordo_analytics_api.scenario_status,
+                                token,
+                                scenario_id=chosen["id"],
+                                organization_id=organization_id,
+                                workspace_id=workspace_id,
+                                status=status_value,
+                            )
+                            is not None
+                        ):
                             st.success("Status scenarija je sačuvan.")
                             st.rerun()
         if assessments:
             with st.expander("Stručni pregled procene"):
-                chosen = st.selectbox("Procena za pregled", assessments,
-                    format_func=lambda row: f"{row['id'][:8]} · {row.get('status', 'unknown')}", key="ordo_assessment_review_item")
+                chosen = st.selectbox(
+                    "Procena za pregled",
+                    assessments,
+                    format_func=lambda row: f"{row['id'][:8]} · {row.get('status', 'unknown')}",
+                    key="ordo_assessment_review_item",
+                )
                 with st.form("ordo_assessment_review_form"):
                     decision = st.selectbox("Odluka o pregledu", ["reviewed", "rejected"])
                     note = st.text_area("Obrazloženje stručnog pregleda", max_chars=5000)
-                    st.caption("Pregled potvrđuje vaš stav o dokazima; ne pretvara scenario u prognozu. Izvor se ponovo proverava pri čuvanju.")
+                    st.caption(
+                        "Pregled potvrđuje vaš stav o dokazima; ne pretvara scenario u prognozu. Izvor se ponovo proverava pri čuvanju."
+                    )
                     confirmed = st.checkbox("Pregledao/la sam izvore, ograničenja i izabranu procenu")
                     if st.form_submit_button("Sačuvaj stručni pregled"):
                         if not confirmed or not note.strip():
                             st.error("Unesite obrazloženje i potvrdite pregled izvora.")
-                        elif _safe(ordo_analytics_api.review_assessment, token, assessment_id=chosen["id"],
-                                organization_id=organization_id, workspace_id=workspace_id, decision=decision, reviewer_note=note.strip()) is not None:
+                        elif (
+                            _safe(
+                                ordo_analytics_api.review_assessment,
+                                token,
+                                assessment_id=chosen["id"],
+                                organization_id=organization_id,
+                                workspace_id=workspace_id,
+                                decision=decision,
+                                reviewer_note=note.strip(),
+                            )
+                            is not None
+                        ):
                             st.success("Stručni pregled je sačuvan.")
                             st.rerun()
     return scenarios
@@ -1020,13 +1117,30 @@ def render_ordo_scenarios(*, token: str, shell: dict[str, Any]) -> None:
         st.info("Pregled scenarija zahteva dozvolu analysis.read; obratite se administratoru.")
         return
     organization_id, workspace_id = scope
-    st.info("Cilj → pretpostavke i mere → pregled dokaza → stručna procena. Efekat ostaje NOT_ESTIMATED bez odobrenog modela uticaja.")
+    st.info(
+        "Cilj → pretpostavke i mere → pregled dokaza → stručna procena. Efekat ostaje NOT_ESTIMATED bez odobrenog modela uticaja."
+    )
     with st.expander("Uputstvo za scenarije"):
-        st.write("1. Pregledajte ili napravite razvojni cilj. 2. Unesite scenario, pretpostavke i predložene mere. 3. U Analitici sačuvajte analitički snimak iz validiranog izvora. 4. Povežite scenario sa snimkom kroz procenu zasnovanu na dokazima. 5. Pregledajte izvor, ograničenja i status procene. Pisanje zahteva analysis.run; scenario nije prognoza ni procena uzročnog efekta.")
+        st.write(
+            "1. Pregledajte ili napravite razvojni cilj. 2. Unesite scenario, pretpostavke i predložene mere. 3. U Analitici sačuvajte analitički snimak iz validiranog izvora. 4. Povežite scenario sa snimkom kroz procenu zasnovanu na dokazima. 5. Pregledajte izvor, ograničenja i status procene. Pisanje zahteva analysis.run; scenario nije prognoza ni procena uzročnog efekta."
+        )
     artifacts = _eligible_artifacts(token, organization_id, workspace_id)
-    eligible = {(("ANALYTICAL_SNAPSHOT" if row["type"] == "snapshot" else "ANALYTICAL_FEATURE_VERSION"), row["id"]) for row in artifacts}
+    eligible = {
+        (("ANALYTICAL_SNAPSHOT" if row["type"] == "snapshot" else "ANALYTICAL_FEATURE_VERSION"), row["id"])
+        for row in artifacts
+    }
     runs = _safe(ordo_analytics_api.runs, token, organization_id, workspace_id) or []
-    governed_runs = [row for row in runs if (row.get("analytical_artifact_type"), row.get("analytical_snapshot_id") or row.get("analytical_feature_version_id")) in eligible]
+    governed_runs = [
+        row
+        for row in runs
+        if (
+            row.get("analytical_artifact_type"),
+            row.get("analytical_snapshot_id") or row.get("analytical_feature_version_id"),
+        )
+        in eligible
+    ]
     if not governed_runs:
-        st.info("Za novu procenu prvo pripremite validiran analitički izvor u Podacima i sačuvajte njegov snimak u Analitici. Ciljeve i scenarije možete pregledati nezavisno od toga.")
+        st.info(
+            "Za novu procenu prvo pripremite validiran analitički izvor u Podacima i sačuvajte njegov snimak u Analitici. Ciljeve i scenarije možete pregledati nezavisno od toga."
+        )
     _render_scenario_workflow(token, organization_id, workspace_id, permissions, governed_runs)

@@ -78,12 +78,14 @@ def test_viewer_map_table_dropdown_selection_without_mutation_or_export(monkeypa
     assert not at.exception
     selector = next(x for x in at.selectbox if x.label.startswith("Izabrana teritorija"))
     selector.select("synthetic-b").run()
-    assert not at.exception and len(at.dataframe) == 1
+    assert not at.exception and len(at.dataframe) == 2
+    provenance = at.dataframe[1].value.set_index("Polje")["Vrednost"]
+    assert provenance["id"] == "synthetic-b" and provenance["domain_binding.key"] == "Facility"
     assert at.dataframe[0].value["id"].tolist() == ["synthetic-a", "synthetic-b"]
     assert all(a not in {"targets", "create", "review", "export"} for a, k in calls)
     assert calls[-1][1]["geometry_id"] == "synthetic-b"
     at.checkbox[0].uncheck().run()
-    assert not at.exception and len(at.dataframe) == 1
+    assert not at.exception and len(at.dataframe) == 2
 
 
 def test_empty_source_has_no_fake_map(monkeypatch):

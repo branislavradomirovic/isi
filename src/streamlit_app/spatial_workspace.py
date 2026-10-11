@@ -1,6 +1,7 @@
 """GIS Data workspace: scoped geometry review, map/table and exact result binding."""
 
 from __future__ import annotations
+from src.streamlit_app.evidence_view import render_evidence
 from datetime import date
 import json
 import streamlit as st
@@ -15,8 +16,8 @@ ERRORS = (AuthenticationRequired, AccessDenied, ApiUnavailable)
 def _safe(fn, *args, **kwargs):
     try:
         return fn(*args, **kwargs)
-    except ERRORS as exc:
-        st.warning(str(exc))
+    except ERRORS:
+        st.warning("GIS dokaz nije dostupan. Proverite sesiju, ovlašćenja, datum i aktuelnu verziju izvora.")
         return None
 
 
@@ -84,7 +85,7 @@ def _review(call, rows, permissions, prefix):
             key=prefix + "-review-id",
             format_func=lambda x: f"{x['domain_binding']['key']} · {x['version']} · {x['state']}",
         )
-        st.json(row)
+        render_evidence("Identitet i poreklo verzije", row)
         options = []
         if "data.governance.manage" in permissions and row["state"] != "RETIRED":
             options.append("RETIRED")
@@ -344,7 +345,7 @@ def render_spatial_workspace(*, token, shell):
         return
     row = chosen["metadata"]
     st.subheader("Poreklo izabrane verzije")
-    st.json(row)
+    render_evidence("Identitet i poreklo verzije", row)
     with st.expander("Tačna geometrija izabrane verzije"):
         st.json(chosen["geometry"])
     if "analysis.read" in permissions:
