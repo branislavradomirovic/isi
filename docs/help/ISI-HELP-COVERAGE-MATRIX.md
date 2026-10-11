@@ -280,3 +280,5 @@ ORDO-STATISTICAL-SPECIFICATION-GUIDE.md ten-item typed authoring/pagination/revi
 30D2 ten-item action guide: `ISI-AI-REVIEW-WORKFLOWS-GUIDE.md`; bounded typed scoped evaluation/job/XAI review, no invented SHAP/calibration or automatic model promotion; illustrations pending30E.
 
 30D3A ten-item action guide: `ISI-RESULT-EVIDENCE-GUIDE.md`; faithful typed domain/source/provenance/SHAP/unsupported views; no new numerical support, illustrated parity pending30E.
+
+30D3B ISI-REPORTING-WORKFLOWS-GUIDE.md covers ten reporting workflow items; explicit selections/current evidence confirmations; action-level illustrations/Word parity pending30E.

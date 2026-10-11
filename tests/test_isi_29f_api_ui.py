@@ -63,7 +63,13 @@ def test_linked_ui_inputs_help_and_readonly_preview(monkeypatch):
     code = 'from src.streamlit_app.reporting_workspace import render_reporting\nrender_reporting(token="", shell=' + repr(shell) + ')'
     at = AppTest.from_string(code).run(timeout=30)
     assert not at.exception
-    assert len(at.text_input) == 3 and len(at.text_area) == 1 and len(at.checkbox) == 1
+    assert not at.text_input and not at.checkbox
+    assert at.selectbox[0].value is None
+    at.selectbox[0].select(str(UUID(int=1))).run(timeout=30)
+    assert not at.exception
+    assert len(at.text_input) == 3 and len(at.text_area) == 1 and len(at.checkbox) == 2
+    assert next(x for x in at.text_input if x.label.startswith("ID prihvaćenog")).value == ""
+    assert next(x for x in at.button if x.label == "Kreiraj draft izveštaj").disabled
     assert any("povezani" in b.label.lower() for b in at.button)
     assert any("Pomoć" in x.label for x in at.expander)
     shell["product"]["permission_codes"] = ["report.read"]

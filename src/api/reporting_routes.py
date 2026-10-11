@@ -81,6 +81,7 @@ def _error(exc: Exception) -> HTTPException:
     if code.endswith("not_accessible") or code.endswith("source_not_accessible"):
         return HTTPException(status_code=404, detail=code)
     if code in {
+        "report_reviewed_evidence_changed",
         "report_version_not_submittable",
         "report_version_not_reviewable",
         "report_version_not_publishable",
@@ -91,6 +92,16 @@ def _error(exc: Exception) -> HTTPException:
     }:
         return HTTPException(status_code=409, detail=code)
     return HTTPException(status_code=400, detail=code)
+
+
+def _lock_reviewed_version(db, version, report, payload):
+    # Serialize lifecycle changes across all versions of the same scoped report.
+    db.refresh(report, with_for_update=True)
+    db.refresh(version, with_for_update=True)
+    for field in ("status", "content_sha256", "source_manifest_sha256"):
+        expected = getattr(payload, "reviewed_" + field)
+        if expected is not None and expected != getattr(version, field):
+            raise ReportingError("report_reviewed_evidence_changed")
 
 
 def _build_domain_payload(
@@ -331,6 +342,7 @@ def post_submit(
     _require_scope(db, context, organization_id=payload.organization_id, workspace_id=payload.workspace_id, product_code=payload.product_code, permission_code="analysis.run")
     try:
         version, report = get_version_scoped(db, version_id=version_id, organization_id=payload.organization_id, workspace_id=payload.workspace_id, product_code=payload.product_code)
+        _lock_reviewed_version(db, version, report, payload)
         linked_evidence.validate_version(db, user_id=context.user.id, report=report, version=version)
         submit_version(db, version)
         db.commit()
@@ -352,6 +364,7 @@ def post_review(
     try:
         version, report = get_version_scoped(db, version_id=version_id, organization_id=payload.organization_id, workspace_id=payload.workspace_id, product_code=payload.product_code)
         actor_id = _actor_id(db, user_id=context.user.id, organization_id=payload.organization_id)
+        _lock_reviewed_version(db, version, report, payload)
         linked_evidence.validate_version(db, user_id=context.user.id, report=report, version=version)
         review = review_version(db, version=version, reviewer_id=actor_id, decision=payload.decision, note=payload.note)
         db.commit()
@@ -373,6 +386,7 @@ def post_publish(
     _require_scope(db, context, organization_id=payload.organization_id, workspace_id=payload.workspace_id, product_code=payload.product_code, permission_code="organization.manage")
     try:
         version, report = get_version_scoped(db, version_id=version_id, organization_id=payload.organization_id, workspace_id=payload.workspace_id, product_code=payload.product_code)
+        _lock_reviewed_version(db, version, report, payload)
         linked_evidence.validate_version(db, user_id=context.user.id, report=report, version=version)
         publish_version(db, version=version, report=report)
         db.commit()

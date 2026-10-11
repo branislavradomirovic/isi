@@ -1,6 +1,8 @@
 """Linked report inputs and safe map/XAI preview on live API responses."""
 
 import streamlit as st
+import hashlib
+import json
 from src.streamlit_app.evidence_view import render_evidence
 from src.streamlit_app.spatial_workspace import render_map_table
 from src.streamlit_app.attribution_view import matrix_rows, heatmap, waterfall, render_chart as render_attribution_chart
@@ -24,14 +26,19 @@ def inputs(prefix):
     with st.expander("Pomoć — povezani nalazi i izveštaji"):
         for i, text in enumerate(HELP, 1):
             st.write(f"{i}. {text}")
-    claim_id = st.text_input("ID prihvaćenog nalaza iz Podataka", value="c1", key=prefix + "claim")
+    claim_id = st.text_input("ID prihvaćenog nalaza iz Podataka", key=prefix + "claim")
     result_id = st.text_input("UUID numeričkog rezultata — opciono", key=prefix + "result")
     st.caption(
         "SIMPA: validirani continuous OLS rezultat. ORDO: sačuvana prognoza. Ostavite prazno kada nema podržanog rezultata."
     )
     note = st.text_area("Obrazloženje veze i razlika u periodu ili teritoriji", key=prefix + "note")
+    binding = hashlib.sha256(json.dumps([claim_id, result_id, note]).encode()).hexdigest()
+    previous, revision = st.session_state.get(prefix + "binding", (None, 0))
+    if previous != binding:
+        revision += 1
+        st.session_state[prefix + "binding"] = (binding, revision)
     attested = st.checkbox(
-        "Potvrđujem ljudski izbor veze; ovo nije automatska potvrda istinitosti", key=prefix + "attested"
+        "Potvrđujem ljudski izbor veze; ovo nije automatska potvrda istinitosti", key=prefix + f"attested:{revision}"
     )
     return {"claim_id": claim_id, "result_id": result_id.strip() or None, "note": note, "attested": attested}
 

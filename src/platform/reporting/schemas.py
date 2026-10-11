@@ -3,7 +3,7 @@ from __future__ import annotations
 import uuid
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
 ProductCode = Literal["SIMPA", "ORDO"]
@@ -54,10 +54,18 @@ class ReportVersionGenerateRequest(ReportingScope):
 
 
 class ReportLifecycleRequest(ReportingScope):
-    pass
+    reviewed_status: Literal["draft", "in_review", "approved", "rejected", "published", "superseded"] | None = None
+    reviewed_content_sha256: str | None = Field(default=None, pattern="^[a-f0-9]{64}$")
+    reviewed_source_manifest_sha256: str | None = Field(default=None, pattern="^[a-f0-9]{64}$")
+
+    @model_validator(mode="after")
+    def reviewed_evidence_requires_status(self):
+        if (self.reviewed_content_sha256 or self.reviewed_source_manifest_sha256) and self.reviewed_status is None:
+            raise ValueError("Reviewed status required with evidence hashes")
+        return self
 
 
-class ReportReviewRequest(ReportingScope):
+class ReportReviewRequest(ReportLifecycleRequest):
     decision: Literal["approved", "rejected"]
     note: str = Field(default="", max_length=4000)
 
