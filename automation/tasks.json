@@ -563,11 +563,11 @@
       "id": "ISI-30C-ANALYTICAL-WORKFLOWS",
       "title": "Existing SIMPA/ORDO analytical authoring and lifecycle",
       "status": "in_progress",
-      "spec": "automation/specs/ISI-30C2B1-ORDO-SPATIAL-WORKFLOW.md",
+      "spec": "automation/specs/ISI-30C2B2-ORDO-STATISTICAL-WORKFLOW.md",
       "depends_on": [
         "ISI-30B-DATA-WORKFLOWS"
       ],
-      "note": "C1 ef2b1c0/C2A90b01b9 locally reviewed/pushed;C2B1 spatial reachability in progress,C2B2 statistical metadata pending; no hosted/server inheritance.",
+      "note": "C1/C2A/C2B1 5c90be1 locally reviewed/pushed;C2B2 statistical metadata reachability in progress;30D/E/F pending; no hosted/server inheritance.",
       "next": "ISI-30D"
     }
   ]

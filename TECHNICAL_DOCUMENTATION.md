@@ -921,3 +921,7 @@ ISI-30B4C IMPLEMENTED/REVIEW_VERIFIED committed/pushed606fc92:21focused/1581regr
 
 ## 2026-10-11 — 30C2A reviewed closeout / 30C2B1 scope lock
 30C2A IMPLEMENTED/REVIEW_VERIFIED committed/pushed90b01b9:32focused/1642regression PASS/46 inherited skips,1280/390 synthetic method/authoring/forecast/keyboard.30C2B1 IN_PROGRESS existing identity-based ORDO spatial aggregation customer endpoint/form. Reviewed current methodology ID checked under row lock; current numerical truth remains existing GIS revalidation. Exact automation/specs/ISI-30C2B1-ORDO-SPATIAL-WORKFLOW.md. No schema/migration/geometry join/weights/new formula/dependency.30C2B2 statistical metadata reachability,30D,30E HelpWord/final30F pending. Last hosted/server f587ed0 unchanged.
+
+
+## 2026-10-11 — 30C2B1 reviewed closeout / 30C2B2 scope lock
+30C2B1 IMPLEMENTED/REVIEW_VERIFIED committed/pushed5c90be1:21focused/1663regression PASS/46 inherited skips,1280/390/native keyboard synthetic spatial QA.30C2B2 IN_PROGRESS customer-scoped existing statistical specification authoring/list/review/lifecycle. Exact automation/specs/ISI-30C2B2-ORDO-STATISTICAL-WORKFLOW.md. Current method reviewed-ID lock, scoped transition row/status/hash precondition, existing backend input revalidation. Fitting NOT_IMPLEMENTED/numerical_results NOT_PRESENT explicitly shown; no schema/migration/model-family/formula/dependency expansion.30D,30E HelpWord and final30F pending. Hosted/server f587ed0 unchanged.

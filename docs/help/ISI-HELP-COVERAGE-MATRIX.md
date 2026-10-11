@@ -271,3 +271,6 @@ Existing global direct_observation method DRAFT/propose/human validate/retire; o
 
 ## 30C2B1 ORDO identity aggregation — PARTIAL
 ORDO-SPATIAL-AGGREGATION-GUIDE.md: explicit scoped load/selection/reviewed method/confirmation/execution/current GIS revalidation/recovery; ten items. Action illustrations and Word parity pending30E.
+
+## 30C2B2 ORDO statistical specifications — PARTIAL
+ORDO-STATISTICAL-SPECIFICATION-GUIDE.md ten-item typed authoring/pagination/review/lifecycle/role/recovery and no-fitting/no-results distinction. Action illustrations/Word parity pending30E.
