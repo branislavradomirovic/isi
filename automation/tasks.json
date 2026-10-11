@@ -595,12 +595,12 @@
     {
       "id": "ISI-30F-FINAL-ACCEPTANCE-DEPLOYMENT",
       "title": "Final exact-main acceptance and controlled ISI release",
-      "status": "in_progress",
+      "status": "done",
       "spec": "automation/specs/ISI-30F-FINAL-ACCEPTANCE-DEPLOYMENT.md",
       "depends_on": [
         "ISI-30E-ILLUSTRATED-HELP-MANUAL"
       ],
-      "note": "Exact-main hosted acceptance, signed ISI-only activation and GoraNova dual-product onboarding pending; standing owner authority; SMTP pending; new backups deferred; PREPRODUCTION_TESTING."
+      "note": "30F exact0e8bf51382e776818959f68bffa608df3105f4af CI_VERIFIED / REVIEW_VERIFIED / SERVER_VERIFIED; required38177682021 all12 success; source/image/config/schema0037 parity and strict non-target preservation PASS. GoraNova analyst account personally activated, SIMPA/ORDO scope selection verified and owner public login observed. Documentation closeout requires its own final exact-main checkpoint and signed activation, no inherited CI. SMTP pending, new backups owner-deferred; PREPRODUCTION_TESTING; no institutional/calibration/alerts/offsite/legal compliance certification."
     }
   ]
 }

@@ -2,19 +2,25 @@
 
 **Version:** 1.9
 **Status:** Controlled living technical document  
-**Last updated:** 2026-10-10
+**Last updated:** 2026-10-12
 **Canonical repository:** `branislavradomirovic/isi`  
-**Last CI and recorded server checkpoint:** `f587ed0a194043cadf7190ceae9f6f29c1d76c55` (run37914718258: all12 exact required jobs success; bounded preproduction deployment recorded)
+**Last CI and recorded server checkpoint:** `0e8bf51382e776818959f68bffa608df3105f4af` (run38177682021 all12 success; signed ISI-only deployment/live acceptance PASS)
 **Pre-reconciliation governance baseline:** `ff573b3d76cf29581cb19c255821e9b4c4841108`  
 **Current database migration head:** `20261008_0037`; recorded deployed head `20261008_0037`
 
-> This document is the concise technical authority for the current ISI as-built platform and its owner-approved deployment target. The MasterPlan remains the canonical architecture/governance/roadmap authority, and code/tests remain the as-built implementation truth. Live production-server state is not inferred from repository source: current-server verification remains deferred to ISI-28.
+> This document is the concise technical authority for the current ISI as-built platform and its owner-approved deployment target. The MasterPlan remains the canonical architecture/governance/roadmap authority, and code/tests remain the as-built implementation truth. Live server state is evidenced by the explicitly approved ISI-30F release; it is not inferred from source.
 
-## Current reconciled snapshot — 2026-10-10
+## Current reconciled snapshot — 2026-10-12
 
-29A–29F software is CI_VERIFIED / REVIEW_VERIFIED at exact main f587ed0a194043cadf7190ceae9f6f29c1d76c55, required acceptance37914718258 completed/success (all12 jobs). Recorded signed ISI-only deployment passed in PREPRODUCTION_TESTING, schema20261008_0037; automation/evidence/ISI-29F/release/closeout.json. No fresh server probe in30A. Full institutional production remains unverified; SMTP pending, new backups owner-deferred, extraction quality UNCALIBRATED.
-
-ISI-30A IN_PROGRESS presentation candidate: context transitions, accessible responsive shared style and reachable existing ORDO scenarios; no schema/API/worker/provider/dependency/model/RBAC change. Backend remains authorization truth. Sequenced remaining customer authoring/Help/manual work in ISI-30 plan; no new CI/server verification inherited.
+30A–30F software is CI_VERIFIED / REVIEW_VERIFIED / SERVER_VERIFIED at exact source
+0e8bf51382e776818959f68bffa608df3105f4af, required acceptance38177682021 all12
+completed/success. Signed ISI-only deployment, schema0037, source/image/config
+parity, live API/RQ/S3 and15 public routes PASS. Central Nginx and strict non-target
+services preserved. GoraNova analyst account personally activated and both product
+workspaces verified.197-page/152-figure Word and current illustrated Help verified.
+PREPRODUCTION_TESTING remains in force; SMTPpending, new backups owner-deferred,
+alerts/offsite/real-data calibration/legal facts not certified. This documentation
+closeout awaits its own final exact-main acceptance and signed activation.
 
 ## 1. Purpose and scope
 
@@ -960,3 +966,30 @@ The final exact-main hosted checkpoint and ISI-only server activation are pendin
 last confirmed hosted/server remains f587ed0a194043cadf7190ceae9f6f29c1d76c55.
 SMTPpending, owner-deferred new backups and PREPRODUCTION_TESTING remain in force.
 Canonical system inventory impact: NONE (existing components/boundaries unchanged).
+
+## 2026-10-12 — 30F verified release and account closeout
+
+Software phases30A–30F are implemented and reviewed. Exact source
+0e8bf51382e776818959f68bffa608df3105f4af passed required acceptance38177682021
+(all12 jobs success;1858 regression tests/46 environment skips,48 native PostgreSQL
+tests without skips). Owner-signed bundle/image/SBOM/scan/source and every payload
+hash verified; ISI-only server activation and live application/RQ/S3 acceptance PASS.
+Localmain,GitHubmain,servermain and runtime lock matched that exact source with
+clean trees. Schema0037 unchanged; existing table counts, ISI stores, non-target
+container identities and central Nginx digest preserved. All15 public ISI routes
+and Krcuga8443/OralScanXAI8444 return200 under normal TLS; live Help1280/390 PASS.
+197-page/152-figure Word manual individually visually reviewed.
+
+contact@goranova.org personally activated through protected local credential entry;
+existing auth/invitation/RBAC verified both SIMPA and ORDO workspace selections,
+analyst role, no platform-admin grant, separate GoraNova test organization. Owner
+subsequently logged into the public application; authenticated ORDO test workspace
+and both product choices were observed. No password/token exposed to evidence.
+
+This documentation closeout has no runtime/schema/dependency or inventory impact.
+It is subject to its own final exact-main acceptance and signed ISI-only activation;
+source-specific0e8bf51 evidence is not inherited as CI for a later SHA. Execution
+evidence is under automation/evidence/ISI-30F. SMTPpending, no new backups per owner,
+PREPRODUCTION_TESTING retained. Full institutional-production certification,
+real-data methodology/extraction calibration, alert delivery/offsite recovery and
+remaining legal identity facts are not claimed by this technical release.

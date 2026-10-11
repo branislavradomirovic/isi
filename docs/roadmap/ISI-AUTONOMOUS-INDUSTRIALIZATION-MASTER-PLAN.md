@@ -1,6 +1,6 @@
 # ISI Autonomous Industrialization Master Plan
 
-Status: **OWNER_APPROVED canonical architecture/governance/system-inventory baseline - reconciled 2026-10-04**.
+Status: **OWNER_APPROVED canonical architecture/governance/system-inventory baseline - reconciled 2026-10-12**.
 
 This plan is binding for the ISI industrialization track unless the owner explicitly approves a later change.
 
@@ -1636,3 +1636,30 @@ The final exact-main hosted checkpoint and ISI-only server activation are pendin
 last confirmed hosted/server remains f587ed0a194043cadf7190ceae9f6f29c1d76c55.
 SMTPpending, owner-deferred new backups and PREPRODUCTION_TESTING remain in force.
 Canonical system inventory impact: NONE (existing components/boundaries unchanged).
+
+## 2026-10-12 — 30F verified release and account closeout
+
+Software phases30A–30F are implemented and reviewed. Exact source
+0e8bf51382e776818959f68bffa608df3105f4af passed required acceptance38177682021
+(all12 jobs success;1858 regression tests/46 environment skips,48 native PostgreSQL
+tests without skips). Owner-signed bundle/image/SBOM/scan/source and every payload
+hash verified; ISI-only server activation and live application/RQ/S3 acceptance PASS.
+Localmain,GitHubmain,servermain and runtime lock matched that exact source with
+clean trees. Schema0037 unchanged; existing table counts, ISI stores, non-target
+container identities and central Nginx digest preserved. All15 public ISI routes
+and Krcuga8443/OralScanXAI8444 return200 under normal TLS; live Help1280/390 PASS.
+197-page/152-figure Word manual individually visually reviewed.
+
+contact@goranova.org personally activated through protected local credential entry;
+existing auth/invitation/RBAC verified both SIMPA and ORDO workspace selections,
+analyst role, no platform-admin grant, separate GoraNova test organization. Owner
+subsequently logged into the public application; authenticated ORDO test workspace
+and both product choices were observed. No password/token exposed to evidence.
+
+This documentation closeout has no runtime/schema/dependency or inventory impact.
+It is subject to its own final exact-main acceptance and signed ISI-only activation;
+source-specific0e8bf51 evidence is not inherited as CI for a later SHA. Execution
+evidence is under automation/evidence/ISI-30F. SMTPpending, no new backups per owner,
+PREPRODUCTION_TESTING retained. Full institutional-production certification,
+real-data methodology/extraction calibration, alert delivery/offsite recovery and
+remaining legal identity facts are not claimed by this technical release.
