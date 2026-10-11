@@ -29,5 +29,5 @@
    zapis, nevažeći dokaz ili promenjen prihvaćeni zapis zahtevaju novi pregled.
 10. **Granice i evidencija:** odluka o zapisu nije metodološka/institucionalna validacija
     i ne prihvata automatski odbijenu operativnu ocenu. Važe postojeći audit/lineage i
-    ograničenja AI/izvoza. Retention/anonimizacija/izvoz30B4C; slike i Word parity30E;
-    završni acceptance/deployment30F. Ne unosite kredencijale u reference ili obrazloženja.
+    ograničenja AI/izvoza. Čuvanje, anonimizacija i izvoz opisani su u zasebnom poglavlju.
+    Datirani sintetički primeri ne potvrđuju institucionalnu validaciju. Ne unosite kredencijale u reference ili obrazloženja.

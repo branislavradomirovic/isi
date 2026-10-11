@@ -173,16 +173,16 @@ SIMPA_HELP_TOPICS = (
         "id": "SIMPA-H11",
         "title": "Statisticki rezultat i metodoloski XAI",
         "coverage": "VERIFIED",
-        "what": 'Tumaci stored deterministic model result bez generativnog prepisivanja numericke istine: coefficients, standard errors, confidence intervals, model-produced p-values, metrics, diagnostics, calibration, missingness i provenance. 29A Graphical XAI dodaje grafikon uz izvornu tabelu; ne menja rezultat.',
-        "when": 'Koristite pri citanju svakog OLS, Poisson GLM, Binomial/Logit ili Fractional Logit rezultata. Koristite grafikon za pregled sačuvanih rezultata pre institucionalnog zaključka.',
-        "roles_permissions": 'Pregled zahteva analysis.read u istom SIMPA workspace-u. Pregled grafikona ima iste analysis.read i organization/product/workspace granice kao tabela.',
-        "steps": '1) Proverite model identity/target semantic. 2) Procitajte coefficient scale. 3) Proverite estimate/SE/CI/p-value status. 4) Proverite sample+dropped. 5) Proverite metrics/diagnostics/calibration. 6) Proverite fingerprints/production_eligible. 7) Procitajte limitations/non-causal notice. Otvorite sačuvani rezultat; pročitajte skalu/legendu, uporedite grafikon sa tabelom i pregledajte provenance.',
-        "fields_statuses": 'P-value je model-produced association inference samo kada postoji; legacy immutable rezultat moze imati unavailable_legacy_result. Calibration moze biti not_applicable. production_eligible znaci VALIDATED contract state, ne champion certification. Nedostajući interval je unavailable, zero ostaje zero; neispravan format daje bezbednu poruku. SHAP je pending 29D.',
-        "example": 'Pozitivan Binomial/Logit coefficient znaci pozitivnu asocijaciju na log-odds skali aggregate system-state ishoda; nije procentni poen, decision threshold ili causal effect. Numerička nula (zero) prikazuje se kao stvarna tačka; NOT_ESTIMATED ne dobija zamensku nulu.',
-        "non_goals": 'XAI ne izmisljava feature importance, generic confidence score, probability threshold, policy preporuku ili causal effect. 29A ne računa SHAP, GIS, nove modele, residual ili calibration tačke kojih nema u dokazu.',
-        "errors_recovery": 'Ako p-value nedostaje u istorijskom immutable rezultatu, prikazuje se unavailable; ne rekonstruišite ga. Ako diagnostics/calibration nisu supported, prikazite stvarni stored status. Ako grafikon nije dostupan, pročitajte izvornu tabelu/JSON i proverite schema/version; ne popravljajte istorijski dokaz.',
-        "limitations": 'P-values/CI zavise od model/covariance pretpostavki; v1 ne kodira multiplicity adjustment niti univerzalni diagnostic threshold. Prikaz: grafikon ima ograničen broj redova i oznaka, uz izričito obaveštenje; full table/source evidence ostaje dostupna. Postoji tabelarni fallback za mobile/keyboard.',
-        "provenance_review": 'Exact contract, methodology, artifact, dataset, input i result fingerprints plus engine/statsmodels version omogucavaju review/reprodukciju. Grafikoni prikazuju samo persistirane vrednosti; contribution nije causality, a human review i result fingerprint ostaju obavezni.',
+        "what": "Tumaci stored deterministic model result bez generativnog prepisivanja numericke istine: coefficients, standard errors, confidence intervals, model-produced p-values, metrics, diagnostics, calibration, missingness i provenance. 29A Graphical XAI dodaje grafikon uz izvornu tabelu; ne menja rezultat.",
+        "when": "Koristite pri citanju svakog OLS, Poisson GLM, Binomial/Logit ili Fractional Logit rezultata. Koristite grafikon za pregled sačuvanih rezultata pre institucionalnog zaključka.",
+        "roles_permissions": "Pregled zahteva analysis.read u istom SIMPA workspace-u. Pregled grafikona ima iste analysis.read i organization/product/workspace granice kao tabela.",
+        "steps": "1) Proverite model identity/target semantic. 2) Procitajte coefficient scale. 3) Proverite estimate/SE/CI/p-value status. 4) Proverite sample+dropped. 5) Proverite metrics/diagnostics/calibration. 6) Proverite fingerprints/production_eligible. 7) Procitajte limitations/non-causal notice. Otvorite sačuvani rezultat; pročitajte skalu/legendu, uporedite grafikon sa tabelom i pregledajte provenance.",
+        "fields_statuses": "P-value je model-produced association inference samo kada postoji; legacy immutable rezultat moze imati unavailable_legacy_result. Calibration moze biti not_applicable. production_eligible znaci VALIDATED contract state, ne champion certification. Nedostajući interval je unavailable, zero ostaje zero; neispravan format daje bezbednu poruku. SHAP prikaz je dostupan za podržani numerički model u zasebnom detaljnom uputstvu; ne objašnjava istinitost LLM teksta.",
+        "example": "Pozitivan Binomial/Logit coefficient znaci pozitivnu asocijaciju na log-odds skali aggregate system-state ishoda; nije procentni poen, decision threshold ili causal effect. Numerička nula (zero) prikazuje se kao stvarna tačka; NOT_ESTIMATED ne dobija zamensku nulu.",
+        "non_goals": "XAI ne izmisljava feature importance, generic confidence score, probability threshold, policy preporuku ili causal effect. 29A ne računa SHAP, GIS, nove modele, residual ili calibration tačke kojih nema u dokazu.",
+        "errors_recovery": "Ako p-value nedostaje u istorijskom immutable rezultatu, prikazuje se unavailable; ne rekonstruišite ga. Ako diagnostics/calibration nisu supported, prikazite stvarni stored status. Ako grafikon nije dostupan, pročitajte izvornu tabelu/JSON i proverite schema/version; ne popravljajte istorijski dokaz.",
+        "limitations": "P-values/CI zavise od model/covariance pretpostavki; v1 ne kodira multiplicity adjustment niti univerzalni diagnostic threshold. Prikaz: grafikon ima ograničen broj redova i oznaka, uz izričito obaveštenje; full table/source evidence ostaje dostupna. Postoji tabelarni fallback za mobile/keyboard.",
+        "provenance_review": "Exact contract, methodology, artifact, dataset, input i result fingerprints plus engine/statsmodels version omogucavaju review/reprodukciju. Grafikoni prikazuju samo persistirane vrednosti; contribution nije causality, a human review i result fingerprint ostaju obavezni.",
     },
     {
         "id": "SIMPA-H12",
@@ -211,11 +211,14 @@ def render_simpa_help(*, shell: dict[str, Any]) -> None:
         st.info("SIMPA Help je dostupan samo u aktivnom SIMPA kontekstu.")
         return
     st.markdown('<div class="isi-eyebrow">SIMPA · Help / User Guide</div>', unsafe_allow_html=True)
-    st.markdown('<h1 class="isi-shell-title">SIMPA — detaljno uputstvo, metodologija i XAI</h1>', unsafe_allow_html=True)
+    st.markdown(
+        '<h1 class="isi-shell-title">SIMPA — detaljno uputstvo, metodologija i XAI</h1>', unsafe_allow_html=True
+    )
     st.caption(
         "Izaberite temu za postupak korak po korak, objašnjenje polja, korisničke ekrane, primere i rešavanje problema."
     )
     from src.streamlit_app.help_manual import chapters, render_chapter, render_topic
+
     extra = chapters("SIMPA")
     selected = st.selectbox(
         "Help tema",
@@ -227,7 +230,6 @@ def render_simpa_help(*, shell: dict[str, Any]) -> None:
         render_chapter(selected, product="SIMPA")
         return
     render_topic(_topic(selected))
-
 
 
 __all__ = ["HELP_REQUIRED_FIELDS", "SIMPA_HELP_TOPICS", "render_simpa_help"]

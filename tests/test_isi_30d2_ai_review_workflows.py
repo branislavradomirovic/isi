@@ -326,7 +326,7 @@ def test_diagnostic_no_default_model_sensitivity_and_confirmed_registration(monk
 def test_help_ten_items_limits():
     text = Path("docs/help/ISI-AI-REVIEW-WORKFLOWS-GUIDE.md").read_text()
     assert all(f"## {i}." in text for i in range(1, 11))
-    assert all(x in text for x in ["report.publish", "local_only", "SHAP", "30E"])
+    assert all(x in text for x in ["report.publish", "local_only", "SHAP", "Datirane ilustracije"])
 
 
 def test_fingerprint_without_reviewed_status_rejected(server):

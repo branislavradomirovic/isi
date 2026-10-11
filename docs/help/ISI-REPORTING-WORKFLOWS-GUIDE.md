@@ -33,7 +33,7 @@ pregledani dokaz. Promena izbora, napomene, izvora/statusa poništava prethodnu 
 ## 6. Primer
 Sintetički zbirni nalaz za 2025. povežite sa eksplicitno izabranim sačuvanim
 rezultatom. Napišite razlike perioda, jedinice i teritorije. Primer i korisničko
-odobrenje nisu potvrda stvarne institucionalne istine. Popunjene ilustracije i Word parity pripadaju30E.
+odobrenje nisu potvrda stvarne institucionalne istine. Datirane ilustracije prikazuju odvojene korake ovog toka.
 
 ## 7. Granice tumačenja
 Prihvatanje ekstrakcije, review izveštaja i objavljivanje su različite odluke.

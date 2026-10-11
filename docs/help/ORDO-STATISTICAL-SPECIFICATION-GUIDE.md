@@ -62,5 +62,5 @@ promena je mogla biti sačuvana. Uspeh resetuje prethodne potvrde.
 VALIDATED odobrava specifikaciju, ne koeficijente, predikciju ili institucionalni
 zaključak. non_causal=true i automatic_policy_recommendation=false su zaključani.
 Podaci pregleda su istorijski metapodaci, ne potvrda aktuelnog numeričkog rezultata.
-Sintetički QA ekrani nisu stvarno metodološko odobrenje. Ilustracije i Word parity30E
-ostaju predmet završne dokumentacione provere.
+Sintetički QA ekrani nisu stvarno metodološko odobrenje. Datirane ilustracije prikazuju specifikaciju
+i njenu kontrolu, bez tvrdnje da je izvršeno fitovanje modela.

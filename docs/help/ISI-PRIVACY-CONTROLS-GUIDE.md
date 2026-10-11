@@ -34,5 +34,5 @@
    unosite kredencijale ili privatne tekstove u reference. Nema zaobilaženja zabrana.
 10. **Evidencija i granice:** audit beleži ID/status/reference bez raw payload-a;
     eksport ima manifest, purge ima tombstone/invalidation. Ovo nije pravni savet,
-    institucionalna validacija ili odobrenje AI analize. Popunjene sintetičke slike i
-    Word parity30E; završni acceptance/deployment30F. SMTP ostaje pending.
+    institucionalna validacija ili odobrenje AI analize. Datirane sintetičke ilustracije
+    ovog toka dostupne su u detaljnom Help-u. SMTP ostaje pending.

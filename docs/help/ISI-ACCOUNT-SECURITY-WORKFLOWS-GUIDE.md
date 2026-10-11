@@ -58,5 +58,5 @@ operacije. Ne delite nalog radi pristupa podacima druge institucije.
 ## 10. Dokazi i provera
 Server ostaje autoritet za own/foreign/current granice, rokove i audit. Lokalni
 sintetički testovi i snimci proveravaju GUI, ne stvarni GoraNova nalog ili institucionalno
-odobrenje. Datirani snimci svakog materijalnog toka i Word parity pripadaju 30E;
-exact-main acceptance i kontrolisana server provera pripadaju 30F.
+odobrenje. Datirane ilustracije ovog toka nalaze se u detaljnom Help-u.
+Stvarni pristup naloga i stanje server izdanja proveravaju se zasebno.

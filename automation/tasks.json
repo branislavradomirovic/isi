@@ -573,13 +573,24 @@
     {
       "id": "ISI-30D-ADMIN-AI-WORKFLOWS",
       "title": "Administration AI review and account workflows",
-      "status": "in_progress",
+      "status": "done",
       "spec": "automation/specs/ISI-30D4-ACCOUNT-SECURITY-WORKFLOWS.md",
       "depends_on": [
         "ISI-30C-ANALYTICAL-WORKFLOWS"
       ],
-      "note": "D1/D2/D3A/D3B b6812a4 locally reviewed/pushed;D4 self-account security in progress; real GoraNova onboarding at controlled30F, illustrated HelpWord30E pending.",
+      "note": "D1\u2013D4 e3ac9c7 locally IMPLEMENTED/REVIEW_VERIFIED and pushed;24focused/1805regression latest PASS; no hosted/server inheritance. Real GoraNova onboarding remains30F.",
       "next": "ISI-30E"
+    },
+    {
+      "id": "ISI-30E-ILLUSTRATED-HELP-MANUAL",
+      "title": "Current illustrated Help and Word workflow parity",
+      "status": "done",
+      "spec": "automation/specs/ISI-30E-ILLUSTRATED-HELP-MANUAL.md",
+      "depends_on": [
+        "ISI-30D-ADMIN-AI-WORKFLOWS"
+      ],
+      "note": "30E locally IMPLEMENTED/REVIEW_VERIFIED: seven local gates PASS,6 focused/1812 regression passes/46 inherited skips, native1280/390 keyboard/public/product Help checks,197/197 individually reviewed Word pages and152 figures.36 basic topics/19 chapters/138 dated assets include101 new30 workflow images. Five stale Help regression assertions reconciled with delivered SHAP/product boundaries; no skipped or weakened domain gate. No backend/schema/provider/dependency change. Word hash089cbc886486c7a1be13a5c888c4ab839a44db03ad7295e1892b3464eeffefce. Final exact-main hosted checkpoint, signed ISI-only deployment and real GoraNova onboarding remain30F; last CI/server f587ed0/37914718258 unchanged. SMTP pending, new backups owner-deferred, institutional/MFA/calibration/legal facts remain separately unverified.",
+      "next": "ISI-30F"
     }
   ]
 }

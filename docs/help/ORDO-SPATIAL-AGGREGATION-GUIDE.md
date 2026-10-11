@@ -53,4 +53,4 @@ vraća konflikt409, ne predstavlja idempotentan retry.
 ID/verzija metodologije, run/ulazni otisci, jedinica/granice/CRS i trag obračuna
 pripadaju postojećem ORDO rezultatu. Ne postoje nove formule ili prostorna inferencija.
 Sintetički QA ekrani nisu institucionalni podaci ili ljudsko metodološko odobrenje.
-Ilustrovani prikazi po akcijama i Word dopuna ostaju predmet30E.
+Datirane ilustracije prikazuju postojeći lokalno provereni korisnički tok.

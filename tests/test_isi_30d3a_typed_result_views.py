@@ -181,4 +181,4 @@ def test_typed_values_remain_text_not_html_or_inferred():
 def test_guide_ten_items_and_limits():
     text = Path("docs/help/ISI-RESULT-EVIDENCE-GUIDE.md").read_text()
     assert all(f"## {i}." in text for i in range(1, 11))
-    assert all(x in text for x in ["NOT_ESTIMATED", "GeoJSON", "SHAP", "UNCALIBRATED", "30E"])
+    assert all(x in text for x in ["NOT_ESTIMATED", "GeoJSON", "SHAP", "UNCALIBRATED", "Datirane ilustracije"])

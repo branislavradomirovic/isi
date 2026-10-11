@@ -76,6 +76,6 @@ validacije institucionalne metodologije ili automatske AI promocije. Reference n
 smeju sadržati tajne. Kvalitet i privatnost nasleđuju kontrolisane izvore; backend
 ponovo proverava klasifikaciju, licence/politike, lineage i povlačenje sadržaja.
 AI eligibility ostaje odvojen deterministički pregled; ne pokreće model. Human
-review i metodološka odgovornost ostaju kod ovlašćenog autora/reviewera. Novi
-screenshot-i i završna Word parity su30E; ovaj tekst nije samostalna produkciona
-vizuelna acceptance potvrda.
+review i metodološka odgovornost ostaju kod ovlašćenog autora/reviewera. Datirani
+ilustrativni primeri nalaze se u detaljnom Help-u i ne predstavljaju institucionalnu
+validaciju vaših podataka.

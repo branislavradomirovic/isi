@@ -138,7 +138,7 @@ Za istekao, iskorišćen ili opozvan link tražite novi poziv od administratora.
 
 **Ograničenja (limitations)**
 
-Ne prosleđujte link, ne kopirajte njegov sadržaj u prijavu greške. Lozinku proverava backend (12–256 znakova). Stvarna SMTP isporuka ostaje ISI-28 verifikacija.
+Ne prosleđujte link, ne kopirajte njegov sadržaj u prijavu greške. Lozinku proverava backend (12–256 znakova). SMTP je pending po odluci vlasnika; postojeći validni jednokratni linkovi zadržavaju svoj tok.
 
 **Poreklo i ljudski pregled (provenance_review)**
 
@@ -226,7 +226,7 @@ Ispravite nejednake unose. Za nevažeći/istekao link zatražite novi; za nedost
 
 **Ograničenja (limitations)**
 
-Ne delite link ni lozinku. Neutralan odgovor ne garantuje isporuku. Produkcioni SMTP ostaje odložen za ISI-28.
+Ne delite link ni lozinku. Neutralan odgovor ne garantuje isporuku. SMTP ostaje pending po odluci vlasnika.
 
 **Poreklo i ljudski pregled (provenance_review)**
 
@@ -290,11 +290,11 @@ Pre analitike, pri proveri kvaliteta i kada treba razumeti zašto artefakt nije 
 
 **Role i dozvole (roles_permissions)**
 
-data.read za katalog, governed pregled i eligibility; data.upload za upload; data.governance.manage za zasebne kontrolisane API mutacije. Svaki poziv proverava scope.
+data.read za katalog, kontrolisani pregled i eligibility; data.upload za upload; data.governance.manage za dozvoljene obrasce upravljanja. Server pri svakoj radnji ponovo proverava organizaciju, proizvod i radni prostor.
 
 **Koraci (steps)**
 
-1) Izaberite workspace i Podaci. 2) Proverite katalog. 3) Sa data.upload unesite naziv, izaberite CSV/JSON/XLSX/PDF/DOCX/TXT i Učitaj i proveri. 4) Pregledajte Analytical datasets i Feature registry. 5) Izaberite Snapshot for lineage. 6) U AI / RAG eligibility izaberite artefakt i akciju, pa Evaluate deterministic eligibility.
+1) Izaberite workspace i Podaci. 2) Proverite katalog. 3) Sa data.upload unesite naziv, izaberite CSV/JSON/XLSX/PDF/DOCX/TXT i Učitaj i proveri. 4) U pripremi ugovora pregledajte konektor, mapiranje, identitet i operativnu politiku; registraciju i aktiviranje zasebno potvrdite. 5) Pregledajte Analytical datasets i Feature registry i njihove ugovore/životni ciklus. 6) Izaberite Snapshot for lineage. 7) U AI / RAG eligibility izaberite artefakt i akciju, pa Evaluate deterministic eligibility.
 
 **Polja i stanja (fields_statuses)**
 
@@ -306,11 +306,11 @@ Uspešan CSV upload može biti tehnički obrađen, a ipak nije VALIDATED/FROZEN 
 
 **Šta sistem ne radi (non_goals)**
 
-Eligibility ne izvršava model. Ovaj UI nema pune forme za connector/mapping/governance lifecycle; Registry governance controls upućuje na autorizovane API tokove, ne izvršava ih.
+Eligibility proverava podobnost, ne izvršava model. Odvojeni obrasci upravljaju konektorom, mapiranjem, ugovorima i izvorima prema dozvolama. Zahtev za purge ne izvršava fizičko brisanje; to ostaje zaseban operator postupak.
 
 **Greške i bezbedan oporavak (errors_recovery)**
 
-Za prazan naziv/datoteku ispravite unos. Za odbijen format/veličinu ili failed obradu proverite izvor sa data administratorom. Ako nema eligible artefakta, ovlašćeni data steward završava governed API lifecycle; ne zaobilazite ga sirovim uploadom.
+Za prazan naziv ili datoteku ispravite unos. Za odbijen format, veličinu ili neuspešnu obradu proverite izvor sa administratorom podataka. Ako artefakt nije podoban, ovlašćeni korisnik završava pregled ugovora, kvaliteta i životnog ciklusa u odgovarajućim obrascima. Posle prekida prvo osvežite status; ne zaobilazite proveru sirovim uploadom.
 
 **Ograničenja (limitations)**
 
@@ -338,7 +338,7 @@ report.read čita izvore/izveštaje i izvozi; analysis.run kreira verzije i šal
 
 **Koraci (steps)**
 
-1) Otvorite Izveštaji u workspace-u. 2) Izaberite Izvor i Naslov i kreirajte draft. 3) U registru otvorite verziju, sadržaj i Provenance. 4) Pošalji na review. 5) Ovlašćeni reviewer unosi napomenu i odobrava/odbija. 6) Odobrenu verziju eksplicitno publikujte. 7) Izaberite html/markdown/json, Pripremi download artefakt i Preuzmi artefakt.
+1) Otvorite Izveštaji u workspace-u. 2) Eksplicitno izaberite Izvor i Naslov, pregledajte povezani dokaz gde je primenljiv, potvrdite i kreirajte draft. 3) U registru otvorite verziju, sadržaj i Provenance. 4) Pregledajte sadržaj i potvrdite slanje na review. 5) Ovlašćeni reviewer bira odluku, unosi napomenu, potvrđuje pregled i čuva odluku. 6) Odobrenu verziju zasebno potvrdite i eksplicitno publikujte. 7) Izaberite html/markdown/json, Pripremi download artefakt i Preuzmi artefakt.
 
 **Polja i stanja (fields_statuses)**
 
@@ -346,7 +346,7 @@ draft je nacrt; in_review čeka pregled; approved je odobren ali nije published;
 
 **Primer (example)**
 
-SIMPA monitoring_summary nastaje iz analytics_run; ORDO destination_snapshot iz analytics_run, a scenario_review iz scenario_assessment. Nova verzija koristi najnoviji ponuđeni snapshot odgovarajućeg tipa.
+SIMPA monitoring_summary nastaje iz analytics_run; ORDO destination_snapshot iz analytics_run, a scenario_review iz scenario_assessment. Nova verzija koristi eksplicitno izabrani snapshot odgovarajućeg tipa; prvi ponuđeni izvor nije dokaz da je najnoviji.
 
 **Šta sistem ne radi (non_goals)**
 
@@ -426,7 +426,7 @@ Samo sopstveni nalog sa važećom sesijom; step-up ne daje nove role. Stvarni MF
 
 **Koraci (steps)**
 
-1) Otvorite Bezbednost naloga. 2) Za step-up unesite Trenutnu lozinku i Potvrdi identitet. 3) Pregledajte sesije. 4) Opozovi sesiju za izabranu drugu sesiju ili Opozovi sve druge sesije. 5) Za trenutnu sesiju koristite Odjavi se.
+1) Otvorite Bezbednost naloga. 2) Za step-up unesite Trenutnu lozinku i Potvrdi identitet. 3) Pregledajte sesije. 4) Potvrdite opoziv izabrane druge aktivne sesije pa Opozovi sesiju, ili zasebno potvrdite sve druge sesije pa Opozovi sve druge sesije. Pregledajte potvrdu i nov status. 5) Za trenutnu sesiju koristite Odjavi se.
 
 **Polja i stanja (fields_statuses)**
 
@@ -446,7 +446,7 @@ Ako lozinka nije potvrđena, proverite unos ili koristite oporavak nakon odjave.
 
 **Ograničenja (limitations)**
 
-Ne delite lozinku ili opis privatnih sesija. UI oznaka aktivna ne zaobilazi backend expiry/revocation. MFA provider integration ostaje odložen; produkcioni SMTP/server provera pripada ISI-28.
+Ne delite lozinku ili opis privatnih sesija. UI oznaka aktivna ne zaobilazi backend expiry/revocation. MFA provider integration ostaje odložen; SMTP je pending po odluci vlasnika; završni server dokaz novih tokova vodi se zasebno.
 
 **Poreklo i ljudski pregled (provenance_review)**
 
@@ -502,7 +502,7 @@ Inventory: `INV-A21` · Help coverage: `VERIFIED`.
 
 **Šta radi (what)**
 
-Povezuje dvanaest zajedničkih tema sa ISI Shared User Guide-om i kanonskom Help Coverage Matrix.
+Povezuje osnovne zajedničke teme sa detaljnim korisničkim tokovima, objašnjenjima polja i datiranim ilustracijama. SIMPA i ORDO imaju zasebnu pomoć za svoje metodologije.
 
 **Kada se koristi (when)**
 
@@ -514,11 +514,11 @@ Javna Pomoć prikazuje samo H01–H05 i H11. Prijavljena ISI Help navigacija pri
 
 **Koraci (steps)**
 
-1) Otvorite ISI Help ili kontekstualnu Pomoć u Podaci/Izveštaji/Administracija/Bezbednost. 2) Izaberite temu. 3) Pročitajte korake, oporavak i granice. 4) Za metodologiju otvorite zasebni SIMPA Help ili ORDO Help; za shared AI koristite postojeći AI User Guide.
+1) Otvorite ISI Help ili kontekstualnu Pomoć u Podaci/Izveštaji/Administracija/Bezbednost. 2) Izaberite osnovnu temu. 3) Za opširniji postupak izaberite Detaljan korisnički tok i pročitajte korake, polja, ilustracije i oporavak. 4) Za metodologiju otvorite SIMPA Help ili ORDO Help, gde je spisak ograničen na odgovarajući proizvod. 5) Proverite datum ilustracije i stvarni status svog izvora pre rada.
 
 **Polja i stanja (fields_statuses)**
 
-MISSING/PARTIAL/COMPLETE/VERIFIED su Help stanja. VERIFIED znači lokalno testiranu pokrivenost, ne CI_VERIFIED, SERVER_VERIFIED ili završetak ISI-27. A07 ostaje neprodukcijski kritičan otvoren Help; A20 je OUT_OF_SCOPE/NOT_PRESENT.
+Tema pomoći otvara sažeto uputstvo; Detaljan korisnički tok otvara prošireno poglavlje. Ilustracije označavaju datum i da li prikazuju sintetički primer ili ranije pregledan server. Primer ne potvrđuje stanje vašeg naloga, podataka ili metodologije.
 
 **Primer (example)**
 
@@ -534,8 +534,8 @@ Ako UI i Help odstupaju, zaustavite pogođenu akciju i prijavite nesenzitivan op
 
 **Ograničenja (limitations)**
 
-Za numerički model shared Help-a XAI je NOT_APPLICABLE: Help ne računa rezultate. Ranije domain/AI napomene o globalnom PARTIAL opisuju prethodne faze; aktuelna top-level matrica je autoritet.
+Pomoć ne računa analitičke rezultate i ne potvrđuje tačnost AI nalaza. Raspoloživost radnje zavisi od objavljene aplikacije, vašeg konteksta i dozvola; datirani ekrani mogu sadržati ranije nazive menija.
 
 **Poreklo i ljudski pregled (provenance_review)**
 
-Autoriteti: docs/help/ISI-SHARED-USER-GUIDE.md, ISI-HELP-COVERAGE-MATRIX.md i tests/test_isi_27a_*.py. Domain autoriteti ostaju SIMPA-USER-GUIDE.md, ORDO-USER-GUIDE.md i ISI-AI-USER-GUIDE.md. Ljudski review i kasniji 27D/ISI-28 gate ostaju odvojeni.
+Uputstvo se usaglašava sa pregledanom implementacijom. Za stručne zaključke proverite originalne izvore, verziju metodologije i sačuvani rezultat. Ljudski pregled podataka i odobrenje institucionalne upotrebe ostaju zasebne odgovornosti.

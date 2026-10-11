@@ -21,7 +21,9 @@ HELP_REQUIRED_FIELDS = (
 
 ORDO_HELP_TOPICS = (
     {
-        "id": "ORDO-H01", "title": "Pristup i workspace kontekst", "coverage": "VERIFIED",
+        "id": "ORDO-H01",
+        "title": "Pristup i workspace kontekst",
+        "coverage": "VERIFIED",
         "what": "Objasnjava kako organizacija, ORDO entitlement, workspace i backend dozvole ogranicavaju svaki prikaz i postupak.",
         "when": "Koristite pre ORDO rada i kada modul, podatak ili akcija nisu dostupni.",
         "roles_permissions": "Backend je autoritet; UI vidljivost nije dozvola. Pregled tipicno zahteva indicator.read ili analysis.read, a izmene workspace.manage, indicator.manage ili analysis.run.",
@@ -34,7 +36,9 @@ ORDO_HELP_TOPICS = (
         "provenance_review": "App-context, app-shell i backend RBAC odluke su autoritet; ljudska odgovornost ostaje obavezna.",
     },
     {
-        "id": "ORDO-H02", "title": "Profil destinacije, resursi i akteri", "coverage": "VERIFIED",
+        "id": "ORDO-H02",
+        "title": "Profil destinacije, resursi i akteri",
+        "coverage": "VERIFIED",
         "what": "Prikazuje i, kada je dozvoljeno, uredjuje profil destinacije, resurse i stakeholder registar.",
         "when": "Koristite za institucionalni kontekst destinacije pre monitoringa i analitike.",
         "roles_permissions": "Pregled je ORDO workspace-scoped; UI konfiguracija profila, resursa i aktera zahteva workspace.manage.",
@@ -47,7 +51,9 @@ ORDO_HELP_TOPICS = (
         "provenance_review": "Zapisi poticu iz aktivnog workspace-a; organizacija i ljudski reviewer odgovaraju za tacnost.",
     },
     {
-        "id": "ORDO-H03", "title": "Monitoring ciklusi", "coverage": "VERIFIED",
+        "id": "ORDO-H03",
+        "title": "Monitoring ciklusi",
+        "coverage": "VERIFIED",
         "what": "Evidentira period i lifecycle status ORDO monitoring ciklusa.",
         "when": "Koristite za organizovanje evidence-a i analitike po odobrenom vremenskom periodu.",
         "roles_permissions": "Pregled je workspace-scoped; kreiranje kroz UI zahteva indicator.manage.",
@@ -60,7 +66,9 @@ ORDO_HELP_TOPICS = (
         "provenance_review": "Cycle ID i datumi moraju ostati povezani sa run-om gde su korisceni i biti predmet ljudskog review-a.",
     },
     {
-        "id": "ORDO-H04", "title": "Indikatori, opservacije i metodoloski status", "coverage": "VERIFIED",
+        "id": "ORDO-H04",
+        "title": "Indikatori, opservacije i metodoloski status",
+        "coverage": "VERIFIED",
         "what": "Prikazuje ORDO indicator registry i provenance-ready opservacije sa odvojenim metodoloskim stanjem.",
         "when": "Koristite pre racunanja ili analitike da proverite oblast, jedinicu, status i dostupnu evidenciju.",
         "roles_permissions": "Pregled zahteva ORDO indicator.read u autorizovanom workspace-u.",
@@ -73,7 +81,9 @@ ORDO_HELP_TOPICS = (
         "provenance_review": "Produkcioni rezultat mora vezati exact methodology version/fingerprint i governed evidence; VALIDATED zahteva human approval.",
     },
     {
-        "id": "ORDO-H05", "title": "Governed artefakti i kvalitet dokaza", "coverage": "VERIFIED",
+        "id": "ORDO-H05",
+        "title": "Governed artefakti i kvalitet dokaza",
+        "coverage": "VERIFIED",
         "what": "Bira eligible analytical snapshot/feature i prikazuje evidence-quality coverage pre downstream rada.",
         "when": "Koristite pre cuvanja ORDO snapshot-a, scenario procene ili lokalne AI sinteze.",
         "roles_permissions": "Pregled zahteva analysis.read; cuvanje snapshot-a zahteva analysis.run.",
@@ -86,7 +96,9 @@ ORDO_HELP_TOPICS = (
         "provenance_review": "Artifact, dataset-contract i snapshot fingerprints ostaju reproduktivni autoritet i zahtevaju ljudski pregled.",
     },
     {
-        "id": "ORDO-H06", "title": "Metodoloski lifecycle i ljudsko odobrenje", "coverage": "VERIFIED",
+        "id": "ORDO-H06",
+        "title": "Metodoloski lifecycle i ljudsko odobrenje",
+        "coverage": "VERIFIED",
         "what": "Omogucava review, authoring i DRAFT -> PROPOSED -> VALIDATED -> RETIRED lifecycle time-series specifikacije uz immutable verziju/fingerprint.",
         "when": "Koristite pre forecast izvrsenja da vezete stvarni governed run, ciljni indikator i ljudski odobrenu specifikaciju.",
         "roles_permissions": "analysis.read cita specifikacije; indicator.manage kreira, predlaze, validira i povlaci. Backend je autoritet za svaku mutaciju.",
@@ -99,7 +111,9 @@ ORDO_HELP_TOPICS = (
         "provenance_review": "Run, methodology ID/version/fingerprint, input SHA, contract/version/fingerprint, evidence reference, actor i timestamp moraju ostati vidljivi i pregledani.",
     },
     {
-        "id": "ORDO-H07", "title": "Analiticki snapshot i provenance", "coverage": "VERIFIED",
+        "id": "ORDO-H07",
+        "title": "Analiticki snapshot i provenance",
+        "coverage": "VERIFIED",
         "what": "Cita/cuva immutable ORDO evidence snapshot vezan za exact governed analytical artifact.",
         "when": "Koristite za reproduktivan checkpoint pre scenarija, forecast prezentacije ili AI sinteze.",
         "roles_permissions": "analysis.read za pregled; analysis.run za cuvanje novog snapshot-a.",
@@ -112,7 +126,9 @@ ORDO_HELP_TOPICS = (
         "provenance_review": "Run ID, artifact/dataset fingerprints, quality state i normalized lineage su osnova reprodukcije i human review-a.",
     },
     {
-        "id": "ORDO-H08", "title": "Razvojni ciljevi i scenariji", "coverage": "VERIFIED",
+        "id": "ORDO-H08",
+        "title": "Razvojni ciljevi i scenariji",
+        "coverage": "VERIFIED",
         "what": "Evidentira cilj i korisnicki napisane scenario pretpostavke/mere kao planning input.",
         "when": "Koristite za strukturisanje pravca koji ce se pregledati naspram raspolozivih dokaza.",
         "roles_permissions": "Pregled zahteva analysis.read; kreiranje cilja/scenarija zahteva analysis.run.",
@@ -125,7 +141,9 @@ ORDO_HELP_TOPICS = (
         "provenance_review": "Scenario ID, goal ID, autorovi unosi i lifecycle zahtevaju ljudski ownership/review.",
     },
     {
-        "id": "ORDO-H09", "title": "Evidence-only scenario procena", "coverage": "VERIFIED",
+        "id": "ORDO-H09",
+        "title": "Evidence-only scenario procena",
+        "coverage": "VERIFIED",
         "what": "Uporedjuje scenario sa sacuvanim evidence snapshot-om i cuva eksplicitno neprocenjen uticaj bez forecast-a.",
         "when": "Koristite da identifikujete evidence readiness/missing dimenzije, ne da predvidite efekat mere.",
         "roles_permissions": "Pregled zahteva analysis.read; kreiranje evidence-only procene zahteva analysis.run.",
@@ -138,20 +156,24 @@ ORDO_HELP_TOPICS = (
         "provenance_review": "Scenario contract, methodology key/version, input SHA/reference identities i human-review state moraju ostati vidljivi.",
     },
     {
-        "id": "ORDO-H10", "title": "Persistirani forecast, backtest i intervali", "coverage": "VERIFIED",
-        "what": 'Pokrece prihvaceni 24C runtime iz validirane specifikacije i prikazuje persistirani ESTIMATED ili NOT_ESTIMATED ishod sa intervalima, backtestom, dijagnostikom i fingerprints. 29A Graphical XAI dodaje grafikon uz izvornu tabelu; ne menja rezultat.',
-        "when": 'Koristite kada postoji VALIDATED time-series specifikacija i backend je otkrio eligible identitet serije iz exact governed binding-a. Koristite grafikon za pregled sačuvanih rezultata pre institucionalnog zaključka.',
-        "roles_permissions": 'analysis.read cita specifikacije, identitete i rezultate; analysis.run izvrsava forecast. UI vidljivost ne zamenjuje backend autorizaciju. Pregled grafikona ima iste analysis.read i organization/product/workspace granice kao tabela.',
-        "steps": '1) Izaberite human-readable VALIDATED spec. 2) Izaberite backend-discovered series identity. 3) Eksplicitno izaberite family iz candidate_families. 4) Izaberite 0.80/0.90/0.95 interval. 5) Pokrenite. 6) Pregledajte persistirani status/reason, points/intervals/backtest i provenance. Otvorite sačuvani rezultat; pročitajte skalu/legendu, uporedite grafikon sa tabelom i pregledajte provenance.',
-        "fields_statuses": 'ESTIMATED ima persisted points i intervals; NOT_ESTIMATED ima reason i nema zamenske tacke. Interval level/method nisu verovatnoca da je forecast tacan. Backtest je istorijska dijagnostika. Nedostajući interval je unavailable, zero ostaje zero; neispravan format daje bezbednu poruku. SHAP je pending 29D.',
-        "example": 'Naive ESTIMATED run moze imati 90% configured empirical interval; to nije 90% generic confidence niti garancija buduce performanse. Numerička nula (zero) prikazuje se kao stvarna tačka; NOT_ESTIMATED ne dobija zamensku nulu.',
-        "non_goals": 'Nema rucnog spec UUID unosa, automatic model selection/fallback-a, feature importance-a, causal effect-a, ranga, generic confidence-a ili preporuke. 29A ne računa SHAP, GIS, nove modele, residual ili calibration tačke kojih nema u dokazu.',
-        "errors_recovery": 'Ako nema identity-ja, proverite indikator/validated quality/window/as-of evidence u exact binding-u. Za NOT_ESTIMATED procitajte stable reason i korigujte evidence ili novu spec verziju; nikada ne zamenjujte prazno nulom. Ako grafikon nije dostupan, pročitajte izvornu tabelu/JSON i proverite schema/version; ne popravljajte istorijski dokaz.',
-        "limitations": 'Samo naive/seasonal-naive mogu biti izvrsene u 24C; rolling-origin rezultat ne dokazuje buducu performansu i dijagnostika nema izmisljen threshold. Prikaz: grafikon ima ograničen broj redova i oznaka, uz izričito obaveštenje; full table/source evidence ostaje dostupna. Postoji tabelarni fallback za mobile/keyboard.',
-        "provenance_review": 'Exact spec/methodology/input/request/result fingerprints, series identity, engine/version i human methodology approval omogucavaju reprodukciju/review. Grafikoni prikazuju samo persistirane vrednosti; contribution nije causality, a human review i result fingerprint ostaju obavezni.',
+        "id": "ORDO-H10",
+        "title": "Persistirani forecast, backtest i intervali",
+        "coverage": "VERIFIED",
+        "what": "Pokrece prihvaceni 24C runtime iz validirane specifikacije i prikazuje persistirani ESTIMATED ili NOT_ESTIMATED ishod sa intervalima, backtestom, dijagnostikom i fingerprints. 29A Graphical XAI dodaje grafikon uz izvornu tabelu; ne menja rezultat.",
+        "when": "Koristite kada postoji VALIDATED time-series specifikacija i backend je otkrio eligible identitet serije iz exact governed binding-a. Koristite grafikon za pregled sačuvanih rezultata pre institucionalnog zaključka.",
+        "roles_permissions": "analysis.read cita specifikacije, identitete i rezultate; analysis.run izvrsava forecast. UI vidljivost ne zamenjuje backend autorizaciju. Pregled grafikona ima iste analysis.read i organization/product/workspace granice kao tabela.",
+        "steps": "1) Izaberite human-readable VALIDATED spec. 2) Izaberite backend-discovered series identity. 3) Eksplicitno izaberite family iz candidate_families. 4) Izaberite 0.80/0.90/0.95 interval. 5) Pokrenite. 6) Pregledajte persistirani status/reason, points/intervals/backtest i provenance. Otvorite sačuvani rezultat; pročitajte skalu/legendu, uporedite grafikon sa tabelom i pregledajte provenance.",
+        "fields_statuses": "ESTIMATED ima persisted points i intervals; NOT_ESTIMATED ima reason i nema zamenske tacke. Interval level/method nisu verovatnoca da je forecast tacan. Backtest je istorijska dijagnostika. Nedostajući interval je unavailable, zero ostaje zero; neispravan format daje bezbednu poruku. ORDO prognoze prikazuju sačuvane tačke i intervale; SHAP matrice pripadaju podržanom SIMPA numeričkom modelu i nisu objašnjenje ORDO prognoze ili LLM teksta.",
+        "example": "Naive ESTIMATED run moze imati 90% configured empirical interval; to nije 90% generic confidence niti garancija buduce performanse. Numerička nula (zero) prikazuje se kao stvarna tačka; NOT_ESTIMATED ne dobija zamensku nulu.",
+        "non_goals": "Nema rucnog spec UUID unosa, automatic model selection/fallback-a, feature importance-a, causal effect-a, ranga, generic confidence-a ili preporuke. 29A ne računa SHAP, GIS, nove modele, residual ili calibration tačke kojih nema u dokazu.",
+        "errors_recovery": "Ako nema identity-ja, proverite indikator/validated quality/window/as-of evidence u exact binding-u. Za NOT_ESTIMATED procitajte stable reason i korigujte evidence ili novu spec verziju; nikada ne zamenjujte prazno nulom. Ako grafikon nije dostupan, pročitajte izvornu tabelu/JSON i proverite schema/version; ne popravljajte istorijski dokaz.",
+        "limitations": "Samo naive/seasonal-naive mogu biti izvrsene u 24C; rolling-origin rezultat ne dokazuje buducu performansu i dijagnostika nema izmisljen threshold. Prikaz: grafikon ima ograničen broj redova i oznaka, uz izričito obaveštenje; full table/source evidence ostaje dostupna. Postoji tabelarni fallback za mobile/keyboard.",
+        "provenance_review": "Exact spec/methodology/input/request/result fingerprints, series identity, engine/version i human methodology approval omogucavaju reprodukciju/review. Grafikoni prikazuju samo persistirane vrednosti; contribution nije causality, a human review i result fingerprint ostaju obavezni.",
     },
     {
-        "id": "ORDO-H11", "title": "Lokalna AI sinteza i human review", "coverage": "VERIFIED",
+        "id": "ORDO-H11",
+        "title": "Lokalna AI sinteza i human review",
+        "coverage": "VERIFIED",
         "what": "Pokrece/prikazuje bounded local-only ORDO evidence synthesis sa provider/model/policy/prompt/provenance i review stanjem.",
         "when": "Koristite posle governed snapshot-a za pomocno citanje evidence-a ili scenario pitanja.",
         "roles_permissions": "Pregled zahteva analysis.read; pokretanje i accept/reject review zahtevaju analysis.run.",
@@ -164,7 +186,9 @@ ORDO_HELP_TOPICS = (
         "provenance_review": "source_snapshot_sha256, provider/model/policy/prompt, structured-output/failure i human_review_status moraju biti vidljivi; human review je obavezan.",
     },
     {
-        "id": "ORDO-H12", "title": "Koriscenje Help-a i User Guide-a", "coverage": "VERIFIED",
+        "id": "ORDO-H12",
+        "title": "Koriscenje Help-a i User Guide-a",
+        "coverage": "VERIFIED",
         "what": "Povezuje dvanaest in-app tema sa repository ORDO User Guide-om i matricom pokrivenosti.",
         "when": "Koristite pre nepoznatog workflow-a, tumacenja statusa ili bezbednog oporavka od greske.",
         "roles_permissions": "ORDO Help je vidljiv samo u aktivnom ORDO kontekstu; Help ne menja backend permissions.",
@@ -189,8 +213,11 @@ def render_ordo_help(*, shell: dict[str, Any]) -> None:
         return
     st.markdown('<div class="isi-eyebrow">ORDO · Help / User Guide</div>', unsafe_allow_html=True)
     st.markdown('<h1 class="isi-shell-title">ORDO — detaljno uputstvo, metodologija i XAI</h1>', unsafe_allow_html=True)
-    st.caption("Izaberite temu za postupak korak po korak, objašnjenje polja, korisničke ekrane, primere i rešavanje problema.")
+    st.caption(
+        "Izaberite temu za postupak korak po korak, objašnjenje polja, korisničke ekrane, primere i rešavanje problema."
+    )
     from src.streamlit_app.help_manual import chapters, render_chapter, render_topic
+
     extra = chapters("ORDO")
     selected = st.selectbox(
         "Help tema",
@@ -202,7 +229,6 @@ def render_ordo_help(*, shell: dict[str, Any]) -> None:
         render_chapter(selected, product="ORDO")
         return
     render_topic(_topic(selected))
-
 
 
 __all__ = ["HELP_REQUIRED_FIELDS", "ORDO_HELP_TOPICS", "render_ordo_help"]

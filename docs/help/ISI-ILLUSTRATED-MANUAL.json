@@ -37,90 +37,143 @@
       ]
     },
     "ISI-H06": {
-      "fields": [],
-      "availability": "Dostupnost radnje zavisi od aktivnog konteksta, dozvola i odgovarajućih ulaznih podataka.",
+      "fields": [
+        [
+          "Organizacija i proizvod",
+          "Zasebna autorizaciona granica za SIMPA i ORDO"
+        ],
+        [
+          "Verzija i otisak",
+          "Identitet dokaza koji treba pregledati pre potvrde"
+        ],
+        [
+          "Status i potvrda",
+          "Izvršena operacija se proverava novim odgovorom; nacrt nije odobrenje"
+        ]
+      ],
+      "availability": "Uputstvo opisuje lokalno provereni korisnički tok. Dostupnost u vašem okruženju zavisi od objavljene verzije, prava, stvarnih izvora i institucionalnih preduslova.",
       "screens": [
-        "screenshots-simpa-overview.jpg"
+        "ISI-30A-desktop-simpa.jpg",
+        "ISI-30A-desktop-ordo-scenarios.jpg"
+      ],
+      "related_chapters": [
+        "SHELL"
       ]
     },
     "ISI-H07": {
-      "fields": [],
-      "availability": "Dostupnost radnje zavisi od aktivnog konteksta, dozvola i odgovarajućih ulaznih podataka.",
+      "fields": [
+        [
+          "Organizacija i proizvod",
+          "Zasebna autorizaciona granica za SIMPA i ORDO"
+        ],
+        [
+          "Verzija i otisak",
+          "Identitet dokaza koji treba pregledati pre potvrde"
+        ],
+        [
+          "Status i potvrda",
+          "Izvršena operacija se proverava novim odgovorom; nacrt nije odobrenje"
+        ]
+      ],
+      "availability": "Uputstvo opisuje lokalno provereni korisnički tok. Dostupnost u vašem okruženju zavisi od objavljene verzije, prava, stvarnih izvora i institucionalnih preduslova.",
       "screens": [
-        "screenshots-data.jpg"
+        "ISI-30B-mobile-version-created.jpg",
+        "ISI-30B-mobile-readonly.jpg"
       ],
       "sections": [
         [
-          "Katalog i učitavanje",
-          "Otvorite Podaci u tačnom proizvodu i radnom prostoru. Katalog izvora prikazuje naziv, tip, verziju, format, status, broj redova i kolona i veličinu, kada su ti podaci dostupni. Za učitavanje su potrebni odgovarajuća dozvola i odobreni izvor."
-        ],
-        [
-          "Postupak učitavanja",
-          "Unesite Naziv izvora. Izaberite Datoteka u podržanom formatu CSV, JSON, XLSX, PDF, DOCX ili TXT. Proverite da datoteka pripada izabranom institucionalnom kontekstu, pa izaberite Učitaj i proveri. Ako naziv ili datoteka nedostaju, dopunite unos. Ne učitavajte stvarne osetljive podatke samo radi demonstracije interfejsa."
-        ],
-        [
-          "Status obrade",
-          "uploaded označava primljen izvor; queued čeka obradu; running znači da obrada traje; succeeded da je tehnička obrada završena; failed da je neuspešna. Tehnički uspeh ne označava odobrenu metodologiju, validirane opservacije ili dozvolu za modeliranje."
-        ],
-        [
-          "Registri i poreklo",
-          "Analytical dataset registry i snapshot-i predstavljaju kontrolisane analitičke skupove. Feature registry predstavlja verzionisane karakteristike. U pregledu lineage i provenance izaberite raspoloživi snapshot i proverite izvore i vezu sa daljim rezultatima. Ako nema stavki, učitavanje datoteke samo po sebi nije završilo ove korake."
-        ],
-        [
-          "Provera podobnosti za upotrebu",
-          "Za raspoloživi artefakt izaberite namenu kao što je LOCAL_ANALYSIS, RAG_RETRIEVAL, MODEL_EVALUATION ili MODEL_TRAINING i pokrenite Evaluate deterministic eligibility. Pročitajte odluku, razlog, zahtev za posebnim odobrenjem i ljudskim pregledom. Ova akcija proverava podobnost; ne trenira model i ne izvršava analizu."
-        ],
-        [
-          "Granica korisničkog interfejsa",
-          "Registry governance controls trenutno opisuje servisne kontrole. Ne postoji kompletan obrazac za svaki korak od sirovog izvora do odobrenog skupa. Za korake koji su API-only potreban je ovlašćeni tehnički postupak. Nemojte tražiti nepostojeće dugme ili menjati status radi uklanjanja blokade."
+          "Detaljni postojeći tokovi",
+          "Otvorite odgovarajuće ilustrativno poglavlje: izvori/verzije, konektor/mapiranje, kontrolisana obrada, dataset/feature, recovery, governance, privatnost, GIS ili ekstrakcija. Fizički purge ostaje zaseban operator postupak; postojeći korisnički ekran samo podnosi zahtev."
         ]
+      ],
+      "related_chapters": [
+        "DATA",
+        "INGESTION",
+        "DATASETS",
+        "RECOVERY",
+        "GOVERNANCE",
+        "PRIVACY",
+        "GIS",
+        "EXTRACTION"
       ]
     },
     "ISI-H08": {
-      "fields": [],
-      "availability": "Dostupnost radnje zavisi od aktivnog konteksta, dozvola i odgovarajućih ulaznih podataka.",
+      "fields": [
+        [
+          "Organizacija i proizvod",
+          "Zasebna autorizaciona granica za SIMPA i ORDO"
+        ],
+        [
+          "Verzija i otisak",
+          "Identitet dokaza koji treba pregledati pre potvrde"
+        ],
+        [
+          "Status i potvrda",
+          "Izvršena operacija se proverava novim odgovorom; nacrt nije odobrenje"
+        ]
+      ],
+      "availability": "Uputstvo opisuje lokalno provereni korisnički tok. Dostupnost u vašem okruženju zavisi od objavljene verzije, prava, stvarnih izvora i institucionalnih preduslova.",
       "screens": [
-        "screenshots-reports.jpg"
+        "ISI-30D3B-desktop-explicit-selection.jpg",
+        "ISI-30D3B-desktop-linked-inputs.jpg"
       ],
       "sections": [
         [
-          "Izbor izvora",
-          "Otvorite Izveštaji. Dostupan izvor mora biti sačuvan rezultat u aktivnom proizvodu i radnom prostoru. SIMPA monitoring_summary koristi analytics_run; ORDO destination_snapshot koristi analytics_run, dok scenario_review koristi scenario_assessment. Ako nema izvora, prvo završite odgovarajući analitički tok."
-        ],
-        [
-          "Nacrt",
-          "Izaberite Izvor, unesite Naslov i kliknite Kreiraj draft izveštaj. Pregledajte sadržaj i provenance. Verzije su istorijski odvojene; nova verzija ne treba da prepisuje dokaz na kome je prethodna nastala."
-        ],
-        [
-          "Pregled i odluka",
-          "Pošalji na review prebacuje draft u in_review kada postoje potrebne dozvole. Ovlašćeni korisnik daje Review napomena i odobrava ili odbija verziju. Interfejs za ovu odluku proverava organizacijsko ovlašćenje; sama mogućnost čitanja izveštaja nije dozvola za odobravanje."
-        ],
-        [
-          "Publikovanje",
-          "Posle odobravanja koristi se eksplicitna akcija Publikuj verziju. Stanje published označava publikovanu verziju unutar ovog procesa. Ne znači da je izveštaj javno objavljen na institucionalnom sajtu ili poslat emailom. superseded čuva istoriju zamenjene verzije."
-        ],
-        [
-          "Izvoz",
-          "Izvoz je raspoloživ za dozvoljene odobrene, publikovane ili istorijski zamenjene verzije. Dostupni formati su HTML, Markdown i JSON. Aplikacija trenutno ne nudi sopstveni PDF ili DOCX izvoz izveštaja. Ovaj Word priručnik je zaseban dokument. Sa izvozom sačuvajte identitet verzije i otisak kada je prikazan."
-        ],
-        [
-          "Kontrola sadržaja",
-          "Proverite da naslov odgovara izvoru, da nedostajući podaci nisu predstavljeni nulom i da AI tekst ima obavezan ljudski pregled. Publikovanje ne popravlja nevalidnu metodologiju i ne proizvodi novu AI analizu samo po sebi."
+          "Izričit izbor izvora",
+          "Prvi ponuđeni izvor nije automatski najnoviji. Izaberite tačan izvor i zasebno potvrdite kreiranje, pregled i objavljivanje. Pogledajte poglavlje Izveštaji pregled objavljivanje i izvoz."
         ]
+      ],
+      "related_chapters": [
+        "LINKED",
+        "RESULTS"
       ]
     },
     "ISI-H09": {
-      "fields": [],
-      "availability": "Dostupnost radnje zavisi od aktivnog konteksta, dozvola i odgovarajućih ulaznih podataka.",
+      "fields": [
+        [
+          "Organizacija i proizvod",
+          "Zasebna autorizaciona granica za SIMPA i ORDO"
+        ],
+        [
+          "Verzija i otisak",
+          "Identitet dokaza koji treba pregledati pre potvrde"
+        ],
+        [
+          "Status i potvrda",
+          "Izvršena operacija se proverava novim odgovorom; nacrt nije odobrenje"
+        ]
+      ],
+      "availability": "Uputstvo opisuje lokalno provereni korisnički tok. Dostupnost u vašem okruženju zavisi od objavljene verzije, prava, stvarnih izvora i institucionalnih preduslova.",
       "screens": [
-        "screenshots-admin-overview.jpg"
+        "ISI-30D1-desktop-confirmation.jpg",
+        "ISI-30D1-desktop-readonly.jpg"
+      ],
+      "related_chapters": [
+        "ADMIN"
       ]
     },
     "ISI-H10": {
-      "fields": [],
-      "availability": "Dostupnost radnje zavisi od aktivnog konteksta, dozvola i odgovarajućih ulaznih podataka.",
+      "fields": [
+        [
+          "Organizacija i proizvod",
+          "Zasebna autorizaciona granica za SIMPA i ORDO"
+        ],
+        [
+          "Verzija i otisak",
+          "Identitet dokaza koji treba pregledati pre potvrde"
+        ],
+        [
+          "Status i potvrda",
+          "Izvršena operacija se proverava novim odgovorom; nacrt nije odobrenje"
+        ]
+      ],
+      "availability": "Uputstvo opisuje lokalno provereni korisnički tok. Dostupnost u vašem okruženju zavisi od objavljene verzije, prava, stvarnih izvora i institucionalnih preduslova.",
       "screens": [
-        "screenshots-security.jpg"
+        "ISI-30D4-desktop-inventory.jpg",
+        "ISI-30D4-desktop-confirmation.jpg"
+      ],
+      "related_chapters": [
+        "SECURITY"
       ]
     },
     "ISI-H11": {
@@ -131,10 +184,28 @@
       ]
     },
     "ISI-H12": {
-      "fields": [],
-      "availability": "Dostupnost radnje zavisi od aktivnog konteksta, dozvola i odgovarajućih ulaznih podataka.",
+      "fields": [
+        [
+          "Organizacija i proizvod",
+          "Zasebna autorizaciona granica za SIMPA i ORDO"
+        ],
+        [
+          "Verzija i otisak",
+          "Identitet dokaza koji treba pregledati pre potvrde"
+        ],
+        [
+          "Status i potvrda",
+          "Izvršena operacija se proverava novim odgovorom; nacrt nije odobrenje"
+        ]
+      ],
+      "availability": "Uputstvo opisuje lokalno provereni korisnički tok. Dostupnost u vašem okruženju zavisi od objavljene verzije, prava, stvarnih izvora i institucionalnih preduslova.",
       "screens": [
-        "screenshots-shared-help.jpg"
+        "ISI-30D2-desktop-readonly-boundaries.jpg",
+        "ISI-30D2-mobile-xai-boundaries.jpg"
+      ],
+      "related_chapters": [
+        "AI_REVIEW",
+        "RESULTS"
       ]
     },
     "SIMPA-H01": {
@@ -658,61 +729,1164 @@
       ]
     },
     "LINKED": {
-      "title": "Povezani izveštaji — nalaz, karta, rezultat i publikacija",
+      "title": "Izveštaji pregled objavljivanje i izvoz",
       "products": [
         "SIMPA",
         "ORDO"
       ],
+      "screens": [
+        "ISI-30D3B-desktop-explicit-selection.jpg",
+        "ISI-30D3B-desktop-linked-inputs.jpg",
+        "ISI-30D3B-desktop-draft-evidence.jpg",
+        "ISI-30D3B-desktop-review-confirmation.jpg",
+        "ISI-30D3B-desktop-publish-confirmation.jpg",
+        "ISI-30D3B-desktop-export.jpg",
+        "ISI-30D3B-mobile-export.jpg",
+        "ISI-30D3B-mobile-readonly.jpg",
+        "ISI-30D3B-mobile-ordo-context.jpg"
+      ],
+      "guide": "ISI-REPORTING-WORKFLOWS-GUIDE.md",
       "sections": [
         [
-          "1. Šta prikazuje funkcija",
-          "Povezani izveštaj prikazuje jedan prihvaćeni nalaz sa izvorom, obuhvatom i opcionim numeričkim rezultatom."
+          "1. Svrha",
+          "Izveštaj čuva konkretnu verziju sadržaja sa izvorima i otiscima. SIMPA monitoring,\nORDO snapshot/scenario i povezani nalazi ostaju odvojeni po proizvodu i prostoru."
         ],
         [
           "2. Kada se koristi",
-          "Koristite ga kada je ekstrakcija već pregledana; report review i publication su zasebni koraci."
+          "Posle pripreme podobnog sačuvanog analitičkog izvora ili prihvaćene ekstrakcije.\nPrazan registar ne stvara izmišljene rezultate. Neuspešno učitavanje nije prazan registar."
         ],
         [
-          "3. Dozvole i odgovornost",
-          "Čitanje zahteva report.read i data.read; rezultat analysis.read; kreiranje analysis.run; review/publication organization.manage."
+          "3. Dozvole",
+          "Čitanje/izvoz zahteva report.read; kreiranje/nova verzija/slanje analysis.run;\nreview/publication organization.manage. Povezani izvori dodatno zahtevaju prava\nza podatke, geometriju i izabrani numerički dokaz. Platformski status ne zaobilazi scope."
         ],
         [
-          "4. Koraci korisnika",
-          "Izaberite prihvaćenu ekstrakciju, claim ID iz Podataka, opciono result UUID, napišite obrazloženje, potvrdite i pregledajte pa kreirajte draft."
+          "4. Postupak",
+          "Otvorite Izveštaji u tačnoj organizaciji, SIMPA ili ORDO i radnom prostoru.\nIzaberite Izvor bez podrazumevanog izbora, unesite naslov i pregledajte identitet.\nZa ekstrakciju unesite stvarni claim ID iz Podataka, opcioni UUID rezultata,\nobrazloženje veze i izričitu potvrdu. Pregledaj povezani dokaz ponovo proverava izvor.\nPotvrdite tačan naslov/izvor i Kreiraj draft izveštaj. U Registry otvorite verziju,\npročitajte sadržaj/poreklo, potvrdite pa Pošalji na review. Ovlašćeni recenzent bira\napproved ili rejected, unosi Review napomena i potvrđuje odluku. Odobrenu verziju\nzasebno potvrdite i Publikuj verziju. Za novu verziju izaberite kompatibilan Izvor\nza novu verziju; ne pretpostavljajte da je prva stavka najnovija. Prethodna ostaje sačuvana."
         ],
         [
           "5. Polja i statusi",
-          "REVIEWED_ACCEPTED potvrđuje pregled ekstrakcije. UNRESOLVED znači da obuhvat nije potvrđen. UNAVAILABLE znači da nema podržanog izabranog rezultata."
+          "draft je nacrt; in_review čeka pregled; approved je odobreno ali još neobjavljeno;\nrejected je odbijeno; published je objavljeno unutar platforme; superseded je\nistorijska zamenjena verzija. content SHA-256 i provenance SHA-256 označavaju\npregledani dokaz. Promena izbora, napomene, izvora/statusa poništava prethodnu potvrdu."
         ],
         [
           "6. Primer",
-          "Primer: agregirani nalaz za 2025. i ljudski potvrđen poligon uporedite sa postojećim rezultatom; objasnite razliku između izvornog i modelskog perioda."
+          "Sintetički zbirni nalaz za 2025. povežite sa eksplicitno izabranim sačuvanim\nrezultatom. Napišite razlike perioda, jedinice i teritorije. Primer i korisničko\nodobrenje nisu potvrda stvarne institucionalne istine. Datirane ilustracije prikazuju odvojene korake ovog toka."
         ],
         [
           "7. Granice tumačenja",
-          "Veza je kontekst koji korisnik bira. Ne potvrđuje automatski istinitost, slaganje perioda/jedinice/teritorije, kalibraciju ili uzrok."
+          "Prihvatanje ekstrakcije, review izveštaja i objavljivanje su različite odluke.\nObjavljivanje nije javna objava, email isporuka, validacija metodologije ili nova AI analiza.\nUNCALIBRATED ekstrakcija i nepodržan SHAP ostaju takvi i u izveštaju."
         ],
         [
           "8. Greške i oporavak",
-          "Ako je izvor povučen, geometrija promenjena ili prava ukinuta, ponovno čitanje/izvoz se blokira. Pripremite novu pregledanu ekstrakciju i novu verziju."
+          "Ako se pregledana verzija promeni, čuvanje se odbija sa409. Osvežite, pročitajte\naktuelan sadržaj/status/otiske, pa ponovo odlučite. Ne ponavljajte automatski\nzahtev nakon mrežne greške; prvo proverite da li je operacija već sačuvana.\nPovučen izvor, promenjena granica/pregled ili ukinuta prava blokiraju povezani pregled/izvoz."
         ],
         [
-          "9. Bezbednost i privatnost",
-          "Samo agregatni nepersonalni podaci; odvojeni SIMPA/ORDO scope. Preuzete kopije se ne mogu udaljeno opozvati; postupajte prema institucionalnim pravilima."
+          "9. Preuzimanje i privatnost",
+          "Za approved/published/superseded izaberite HTML, Markdown ili JSON i Pripremi download\nartefakt. Svaki prikaz/preuzimanje ponovo proverava podobnost; nema trajnog keša\ncitata. Proverite Export SHA-256. Ranije preuzete kopije nije moguće udaljeno opozvati.\nDelite ih samo uz ovlašćenje institucije. Izvoz PDF/DOCX izveštaja nije ponuđen ovom radnjom."
         ],
         [
-          "10. Poreklo i pregled",
-          "Manifest čuva otiske izvora, izvlačenja, pregleda, granice i rezultata. Kvalitet ekstrakcije UNCALIBRATED; SIMPA SHAP samo podržani OLS, ORDO SHAP unavailable.\n\nHTML JSON i Markdown prenose tačne tekstualne dokaze i manifest; grafički prikaz je u aplikaciji. Word je korisnički priručnik, a ne novi format automatskog report engine-a. Privremene testne geometrije ne predstavljaju zvanične granice."
+          "10. Poreklo i odgovornost",
+          "Proverite izvor/verziju, product/workspace, otiske, pregled, datum geometrije i\nnumerički rezultat kada postoji. Review trag čuva odluku i napomenu. Ne predstavljajte\ntehnički status ili modelsku povezanost kao uzrok, preporuku ili kalibrisanu pouzdanost LLM-a."
         ]
       ],
+      "screen_sections": {
+        "4": [
+          "ISI-30D3B-desktop-explicit-selection.jpg",
+          "ISI-30D3B-desktop-linked-inputs.jpg",
+          "ISI-30D3B-desktop-draft-evidence.jpg",
+          "ISI-30D3B-desktop-review-confirmation.jpg",
+          "ISI-30D3B-desktop-publish-confirmation.jpg"
+        ],
+        "5": [
+          "ISI-30D3B-desktop-export.jpg",
+          "ISI-30D3B-mobile-export.jpg"
+        ],
+        "8": [
+          "ISI-30D3B-mobile-readonly.jpg"
+        ],
+        "10": [
+          "ISI-30D3B-mobile-ordo-context.jpg"
+        ]
+      }
+    },
+    "SHELL": {
+      "title": "Navigacija i kontekst",
+      "products": [
+        "SIMPA",
+        "ORDO"
+      ],
       "screens": [
-        "ISI-29F-desktop-form.jpg",
-        "ISI-29F-desktop-map.jpg",
-        "ISI-29F-desktop-review.jpg",
-        "ISI-29F-desktop-approved.jpg",
-        "ISI-29F-desktop-export.jpg",
-        "ISI-29F-mobile-ordo-map.jpg"
-      ]
+        "ISI-30A-desktop-simpa.jpg",
+        "ISI-30A-desktop-ordo-scenarios.jpg",
+        "ISI-30A-desktop-status-confirmation.jpg",
+        "ISI-30A-mobile-sidebar.jpg",
+        "ISI-30A-mobile-ordo-scenarios.jpg",
+        "ISI-30A-mobile-review-form.jpg"
+      ],
+      "guide": "ISI-WORKFLOW-SHELL-GUIDE.md",
+      "sections": [
+        [
+          "Svrha i izbor konteksta",
+          "Jedan nalog koristi odobrene proizvode, dok organizacija i workspace ostaju odvojene granice podataka. Proverite kontekst pre svakog rada."
+        ],
+        [
+          "Pristup i preduslovi",
+          "Server određuje članstvo, entitlement, pristup proizvodu, role i radni prostor. Vidljiva stavka ne daje pravo za zabranjenu operaciju."
+        ],
+        [
+          "Radni kontekst i polja",
+          "1. Prijavite se svojim institucionalnim nalogom.\n2. U bočnom meniju izaberite organizaciju, SIMPA ili ORDO i radni prostor.\n3. Proverite naziv organizacije/proizvoda/prostora iznad sadržaja pre svakog unosa.\n4. Otvorite željenu funkciju; prikazuju se samo dozvoljene i podržane stavke.\n5. Ako je administrator promenio pristup, izaberite **Osveži pristup**.\n\nPromena konteksta i osvežavanje pristupa odbacuju nezavršene unose. Pre prelaska\nsačuvajte rad postojećim dugmetom u obrascu. Odjava čisti lokalno stanje sesije;\nbackend određuje trajanje i opoziv pristupa. Na telefonu otvorite bočni meni\nugrađenim dugmetom u zaglavlju. Tastaturom koristite Tab/Shift+Tab i Enter/Space.\n\n| Polje/radnja | Značenje |\n|---|---|\n|Organizacija|Institucija u čijem kontekstu radite; ne spaja podatke drugih institucija|\n|Proizvod|SIMPA ili ORDO, prema dodeljenom pristupu|\n|Radni prostor|Izdvojeni kontekst rada i podataka unutar proizvoda|\n|Osveži pristup|Ponovo učitava serverom odobreni pristup; ne dodeljuje novu ulogu|\n|Odjavi se|Opoziva tekuću sesiju kada je usluga dostupna i čisti lokalne unose|\n\nAko nemate radni prostor ili funkciju, kontaktirajte administratora. Ako je\nusluga nedostupna, pokušajte ponovo kada se veza obnovi; ne menjajte organizaciju\nda biste zaobišli ograničenje. Primer: sintetički reviewer prelazi sa ORDO\nprostora A na B, prethodni tekst obrasca se odbacuje, a operacije koriste B.\nOvaj vodič ne dodeljuje dozvole i ne potvrđuje stanje institucionalnih podataka."
+        ],
+        [
+          "ORDO scenariji korak po korak",
+          "**Šta/kada:** planiranje razvojnih pravaca i pregled osnove u dokazima. Scenario\nbeleži pretpostavke i mere; nije prognoza, uzročna procena ni automatska preporuka.\nSIMPA nema odobrenu scenario funkciju; praćenje sistema ostaje u njenim zasebnim\nmonitoring/analitičkim tokovima.\n\n**Dozvole:** pregled koristi postojeći `analysis.read`, pisanje/status/pregled\nprocene postojeći `analysis.run`. Server ponovo proverava organizaciju i prostor.\nTe dozvole nisu potvrda stručne kompetencije niti metodološke validacije.\n\n1. Izaberite ORDO radni prostor pa **Scenariji**.\n2. Pregledajte ciljeve. Ako imate dozvolu, u **Novi razvojni cilj** unesite kod,\n   naziv, opis i fokus, zatim sačuvajte.\n3. U **Novi scenario** izaberite cilj, naziv i opis; svaku pretpostavku i meru\n   unesite u zaseban red. Sačuvajte scenario.\n4. U Podacima pripremite validiran analitički izvor; u Analitici sačuvajte snimak.\n   Samo trenutno prihvatljiv snimak može podržati novu procenu.\n5. U **Evidence-only procena scenarija** izaberite scenario i snimak, pa kreirajte\n   procenu. Nedostatak snimka ostaje vidljiv; sistem ne izmišlja podatke.\n6. Pregledajte sačuvanu procenu: poreklo, ograničenja i `NOT_ESTIMATED`.\n7. U **Status scenarija** izaberite novi status i lično potvrdite promenu.\n8. U **Stručni pregled procene** izaberite procenu i odluku, napišite obrazloženje,\n   potvrdite pregled izvora i sačuvajte. Ne potvrđujte bez čitanja dokaza.\n\n|Polje/status|Značenje|\n|---|---|\n|draft|Uneti nacrt scenarija|\n|review_ready|Autor označava spremnost za stručni pregled|\n|accepted/rejected|Zabeležen stav o scenariju, ne validacija modela ili efekta|\n|reviewed/rejected procena|Sačuvan stručni pregled procene i njegov obrazloženi stav|\n|NOT_ESTIMATED|Uticaj nije izračunat; ne znači nula i nije prognoza|\n|Snimak/izvor|Verzionisana osnova procene, sa identitetom i otiskom sadržaja|\n\n**Primer:** sintetički cilj „Proveriti osnove plana mobilnosti“ ima scenario sa\njasno označenim pretpostavkama. Stručnjak povezuje raspoloživi snimak i proverava\nnedostajuće dokaze; ne upisuje izmišljeni procenat poboljšanja.\n\n**Greške/oporavak:** bez cilja prvo sačuvajte cilj; bez snimka vratite se u\nPodatke/Analitiku; bez potvrde ili obrazloženja obrazac ne šalje pregled. Ako je\nizvor povučen ili pristup promenjen, ponovo pregledajte važeću osnovu; ne vraćajte\nzastareli identitet. Ako veza prekine nakon čuvanja, prvo osvežite listu pre\nponavljanja radnje. Status nije automatski odobrenje objavljivanja izveštaja.\n\n**Privatnost/provenance:** ne unosite tajne ili lične podatke u scenario. Poreklo\nsnimka, metodologija, rezultat i ljudski pregled ostaju zasebni. Generativni tekst\nne menja numerički autoritet. Granice izvora, institucije i proizvoda se čuvaju."
+        ],
+        [
+          "Status i sačuvani rezultat",
+          "draft/review_ready/accepted/rejected su stanja scenarija. NOT_ESTIMATED znači da efekat nije izračunat, ne nulu. Procena i njen stručni pregled su zasebni."
+        ],
+        [
+          "Primer i izvori",
+          "Sintetički scenario beleži pretpostavke i povezuje prihvatljiv snimak. Autor čita originalne izvore i ne upisuje izmišljeni procenat poboljšanja."
+        ],
+        [
+          "Mobilni i tastaturni pristup",
+          "Otvorite bočni meni na telefonu. Tab i Shift Tab menjaju fokus; Enter i Space aktiviraju kontrolu. Tabela ostaje dostupna uz grafički prikaz."
+        ],
+        [
+          "Greške i oporavak",
+          "Bez cilja prvo sačuvajte cilj; bez snimka pripremite izvor. Posle prekida osvežite status pre ponovnog slanja. Osveži pristup ponovo učitava backend odluku."
+        ],
+        [
+          "Ograničenja i privatnost",
+          "SIMPA nema scenario modul. ORDO scenario nije prognoza, uzročni efekat ili automatska preporuka. Promena konteksta odbacuje nezavršene unose; prvo sačuvajte dozvoljenim obrascem."
+        ],
+        [
+          "Poreklo i ljudska odgovornost",
+          "Identitet snimka, metodologija i stručni pregled ostaju proverljivi. Lokalni sintetički primer nije institucionalno odobrenje niti server potvrda."
+        ]
+      ],
+      "screen_sections": {
+        "4": [
+          "ISI-30A-desktop-simpa.jpg",
+          "ISI-30A-desktop-ordo-scenarios.jpg",
+          "ISI-30A-desktop-status-confirmation.jpg"
+        ],
+        "10": [
+          "ISI-30A-mobile-sidebar.jpg",
+          "ISI-30A-mobile-ordo-scenarios.jpg",
+          "ISI-30A-mobile-review-form.jpg"
+        ]
+      }
+    },
+    "DATA": {
+      "title": "Verzije izvora kvalitet i obrada",
+      "products": [
+        "SIMPA",
+        "ORDO"
+      ],
+      "screens": [
+        "ISI-30B-mobile-version-created.jpg",
+        "ISI-30B-mobile-readonly.jpg",
+        "ISI-30B-mobile-retry.jpg",
+        "ISI-30B-desktop-source.jpg",
+        "ISI-30B-desktop-output.jpg",
+        "ISI-30B-mobile-output.jpg",
+        "ISI-30B-desktop-evaluation.jpg"
+      ],
+      "guide": "ISI-DATA-WORKFLOWS-GUIDE.md",
+      "sections": [
+        [
+          "Svrha i vreme upotrebe",
+          "Koristite ovaj pregled posle učitavanja izvora i kada proveravate koja je tačno\nverzija obrađena. Osnovna inspekcija i kontrolisani ingestion su različiti koraci.\nUspešno učitavanje datoteke nije automatski kontrolisani analitički izlaz."
+        ],
+        [
+          "Pristup",
+          "`data.read` omogućava pregled unutar aktivne organizacije, proizvoda i radnog\nprostora. `data.upload` omogućava novu verziju i potvrđeno ponavljanje neuspele\nobrade. Backend ponovo proverava prava; vidljivo dugme nije dodatna dozvola."
+        ],
+        [
+          "Koraci",
+          "1. Izaberite organizaciju, SIMPA ili ORDO i radni prostor u bočnom panelu.\n2. Otvorite Podaci, pa u odeljku „Verzije, kvalitet i obrada izvora“ izaberite izvor.\n3. Izaberite verziju. Uporedite naziv datoteke, broj verzije, status i SHA-256.\n4. Pročitajte provere kvaliteta: oznaku provere, status, poruku i metriku.\n5. Za dopunu otvorite „Nova verzija postojećeg izvora“, izaberite datoteku,\n   potvrdite naziv izvora i pritisnite „Dodaj novu verziju“.\n6. Osvežite pregled i proverite da li je verzija zaista registrovana.\n7. Izaberite kontrolisanu obradu. „Status inspekcije“ prikazuje posao i napredak.\n8. „Prikaži ocenu obrade“ prikazuje svežinu, kvalitet i odluku operativne politike.\n9. „Prikaži kontrolisani izlaz“ prikazuje identitet, broj zapisa i otisak izlaza.\n10. Samo za FAILED obradu označite potvrdu i izaberite „Ponovi neuspelu obradu“.\n    Sistem neposredno pre slanja ponovo proverava status. Osvežite posle slanja."
+        ],
+        [
+          "Polja i statusi",
+          "Verzija je nepromenljiva registrovana datoteka. SHA-256 identifikuje sadržaj;\notisak strukture identifikuje detektovanu šemu. Redovi i kolone mogu biti nepoznati\npre obrade ili kod netabelarnog formata. Prazna kvalitetska tabela ne znači PASS.\nQUEUED znači čekanje, RUNNING obradu, SUCCEEDED završen posao, FAILED grešku.\nOcena ima odvojenu odluku ACCEPTED, ACCEPTED_WITH_WARNING, REJECTED ili\nDEAD_LETTERED, uz status kvaliteta i svežine. Nepostojanje ocene nije prihvatanje.\nKontrolisani izlaz navodi ocenu, aktuelne/duplikat/karantinske/zamenjene zapise."
+        ],
+        [
+          "Primer",
+          "Sintetički izvor „Opštinski agregati“ dobije v2 nakon korekcije naziva kolone.\nPregledajte kvalitet v2 i njen otisak. Ako kontrolisana obrada odbije mapiranje,\nispravite odobreni ugovor u odgovarajućem toku; ponavljanje samo po sebi ne menja\nmapiranje i ne garantuje prolaz."
+        ],
+        [
+          "Greške i oporavak",
+          "Kod istekle sesije prijavite se ponovo. Kod zabrane pristupa proverite aktivni\nradni prostor i ulogu. Nedostupna ocena/izlaz može značiti nedovršenu ili odbijenu\nobradu. Kod prekida servisa prvo osvežite istoriju/status: zahtev je mogao biti\nsačuvan pre prekida dispatch-a. Nemojte slepo ponovo učitati istu datoteku.\nAko se FAILED promeni u QUEUED/RUNNING/SUCCEEDED, ponavljanje se ne šalje."
+        ],
+        [
+          "Ograničenja, bezbednost i ljudski pregled",
+          "Pregled ne izvozi raw zapise, ne zaobilazi privatnost, ne validira metodologiju,\nne pokreće model i ne daje institucionalni zaključak. Provera kvaliteta nije\npravna potvrda niti dokaz reprezentativnosti. Koristite samo odobrene podatke.\nAI i analitika zahtevaju zasebno kontrolisan analitički ugovor i validaciju.\nIdentitet izvora/verzije/obrade/ocene i otisci ostaju proverljiva provenijencija.\nDatirane ilustracije ovog toka nalaze se u detaljnom Help-u. Primeri ne potvrđuju\nvaše stvarne podatke ili institucionalnu validaciju."
+        ],
+        [
+          "Svež pregled i potvrde",
+          "Posle čuvanja ili prekida osvežite status i identitet izabranog izvora. Ponovo pregledajte izmenjenu verziju pre potvrde; raniji pregled nije novo odobrenje."
+        ],
+        [
+          "Proizvod i radni prostor",
+          "Proverite organizaciju, SIMPA ili ORDO i radni prostor. Ne koristite drugi kontekst da biste zaobišli zabranu; backend ostaje autoritet."
+        ],
+        [
+          "Odgovornost i dokaz upotrebe",
+          "Sačuvani ID, verzija, otisak i status služe proveri porekla. Tehnički uspeh nije institucionalna metodološka validacija. Za nedostajuća prava obratite se administratoru."
+        ]
+      ],
+      "screen_sections": {
+        "4": [
+          "ISI-30B-desktop-source.jpg",
+          "ISI-30B-desktop-evaluation.jpg"
+        ],
+        "5": [
+          "ISI-30B-mobile-version-created.jpg",
+          "ISI-30B-desktop-output.jpg",
+          "ISI-30B-mobile-output.jpg"
+        ],
+        "8": [
+          "ISI-30B-mobile-readonly.jpg"
+        ],
+        "10": [
+          "ISI-30B-mobile-retry.jpg"
+        ]
+      }
+    },
+    "INGESTION": {
+      "title": "Konektori mapiranje i kontrolisana obrada",
+      "products": [
+        "SIMPA",
+        "ORDO"
+      ],
+      "screens": [
+        "ISI-30B2-final-mobile-mapping.jpg",
+        "ISI-30B2-final-desktop-policy-validation.jpg",
+        "ISI-30B2-final-desktop-ingest-created.jpg",
+        "ISI-30B2-final-desktop-mapping-created.jpg",
+        "ISI-30B2-final-desktop-records-created.jpg",
+        "ISI-30B2-final-desktop-policy-created.jpg",
+        "ISI-30B2-final-mobile-connector.jpg",
+        "ISI-30B2-final-mobile-ingest-created.jpg"
+      ],
+      "guide": "ISI-GOVERNED-INGESTION-GUIDE.md",
+      "sections": [
+        [
+          "Svrha i upotreba",
+          "Ovaj tok priprema postojeći izvor za ponovljiv kontrolisani ingestion iz datoteke.\nKoristite ga kada želite eksplicitnu šemu, identitet zapisa, karantin i operativnu\nocenu pre izrade analitičkog skupa. Profil inbound/batch ne preuzima podatke sa URL-a."
+        ],
+        [
+          "Uloge",
+          "data.read: pregled verzija ugovora u aktivnoj organizaciji/proizvodu/radnom prostoru.\ndata.governance.manage: registracija i ljudski potvrđeno aktiviranje četiri ugovora.\ndata.upload: kontrolisano učitavanje kroz aktivni lanac. Backend proverava sve veze."
+        ],
+        [
+          "Koraci",
+          "1. U Podaci izaberite izvor i otvorite „Priprema ugovora i kontrolisano učitavanje“.\n2. U „1. Konektor“ registrujte inbound/batch nacrt, osvežite, izaberite nacrt i\n   potvrdite aktiviranje. Ovo ne čuva kredencijale i ne pokreće mrežni konektor.\n3. U „2. Mapiranje kolona“ popunite po jedan red za svaku izvornu kolonu: ime,\n   tip, obaveznost, nullable i MAP/IGNORE. Kod MAP navedite jedinstven ciljni ključ;\n   kod IGNORE ostavite ključ prazan. Redosled redova je ordinal šeme.\n4. Odaberite TABULAR ili RECORD prema stvarnoj datoteci. CSV/XLSX zahtevaju TABULAR;\n   JSON podržava odgovarajući postojeći oblik. Izaberite REJECT/IGNORE za nepoznata\n   polja. Nedostajuće tokene navedite po jedan u redu, uključujući prazan token samo\n   ako je stvarno deo odobrenog ugovora. Sistem ne imputira vrednosti.\n5. Registrujte nacrt mapiranja, osvežite i aktivirajte ga. Prikazan je vezani konektor.\n6. U „3. Identitet i politika zapisa“ izaberite ključeve identiteta među MAP poljima,\n   registrujte i aktivirajte politiku. Konflikti/nedostajući identitet idu u karantin;\n   identični duplikati povezuju postojeći zapis.\n7. U „4. Operativna politika“ unesite stvarno odobrene pragove starosti u sekundama,\n   udele karantina 0–1, obavezne šifre provera i retry/dead-letter pravila. Sistem\n   nema institucionalne podrazumevane pragove. Odbijanje mora biti >= upozorenja.\n8. Potvrdite registraciju politike, osvežite i aktivirajte njen nacrt.\n9. Proverite tabelu aktivnog lanca. Sva četiri identiteta moraju pripadati istom\n   izvoru i biti vezana za prethodnu aktivnu verziju.\n10. U „5. Učitavanje kroz aktivne ugovore“ izaberite CSV/JSON/XLSX, navedite jedinstven\n    idempotency ključ, eventualni kursor, potvrdu i „Pokreni kontrolisanu obradu“.\n11. Osvežite obradu i pregledajte inspekciju, ocenu i kontrolisani izlaz."
+        ],
+        [
+          "Polja i stanja",
+          "DRAFT je nacrt, ACTIVE odobrena aktivna verzija, RETIRED istorijska verzija.\nAktiviranje nove verzije može učiniti prethodna nizvodna vezivanja nevažećim;\nponovo usaglasite ceo lanac. Otisak ugovora identifikuje tačan sadržaj verzije.\nrequired označava obavezno polje, nullable dozvolu prazne vrednosti. MAP povezuje\nizvornu kolonu sa ključem, IGNORE izričito odbacuje polje. PRESERVE_MISSING znači\nčuvanje semantike nedostajuće vrednosti. Kursor je neprozirna oznaka serije, nije\nprocena vremena. Politika dozvole backfill/replay ne izvršava sama te operacije."
+        ],
+        [
+          "Primer",
+          "Za sintetičku tabelu unit/period/value autor mapira unit na ključ jedinice i period\nna datum, u skladu sa odobrenom šemom, zatim bira stvarni identitet. Pragove ocene\npreuzima iz odobrene politike, ne iz ovog primera. Isti zahtev posle prekida šalje\nsa istim ključem i istim sadržajem; različit sadržaj uz isti ključ se odbija."
+        ],
+        [
+          "Greške i oporavak",
+          "Bez aktivne vezane verzije sledeći korak prikazuje preduslov. Nevalidna polja se\nodbijaju pre API slanja; backend dodatno proverava semantiku/duplikate/veze/prava.\nPosle prekida prvo osvežite verzije/status: commit može prethoditi dispatch-u.\nNe kreirajte slepo drugi ugovor niti menjajte idempotency ključ istog zahteva.\nKod isteka sesije prijavite se ponovo, kod zabrane proverite ulogu/radni prostor."
+        ],
+        [
+          "Ograničenja, provenijencija i ljudski pregled",
+          "Nema URL/secret/JSON konzole, imputacije, automatske institucionalne validacije,\nnovog modela ili zaključka o korisnicima. Autor potvrđuje šemu i operativnu politiku;\nne unosite tajne u nazive, šifre i reference. Aktivni ugovori i otisci, verzija\nizvora, run i ocena čine provenijenciju. Analitički ugovori i njihova validacija\nsu zaseban korak. Datirane ilustracije opisuju ovaj tok u detaljnom Help-u."
+        ],
+        [
+          "Svež pregled i potvrde",
+          "Posle čuvanja ili prekida osvežite status i identitet izabranog izvora. Ponovo pregledajte izmenjenu verziju pre potvrde; raniji pregled nije novo odobrenje."
+        ],
+        [
+          "Proizvod i radni prostor",
+          "Proverite organizaciju, SIMPA ili ORDO i radni prostor. Ne koristite drugi kontekst da biste zaobišli zabranu; backend ostaje autoritet."
+        ],
+        [
+          "Odgovornost i dokaz upotrebe",
+          "Sačuvani ID, verzija, otisak i status služe proveri porekla. Tehnički uspeh nije institucionalna metodološka validacija. Za nedostajuća prava obratite se administratoru."
+        ]
+      ],
+      "screen_sections": {
+        "4": [
+          "ISI-30B2-final-desktop-policy-validation.jpg"
+        ],
+        "5": [
+          "ISI-30B2-final-desktop-ingest-created.jpg",
+          "ISI-30B2-final-desktop-mapping-created.jpg",
+          "ISI-30B2-final-desktop-records-created.jpg",
+          "ISI-30B2-final-desktop-policy-created.jpg",
+          "ISI-30B2-final-mobile-ingest-created.jpg"
+        ],
+        "10": [
+          "ISI-30B2-final-mobile-mapping.jpg",
+          "ISI-30B2-final-mobile-connector.jpg"
+        ]
+      }
+    },
+    "DATASETS": {
+      "title": "Analitički skupovi i feature verzije",
+      "products": [
+        "SIMPA",
+        "ORDO"
+      ],
+      "screens": [
+        "ISI-30B3-mobile-lifecycle.jpg",
+        "ISI-30B3-desktop-snapshot.jpg",
+        "ISI-30B3-desktop-registry.jpg",
+        "ISI-30B3-mobile-confirmation.jpg",
+        "ISI-30B3-mobile-feature.jpg",
+        "ISI-30B3-desktop-contract.jpg",
+        "ISI-30B3-desktop-feature-registry.jpg",
+        "ISI-30B3-mobile-feature-lifecycle.jpg"
+      ],
+      "guide": "ISI-ANALYTICAL-AUTHORING-GUIDE.md",
+      "sections": [
+        [
+          "Svrha i vreme upotrebe",
+          "Ovim tokom autor registruje ponovljiv analitički skup iz kontrolisanih izlaza,\nzatim njegovu verziju i feature reference. Koristite ga posle kontrolisanog\nučitavanja i governance pregleda izvora, pre SIMPA/ORDO determinističke analize."
+        ],
+        [
+          "Prava i granice",
+          "data.read omogućava postojeći pregled registara/provenijencije. Autorstvo i\npromene stanja zahtevaju data.governance.manage u aktivnoj organizaciji, proizvodu\ni radnom prostoru. API ponovo proverava prava, vezane izvore i njihove politike."
+        ],
+        [
+          "Registracija skupa i feature-a",
+          "U Podaci otvorite „Registry governance controls“. U „Registracija analitičkog\nskupa“ unesite jedinstvenu oznaku, naziv, opis i stvarnu referencu/verziju odobrene\nmetodologije. Označite potvrdu, pritisnite „Registruj analitički skup“ i osvežite\nregistre. Feature registar koristi isti postupak u „Registracija feature-a“;\nregistracija feature-a sama ne računa vrednosti niti izmišlja transformaciju."
+        ],
+        [
+          "Ugovor polja",
+          "1. Izaberite „Skup za ugovor i snapshot“, otvorite „Ugovor polja i aktiviranje“.\n2. Dodajte red po polju: jedinstveni ključ, tip, obaveznost i semantičku ulogu.\n3. KEY znači ključ identiteta/granularnosti; DIMENSION dimenziju; MEASURE meru;\n   ATTRIBUTE dodatni atribut. Uloge ne pretvaraju LLM u numerički autoritet.\n4. Izaberite vremenski ugovor: STATIC bez vremenskog ključa; POINT_IN_TIME jedan\n   ključ; PERIOD dva ključa, u redosledu početak/kraj. Vremenska polja moraju biti\n   obavezna DATE/DATETIME. Navedite ključeve po jedan u redu.\n5. Navedite ključeve granularnosti: već deklarisana obavezna KEY polja.\n6. Potvrdite ugovor i registrujte nacrt. Backend proverava duplikate, uloge,\n   kardinalnost i tipove. PRESERVE_MISSING ne imputira vrednosti.\n7. Osvežite, izaberite nacrt, označite potvrdu i „Aktiviraj analitički ugovor“."
+        ],
+        [
+          "Snapshot iz kontrolisanih izlaza",
+          "Otvorite „Snapshot iz kontrolisanih izlaza“. Aktivni ugovor je preduslov. Pritisnite\n„Učitaj dostupne kontrolisane izlaze“, pa izaberite tačne izlaze po izvoru/ID/otisku.\nUnesite metodološku referencu/verziju i referencu izrade. Potvrdite i kreirajte\nsnapshot, zatim osvežite. Backend ponovo proverava accepted ocenu, source governance,\naktivni ugovor i neprekinutu lineage. Nedostupan/povučen/reklasifikovan izvor može\nblokirati kreiranje iako je stari izlaz još bio prikazan. Raw source verzije nisu\nopcija za ovu izradu. Pogledajte lineage, kvalitet, broj zapisa i otisak snapshot-a."
+        ],
+        [
+          "Životni ciklus snapshot-a",
+          "DRAFT→VALIDATED→FROZEN→RETIRED su odvojene ljudske odluke. Izaberite artefakt,\nproverite reviziju, stanje i otisak, označite potvrdu i izaberite prikazanu sledeću\npromenu. Backend validira kontrolisane ulaze pre VALIDATED/FROZEN. Istorijski\nraw-source ili invalidated snapshot-i se ne promovišu ovim tokom. Kod promene\nrevizije osvežite i ponovo pregledajte; ne pokušavajte da preskočite životni ciklus."
+        ],
+        [
+          "Feature verzija i njen životni ciklus",
+          "Izaberite feature. U „Verzija feature-a iz kontrolisanih snapshot-a“ odaberite samo\nprikazane VALIDATED/FROZEN kontrolisane snapshot-e, unesite referencu/verziju,\npotvrdite i kreirajte verziju. DRAFT→GOVERNED→FROZEN→RETIRED koristi zasebni odeljak,\nreviziju i potvrdu. FROZEN feature zahteva zamrznute ulazne snapshot-e. Više\nsnapshot-a u feature registru ne garantuje da ih konkretni SIMPA/ORDO model može\nkoristiti: postojeći deterministički domain loader zahteva jedan eksplicitni ulaz."
+        ],
+        [
+          "Primer",
+          "Sintetički dataset ima unit kao obavezni STRING/KEY, period kao obavezni DATE i\nvalue kao NUMBER/MEASURE. Autor navodi POINT_IN_TIME, period kao vremenski i unit\nkao granularity ključ, u skladu sa stvarnom metodologijom. Snapshot iz accepted\nkontrolisanog izlaza ostaje DRAFT dok ga ovlašćeni čovek ne pregleda. Primer ne\nuvodi formulu, težine ili institucionalno odobrenje."
+        ],
+        [
+          "Polja, greške i oporavak",
+          "Otisak identifikuje sadržaj, revizija kontrolne izmene, verzija nepromenljivi\nartefakt. VALIDATED/GOVERNED nisu isto stanje za različite tipove artefakata.\nPrazan selektor znači nedostajuće preduslove; nije nulti nalaz. Kod zastarele\nrevizije ili upstream invalidation osvežite, pregledajte lineage i rešite razlog\nu odgovarajućem izvornom toku. Kod prekida servisa prvo osvežite registre jer je\npromena mogla već biti registrovana. Kod isteka sesije prijavite se ponovo; kod\nzabrane proverite radni prostor/ulogu. Forme ne prikazuju raw sadržaj greške validacije."
+        ],
+        [
+          "Ograničenja, bezbednost i provenijencija",
+          "Nema imputacije, nove formule, numeričke transformacije, automatske preporuke,\nvalidacije institucionalne metodologije ili automatske AI promocije. Reference ne\nsmeju sadržati tajne. Kvalitet i privatnost nasleđuju kontrolisane izvore; backend\nponovo proverava klasifikaciju, licence/politike, lineage i povlačenje sadržaja.\nAI eligibility ostaje odvojen deterministički pregled; ne pokreće model. Human\nreview i metodološka odgovornost ostaju kod ovlašćenog autora/reviewera. Datirani\nilustrativni primeri nalaze se u detaljnom Help-u i ne predstavljaju institucionalnu\nvalidaciju vaših podataka."
+        ]
+      ],
+      "screen_sections": {
+        "4": [
+          "ISI-30B3-desktop-snapshot.jpg",
+          "ISI-30B3-desktop-registry.jpg",
+          "ISI-30B3-desktop-contract.jpg",
+          "ISI-30B3-desktop-feature-registry.jpg"
+        ],
+        "10": [
+          "ISI-30B3-mobile-lifecycle.jpg",
+          "ISI-30B3-mobile-confirmation.jpg",
+          "ISI-30B3-mobile-feature.jpg",
+          "ISI-30B3-mobile-feature-lifecycle.jpg"
+        ]
+      }
+    },
+    "RECOVERY": {
+      "title": "Backfill replay i neuspele obrade",
+      "products": [
+        "SIMPA",
+        "ORDO"
+      ],
+      "screens": [
+        "ISI-30B4A-desktop-backfill.jpg",
+        "ISI-30B4A-mobile-resolve.jpg",
+        "ISI-30B4A-mobile-requeue.jpg",
+        "ISI-30B4A-desktop-replay.jpg"
+      ],
+      "guide": "ISI-INGESTION-RECOVERY-GUIDE.md",
+      "sections": [
+        [
+          "Svrha",
+          "dopuna određenog prozora (backfill), ponovna obrada originalnog\n   sadržaja (replay) i pregled odbijenih operativnih stavki (dead-letter)."
+        ],
+        [
+          "Pristup",
+          "Podaci → izvor → Operativni oporavak obrade. Proverite organizaciju,\n   proizvod SIMPA/ORDO i workspace. `data.read` za pregled; `data.upload` za backfill/\n   replay; `data.governance.manage` za requeue i zatvaranje dead-letter stavke."
+        ],
+        [
+          "Preduslovi",
+          "usaglašeni ugovori i operativna politika koja dozvoljava operaciju;\n   dostupan originalni sadržaj za replay; nema aktivne konfliktne obrade. Backend\n   ponovo proverava svaki uslov. Istorijska obrada bez politike nije replay kandidat."
+        ],
+        [
+          "Pregled",
+          "kliknite „Učitaj / osveži operativni pregled“. Sam pregled ne pokreće\n   posao. Osvežavanje uklanja prethodno označene potvrde; proverite izbor ponovo."
+        ],
+        [
+          "Backfill",
+          "izaberite CSV/JSON/XLSX do16MB, unesite eksplicitni idempotency ključ,\n   početni/krajnji neproziran kursor i opciono vreme opažanja. Vreme mora imati UTC\n   pomak, npr. `2026-10-10T12:00:00+02:00`; prazno znači nepoznato, ne trenutni čas.\n   Potvrdite prozor/datoteku/ugovore, zatim „Pokreni backfill“. Forward kursor ostaje."
+        ],
+        [
+          "Replay",
+          "izaberite završenu obradu, unesite ključ novog replay zahteva, potvrdite\n   izbor i kliknite „Pokreni replay“. Ponovno slanje istog zahteva koristi isti ključ;\n   novi sadržaj ili druga operacija sa istim ključem nisu dozvoljeni."
+        ],
+        [
+          "Dead-letter",
+          "pregledajte razlog i povezanu obradu. OPEN stavka može u kontrolisani\n   replay preko novog ključa i potvrde. Zatvaranje zahteva RESOLVED/DISCARDED i obrazloženje.\n   DISCARDED je sačuvana odluka, ne brisanje sadržaja. Odluka ne prihvata odbijeni izlaz."
+        ],
+        [
+          "Rezultati i greške",
+          "poruka „Registrovano“ potvrđuje zahtev, ne uspešnu završenu\n   obradu. Osvežite izvor/obradu i pregledajte ocenu i kontrolisani izlaz. Posle prekida\n   veze prvo osvežite; zahtev možda postoji. Politika, povučeni sadržaj ili aktivan posao\n   mogu blokirati operaciju. Ne menjajte ključ radi zaobilaženja konflikta."
+        ],
+        [
+          "Ograničenja",
+          "nema automatske metodološke ili institucionalne validacije, imputacije,\n   popravke karantina ili AI odobrenja. Samo postojeći pinovani ugovori i sadržaj."
+        ],
+        [
+          "Evidencija",
+          "sačuvani ID obrade/stavke, otisci, vezane politike i audit ostaju\n    dostupni ovlašćenim korisnicima. Datirane sintetičke ilustracije prikazuju ovaj tok u Help-u;\n    stanje stvarnog izdanja i izvora proverava se zasebno. Ne unosite tajne ili lične podatke u obrazloženje."
+        ]
+      ],
+      "screen_sections": {
+        "4": [
+          "ISI-30B4A-desktop-backfill.jpg",
+          "ISI-30B4A-desktop-replay.jpg"
+        ],
+        "10": [
+          "ISI-30B4A-mobile-resolve.jpg",
+          "ISI-30B4A-mobile-requeue.jpg"
+        ]
+      }
+    },
+    "GOVERNANCE": {
+      "title": "Izvorni governance i karantin",
+      "products": [
+        "SIMPA",
+        "ORDO"
+      ],
+      "screens": [
+        "ISI-30B4B-mobile-confirmation.jpg",
+        "ISI-30B4B-desktop-record-comparison.jpg",
+        "ISI-30B4B-mobile-record-decision.jpg",
+        "ISI-30B4B-desktop-profile.jpg"
+      ],
+      "guide": "ISI-SOURCE-GOVERNANCE-GUIDE.md",
+      "sections": [
+        [
+          "Svrha",
+          "evidentirati stvarnu klasifikaciju, privatnost, svrhu, vlasništvo,\n   ograničenja AI/izvoza i ljudske odluke o konfliktima zapisa."
+        ],
+        [
+          "Pristup",
+          "Podaci → izabrani izvor → Governance izvora i karantin. Proverite\n   organizaciju, SIMPA/ORDO i workspace. Profil zahteva `data.read`; izmene i svaki\n   pregled karantina zahtevaju `data.governance.manage`."
+        ],
+        [
+          "Preduslovi",
+          "vlasnik i odobrena svrha obrade; dokumentovana klasifikacija i\n   odobrena pravila. Ne birajte vrednost radi zaobilaženja blokirane analize."
+        ],
+        [
+          "Profil",
+          "„Učitaj / osveži governance profil“ prikazuje trenutnu reviziju i\n   pravila. „Izmena governance profila“ popunjava postojeće vrednosti. Menjaju se\n   samo promenjena polja; revizija sprečava prepisivanje tuđe izmene."
+        ],
+        [
+          "Polja",
+          "klasifikacija/privatnost/stanje i AI/izvoz su postojeći katalozi.\n   Svrha, vlasnik i obrazloženje su autorske reference. Steward je ID aktivnog\n   članstva iste organizacije; politika čuvanja bira se iz aktivnih scoped politika.\n   Prazno opciono članstvo/politika eksplicitno uklanja vezu kada je prethodno postojala."
+        ],
+        [
+          "Potvrda i dokaz",
+          "pregledajte sve promene, označite potvrdu i „Sačuvaj governance\n   profil“. Smanjenje osetljivosti zahteva ID VERIFIED anonimizacije sa odgovarajućim\n   ulazom/izlazom; slobodan tekst nije dokaz. Backend može odbiti promenu."
+        ],
+        [
+          "Karantin",
+          "učitajte listu, izaberite zapis, zatim „Učitaj zapis i aktuelni prihvaćeni\n   zapis“. Uporedite identitet, oba sadržaja, lokator i razlog konflikta. Odluka nije\n   dostupna pre učitavanja detalja. Ovi podaci se ne iznose u javni Help ili audit tekst."
+        ],
+        [
+          "Odluka",
+          "REJECT_INCOMING odbija dolazni zapis; ACCEPT_INCOMING je dopušten samo\n   za podržan konflikt, ne za popravku nedostajućeg identiteta. Unesite referencu\n   pregleda, opciono obrazloženje, potvrdu i „Registruj odluku o zapisu“. ID pregledanog\n   prihvaćenog zapisa se pin-uje; promena između pregleda i odluke blokira upis."
+        ],
+        [
+          "Oporavak",
+          "„Registrovano“ znači sačuvan zahtev/odluku. Osvežite profil/listu nakon\n   uspeha ili prekida veze. Osvežavanje uklanja stare potvrde. Stara revizija, povučeni\n   zapis, nevažeći dokaz ili promenjen prihvaćeni zapis zahtevaju novi pregled."
+        ],
+        [
+          "Granice i evidencija",
+          "odluka o zapisu nije metodološka/institucionalna validacija\n    i ne prihvata automatski odbijenu operativnu ocenu. Važe postojeći audit/lineage i\n    ograničenja AI/izvoza. Čuvanje, anonimizacija i izvoz opisani su u zasebnom poglavlju.\n    Datirani sintetički primeri ne potvrđuju institucionalnu validaciju. Ne unosite kredencijale u reference ili obrazloženja."
+        ]
+      ],
+      "screen_sections": {
+        "4": [
+          "ISI-30B4B-desktop-record-comparison.jpg",
+          "ISI-30B4B-desktop-profile.jpg"
+        ],
+        "10": [
+          "ISI-30B4B-mobile-confirmation.jpg",
+          "ISI-30B4B-mobile-record-decision.jpg"
+        ]
+      }
+    },
+    "PRIVACY": {
+      "title": "Čuvanje hold anonimizacija i izvoz",
+      "products": [
+        "SIMPA",
+        "ORDO"
+      ],
+      "screens": [
+        "ISI-30B4C-mobile-proposal.jpg",
+        "ISI-30B4C-mobile-read-only.jpg",
+        "ISI-30B4C-desktop-hold.jpg",
+        "ISI-30B4C-desktop-export.jpg",
+        "ISI-30B4C-mobile-export.jpg"
+      ],
+      "guide": "ISI-PRIVACY-CONTROLS-GUIDE.md",
+      "sections": [
+        [
+          "Svrha",
+          "primena odobrenih politika čuvanja, zabrana brisanja, evidencija i\n   pregled anonimizacije i kontrolisani izvoz verzije. Sistem ne određuje pravni rok."
+        ],
+        [
+          "Pristup",
+          "Podaci → izabrani izvor → Čuvanje, anonimizacija i izvoz izvora.\n   Proverite organizaciju, SIMPA/ORDO i workspace. `data.read` za retention pregled,\n   `data.governance.manage` za politike/hold/dokaze, `data.export` za izvoz."
+        ],
+        [
+          "Politika",
+          "unesite oznaku, verziju, naziv, odobrene rokove i referencu. Prazan\n   rok znači neodređen. Bez automatskog brisanja, ljudski pregled i arhiva imaju\n   bezbedne početne vrednosti; potvrdite stvarno odobrenu politiku. „Registruj politiku\n   čuvanja“ ne dodeljuje je izvoru; dodela je u governance profilu."
+        ],
+        [
+          "Retencija",
+          "izaberite tačnu verziju i učitajte stanje. Proverite početak/rok,\n   hold, purge status, reviziju i tombstone. Osvežavanje uklanja prethodne potvrde."
+        ],
+        [
+          "Hold",
+          "uz referencu i potvrdu „Postavi hold“ blokira purge. „Ukloni hold“ zahteva\n   potvrdu i važeću reviziju. Zahtev za operativni pregled purge-a samo menja evidenciju.\n   Odobravanje/izvršavanje fizičkog brisanja su zasebni operator API postupci sa\n   postojećim step-up i retention proverama. Ovaj ekran ne briše sadržaj; automatska\n   arhiva nije implementirana i nove kopije su odložene u preproduction radu."
+        ],
+        [
+          "Predlog anonimizacije",
+          "izlaz najpre proizvedite odobrenom metodom u drugom\n   izvoru istog scope-a. Učitajte izlazne verzije, izaberite izlaz, unesite metodu/verziju/\n   parametre/dokaz i ciljnu klasifikaciju/privatnost. Potvrdite i registrujte predlog.\n   Platforma beleži evidence; ne izvršava anonimizaciju i ne certifikuje metodu."
+        ],
+        [
+          "Pregled",
+          "učitajte evidenciju (50 zapisa po strani), izaberite PROPOSED predlog,\n   proverite ulaz/izlaz/metodu/reference/target kategorije. Izaberite VERIFIED ili\n   REJECTED, navedite referencu i potvrdu. Backend zaključava zapis i dozvoljava samo\n   jednu konačnu odluku. VERIFIED ID može biti dokaz za governance promenu kada svi\n   backend uslovi i izvor izlaza odgovaraju."
+        ],
+        [
+          "Izvoz",
+          "navedite svrhu, potvrdite izabranu verziju i pripremite dozvoljeni izvoz.\n   Samo uspešan backend odgovor sa manifestom daje dugme za preuzimanje. Privatnost,\n   politika, hold i purge mogu blokirati. Osetljivi izvoz traži governance dozvolu i\n   stvarni MFA assurance; potvrda lozinke ga ne zamenjuje. MFA provajder još nije potvrđen."
+        ],
+        [
+          "Greške i oporavak",
+          "posle prekida veze ili „Registrovano“ osvežite evidenciju.\n   Stara revizija/već pregledan dokaz/povučeni sadržaj zahtevaju novi pregled. Ne\n   unosite kredencijale ili privatne tekstove u reference. Nema zaobilaženja zabrana."
+        ],
+        [
+          "Evidencija i granice",
+          "audit beleži ID/status/reference bez raw payload-a;\n    eksport ima manifest, purge ima tombstone/invalidation. Ovo nije pravni savet,\n    institucionalna validacija ili odobrenje AI analize. Datirane sintetičke ilustracije\n    ovog toka dostupne su u detaljnom Help-u. SMTP ostaje pending."
+        ]
+      ],
+      "screen_sections": {
+        "4": [
+          "ISI-30B4C-desktop-hold.jpg"
+        ],
+        "5": [
+          "ISI-30B4C-desktop-export.jpg",
+          "ISI-30B4C-mobile-export.jpg"
+        ],
+        "8": [
+          "ISI-30B4C-mobile-read-only.jpg"
+        ],
+        "10": [
+          "ISI-30B4C-mobile-proposal.jpg"
+        ]
+      }
+    },
+    "SIMPA_METHOD": {
+      "title": "SIMPA metodologija i referentne provere",
+      "products": [
+        "SIMPA"
+      ],
+      "screens": [
+        "ISI-30C1-mobile-statistical.jpg",
+        "ISI-30C1-desktop-review.jpg",
+        "ISI-30C1-mobile-review.jpg",
+        "ISI-30C1-desktop-draft.jpg"
+      ],
+      "guide": "SIMPA-METHODOLOGY-WORKFLOWS-GUIDE.md",
+      "sections": [
+        [
+          "Svrha",
+          "u Analitika + AI otvorite „Autorstvo i odobrenje SIMPA metodologije“. Ovo je postojeći globalni SIMPA registar, a ne privatni skup jednog workspace-a. Odobrenje nove verzije povlači raniju validiranu verziju. Ne unosite lične ili privatne tenant podatke u referentni registar."
+        ],
+        [
+          "Preduslovi i dozvole",
+          "aktivna organizacija, SIMPA entitlement/workspace, analysis.read i indicator.manage. Backend proverava članstvo i aktora. Read-only korisnik nema obrasce odobrenja; ORDO koristi svoj zaseban registar."
+        ],
+        [
+          "Učitavanje i polja",
+          "kliknite „Učitaj / osveži metodološki registar“. U „Nova direct_observation metodologija“ izaberite postojeći aktivni indikator i unesite svrhu, tumačenje, jedinicu, skalu, agregatni obuhvat, vremensko/geografsko agregiranje, missing-data/privatnost/kvalitet, referentni skup i ograničenja. Jedinica mora odgovarati unit_hint-u indikatora kada postoji. Izaberite izvorna polja sa indicator_code, quality_status i najmanje jednim value kanalom. Sami unesite odobrenu toleranciju i napomenu; nema unapred izmišljenih pragova."
+        ],
+        [
+          "DRAFT i PROPOSED",
+          "potvrdite autorizovani sadržaj i registrujte DRAFT. Osvežite registar, izaberite baš tu verziju i pregledajte polja/otisak. Potvrdite „Predloži PROPOSED“. Ugovor mora biti potpun; nema proizvoljne formule. direct_observation prenosi već validiranu agregatnu opservaciju."
+        ],
+        [
+          "Referentni slučajevi",
+          "učitajte suite-ove izabrane PROPOSED suite_v1 metodologije. Unesite verziju referentnog skupa. U tabeli dodajte jedinstvenu oznaku slučaja, kvalitet ulaza, numerički i/ili tekstualni ulaz i nezavisno očekivani izlaz. Očekivani rezultat ima tačno jedan kanal. Ne prepisujte automatski očekivano iz ulaza. Potvrdite registraciju; suite je nepromenljiv. Istorijski legacy_inline put nije ponuđen za novo autorstvo."
+        ],
+        [
+          "Determinističko izvršenje i ljudsko odobrenje",
+          "osvežite suite-ove, pregledajte slučajeve, izaberite not_run suite i potvrdite izvršenje. Zatim osvežite rezultate. PASSED potvrđuje referentnu proveru, ne institucionalno odobrenje. Za VALIDATED unesite obrazloženje ljudskog odobrenja i potvrdite prelaz; backend ponovo proverava suite, otisak, stanje i aktora. Novi VALIDATED povlači prethodni za taj indikator."
+        ],
+        [
+          "Statistički ugovor",
+          "cilj mora imati trenutno VALIDATED metodologiju. Izaberite eksplicitnu semantiku: continuous→OLS, count→Poisson GLM, binary_system_state→binomial logit ili proportion_rate→fractional logit. Unesite oznaku analize, feature polja po redu, nivo pouzdanosti između 0 i 1, nonrobust ili HC3 kovarijansu, svrhu i ograničenja. Binarni cilj traži ljudski definisan pozitivan sistemski ishod; ostali ga ne koriste. Nema građanskog skora, automatskog klasifikacionog praga ili championa."
+        ],
+        [
+          "Životni ciklus i rezultat",
+          "registracija pravi DRAFT, potvrđeni predlog PROPOSED; ljudska validacija traži obrazloženje i referencu dokaza. PROPOSED izvršenje ostaje samo kontrolisano testiranje na postojećem monitoring snapshot-u. VALIDATED nije potvrda performansi ili kauzalnosti. RETIRED zahteva razlog i ostaje istorijski dokaz. Odobrenje novog statističkog ugovora povlači prethodni za istu analizu/indikator."
+        ],
+        [
+          "Greške i oporavak",
+          "prazna/nekonzistentna polja se odbijaju; failed suite se ne „popravlja“ preskakanjem provere, već se dokumentuje i registruje nova verzija slučajeva dok nema PASSED suite-a. Ako odgovor izostane, prvo osvežite registar/suite, jer promena možda postoji. Promena ciljne metodologije može učiniti statistički ugovor nepodobnim; backend odbija izvršenje. Osvežavanje resetuje stare potvrde."
+        ],
+        [
+          "XAI, ograničenja i ekran",
+          "uz statistički rezultat pregledajte uzorak, koeficijente/intervale, dijagnostiku, nedostajuće podatke i provenance pre AI sinteze. Doprinos i asocijacija nisu kauzalni efekat. Ovaj postupak ne dodaje formule ili institucionalne zaključke. Datirane ilustracije prikazuju lokalni primer; on nije odobrena institucionalna metodologija."
+        ]
+      ],
+      "screen_sections": {
+        "4": [
+          "ISI-30C1-desktop-review.jpg",
+          "ISI-30C1-desktop-draft.jpg"
+        ],
+        "10": [
+          "ISI-30C1-mobile-statistical.jpg",
+          "ISI-30C1-mobile-review.jpg"
+        ]
+      }
+    },
+    "ORDO_METHOD": {
+      "title": "ORDO metodologija i prognoze",
+      "products": [
+        "ORDO"
+      ],
+      "screens": [
+        "ISI-30C2A-desktop-authoring-final.jpg",
+        "ISI-30C2A-desktop-forecast-final.jpg",
+        "ISI-30C2A-desktop-review-final.jpg",
+        "ISI-30C2A-desktop-validated-final.jpg",
+        "ISI-30C2A-mobile-authoring-final.jpg",
+        "ISI-30C2A-mobile-readonly-final.jpg",
+        "ISI-30C2A-mobile-validation-final.jpg"
+      ],
+      "guide": "ORDO-METHODOLOGY-WORKFLOWS-GUIDE.md",
+      "sections": [
+        [
+          "Svrha i mesto",
+          "u ORDO „Analitika + AI“ otvorite „Autorstvo i odobrenje ORDO metodologije“. Globalni ORDO metodološki registar je zajednički domenski katalog. Novo ljudsko VALIDATED odobrenje povlači prethodnu validiranu metodologiju istog indikatora. Ne unosite privatne tenant podatke, lične podatke ili pristupne podatke u metodološke reference."
+        ],
+        [
+          "Preduslovi",
+          "aktivna organizacija, ORDO entitlement/workspace i analysis.read za pregled; indicator.manage za autorstvo i životni ciklus, analysis.run za izvršenje. Backend proverava stvarno članstvo, izabrani proizvod, workspace i aktora. SIMPA registar i metodologija su zasebni."
+        ],
+        [
+          "Nova metodologija",
+          "učitajte registar, izaberite postojeći aktivni indikator, unesite autorsku napomenu i potvrdite DRAFT. direct_observation prenosi validiranu agregatnu opservaciju; ne pravi novu formulu. Opciona odobrena prostorna agregacija ima samo count/sum/mean/min/max. Prazan izbor znači da prostorno pravilo nije autorizovano. Postojeći ugovor zahteva validiran prostorni identitet, granice i CRS; nema geometrijskog join-a, pondera ili kauzalnosti. Registracija pravila nije njegovo izvršenje."
+        ],
+        [
+          "Pregled i odobrenje",
+          "osvežite registar, izaberite verziju i pregledajte napomenu, source_requirements, stanje i audit vremena. Potvrdite PROPOSED. Zatim unesite najmanje osam znakova obrazloženja ljudskog odobrenja i potvrdite VALIDATED. Backend proverava trenutno stanje i povlači raniju globalnu validiranu verziju. RETIRED zahteva razlog; ostaje istorijski dokaz. Osvežavanje briše prethodne potvrde."
+        ],
+        [
+          "Time-series DRAFT",
+          "potreban je postojeći governed ORDO analitički run, izveden iz podobnog snapshot-a ili feature verzije; legacy observations nisu ponuđene za novo autorstvo. Unesite ključ serije, kod ciljnog indikatora, semantiku continuous/count/proportion_rate, vremensko polje, frekvenciju i polja identiteta. Backend pronalazi i vezuje validiranu ciljnu metodologiju, njen otisak i input; ne unosite UUID metodologije ili hash ručno."
+        ],
+        [
+          "Autorski parametri",
+          "svi datumi, minimalna istorija, dozvoljeni missing ratio, missing/outlier/revision/comparability pravila, transformacija, trend, opciona sezonalnost, kandidat porodice, horizont/jedinica, dijagnostika, ograničenja i rolling-origin train/korak/origini/metrike zahtevaju stvarno odobrene vrednosti. Nema unapred popunjenih institucionalnih pragova. Prazna sezonalnost znači da nije primenljiva. Datumi moraju biti uređeni; istorija pokriva train+horizont, count traži count_time_series, sezonski izbor traži sezonalnost. Potvrdite sadržaj i kreirajte DRAFT; server proverava ceo ugovor."
+        ],
+        [
+          "Time-series životni ciklus",
+          "izaberite specifikaciju, pregledajte ugovor i binding, potvrdite predlog. Za validaciju unesite ljudsku napomenu i referencu dokaza; za povlačenje razlog. Potvrda važi za trenutno pregledanu verziju/stanje/otisak i workspace. „Osveži specifikacije i resetuj potvrde“ ponovo učitava stanje i briše potvrde. VALIDATED nije dokaz budućih performansi ili institucionalni zaključak."
+        ],
+        [
+          "Forecast",
+          "izaberite VALIDATED specifikaciju i jedan stvarno otkriven identitet serije. Eksplicitno izaberite porodicu iz candidate_families i nivo intervala 0.80/0.90/0.95. Pregledajte izbor, potvrdite izvršenje i kliknite „Pokreni forecast“. Nema automatskog championa, izbora modela ili fallback-a. Backend ponovo proverava exact governed binding i podobnost; uspešno izvršenje čuva ESTIMATED ili NOT_ESTIMATED ishod, ne obećava prognozu."
+        ],
+        [
+          "Rezultati, greške i oporavak",
+          "pregledajte sačuvan status/reason_code, traženu i izvršenu porodicu, intervale, rolling-origin/backtest, baseline, dijagnostiku, ograničenja i provenance pre AI tumačenja. NOT_ESTIMATED nema izmišljene vrednosti. Kod nepoznatog ishoda prvo osvežite registar/rezultate jer promena možda postoji. Popravite autorska polja ili pripremite novu governed verziju; ne preskačite validaciju. Promena izvora/metodologije može učiniti stari binding nepodobnim."
+        ],
+        [
+          "XAI i obuhvat",
+          "scenario evidence-readiness nije forecast, asocijacija nije kauzalni efekat, interval nije garancija. Ovo ne dodaje modele, fit servis ili institucionalne preporuke. Statističke specifikacije i prostorna agregacija opisani su u zasebnim korisničkim poglavljima; ovde registracija metodološkog pravila ne predstavlja izvršenje. Datirane sintetičke ilustracije ne predstavljaju odobrenu stvarnu metodologiju."
+        ]
+      ],
+      "screen_sections": {
+        "4": [
+          "ISI-30C2A-desktop-authoring-final.jpg",
+          "ISI-30C2A-desktop-forecast-final.jpg",
+          "ISI-30C2A-desktop-review-final.jpg",
+          "ISI-30C2A-desktop-validated-final.jpg"
+        ],
+        "8": [
+          "ISI-30C2A-mobile-readonly-final.jpg"
+        ],
+        "10": [
+          "ISI-30C2A-mobile-authoring-final.jpg",
+          "ISI-30C2A-mobile-validation-final.jpg"
+        ]
+      }
+    },
+    "ORDO_SPATIAL": {
+      "title": "ORDO prostorna agregacija",
+      "products": [
+        "ORDO"
+      ],
+      "screens": [
+        "ISI-30C2B1-desktop-explicit-inputs.jpg",
+        "ISI-30C2B1-mobile-readonly.jpg",
+        "ISI-30C2B1-mobile-reset.jpg",
+        "ISI-30C2B1-desktop-review.jpg",
+        "ISI-30C2B1-mobile-review.jpg",
+        "ISI-30C2B1-desktop-success.jpg"
+      ],
+      "guide": "ORDO-SPATIAL-AGGREGATION-GUIDE.md",
+      "sections": [
+        [
+          "1. Namena",
+          "Deskriptivna agregacija postojećih opservacija istog prostornog identiteta.\nNije GIS join, ponderisanje, forecast, kauzalni efekat ili preporuka."
+        ],
+        [
+          "2. Pristup",
+          "ORDO → Analitika + AI → ORDO prostorna agregacija validiranog identiteta.\nPotrebni analysis.read, data.read i analysis.run u izabranoj organizaciji/workspace-u.\nServer proverava analysis.run i aktivno članstvo; skriven ekran nije zamena za server proveru."
+        ],
+        [
+          "3. Preduslovi",
+          "VALIDATED metodologija sa ORDO-SPATIAL-AGGREGATION-v1 ugovorom; completed governed\nANALYTICAL_SNAPSHOT ili ANALYTICAL_FEATURE_VERSION run; VALIDATED ORDO jedinica.\nMetodološko odobrenje je poseban ljudski postupak, nije automatski rezultat forme."
+        ],
+        [
+          "4. Učitavanje",
+          "Kliknite „Učitaj / osveži ORDO prostorne ulaze“. Učitavaju se aktuelni registri.\nOgraničen spisak jedinica ima upozorenje; odsustvo u spisku ne dokazuje nepostojanje.\nOsvežavanje poništava prethodni izbor i potvrdu."
+        ],
+        [
+          "5. Izbor polja",
+          "Izaberite metodologiju (indikator/verzija/pravilo), governed run i jedinicu\n(ključ/verzija granica/CRS). Sva tri izbora su u početku prazna.\nPravilo count/sum/mean/min/max dolazi iz odobrene metodologije, ne iz proizvoljnog\nizbora pri izvršenju. count broji zapise; ostala pravila isključuju nedostajuće\nnumeričke vrednosti i beleže njihov broj; nema popunjavanja nulom."
+        ],
+        [
+          "6. Pregled i potvrda",
+          "Pročitajte tabelu identifikatora/verzije/pravila/identiteta/tipa/granica/CRS.\nPotvrdite pregledano izvršenje. Promena izbora menja vezu potvrde. Backend proverava\npregledani ID metodologije pod zaključavanjem; promenjeno odobrenje odbija zahtev."
+        ],
+        [
+          "7. Izvršenje",
+          "Kliknite „Izvrši ORDO prostornu agregaciju“. Backend ponovo proverava ulazne\nfingerprint-e, kvalitet validiranih zapisa i potpuno podudaranje identiteta,\ngranica i CRS svih zapisa indikatora. Različite jedinice ne spaja automatski."
+        ],
+        [
+          "8. Rezultat i GIS",
+          "Uspeh prikazuje ID registracije; izbor/potvrda se resetuju. Podaci → GIS:\nosvežite validiranu geometriju povezane jedinice i njene rezultate. Postojeći GIS\nadapter ponovo proverava metodologiju, ulaz, obračun i fingerprint; zastareo rezultat\nje UNAVAILABLE. Registracija ne garantuje dostupnost trenutne brojčane vrednosti.\nDatum važenja geometrije nije period opservacije (NOT_ASSIGNED ostaje vidljiv)."
+        ],
+        [
+          "9. Greške i oporavak",
+          "Bez preduslova nema izvršenja. Zastarela metodologija, granice/CRS, kvalitet ili\nulaz odbijaju zahtev bez promene. Posle prekida mreže prvo osvežite GIS pregled:\npromena je mogla biti registrovana; ne ponavljajte automatski. Ista veza run/indikator/jedinica/metodologija je jedinstvena: ponovljeno izvršenje\nvraća konflikt409, ne predstavlja idempotentan retry."
+        ],
+        [
+          "10. Dokazi i ograničenja",
+          "ID/verzija metodologije, run/ulazni otisci, jedinica/granice/CRS i trag obračuna\npripadaju postojećem ORDO rezultatu. Ne postoje nove formule ili prostorna inferencija.\nSintetički QA ekrani nisu institucionalni podaci ili ljudsko metodološko odobrenje.\nDatirane ilustracije prikazuju postojeći lokalno provereni korisnički tok."
+        ]
+      ],
+      "screen_sections": {
+        "4": [
+          "ISI-30C2B1-desktop-explicit-inputs.jpg",
+          "ISI-30C2B1-desktop-review.jpg"
+        ],
+        "5": [
+          "ISI-30C2B1-desktop-success.jpg"
+        ],
+        "8": [
+          "ISI-30C2B1-mobile-readonly.jpg",
+          "ISI-30C2B1-mobile-reset.jpg"
+        ],
+        "10": [
+          "ISI-30C2B1-mobile-review.jpg"
+        ]
+      }
+    },
+    "ORDO_STAT": {
+      "title": "ORDO statističke specifikacije",
+      "products": [
+        "ORDO"
+      ],
+      "screens": [
+        "ISI-30C2B2-mobile-success-reset.jpg",
+        "ISI-30C2B2-mobile-readonly.jpg",
+        "ISI-30C2B2-desktop-authoring-fields.jpg",
+        "ISI-30C2B2-desktop-success-reset.jpg",
+        "ISI-30C2B2-desktop-authoring-success.jpg",
+        "ISI-30C2B2-desktop-specification.jpg",
+        "ISI-30C2B2-mobile-review-confirmation.jpg"
+      ],
+      "guide": "ORDO-STATISTICAL-SPECIFICATION-GUIDE.md",
+      "sections": [
+        [
+          "1. Namena",
+          "ORDO-STATISTICAL-MODEL-CONTRACT-v1 je verzionisani metodološki ugovor.\nFitting NOT_IMPLEMENTED; numerical_results NOT_PRESENT. Nema koeficijenata,\nSHAP-a ili performansi samo zato što je specifikacija VALIDATED."
+        ],
+        [
+          "2. Pristup",
+          "ORDO → Analitika + AI → ORDO statističke specifikacije i ljudski pregled.\nanalysis.read za pregled; indicator.manage i aktivno članstvo za promene.\nOrganizacija/workspace ostaju granice registra. Globalna ciljna metodologija\nima zasebno odobrenje, ali statistička specifikacija pripada ovom workspace-u."
+        ],
+        [
+          "3. Učitavanje i stranice",
+          "Izaberite stranicu (100 specifikacija po stranici), zatim „Učitaj / osveži\nORDO statistički registar“. Promena stranice zahteva novo učitavanje i pregled.\nUpozorenje za naredne stavke znači da postoji sledeća stranica, ne novi rezultat.\nOsvežavanje resetuje prethodne potvrde."
+        ],
+        [
+          "4. Cilj i ulaz",
+          "Za novi DRAFT izaberite trenutno VALIDATED ciljnu metodologiju, completed\nANALYTICAL_SNAPSHOT ili ANALYTICAL_FEATURE_VERSION run, semantiku cilja i strukturu.\nNema automatski potvrđenih izbora. Server proverava pregledani ID metodologije\npod zaključavanjem i sam vezuje verziju/hash metodologije i governed input."
+        ],
+        [
+          "5. Polja definicije",
+          "Unesite analysis_key, svrhu, dozvoljenu modelsku i response porodicu.\ncontinuous: linear/robust + gaussian; count: poisson/negative-binomial;\nproportion_rate: fractional/beta. Panel: fixed_effects/mixed_effects/hierarchical.\nOvo su postojeće specifikacije, ne tvrdnja da je fitting tih porodica dostupan.\nUnesite početak/kraj/as-of (start ≤ end ≤ as-of), pretpostavke, potrebnu\nDIJAGNOSTIKU i ograničenja — jedan zapis po redu. Polja su u početku prazna."
+        ],
+        [
+          "6. Feature tabela",
+          "Dodajte najmanje jednu jedinstvenu feature definiciju: feature_key, role\n(predictor/control/offset/exposure), source_field, version_identity,\ntransformation (none/log1p/standardize/categorical) i missing_rule\n(complete_case/exclude/missing_indicator). Pregledajte izvore/verzije.\nDefinicije su metapodaci; ne tvrde da je feature transformisan ili model fitovan.\nNe unosite lozinke, tokene ili neodobrene lične podatke u polja/referencu."
+        ],
+        [
+          "7. Kreiranje i pregled",
+          "Potvrdite autorizovani DRAFT i pregledanu ciljnu metodologiju/ulaz, pa kliknite\n„Registruj ORDO statistički DRAFT“. Posle uspeha ponovo učitajte registar i\nizaberite specifikaciju. Pregled prikazuje definiciju, features, pretpostavke,\ndijagnostiku, ograničenja, otiske, status/verziju i ljudski trag."
+        ],
+        [
+          "8. Ljudski lifecycle",
+          "DRAFT → PROPOSED: izričita potvrda. PROPOSED → VALIDATED: obrazloženje i referenca\ndokaza pregleda. Odobrenje povlači prethodnu validiranu verziju istog analysis_key\nu istom workspace-u. VALIDATED → RETIRED: razlog i potvrda; istorija ostaje.\nBackend proverava pregledani status/hash pod zaključavanjem, a pri predlaganju i\nodobrenju ponovo proverava metodologiju/ulaz/otiske. Promenjeni dokaz blokira prelaz."
+        ],
+        [
+          "9. Greške i oporavak",
+          "Bez uloga ili preduslova nema promena. Neispravna semantika/familija, duplirani\nfeatures, datumi ili zastareo pregled odbijaju zahtev. Konflikt verzije zahteva\nosvežavanje, ne automatski retry. Posle prekida mreže prvo proverite registar:\npromena je mogla biti sačuvana. Uspeh resetuje prethodne potvrde."
+        ],
+        [
+          "10. Tumačenje i dokaz",
+          "VALIDATED odobrava specifikaciju, ne koeficijente, predikciju ili institucionalni\nzaključak. non_causal=true i automatic_policy_recommendation=false su zaključani.\nPodaci pregleda su istorijski metapodaci, ne potvrda aktuelnog numeričkog rezultata.\nSintetički QA ekrani nisu stvarno metodološko odobrenje. Datirane ilustracije prikazuju specifikaciju\ni njenu kontrolu, bez tvrdnje da je izvršeno fitovanje modela."
+        ]
+      ],
+      "screen_sections": {
+        "4": [
+          "ISI-30C2B2-desktop-authoring-fields.jpg",
+          "ISI-30C2B2-desktop-specification.jpg"
+        ],
+        "5": [
+          "ISI-30C2B2-desktop-authoring-success.jpg"
+        ],
+        "8": [
+          "ISI-30C2B2-mobile-success-reset.jpg",
+          "ISI-30C2B2-mobile-readonly.jpg",
+          "ISI-30C2B2-desktop-success-reset.jpg"
+        ],
+        "10": [
+          "ISI-30C2B2-mobile-review-confirmation.jpg"
+        ]
+      }
+    },
+    "ADMIN": {
+      "title": "Administracija i prava pristupa",
+      "products": [
+        "SIMPA",
+        "ORDO"
+      ],
+      "screens": [
+        "ISI-30D1-desktop-confirmation.jpg",
+        "ISI-30D1-desktop-readonly.jpg",
+        "ISI-30D1-desktop-review.jpg",
+        "ISI-30D1-desktop-session-review.jpg",
+        "ISI-30D1-desktop-success.jpg",
+        "ISI-30D1-mobile-actions.jpg",
+        "ISI-30D1-mobile-invitation.jpg",
+        "ISI-30D1-mobile-session-review.jpg",
+        "ISI-30D1-mobile-workspace.jpg"
+      ],
+      "guide": "ISI-ADMINISTRATION-WORKFLOWS-GUIDE.md",
+      "sections": [
+        [
+          "1. Namena",
+          "Upravljanje postojećim članstvom, pristupom proizvodu, rolama, pozivima i radnim\nprostorima. Administrator organizacije nije platformski superadministrator."
+        ],
+        [
+          "2. Kontekst i ovlašćenja",
+          "Izaberite organizaciju i SIMPA ili ORDO → Administracija. members.read/man­age,\nworkspace.manage, organization.manage i audit.read su odvojena ovlašćenja.\nPravo organizacije na proizvod (entitlement) ostaje read-only."
+        ],
+        [
+          "3. Pregled članova",
+          "Tabela prikazuje ime, email, status, pristup tekućem proizvodu i scope role.\nIzaberite konkretnog člana; nema unapred odabranog cilja. Pregled se dobija sa\nservera pri svakom prikazu. Potvrda se poništava kad se pregled ili kontekst promeni."
+        ],
+        [
+          "4. Status članstva i pristup",
+          "Status active/suspended utiče na celu organizaciju i oba proizvoda. Product access\nutiče samo na izabrani proizvod. Odaberite željeno stanje, pregledajte cilj,\npotvrdite promenu i sačuvajte. Server štiti poslednjeg administratora."
+        ],
+        [
+          "5. Role",
+          "Odaberite rolu i scope product/organization; organizacioni scope zahteva šire\novlašćenje i važi za celu organizaciju. Dodela i svako uklanjanje imaju zasebnu\npotvrdu. Bez product access-a product rola ne daje pristup. Role ne menjaju entitlement."
+        ],
+        [
+          "6. Sesije člana",
+          "Organization-wide members.manage može eksplicitno učitati bezbedne metapodatke\nsesija. Nema tokena, cookie-ja, IP adresa ni sirovih browser podataka. Odaberite\naktivnu sesiju, potvrdite njen ID i opozovite je. Osvežavanje poništava odabir i\npotvrdu. Server ponovo proverava cilj, ovlašćenja i postojeći MFA/assurance zahtev.\nSopstvene sesije koristite u ličnom nalogu. Globalne sesije člana više organizacija\nnisu podržane ovde. Blokirana dodatna autentifikacija se ne zaobilazi."
+        ],
+        [
+          "7. Pozivi",
+          "Unesite email, eksplicitnu početnu product rolu i potvrdu. Organization_admin\nnije ponuđen kao početna rola poziva. SMTP je pending do konfiguracije; razvojni\npoziv nije potvrda email isporuke niti aktivnog naloga. Tajni token se ne prikazuje\nu administrativnom pregledu. Pending poziv se može zasebno potvrđeno opozvati.\nLozinku lično postavlja vlasnik naloga kroz odobreni jednokratni onboarding."
+        ],
+        [
+          "8. Radni prostor i organizacija",
+          "Unesite naziv i jedinstven slug, pa potvrdite kreiranje. Arhiviranje/reactiviranje\nzahteva zasebnu potvrdu cilja. Promena naziva organizacije zahteva organization-wide\novlašćenje i utiče na oba proizvoda. Slug/status organizacije nisu izmenjivi ovde."
+        ],
+        [
+          "9. Greške i oporavak",
+          "Neuspeh ostaje vidljiv; ne prikazuje se uspeh i nema automatskog retry-ja.\nPosle prekida mreže prvo proverite aktuelan pregled: promena je možda sačuvana.\nDupli slug, neaktivno pravo organizacije, poslednji admin i dodatna autentifikacija\nimaju jasnu poruku. Greške ne prikazuju sirovi response niti unesene tajne."
+        ],
+        [
+          "10. Dokaz i ograničenja",
+          "Uspeh prikazuje potvrdu i resetuje prethodne odluke. Audit pokazuje postojeći\nappend-only administrativni trag prema ovlašćenjima. Sve promene ostaju\nserverski autorizovane. Sintetički QA nije dokaz produkcione administrativne promene.\nDatirane ilustracije prikazuju lokalni primer; SMTP, realni MFA i institucionalna\noperativna spremnost ne proglašavaju se završenim na osnovu ovog GUI koraka."
+        ]
+      ],
+      "screen_sections": {
+        "4": [
+          "ISI-30D1-desktop-confirmation.jpg",
+          "ISI-30D1-desktop-review.jpg",
+          "ISI-30D1-desktop-session-review.jpg"
+        ],
+        "5": [
+          "ISI-30D1-desktop-success.jpg"
+        ],
+        "8": [
+          "ISI-30D1-desktop-readonly.jpg"
+        ],
+        "10": [
+          "ISI-30D1-mobile-actions.jpg",
+          "ISI-30D1-mobile-invitation.jpg",
+          "ISI-30D1-mobile-session-review.jpg",
+          "ISI-30D1-mobile-workspace.jpg"
+        ]
+      }
+    },
+    "AI_REVIEW": {
+      "title": "AI poslovi dokazi i ljudski pregled",
+      "products": [
+        "SIMPA",
+        "ORDO"
+      ],
+      "screens": [
+        "ISI-30D2-desktop-readonly-boundaries.jpg",
+        "ISI-30D2-mobile-xai-boundaries.jpg",
+        "ISI-30D2-desktop-ai-overview.jpg",
+        "ISI-30D2-mobile-review-success.jpg",
+        "ISI-30D2-desktop-job-xai.jpg"
+      ],
+      "guide": "ISI-AI-REVIEW-WORKFLOWS-GUIDE.md",
+      "sections": [
+        [
+          "1. Namena",
+          "AI je pomoćni sloj za pregled dokaza. Numerički sistemi ostaju autoritet; LLM\ntekst ne predstavlja automatski institucionalni zaključak."
+        ],
+        [
+          "2. Kontekst",
+          "Izaberite organizaciju, SIMPA ili ORDO, radni prostor i AI. Istorija job-ova i\n evaluacije pripadaju tačnom kontekstu. Modelski/prompt registar može biti zajednički\nili proizvodni; to ne daje pristup tuđim privatnim rezultatima."
+        ],
+        [
+          "3. Istorija i rezultat",
+          "Pregledajte status, model/provider, prompt verziju, politiku, pokušaje i ljudski\nreview status. Izaberite job za sveži rezultat i trag. Struktura se prikazuje kao\npolja/vrednosti; nula, false i nedostajuća vrednost ostaju različiti. Ograničenje\nbroja/dubine polja se prikazuje, nije potvrda kompletnosti dokaza."
+        ],
+        [
+          "4. Objašnjenja",
+          "Pregled job-a pokazuje pokušaje, fallback i zahteve ljudskog pregleda. Evaluacija\npokazuje metrike sa otiscima, registry/prompt/policy/benchmark identitet, izvor,\nljudski pregled, drift/circuit i ograničenja. Nedostupni SHAP, importance, kalibracija,\npouzdanost, verovatnoća ili neizvesnost ne dobijaju izmišljene brojeve."
+        ],
+        [
+          "5. Učitavanje evaluacije",
+          "analysis.read omogućava „Učitaj / osveži AI evaluacione dokaze“. Izaberite konkretan\nrun; nema podrazumevanog cilja. Rezultati, istorija pregleda i objašnjenje učitavaju\nse sveže. Prazan registar nije potvrda kvaliteta modela."
+        ],
+        [
+          "6. Odluka pregleda",
+          "report.publish i aktivno članstvo omogućavaju pending, a za terminalni completed/\nfailed run i approved, changes_requested ili rejected. Odaberite odluku, obrazloženje\ni referencu dokaza. Za konačnu odluku obrazloženje/referenca moraju biti popunjeni.\nNe unosite tajne, lozinke ili neodobrene lične podatke u napomene/referencu."
+        ],
+        [
+          "7. Potvrda i trag",
+          "Potvrdite upravo pregledane dokaze i kliknite „Sačuvaj ljudski AI pregled“.\nPromena polja/dokaza/konteksta poništava potvrdu. Server pod zaključavanjem proverava\npregledani status/otisak rezultata, ulogu i scope pre upisa postojećeg auditabilnog\npregleda. Konačni pregled istog recenzenta je neizmenjiv. Uspeh zahteva novo učitavanje."
+        ],
+        [
+          "8. Infrastrukturna dijagnostika",
+          "analysis.run UI omogućava postojeći lokalni Ollama foundation test. Eksplicitno\nizaberite lokalni registrovani model, sensitivity i potvrdu. Unos je fiksni sintetički\ninfrastrukturni primer; ne sadrži institucionalne podatke. SIMPA sensitive ostaje\nlocal_only i zahteva ljudski pregled. Registrovan queued zahtev nije gotov rezultat."
+        ],
+        [
+          "9. Greške i oporavak",
+          "Promenjeni dokaz zahteva osvežavanje i novi pregled. Bez ovlašćenja/terminalnog stanja/\nreference nema konačnog upisa. Ne prepisujte neizmenjivi pregled. Posle prekida mreže\nprvo pregledajte istoriju jer je upis mogao uspeti. Nema automatskog retry-ja i nema\nsirove poruke servera sa privatnim request poljima."
+        ],
+        [
+          "10. Granice i dokazi",
+          "Pregled ne promoviše model, ne menja provider, ne bira champion i ne objavljuje izveštaj.\nRegistracija/benchmark/threshold/promotion/circuit i evaluaciono izvršavanje ostaju\noperaterski upravljani kroz postojeće ugovore. Sintetički QA nije institucionalno\nodobrenje ni produkciona kalibracija. Datirane ilustracije prikazuju lokalno proverene tokove;\nstvarno stanje server izdanja proverava se zasebno."
+        ]
+      ],
+      "screen_sections": {
+        "4": [
+          "ISI-30D2-desktop-ai-overview.jpg",
+          "ISI-30D2-desktop-job-xai.jpg"
+        ],
+        "5": [
+          "ISI-30D2-mobile-review-success.jpg"
+        ],
+        "8": [
+          "ISI-30D2-desktop-readonly-boundaries.jpg"
+        ],
+        "10": [
+          "ISI-30D2-mobile-xai-boundaries.jpg"
+        ]
+      }
+    },
+    "RESULTS": {
+      "title": "Čitljivi rezultati XAI i citati",
+      "products": [
+        "SIMPA",
+        "ORDO"
+      ],
+      "screens": [
+        "ISI-30D3A-desktop-forecast.jpg",
+        "ISI-30D3A-desktop-not-estimated.jpg",
+        "ISI-30D3A-desktop-citations.jpg",
+        "ISI-30D3A-desktop-interval.jpg",
+        "ISI-30D3A-desktop-shap.jpg",
+        "ISI-30D3A-mobile-shap.jpg",
+        "ISI-30D3A-mobile-citations.jpg"
+      ],
+      "guide": "ISI-RESULT-EVIDENCE-GUIDE.md",
+      "sections": [
+        [
+          "1. Namena",
+          "Naslovljene tabele objašnjavaju sačuvani rezultat, ulaz, metodologiju i ograničenja.\nNe računaju novi rezultat niti potvrđuju istinitost izvornog nalaza."
+        ],
+        [
+          "2. Kontekst",
+          "SIMPA/ORDO, organizacija i radni prostor ostaju granice. Analitika, GIS, ekstrakcija\ni izveštaji koriste postojeća zasebna ovlašćenja i serversku revalidaciju izvora."
+        ],
+        [
+          "3. Polja i vrednosti",
+          "Svaki red navodi putanju polja i tekstualnu vrednost. 0 je nula; False je negativna\nlogička vrednost; „Nije navedeno“ je nedostajuće. Prazna struktura ne znači nultu\nmetričku vrednost. Dugi dokazi imaju izričito ograničenje prikaza, ne prećutnu kompletnost."
+        ],
+        [
+          "4. SIMPA rezultat",
+          "Pregledajte identitet modela/cilja, koeficijente i postojeći grafikon, fit/error,\ndijagnostiku, kalibraciju, otiske i production_eligible. Ne tumačite koeficijent\nkao kauzalni efekat. Tabele su prikaz postojeće validirane numeričke osnove."
+        ],
+        [
+          "5. SHAP",
+          "Posebno učitajte sačuvani podržani SIMPA OLS SHAP dokaz. Globalni doprinos, matrica,\nheatmap i lokalni waterfall ostaju dostupni uz proveru ugovora. Nova tabela prikazuje\nschema/method/fingerprint/background/provenance. SHAP opisuje doprinos modelu, ne\nistinitost LLM tvrdnje, kauzalnost ili generičku pouzdanost."
+        ],
+        [
+          "6. ORDO forecast",
+          "ESTIMATED prikazuje sačuvane tačke/intervale, backtest grafikon i tabelu. Proverite\ncoverage, rolling-origin plan, dostupnost metrika, dijagnostiku i poreklo.\nNOT_ESTIMATED ne dobija izmišljene tačke, nule, intervale ili metrike.\nORDO naive/seasonal-naive nema podržan SHAP. Interval nije generička verovatnoća."
+        ],
+        [
+          "7. Scenario",
+          "Scenario readiness nije prognoza efekta. NOT_ESTIMATED impact ostaje nenumerički.\nPregledajte razloge, pretpostavke, poreklo i nepodržana objašnjenja; nema automatskog\npretvaranja scenarija u prognozu ili preporuku."
+        ],
+        [
+          "8. GIS i ekstrakcija",
+          "GIS metapodaci prikazuju identitet/verziju/izvor; tačan GeoJSON je samo u opcionalnom\ntehničkom expander-u. Karte i rezultati imaju postojeću revalidaciju. Ekstrakcija\nprikazuje entitete, citate/start/end lokatore, potvrđeni ili nerešeni obuhvat,\nverzije i ljudski pregled. UNCALIBRATED ostaje ograničenje kvaliteta modela."
+        ],
+        [
+          "9. Povezani izveštaj i greške",
+          "Citirani nalaz, izvor, pregled i numerički dokaz imaju odvojene tabele/grafikone.\nVeza ne potvrđuje slaganje perioda/teritorije niti istinitost. Ako dokaz nije dostupan,\nproverite sesiju, prava i aktuelnu verziju. Osvežite pre ponavljanja; nema automatskog\nretry-ja, sirovih exception poruka ili zamenskog rezultata."
+        ],
+        [
+          "10. Dokaz i ograničenja",
+          "Otisci daju identitet/verziju dokaza, ne institucionalnu validaciju. Izvorni tekst\nprikazuje se kao tekst, ne izvršivi HTML. Sve postojeće domenske granice i grafički\nugovori ostaju. Sintetički QA nije produkcioni zaključak. Datirane ilustracije\nprikazuju postojeći rezultat, ne novo institucionalno odobrenje."
+        ]
+      ],
+      "screen_sections": {
+        "4": [
+          "ISI-30D3A-desktop-forecast.jpg",
+          "ISI-30D3A-desktop-not-estimated.jpg",
+          "ISI-30D3A-desktop-citations.jpg",
+          "ISI-30D3A-desktop-interval.jpg",
+          "ISI-30D3A-desktop-shap.jpg"
+        ],
+        "10": [
+          "ISI-30D3A-mobile-shap.jpg",
+          "ISI-30D3A-mobile-citations.jpg"
+        ]
+      }
+    },
+    "SECURITY": {
+      "title": "Nalog pristup i bezbednost sesija",
+      "products": [
+        "SIMPA",
+        "ORDO"
+      ],
+      "screens": [
+        "ISI-30D4-desktop-inventory.jpg",
+        "ISI-30D4-desktop-confirmation.jpg",
+        "ISI-30D4-desktop-receipt.jpg",
+        "ISI-30D4-mobile-assurance-form.jpg",
+        "ISI-30D4-mobile-receipt.jpg"
+      ],
+      "guide": "ISI-ACCOUNT-SECURITY-WORKFLOWS-GUIDE.md",
+      "sections": [
+        [
+          "1. Šta funkcija radi",
+          "Jedan ISI identitet može pristupati SIMPA i ORDO, uz zasebna prava za svaki proizvod.\nOvaj ekran prikazuje vaše sesije, potvrđuje postojeću lozinku za privilegovani rad\ni omogućava eksplicitan opoziv drugih sesija. Ne menja lozinku niti dodeljuje prava."
+        ],
+        [
+          "2. Ulazi i preduslovi",
+          "Prijavljen nalog i važeća sesija. Za pristup proizvodu potrebni su aktivno članstvo\nu organizaciji, organizacioni entitlement, aktivan pristup proizvodu, odgovarajuća\nuloga/dozvola i workspace. Uloga administratora nije automatski pristup svakom proizvodu."
+        ],
+        [
+          "3. Izlazi i potvrde",
+          "Pregled uređaja, vremena kreiranja, aktivnosti, isteka i statusa. Uspešan opoziv daje\npotvrdu i ponovo učitava pregled. HTTP204 je uspeh bez sadržaja. Greška ne znači uspeh.\nPotvrda lozinke važi za trenutnu sesiju; nije drugi faktor niti potvrda institucije."
+        ],
+        [
+          "4. Koraci korisnika",
+          "Otvorite Bezbednost naloga. Pregledajte sesije i oznaku trenutne sesije.\nZa jednu drugu aktivnu sesiju potvrdite „Potvrđujem opoziv ove druge sesije“, zatim\n„Opozovi sesiju“. Za grupni opoziv pregledajte obuhvat, eksplicitno potvrdite sve druge\nsesije i kliknite „Opozovi sve druge sesije“. Posle potvrde proverite novi status.\nPostojeću lozinku unesite lično samo u „Trenutna lozinka“ i „Potvrdi identitet“.\nLozinku, link poziva i reset token nikada ne kopirajte u Help, izveštaj ili poruku podršci."
+        ],
+        [
+          "5. Polja i opseg",
+          "Opis uređaja je ograničen tekst, ne mrežni identitet. Trenutna i opozvana sesija\nnemaju individualni opoziv. Grupni opoziv obuhvata sve vaše druge aktivne sesije\nu trenutku izvršenja, uključujući nove otvorene posle pregleda; trenutna ostaje aktivna.\nNova inventura/status/istek/uređaj ili druga trenutna sesija poništava staru potvrdu."
+        ],
+        [
+          "6. Pozivanje i pristup obe aplikacije",
+          "Administrator najpre proverava članstvo, ulogu, entitlement i pristup SIMPA i ORDO.\nPoziv nije aktivan nalog dok ga korisnik ne prihvati. Ne postoji javna samoregistracija.\nNovi korisnik lično postavlja lozinku u postojećem obrascu poziva; postojeći identitet\nmože prihvatiti poziv bez nove lozinke. Posle prijave bira organizaciju, proizvod\npa workspace. Ako proizvod nedostaje, administrator proverava prava; ne pravite drugi\nidentitet ili administratorski zaobilazni pristup. GoraNova testni nalog mora biti\npotvrđen na kontrolisanom server onboarding-u; lokalni primer nije dokaz aktivnog naloga."
+        ],
+        [
+          "7. Ograničenja i neizvesnost",
+          "SMTP je pending: novi email pozivi, verifikacija i reset nisu dokaz isporuke niti dostupnog\nSMTP servisa. Postojeći validni jednokratni linkovi i prijava rade po svojim pravilima.\nProdukcioni MFA upis/isporuka ostaju odloženi do stvarnog provajdera. Opoziv sesija\nne uklanja sačuvane domenske podatke niti menja članstvo, metodologiju ili prava."
+        ],
+        [
+          "8. Greške i oporavak",
+          "Ako pregled nije učitan, ne zaključujte da nema sesija. Osvežite pregled pre ponavljanja.\nPosle isteka prijavite se ponovo. Ako postoji nepoznata sesija, opozovite je i obavestite\nodgovornu osobu; lozinku menjajte lično kroz odobreni tok. Recovery zahtev ne otkriva\nda li email nalog postoji; u pending režimu kontaktirajte administratora."
+        ],
+        [
+          "9. Ljudska odgovornost",
+          "Vi birate sesiju i potvrđujete posledice. Administrator upravlja pristupom proizvoda\nuz najmanje potrebne dozvole. Potvrda lozinke ne zamenjuje odobrenje privilegovane\noperacije. Ne delite nalog radi pristupa podacima druge institucije."
+        ],
+        [
+          "10. Dokazi i provera",
+          "Server ostaje autoritet za own/foreign/current granice, rokove i audit. Lokalni\nsintetički testovi i snimci proveravaju GUI, ne stvarni GoraNova nalog ili institucionalno\nodobrenje. Datirane ilustracije ovog toka nalaze se u detaljnom Help-u.\nStvarni pristup naloga i stanje server izdanja proveravaju se zasebno."
+        ]
+      ],
+      "screen_sections": {
+        "4": [
+          "ISI-30D4-desktop-inventory.jpg",
+          "ISI-30D4-desktop-confirmation.jpg"
+        ],
+        "5": [
+          "ISI-30D4-desktop-receipt.jpg",
+          "ISI-30D4-mobile-receipt.jpg"
+        ],
+        "10": [
+          "ISI-30D4-mobile-assurance-form.jpg"
+        ]
+      }
     }
   },
   "assets": {
@@ -937,6 +2111,612 @@
       "caption": "ORDO mobilna karta",
       "kind": "SYNTHETIC",
       "captured": "2026-10-08"
+    },
+    "ISI-30A-desktop-simpa.jpg": {
+      "caption": "Navigacija i kontekst — SIMPA pregled i kontekst",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "4721e060c1168dc39938005b2ed529bc570b43b7f21ec8605227b4b079c2aa65"
+    },
+    "ISI-30A-desktop-ordo-scenarios.jpg": {
+      "caption": "Navigacija i kontekst — ORDO scenariji",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "a65e2efef32fe32f01c64254d3ff3f957ef4eb3f354f3fdf033049fea9a29924"
+    },
+    "ISI-30A-desktop-status-confirmation.jpg": {
+      "caption": "Navigacija i kontekst — Potvrda statusa scenarija",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "e51d48e9b725701c2d1001e5e68633c17111c428a6a1c2af549c34dab9dce972"
+    },
+    "ISI-30A-mobile-sidebar.jpg": {
+      "caption": "Navigacija i kontekst — Izbor radnog konteksta na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "b40a196747c129f935b0e57570780648f8a3313841714445cb29cac1efefb078"
+    },
+    "ISI-30A-mobile-ordo-scenarios.jpg": {
+      "caption": "Navigacija i kontekst — ORDO scenariji na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "7db9ef49f8b9442c91af5a554f4b4cb3f98f84f3e07f43585ffda44ba4d335d8"
+    },
+    "ISI-30A-mobile-review-form.jpg": {
+      "caption": "Navigacija i kontekst — Obrazac stručnog pregleda na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "d85a4bd2dab3aede537a55ab18ae17ccedbc59eda2faaf61103b6447d901f136"
+    },
+    "ISI-30B-mobile-version-created.jpg": {
+      "caption": "Verzije izvora kvalitet i obrada — Registrovana nova verzija na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "066c5cbcd0ffb1eb9827f1138e0b5f547dc5468f349bd2001463aef7a1ce480e"
+    },
+    "ISI-30B-mobile-readonly.jpg": {
+      "caption": "Verzije izvora kvalitet i obrada — Pregled bez prava izmene na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "81f9611dfe3a67d21d47501b6c6e376a1456f2744150ddaa06874fe1da17e931"
+    },
+    "ISI-30B-mobile-retry.jpg": {
+      "caption": "Verzije izvora kvalitet i obrada — Potvrda ponavljanja neuspele obrade na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "2cb82d83e8f7bd1aeb16ceb6552bc344912ff90f784a818c390afa295bc264a8"
+    },
+    "ISI-30B-desktop-source.jpg": {
+      "caption": "Verzije izvora kvalitet i obrada — Izvor verzija i kvalitet",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "cd6a0c7d291a87bb09ed8fb02d651ccbb81d0db919fed26a64fcb1b64939b421"
+    },
+    "ISI-30B-desktop-output.jpg": {
+      "caption": "Verzije izvora kvalitet i obrada — Kontrolisani izlaz obrade",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "b9b70867d30b8a8a5aecdac14f3d9cda68399a150d1d57bfb1c4ad8ebb000921"
+    },
+    "ISI-30B-mobile-output.jpg": {
+      "caption": "Verzije izvora kvalitet i obrada — Kontrolisani izlaz obrade na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "952698001b40a08dee783b8147e5ba40a2533351a866872ef73cfcb38af9f615"
+    },
+    "ISI-30B-desktop-evaluation.jpg": {
+      "caption": "Verzije izvora kvalitet i obrada — Ocena kvaliteta i svežine",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "28d9ebe679763799e5afe81685e8e1d96c7d4c72eb60a198e26cf3d4c6dd3be2"
+    },
+    "ISI-30B2-final-mobile-mapping.jpg": {
+      "caption": "Konektori mapiranje i kontrolisana obrada — Mapiranje kolona na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "0e0d6cb7a8adf0acf25a95a82d2134220df8cc114597c6bb878bbc5772f689e5"
+    },
+    "ISI-30B2-final-desktop-policy-validation.jpg": {
+      "caption": "Konektori mapiranje i kontrolisana obrada — Provera operativne politike",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "18ceedc7ee0f8d81c0c36f6cdadaaafa54621dbf7e78732d8f866535a1c5190e"
+    },
+    "ISI-30B2-final-desktop-ingest-created.jpg": {
+      "caption": "Konektori mapiranje i kontrolisana obrada — Sačuvana kontrolisana obrada",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "9893477884a466f8c70f6e6ec43f2ea40c1fc7915fa6280e895ddabd561b6e52"
+    },
+    "ISI-30B2-final-desktop-mapping-created.jpg": {
+      "caption": "Konektori mapiranje i kontrolisana obrada — Sačuvano mapiranje kolona",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "0650f74b1d4666e8a759081034239dcf4852499ec57c6210da94c8d234b25656"
+    },
+    "ISI-30B2-final-desktop-records-created.jpg": {
+      "caption": "Konektori mapiranje i kontrolisana obrada — Sačuvana politika identiteta zapisa",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "c175634ceb3764f7525cbf3493bb401a6d2aaedb3695eab9d7642652ca43551e"
+    },
+    "ISI-30B2-final-desktop-policy-created.jpg": {
+      "caption": "Konektori mapiranje i kontrolisana obrada — Sačuvana operativna politika",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "6f850fcc36260b967600cfcac8817d0accb1f8cb0cd4874a190599f76dc2b6e3"
+    },
+    "ISI-30B2-final-mobile-connector.jpg": {
+      "caption": "Konektori mapiranje i kontrolisana obrada — Konektor i aktivni ugovor na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "7cd2b1b90e1fb09059ea0d523a06d7c222c7af4a6ea93e72798fa6ae65f0fd47"
+    },
+    "ISI-30B2-final-mobile-ingest-created.jpg": {
+      "caption": "Konektori mapiranje i kontrolisana obrada — Sačuvana kontrolisana obrada na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "c276b222e140d71035f5dc0e1a1d87c51ae3311eba8c7de8a1e58db78028c832"
+    },
+    "ISI-30B3-mobile-lifecycle.jpg": {
+      "caption": "Analitički skupovi i feature verzije — Životni ciklus artefakta na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "c0690d7c702c519e569e3e18c402a0e52771d5de2f160d259aba91133576afd1"
+    },
+    "ISI-30B3-desktop-snapshot.jpg": {
+      "caption": "Analitički skupovi i feature verzije — Verzija analitičkog skupa",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "74666dcac6ad3887a150a732c721c86374c09bd2b858f16f87ed7bfb50095c0e"
+    },
+    "ISI-30B3-desktop-registry.jpg": {
+      "caption": "Analitički skupovi i feature verzije — Registar i izbor",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "6f513afca9955819f8cbed5e218aa6869692dd1fbc0c669533090b3e3a5dcc0e"
+    },
+    "ISI-30B3-mobile-confirmation.jpg": {
+      "caption": "Analitički skupovi i feature verzije — Izričita potvrda operacije na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "94d13ff25e024f267460cc633bf9e5ef0e5200997b004df47f5b70b7feaf3e0e"
+    },
+    "ISI-30B3-mobile-feature.jpg": {
+      "caption": "Analitički skupovi i feature verzije — Feature verzija na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "cc429a0f3a59e3ed521017fb76aae74d84ac6a8d37d70ae4f66fc44f3dd5d8fe"
+    },
+    "ISI-30B3-desktop-contract.jpg": {
+      "caption": "Analitički skupovi i feature verzije — Ugovor polja",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "ba9adfb41634c4b7d6c21398286ceba7dd51faeb5b35ca4ebfd2325a6d14bb52"
+    },
+    "ISI-30B3-desktop-feature-registry.jpg": {
+      "caption": "Analitički skupovi i feature verzije — Feature registar",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "ce7dcce2a27136373785d74b45a59d161781797dd56f4e0269a285ccac8800c2"
+    },
+    "ISI-30B3-mobile-feature-lifecycle.jpg": {
+      "caption": "Analitički skupovi i feature verzije — Životni ciklus feature verzije na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "4e027ecdaea0d7bcee38ae2d858dc3b9d71d3d0b52ea1cbc3212ec0d3561f0d0"
+    },
+    "ISI-30B4A-desktop-backfill.jpg": {
+      "caption": "Backfill replay i neuspele obrade — Potvrda istorijske obrade",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "b0d2959a54dfef76dcf9714a99de89f960b7c2722215c8ae7d9c630e29ff4c87"
+    },
+    "ISI-30B4A-mobile-resolve.jpg": {
+      "caption": "Backfill replay i neuspele obrade — Pregled i razrešenje stavke na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "9cded274bc6bf72225033dfab5d680dad07aca4585f931448bee5e3efb5eaf2a"
+    },
+    "ISI-30B4A-mobile-requeue.jpg": {
+      "caption": "Backfill replay i neuspele obrade — Potvrda ponovnog raspoređivanja na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "94bb3a11944beda733426db7bd2f77d93d54e930beef47b8a9323fa5d50635d3"
+    },
+    "ISI-30B4A-desktop-replay.jpg": {
+      "caption": "Backfill replay i neuspele obrade — Ponovna obrada nepromenljivog sadržaja",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "9a9467b849b2f74610aa122c02d802f9a6b41c5312e9a2c31d75039478ef21d4"
+    },
+    "ISI-30B4B-mobile-confirmation.jpg": {
+      "caption": "Izvorni governance i karantin — Izričita potvrda operacije na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "8b13c6c277668b01b7ae3f12bfa4ea798e0191617ee65cc148947ff3b5f28b7c"
+    },
+    "ISI-30B4B-desktop-record-comparison.jpg": {
+      "caption": "Izvorni governance i karantin — Poređenje aktuelnog i karantinskog zapisa",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "bddf3d93aa8829d54ca009dfbf0ff413bbe816c7e474e8940eb836b81d8e9525"
+    },
+    "ISI-30B4B-mobile-record-decision.jpg": {
+      "caption": "Izvorni governance i karantin — Odluka o karantinskom zapisu na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "e1b74ff4f885944da4a10d0d9524c60aef19c39b618b6ebe7eeeafc78ea6a1e3"
+    },
+    "ISI-30B4B-desktop-profile.jpg": {
+      "caption": "Izvorni governance i karantin — Governance profil izvora",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "3ff75290c69b4acddafec04fec852807fdbf84d426420389ab54d0b4147f9b83"
+    },
+    "ISI-30B4C-mobile-proposal.jpg": {
+      "caption": "Čuvanje hold anonimizacija i izvoz — Predlog anonimizacije na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "1b5916fbe102a732321fb67ef10d069681da3de82c5f0521d055ad9a83a24568"
+    },
+    "ISI-30B4C-mobile-read-only.jpg": {
+      "caption": "Čuvanje hold anonimizacija i izvoz — Pregled bez prava izmene na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "ccc0635b422047088583d8e50263b8d01861d034654c9f0defb97f7c29dce148"
+    },
+    "ISI-30B4C-desktop-hold.jpg": {
+      "caption": "Čuvanje hold anonimizacija i izvoz — Zabrana fizičkog brisanja",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "ad930c3f6668998db23035d99cc858058e6402cda6410393ad67c2a4a433046c"
+    },
+    "ISI-30B4C-desktop-export.jpg": {
+      "caption": "Čuvanje hold anonimizacija i izvoz — Priprema i preuzimanje artefakta",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "c1628f49521d1646cffc28a0a7027efc7e47198aa3b3b1632e31344865270f59"
+    },
+    "ISI-30B4C-mobile-export.jpg": {
+      "caption": "Čuvanje hold anonimizacija i izvoz — Priprema i preuzimanje artefakta na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "e654fd9c1240d482b2d6ed158df32cfb7399c55a4210c488647ecf1b57c3e91d"
+    },
+    "ISI-30C1-mobile-statistical.jpg": {
+      "caption": "SIMPA metodologija i referentne provere — Statistički ugovor i granice na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "fa5893b196166b46135753f09bf49d62dfda2783c6f0d5fa0feeea824222e1fe"
+    },
+    "ISI-30C1-desktop-review.jpg": {
+      "caption": "SIMPA metodologija i referentne provere — Pregled i odluka",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "f9461f8917d7a9f0abc8d8eca969a8e8dd6db3bcd450b4a9c36cf454899a7e13"
+    },
+    "ISI-30C1-mobile-review.jpg": {
+      "caption": "SIMPA metodologija i referentne provere — Pregled i odluka na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "6e026f49e3330bebe36c03a7a0e5629c6e9d607c6ee8aedb63638a358f31d506"
+    },
+    "ISI-30C1-desktop-draft.jpg": {
+      "caption": "SIMPA metodologija i referentne provere — Metodološki nacrt",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-10",
+      "sha256": "426f8bc23c2af2f37421bf93cd5f95346886d8ed03411caa530531b66194f9e3"
+    },
+    "ISI-30C2A-desktop-authoring-final.jpg": {
+      "caption": "ORDO metodologija i prognoze — Autorski parametri",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "5723d25e65a44dd7439e77a3201ba7917b0e08796997d96aa3d15112fe5c8b75"
+    },
+    "ISI-30C2A-desktop-forecast-final.jpg": {
+      "caption": "ORDO metodologija i prognoze — Prognoza i vremenski dokaz",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "b1a1854b1b5493c5536c5cd139fb430c64239a5050dfa0eaf126e874c65ff39b"
+    },
+    "ISI-30C2A-desktop-review-final.jpg": {
+      "caption": "ORDO metodologija i prognoze — Pregled i odluka",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "d0292900b562c2942f3619978663b859b707dfac273f57b1e5e985cb9fd5b109"
+    },
+    "ISI-30C2A-desktop-validated-final.jpg": {
+      "caption": "ORDO metodologija i prognoze — Potvrđeno stanje metodologije",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "74861c5ebdd4afda561b59eaf2c3c2f431c4518067b14f6ee3208505e3426c38"
+    },
+    "ISI-30C2A-mobile-authoring-final.jpg": {
+      "caption": "ORDO metodologija i prognoze — Autorski parametri na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "95de3855c1b45ace1720258f58031d1406cf3a0acaf1dd998d8780e85d928d84"
+    },
+    "ISI-30C2A-mobile-readonly-final.jpg": {
+      "caption": "ORDO metodologija i prognoze — Pregled bez prava izmene na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "caff5f013f97c52ebab80d02bc6c2a701eaf781724e159fe33e11818f9bbd63e"
+    },
+    "ISI-30C2A-mobile-validation-final.jpg": {
+      "caption": "ORDO metodologija i prognoze — Potvrda validacije na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "517356346b8086b35a4d45eba336f8a28d385c112523875fece7977f7b066104"
+    },
+    "ISI-30C2B1-desktop-explicit-inputs.jpg": {
+      "caption": "ORDO prostorna agregacija — Izričit izbor ulaza",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "1afb684f7dd8e73b9d430452e9e06869e1c13f8340a20cdaea018d36cfc30d75"
+    },
+    "ISI-30C2B1-mobile-readonly.jpg": {
+      "caption": "ORDO prostorna agregacija — Pregled bez prava izmene na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "03a392ce08e5561c0ef24f54d425e584c54d917a28d9ec71fe72533d273024e1"
+    },
+    "ISI-30C2B1-mobile-reset.jpg": {
+      "caption": "ORDO prostorna agregacija — Poništena prethodna potvrda na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "bcb513dd7d94a7778e6bf3bd8cda9fcbfb6101f6e53a73f786cb8721bf98e6ca"
+    },
+    "ISI-30C2B1-desktop-review.jpg": {
+      "caption": "ORDO prostorna agregacija — Pregled i odluka",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "72369f20316ce735bc22d41c2e5883d1893923ca1a4a0459b91b2ae52eaddd99"
+    },
+    "ISI-30C2B1-mobile-review.jpg": {
+      "caption": "ORDO prostorna agregacija — Pregled i odluka na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "244c6f737a459cb6e89b77fc98c75bc5f381b98c706041147ff0bc5df66a3a76"
+    },
+    "ISI-30C2B1-desktop-success.jpg": {
+      "caption": "ORDO prostorna agregacija — Potvrda uspešne operacije",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "71b5c622a03555675205f1781291b3f6b3d16dae1fc111d86472ce735563d9e3"
+    },
+    "ISI-30C2B2-mobile-success-reset.jpg": {
+      "caption": "ORDO statističke specifikacije — Rezultat i poništene prethodne potvrde na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "63e90423615d4916de29c295dc9a255fffdd312cd223164c38c2979eebf77260"
+    },
+    "ISI-30C2B2-mobile-readonly.jpg": {
+      "caption": "ORDO statističke specifikacije — Pregled bez prava izmene na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "62f533536274887ba963ff605eb2ebbf3d21525d9bb06a6ef84d6604d05258b2"
+    },
+    "ISI-30C2B2-desktop-authoring-fields.jpg": {
+      "caption": "ORDO statističke specifikacije — Autorska polja specifikacije",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "0da9c375c6dd83c7159eab2f614bf9e78ecf368a16fa5f7303f0bff21c4ce580"
+    },
+    "ISI-30C2B2-desktop-success-reset.jpg": {
+      "caption": "ORDO statističke specifikacije — Rezultat i poništene prethodne potvrde",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "b2981ffd4ae984cafc36f10cd02c09fc6c2db0269a96656afa338f04205772c1"
+    },
+    "ISI-30C2B2-desktop-authoring-success.jpg": {
+      "caption": "ORDO statističke specifikacije — Potvrda registrovanog nacrta",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "313e1550297c0bd4594e41be6b85fb9ccb0200ee5260a749e1c943b6e98c89fb"
+    },
+    "ISI-30C2B2-desktop-specification.jpg": {
+      "caption": "ORDO statističke specifikacije — Sačuvana specifikacija",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "3aacf523d004e99bde673bb854e9c9897043be60127fc4d32a33e69e51c29ffb"
+    },
+    "ISI-30C2B2-mobile-review-confirmation.jpg": {
+      "caption": "ORDO statističke specifikacije — Odluka i potvrda pregleda na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "ec9e83c57a6c1415c7810976539041eba1cf72711a69005c13a1efba23d4d7ab"
+    },
+    "ISI-30D1-desktop-confirmation.jpg": {
+      "caption": "Administracija i prava pristupa — Izričita potvrda operacije",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "9ba8fa90270682d5670f4b0e3a84a6d44757296138d7b9ee16ff37528aac4baf"
+    },
+    "ISI-30D1-desktop-readonly.jpg": {
+      "caption": "Administracija i prava pristupa — Pregled bez prava izmene",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "75df34f6ebb2daa8371e0f6427eb3f4057ae80711816a3687fa84736b27943df"
+    },
+    "ISI-30D1-desktop-review.jpg": {
+      "caption": "Administracija i prava pristupa — Pregled i odluka",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "5772055d766e746fcaa6ff0e5fb9fe80798ba3f554a9188e48008e0209ac027f"
+    },
+    "ISI-30D1-desktop-session-review.jpg": {
+      "caption": "Administracija i prava pristupa — Pregled sesija člana",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "69011dda71ff0007023cada875b33c97d68275f14e096b7bdf0d7d856ca4199a"
+    },
+    "ISI-30D1-desktop-success.jpg": {
+      "caption": "Administracija i prava pristupa — Potvrda uspešne operacije",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "0bbdb35013a6c8c325ac319c3f1c95faedaa0f0d79d947041ba1cc179e8e0977"
+    },
+    "ISI-30D1-mobile-actions.jpg": {
+      "caption": "Administracija i prava pristupa — Administrativne operacije i potvrde na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "9d68215a466822c6613c3989f4be43f916016d2e82f1c2bd5f564ca749c5c100"
+    },
+    "ISI-30D1-mobile-invitation.jpg": {
+      "caption": "Administracija i prava pristupa — Poziv i granice isporuke na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "4046a9805026dc8c40e891abf455bf8d2f7001e694f22106d983892ea30aa3f2"
+    },
+    "ISI-30D1-mobile-session-review.jpg": {
+      "caption": "Administracija i prava pristupa — Pregled sesija člana na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "305786e83fd0f4b79c8b0773252ebae55ad212e6f58b6ba48f98cdcf9b880092"
+    },
+    "ISI-30D1-mobile-workspace.jpg": {
+      "caption": "Administracija i prava pristupa — Radni prostor i status na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "8aa6feefa83d101f786438fc7ce76acdbd6a2451137fd2bb1d7d3eace980e781"
+    },
+    "ISI-30D2-desktop-readonly-boundaries.jpg": {
+      "caption": "AI poslovi dokazi i ljudski pregled — Granice pregleda bez prava izmene",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "07d03a1536cd6228705cbb48fe810a9cb7abf5b2deee35869171210978ca869d"
+    },
+    "ISI-30D2-mobile-xai-boundaries.jpg": {
+      "caption": "AI poslovi dokazi i ljudski pregled — XAI i nepodržana objašnjenja na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "11c950e2087eaa84348431b019774950ff7261ea330a8f7f975958887916153d"
+    },
+    "ISI-30D2-desktop-ai-overview.jpg": {
+      "caption": "AI poslovi dokazi i ljudski pregled — AI registar i izbor",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "a9d006cddb4fea9e7edafdc4c65005f0c166dffd97a6c20590a531ee42dba44f"
+    },
+    "ISI-30D2-mobile-review-success.jpg": {
+      "caption": "AI poslovi dokazi i ljudski pregled — Potvrda ljudskog pregleda na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "36c15236e3d8ef2c1d302e7e4a7b1ad345ce4131c20a8abdae8e6b9e617c3d93"
+    },
+    "ISI-30D2-desktop-job-xai.jpg": {
+      "caption": "AI poslovi dokazi i ljudski pregled — AI posao i XAI dokaz",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "bf0c79f3b4396e8fa3e8dc22f6fd77cd619e11522d6bbf7cbd760e3169b6949d"
+    },
+    "ISI-30D3A-desktop-forecast.jpg": {
+      "caption": "Čitljivi rezultati XAI i citati — Prognoza i vremenski dokaz",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "61633d6b06b0afbf50203d88365a0e8bbaa7b2707471fed902c1e02670cb62ad"
+    },
+    "ISI-30D3A-desktop-not-estimated.jpg": {
+      "caption": "Čitljivi rezultati XAI i citati — Razlog neizračunatog rezultata",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "48a3cbea58c8b20ab7e72c0811c9d651613bf78f6611c9c7db95a45a16d94826"
+    },
+    "ISI-30D3A-desktop-citations.jpg": {
+      "caption": "Čitljivi rezultati XAI i citati — Citati i poreklo nalaza",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "5102639e5b97bd432105690f2eaa8018f1a39b7f41d6393f2880b8fd0e7a4cd3"
+    },
+    "ISI-30D3A-desktop-interval.jpg": {
+      "caption": "Čitljivi rezultati XAI i citati — Interval postojećeg rezultata",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "11e5b182e84d19e1ede5b8a16d75b51872063f50c3ba5bc62633cf4f6d885b02"
+    },
+    "ISI-30D3A-desktop-shap.jpg": {
+      "caption": "Čitljivi rezultati XAI i citati — SHAP matrica i doprinosi",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "7f90c28eaad965573f9ef70487a3712a9466e74976c2dcb43c6a8eb496d3a60c"
+    },
+    "ISI-30D3A-mobile-shap.jpg": {
+      "caption": "Čitljivi rezultati XAI i citati — SHAP matrica i doprinosi na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "4d1c46b239a63f336ce033079e8d411c6ef7240b7f94acd81e47847e54d161b7"
+    },
+    "ISI-30D3A-mobile-citations.jpg": {
+      "caption": "Čitljivi rezultati XAI i citati — Citati i poreklo nalaza na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "2d1143df1b5e6eebb06b08e39be43c6314244e695951a352be6f7264e37b341b"
+    },
+    "ISI-30D3B-desktop-explicit-selection.jpg": {
+      "caption": "Izveštaji pregled objavljivanje i izvoz — Izričit izbor izvora",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "7b2ccbdef443c963a5a871c5799eb54610a5701afad9cd9022cb93b6b35ef916"
+    },
+    "ISI-30D3B-desktop-linked-inputs.jpg": {
+      "caption": "Izveštaji pregled objavljivanje i izvoz — Polja i potvrde povezanog nalaza",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "38a9a330223123f131836d1e2e74c37da16a053fc7564d94814f0863ed874cb8"
+    },
+    "ISI-30D3B-desktop-draft-evidence.jpg": {
+      "caption": "Izveštaji pregled objavljivanje i izvoz — Nacrt sa izvorima i nalazom",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "94f2bab450992d49ce0e5ada457b7f582220923e97c64b3d32261237ee0b7b1a"
+    },
+    "ISI-30D3B-desktop-review-confirmation.jpg": {
+      "caption": "Izveštaji pregled objavljivanje i izvoz — Odluka i potvrda pregleda",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "1eaf379c0110cabef24387fb9162706dc6f54943f397dad06958775729dfb850"
+    },
+    "ISI-30D3B-desktop-publish-confirmation.jpg": {
+      "caption": "Izveštaji pregled objavljivanje i izvoz — Zasebna potvrda objavljivanja",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "1a9e36432fa5fc22b35d6a32a260eefe9673074dd9ef4d7c66806ac9fb036749"
+    },
+    "ISI-30D3B-desktop-export.jpg": {
+      "caption": "Izveštaji pregled objavljivanje i izvoz — Priprema i preuzimanje artefakta",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "e1eb9a0e5eec1c4f2675e80253da52d4a9729593b7011a25652e84832c41e6ac"
+    },
+    "ISI-30D3B-mobile-export.jpg": {
+      "caption": "Izveštaji pregled objavljivanje i izvoz — Priprema i preuzimanje artefakta na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "abdc349a6beef6f5e6ae8cec83b12b783604107184405f9f7f366408c9c9d6d6"
+    },
+    "ISI-30D3B-mobile-readonly.jpg": {
+      "caption": "Izveštaji pregled objavljivanje i izvoz — Pregled bez prava izmene na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "d22393bbb9ea83088d68f886da0908c9117c3a0ce71e25ff35bcf2baad9b67a8"
+    },
+    "ISI-30D3B-mobile-ordo-context.jpg": {
+      "caption": "Izveštaji pregled objavljivanje i izvoz — Odvojeni ORDO kontekst na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "d2e778309c1b11f84800c3a72bc61bca28edc5b520240cc255a59a3e7e7e5d56"
+    },
+    "ISI-30D4-desktop-inventory.jpg": {
+      "caption": "Nalog pristup i bezbednost sesija — Obrazac i pregled naloga",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "5be7d8833bdd39a8795ede96b1ec752bdea96f7101e8970eecd30bd82e9dfd79"
+    },
+    "ISI-30D4-desktop-confirmation.jpg": {
+      "caption": "Nalog pristup i bezbednost sesija — Izričita potvrda operacije",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "0a648ebf134000654dee3139d9b7f296d95fc2d468d8eff3ab7d9f656421bb5d"
+    },
+    "ISI-30D4-desktop-receipt.jpg": {
+      "caption": "Nalog pristup i bezbednost sesija — Potvrđen rezultat opoziva",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "d8120942492ecb1a15d04b81f1b07e5d88c375774025bb089ae6b79db6aa7b2a"
+    },
+    "ISI-30D4-mobile-assurance-form.jpg": {
+      "caption": "Nalog pristup i bezbednost sesija — Obrazac lične potvrde identiteta na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "fc6e35ee6c576b43b63045a93ce25d1c166bc8589aad1797af7207adf779a665"
+    },
+    "ISI-30D4-mobile-receipt.jpg": {
+      "caption": "Nalog pristup i bezbednost sesija — Potvrđen rezultat opoziva na mobilnom ekranu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-11",
+      "sha256": "f356fa519abd3ff18729e604cdd121d4a2c325c1bdb1840aec06bfc406f21f1b"
     }
   }
 }

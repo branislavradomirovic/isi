@@ -27,5 +27,5 @@
 9. **Ograničenja:** nema automatske metodološke ili institucionalne validacije, imputacije,
    popravke karantina ili AI odobrenja. Samo postojeći pinovani ugovori i sadržaj.
 10. **Evidencija:** sačuvani ID obrade/stavke, otisci, vezane politike i audit ostaju
-    dostupni ovlašćenim korisnicima. Sintetičke QA slike i Word parity završavaju se30E;
-    stvarni acceptance/deployment30F. Ne unosite tajne ili lične podatke u obrazloženje.
+    dostupni ovlašćenim korisnicima. Datirane sintetičke ilustracije prikazuju ovaj tok u Help-u;
+    stanje stvarnog izdanja i izvora proverava se zasebno. Ne unosite tajne ili lične podatke u obrazloženje.

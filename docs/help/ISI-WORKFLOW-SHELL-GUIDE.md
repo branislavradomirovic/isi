@@ -1,7 +1,7 @@
 # Radni kontekst i ORDO scenariji
 
-Status: lokalni ISI-30A kandidat; nije novo objavljeno izdanje. Prikaz ekrana i
-Word dopuna ostaju pending dok browser provera ne bude dostupna.
+Radni tok je lokalno implementiran i pregledan. Datirane ilustracije su dostupne
+u detaljnom Help-u; stanje stvarnih podataka i server izdanja proverava se zasebno.
 
 ## Radni kontekst
 

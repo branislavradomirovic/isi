@@ -50,5 +50,5 @@ retry-ja, sirovih exception poruka ili zamenskog rezultata.
 ## 10. Dokaz i ograničenja
 Otisci daju identitet/verziju dokaza, ne institucionalnu validaciju. Izvorni tekst
 prikazuje se kao tekst, ne izvršivi HTML. Sve postojeće domenske granice i grafički
-ugovori ostaju. Sintetički QA nije produkcioni zaključak. Akcione ilustracije i
-Word parity30E ostaju predmet dokumentacione provere; finalni checkpoint je30F.
+ugovori ostaju. Sintetički QA nije produkcioni zaključak. Datirane ilustracije
+prikazuju postojeći rezultat, ne novo institucionalno odobrenje.

@@ -54,5 +54,5 @@ sirove poruke servera sa privatnim request poljima.
 Pregled ne promoviše model, ne menja provider, ne bira champion i ne objavljuje izveštaj.
 Registracija/benchmark/threshold/promotion/circuit i evaluaciono izvršavanje ostaju
 operaterski upravljani kroz postojeće ugovore. Sintetički QA nije institucionalno
-odobrenje ni produkciona kalibracija. Ilustracije i Word parity ostaju30E; hosted
-acceptance i server dokaz pripadaju30F.
+odobrenje ni produkciona kalibracija. Datirane ilustracije prikazuju lokalno proverene tokove;
+stvarno stanje server izdanja proverava se zasebno.

@@ -139,7 +139,7 @@ The ORDO-owned matrix rows/actions become `VERIFIED` through ISI-24D tests. Glob
 
 **Koraci:** pročitajte model/skaliranje i legendu, pregledajte grafikon, uporedite sa izvornom tabelom, proverite fingerprint i metodološka ograničenja, zatim obavite human review.
 
-**Polja/stanja:** numerička nula ostaje zero; missing interval je unavailable. Nepodržani schema/model, neispravni brojevi ili intervali daju poruku umesto izmišljenog grafikona. NOT_ESTIMATED nema nultu prognozu. SHAP ostaje pending 29D.
+**Polja/stanja:** numerička nula ostaje zero; missing interval je unavailable. Nepodržani schema/model, neispravni brojevi ili intervali daju poruku umesto izmišljenog grafikona. NOT_ESTIMATED nema nultu prognozu. ORDO prognoze prikazuju sačuvane tačke i intervale; SHAP matrice pripadaju podržanom SIMPA numeričkom modelu i nisu objašnjenje ORDO prognoze ili LLM teksta.
 
 **Primer:** coefficient estimate=0 je validna tačka; missing CI nije zero-width interval. **Non-goals:** grafikoni nisu uzročni efekti, policy zaključci ili AI confidence score. Nema novih residual/calibration tačaka kada nisu sačuvane.
 

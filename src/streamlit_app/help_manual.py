@@ -1,4 +1,5 @@
 """Trusted illustrated manual shared by the existing product Help surfaces."""
+
 from pathlib import Path
 import hashlib
 import json
@@ -8,11 +9,16 @@ import streamlit as st
 ROOT = Path(__file__).resolve().parents[2] / "docs/help"
 PUBLIC = frozenset({"ISI-H01", "ISI-H02", "ISI-H03", "ISI-H04", "ISI-H05", "ISI-H11"})
 LABELS = (
-    ("Šta funkcija radi", "what"), ("Kada se koristi", "when"),
-    ("Pristup i odgovornost", "roles_permissions"), ("Postupak korak po korak", "steps"),
-    ("Polja i statusi", "fields_statuses"), ("Primer upotrebe", "example"),
-    ("Granice funkcije", "non_goals"), ("Greške i oporavak", "errors_recovery"),
-    ("Ograničenja", "limitations"), ("Izvori i ljudski pregled", "provenance_review"),
+    ("Šta funkcija radi", "what"),
+    ("Kada se koristi", "when"),
+    ("Pristup i odgovornost", "roles_permissions"),
+    ("Postupak korak po korak", "steps"),
+    ("Polja i statusi", "fields_statuses"),
+    ("Primer upotrebe", "example"),
+    ("Granice funkcije", "non_goals"),
+    ("Greške i oporavak", "errors_recovery"),
+    ("Ograničenja", "limitations"),
+    ("Izvori i ljudski pregled", "provenance_review"),
 )
 
 
@@ -38,8 +44,16 @@ def image_bytes(name, metadata):
 def _screens(data, names):
     for name in names:
         metadata = data["assets"][name]
-        kind = "lokalni sintetički primer" if metadata["kind"] == "SYNTHETIC" else "ranije pregledan server — stanje podataka iz tog pregleda"
-        st.image(image_bytes(name, metadata), caption=f'{metadata["caption"]} · {kind} · {metadata["captured"]}', width="stretch")
+        kind = (
+            "lokalni sintetički primer"
+            if metadata["kind"] == "SYNTHETIC"
+            else "ranije pregledan server — stanje podataka iz tog pregleda"
+        )
+        st.image(
+            image_bytes(name, metadata),
+            caption=f"{metadata['caption']} · {kind} · {metadata['captured']}",
+            width="stretch",
+        )
 
 
 def render_topic(topic, *, public=False):
@@ -48,8 +62,10 @@ def render_topic(topic, *, public=False):
         return
     data = manual()
     detail = data["topics"][topic["id"]]
-    st.markdown(f'### {topic["title"]}')
-    st.info("Ekrani u uputstvu prikazuju dokumentovani primer i datum snimanja. Stvarni podaci i dostupne radnje zavise od vašeg konteksta i dozvola.")
+    st.markdown(f"### {topic['title']}")
+    st.info(
+        "Ekrani u uputstvu prikazuju dokumentovani primer i datum snimanja. Stvarni podaci i dostupne radnje zavise od vašeg konteksta i dozvola."
+    )
     for label, field in LABELS:
         st.markdown(f"**{label}**")
         if field == "steps":
@@ -61,10 +77,15 @@ def render_topic(topic, *, public=False):
             st.write(topic[field])
         if field == "fields_statuses" and detail["fields"]:
             st.table([{"Polje ili opcija": key, "Značenje": text} for key, text in detail["fields"]])
-    st.markdown("**Dokumentovano stanje pregledanog servera**")
+    st.markdown("**Dostupnost i datum prikaza**")
     st.write(detail["availability"])
     if topic["id"] in {"ISI-H03", "ISI-H04", "ISI-H05", "ISI-H11"}:
         st.warning("SMTP je pending po odluci vlasnika. Ne očekujte novu produkcionu email isporuku.")
+    if detail.get("related_chapters"):
+        st.caption(
+            "Detaljni korisnički tokovi: "
+            + "; ".join(data["chapters"][code]["title"] for code in detail["related_chapters"])
+        )
     for title, text in detail.get("sections", []):
         st.markdown("#### " + title)
         st.write(text)
@@ -82,9 +103,14 @@ def render_chapter(code, *, product):
     data = manual()
     chapter = values[code]
     st.markdown("### " + chapter["title"])
-    st.caption("Detaljno uputstvo sa označenim sintetičkim ekranima. Primer ne potvrđuje stvarne institucionalne podatke ili metodologiju.")
+    st.caption(
+        "Detaljno uputstvo sa označenim sintetičkim ekranima. Primer ne potvrđuje stvarne institucionalne podatke ili metodologiju."
+    )
     for i, (title, body) in enumerate(chapter["sections"], 1):
         st.markdown("#### " + title)
         st.markdown(body)
-        if i == 4:
+        mapping = chapter.get("screen_sections")
+        if mapping is not None:
+            _screens(data, mapping.get(str(i), []))
+        elif i == 4:
             _screens(data, chapter["screens"])

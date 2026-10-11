@@ -54,5 +54,5 @@ imaju jasnu poruku. Greške ne prikazuju sirovi response niti unesene tajne.
 Uspeh prikazuje potvrdu i resetuje prethodne odluke. Audit pokazuje postojeći
 append-only administrativni trag prema ovlašćenjima. Sve promene ostaju
 serverski autorizovane. Sintetički QA nije dokaz produkcione administrativne promene.
-Popunjene ilustracije i Word parity ostaju30E; SMTP, realni MFA i institucionalna
+Datirane ilustracije prikazuju lokalni primer; SMTP, realni MFA i institucionalna
 operativna spremnost ne proglašavaju se završenim na osnovu ovog GUI koraka.

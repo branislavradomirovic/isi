@@ -1,19 +1,39 @@
 """Static shared guidance. No identity, tenant data, API calls or mutation authority."""
+
 from __future__ import annotations
 
 import streamlit as st
 
 HELP_REQUIRED_FIELDS = (
-    "what", "when", "roles_permissions", "steps", "fields_statuses",
-    "example", "non_goals", "errors_recovery", "limitations", "provenance_review",
+    "what",
+    "when",
+    "roles_permissions",
+    "steps",
+    "fields_statuses",
+    "example",
+    "non_goals",
+    "errors_recovery",
+    "limitations",
+    "provenance_review",
 )
 HELP_LABELS = (
-    "Šta radi", "Kada se koristi", "Role i dozvole", "Koraci", "Polja i stanja",
-    "Primer", "Šta sistem ne radi", "Greške i bezbedan oporavak", "Ograničenja", "Poreklo i ljudski pregled",
+    "Šta radi",
+    "Kada se koristi",
+    "Role i dozvole",
+    "Koraci",
+    "Polja i stanja",
+    "Primer",
+    "Šta sistem ne radi",
+    "Greške i bezbedan oporavak",
+    "Ograničenja",
+    "Poreklo i ljudski pregled",
 )
 SHARED_HELP_TOPICS = (
     {
-        "id": "ISI-H01", "inventory_id": "INV-A01", "title": "Javni sajt", "coverage": "VERIFIED",
+        "id": "ISI-H01",
+        "inventory_id": "INV-A01",
+        "title": "Javni sajt",
+        "coverage": "VERIFIED",
         "what": "Javni institucionalni sajt predstavlja ISI, SIMPA i ORDO, dokumente, biblioteku i aktivnosti.",
         "when": "Pre prijave, za upoznavanje sa Institutom i pronalaženje objavljenih izvora.",
         "roles_permissions": "Objavljeni sadržaj i javna Pomoć dostupni su bez naloga. Privatni rad zahteva institucionalni pristup.",
@@ -26,7 +46,10 @@ SHARED_HELP_TOPICS = (
         "provenance_review": "Autoritet je objavljeni institucionalni sadržaj i njegov navedeni izvor; proverite datum i poreklo dokumenta pre stručne upotrebe.",
     },
     {
-        "id": "ISI-H02", "inventory_id": "INV-A02", "title": "Prijava", "coverage": "VERIFIED",
+        "id": "ISI-H02",
+        "inventory_id": "INV-A02",
+        "title": "Prijava",
+        "coverage": "VERIFIED",
         "what": "Prijava institucionalnim emailom i lozinkom otvara postojeću ISI sesiju za SIMPA i ORDO.",
         "when": "Posle prihvatanja poziva ili kada je prethodna sesija istekla/opozvana.",
         "roles_permissions": "Nalog mora biti aktivan i spreman za prijavu; pristup proizvodu zasebno zavisi od članstva, entitlement-a i rola.",
@@ -39,7 +62,10 @@ SHARED_HELP_TOPICS = (
         "provenance_review": "Backend proverava identitet, rok i opoziv sesije; bezbednosni događaji ostaju njegov autoritet. Help ne potvrđuje identitet korisnika.",
     },
     {
-        "id": "ISI-H03", "inventory_id": "INV-A03", "title": "Prihvatanje poziva", "coverage": "VERIFIED",
+        "id": "ISI-H03",
+        "inventory_id": "INV-A03",
+        "title": "Prihvatanje poziva",
+        "coverage": "VERIFIED",
         "what": "Jednokratni poziv pridružuje korisnika organizaciji i primenjuje već odobrene pristupe i role.",
         "when": "Kada ovlašćeni administrator pošalje institucionalni poziv.",
         "roles_permissions": "Pristup je invitation-only. Link nosi postojeće ovlašćenje poziva; korisnik ne bira organizaciju, email ni rolu u obrascu prihvatanja.",
@@ -48,11 +74,14 @@ SHARED_HELP_TOPICS = (
         "example": "Poziv sa SIMPA product rolom otvara samo odobreni pristup; ne daje automatski ORDO pristup.",
         "non_goals": "Ovo nije javno kreiranje naloga niti proizvoljan ulazak u tenant; prihvatanje ne menja prava mimo poziva.",
         "errors_recovery": "Za istekao, iskorišćen ili opozvan link tražite novi poziv od administratora. Za odbijen nov nalog proverite ime i lozinku prema politici. Ako ste prijavljeni, zatvorite link, odjavite se i ponovo otvorite originalnu poruku.",
-        "limitations": "Ne prosleđujte link, ne kopirajte njegov sadržaj u prijavu greške. Lozinku proverava backend (12–256 znakova). Stvarna SMTP isporuka ostaje ISI-28 verifikacija.",
+        "limitations": "Ne prosleđujte link, ne kopirajte njegov sadržaj u prijavu greške. Lozinku proverava backend (12–256 znakova). SMTP je pending po odluci vlasnika; postojeći validni jednokratni linkovi zadržavaju svoj tok.",
         "provenance_review": "Poziv, organizacija i dodeljene role potiču iz administrativnog traga; samo uspešan API odgovor uspostavlja sesiju. Administrator odgovara za ispravnost dodele.",
     },
     {
-        "id": "ISI-H04", "inventory_id": "INV-A04", "title": "Potvrda emaila", "coverage": "VERIFIED",
+        "id": "ISI-H04",
+        "inventory_id": "INV-A04",
+        "title": "Potvrda emaila",
+        "coverage": "VERIFIED",
         "what": "Potvrđuje email postojećeg naloga jednokratnim linkom, bez stvaranja sesije.",
         "when": "Kada je potrebna potvrda emaila ili novi link za potvrdu.",
         "roles_permissions": "Zahtev se šalje bez prijave; odgovor ne otkriva da li nalog postoji ili je već potvrđen.",
@@ -65,7 +94,10 @@ SHARED_HELP_TOPICS = (
         "provenance_review": "Backend čuva verifikaciono stanje i jednokratnost; korisnik proverava da je otvorio očekivanu institucionalnu aplikaciju.",
     },
     {
-        "id": "ISI-H05", "inventory_id": "INV-A05", "title": "Oporavak lozinke", "coverage": "VERIFIED",
+        "id": "ISI-H05",
+        "inventory_id": "INV-A05",
+        "title": "Oporavak lozinke",
+        "coverage": "VERIFIED",
         "what": "Traži i potvrđuje promenu lozinke preko postojećeg jednokratnog reset toka.",
         "when": "Kada ste zaboravili lozinku ili treba bezbedno obnoviti pristup.",
         "roles_permissions": "Zahtev po emailu je dostupan bez prijave; potvrda zahteva važeći jednokratni link. Odgovor ne otkriva postojanje naloga.",
@@ -74,11 +106,14 @@ SHARED_HELP_TOPICS = (
         "example": "Posle resetovanja na jednom uređaju druga postojeća sesija više ne autorizuje API pozive.",
         "non_goals": "Reset ne kreira korisnika, ne menja role i ne prikazuje privremenu ili staru lozinku.",
         "errors_recovery": "Ispravite nejednake unose. Za nevažeći/istekao link zatražite novi; za nedostupnu uslugu pokušajte kasnije. Ako je odgovor izgubljen nakon slanja, pokušajte prijavu novom lozinkom ili zatražite novi link. Aktivnu sesiju prvo odjavite.",
-        "limitations": "Ne delite link ni lozinku. Neutralan odgovor ne garantuje isporuku. Produkcioni SMTP ostaje odložen za ISI-28.",
+        "limitations": "Ne delite link ni lozinku. Neutralan odgovor ne garantuje isporuku. SMTP ostaje pending po odluci vlasnika.",
         "provenance_review": "Backend troši token, primenjuje password policy, opoziv sesija i bezbednosni audit; Help i klijent ne menjaju tu semantiku.",
     },
     {
-        "id": "ISI-H06", "inventory_id": "INV-A06", "title": "Organizacija, platforma i workspace", "coverage": "VERIFIED",
+        "id": "ISI-H06",
+        "inventory_id": "INV-A06",
+        "title": "Organizacija, platforma i workspace",
+        "coverage": "VERIFIED",
         "what": "Zajednički shell bira dozvoljeni organizacioni, SIMPA/ORDO i workspace kontekst.",
         "when": "Pre svakog rada i nakon promene organizacije, proizvoda ili dodeljenih prava.",
         "roles_permissions": "Organization -> Membership -> Role/Permission -> Product entitlement -> Workspace određuju pristup. Vidljivost u UI nije autorizacija; backend je autoritet.",
@@ -91,33 +126,42 @@ SHARED_HELP_TOPICS = (
         "provenance_review": "App-context/app-shell i RBAC čine autoritet; proverite kontekst pre izvoza ili mutacije. Institucionalne odluke i human accountability ostaju ljudski.",
     },
     {
-        "id": "ISI-H07", "inventory_id": "INV-A08", "title": "Podaci i poreklo", "coverage": "VERIFIED",
+        "id": "ISI-H07",
+        "inventory_id": "INV-A08",
+        "title": "Podaci i poreklo",
+        "coverage": "VERIFIED",
         "what": "Data prikazuje izvore/verzije i ingestion stanje, prima upload i prikazuje analitičke registre, lineage i AI/RAG eligibility.",
         "when": "Pre analitike, pri proveri kvaliteta i kada treba razumeti zašto artefakt nije podoban.",
-        "roles_permissions": "data.read za katalog, governed pregled i eligibility; data.upload za upload; data.governance.manage za zasebne kontrolisane API mutacije. Svaki poziv proverava scope.",
-        "steps": "1) Izaberite workspace i Podaci. 2) Proverite katalog. 3) Sa data.upload unesite naziv, izaberite CSV/JSON/XLSX/PDF/DOCX/TXT i Učitaj i proveri. 4) Pregledajte Analytical datasets i Feature registry. 5) Izaberite Snapshot for lineage. 6) U AI / RAG eligibility izaberite artefakt i akciju, pa Evaluate deterministic eligibility.",
+        "roles_permissions": "data.read za katalog, kontrolisani pregled i eligibility; data.upload za upload; data.governance.manage za dozvoljene obrasce upravljanja. Server pri svakoj radnji ponovo proverava organizaciju, proizvod i radni prostor.",
+        "steps": "1) Izaberite workspace i Podaci. 2) Proverite katalog. 3) Sa data.upload unesite naziv, izaberite CSV/JSON/XLSX/PDF/DOCX/TXT i Učitaj i proveri. 4) U pripremi ugovora pregledajte konektor, mapiranje, identitet i operativnu politiku; registraciju i aktiviranje zasebno potvrdite. 5) Pregledajte Analytical datasets i Feature registry i njihove ugovore/životni ciklus. 6) Izaberite Snapshot for lineage. 7) U AI / RAG eligibility izaberite artefakt i akciju, pa Evaluate deterministic eligibility.",
         "fields_statuses": "uploaded/queued/running/succeeded/failed opisuju tehničku obradu, ne metodološku validaciju. Verzija, fingerprint, state, classification, privacy, AI policy i invalidation su odvojeni. Eligibility prikazuje allowed, reason_code, separate approval i human review. Missing nije nula.",
         "example": "Uspešan CSV upload može biti tehnički obrađen, a ipak nije VALIDATED/FROZEN analitički snapshot dozvoljen za SIMPA/ORDO.",
-        "non_goals": "Eligibility ne izvršava model. Ovaj UI nema pune forme za connector/mapping/governance lifecycle; Registry governance controls upućuje na autorizovane API tokove, ne izvršava ih.",
-        "errors_recovery": "Za prazan naziv/datoteku ispravite unos. Za odbijen format/veličinu ili failed obradu proverite izvor sa data administratorom. Ako nema eligible artefakta, ovlašćeni data steward završava governed API lifecycle; ne zaobilazite ga sirovim uploadom.",
+        "non_goals": "Eligibility proverava podobnost, ne izvršava model. Odvojeni obrasci upravljaju konektorom, mapiranjem, ugovorima i izvorima prema dozvolama. Zahtev za purge ne izvršava fizičko brisanje; to ostaje zaseban operator postupak.",
+        "errors_recovery": "Za prazan naziv ili datoteku ispravite unos. Za odbijen format, veličinu ili neuspešnu obradu proverite izvor sa administratorom podataka. Ako artefakt nije podoban, ovlašćeni korisnik završava pregled ugovora, kvaliteta i životnog ciklusa u odgovarajućim obrascima. Posle prekida prvo osvežite status; ne zaobilazite proveru sirovim uploadom.",
         "limitations": "Upload nije pravni osnov obrade. Poštujte klasifikaciju, privatnost, retention i AI policy; osetljivi SIMPA ostaje local-only. Legacy source-version lineage je čitljiva istorija, ne dozvola za nov governed rad.",
         "provenance_review": "Proverite dataset contract, governed output/run/evaluation i source fingerprints, temporal/granularity keys, quality i dependent features. Čovek proverava poreklo i podobnost pre downstream upotrebe.",
     },
     {
-        "id": "ISI-H08", "inventory_id": "INV-A14", "title": "Izveštaji, pregled i izvoz", "coverage": "VERIFIED",
+        "id": "ISI-H08",
+        "inventory_id": "INV-A14",
+        "title": "Izveštaji, pregled i izvoz",
+        "coverage": "VERIFIED",
         "what": "Reporting pravi nepromenljive verzije iz postojećih domain snapshot-a, vodi review/publication i deterministički izvoz.",
         "when": "Kada treba sačuvati, pregledati i podeliti autorizovani rezultat sa jasnim poreklom.",
         "roles_permissions": "report.read čita izvore/izveštaje i izvozi; analysis.run kreira verzije i šalje na review; organization.manage odobrava/odbija i publikuje. Backend proverava org/product/workspace.",
-        "steps": "1) Otvorite Izveštaji u workspace-u. 2) Izaberite Izvor i Naslov i kreirajte draft. 3) U registru otvorite verziju, sadržaj i Provenance. 4) Pošalji na review. 5) Ovlašćeni reviewer unosi napomenu i odobrava/odbija. 6) Odobrenu verziju eksplicitno publikujte. 7) Izaberite html/markdown/json, Pripremi download artefakt i Preuzmi artefakt.",
+        "steps": "1) Otvorite Izveštaji u workspace-u. 2) Eksplicitno izaberite Izvor i Naslov, pregledajte povezani dokaz gde je primenljiv, potvrdite i kreirajte draft. 3) U registru otvorite verziju, sadržaj i Provenance. 4) Pregledajte sadržaj i potvrdite slanje na review. 5) Ovlašćeni reviewer bira odluku, unosi napomenu, potvrđuje pregled i čuva odluku. 6) Odobrenu verziju zasebno potvrdite i eksplicitno publikujte. 7) Izaberite html/markdown/json, Pripremi download artefakt i Preuzmi artefakt.",
         "fields_statuses": "draft je nacrt; in_review čeka pregled; approved je odobren ali nije published; rejected je odbijen; superseded čuva raniju publikaciju. Izvoz je dostupan za approved/published/superseded. Content, provenance i export SHA-256 su različiti identiteti.",
-        "example": "SIMPA monitoring_summary nastaje iz analytics_run; ORDO destination_snapshot iz analytics_run, a scenario_review iz scenario_assessment. Nova verzija koristi najnoviji ponuđeni snapshot odgovarajućeg tipa.",
+        "example": "SIMPA monitoring_summary nastaje iz analytics_run; ORDO destination_snapshot iz analytics_run, a scenario_review iz scenario_assessment. Nova verzija koristi eksplicitno izabrani snapshot odgovarajućeg tipa; prvi ponuđeni izvor nije dokaz da je najnoviji.",
         "non_goals": "Reporting ne pokreće novu AI inferenciju, ne računa novu metodologiju i nema PDF renderer. Publikacija ne šalje automatski email niti znači javno objavljivanje na sajtu.",
         "errors_recovery": "Bez odgovarajućeg snapshot-a prvo završite domain workflow. Za neispravan scope/checksum ili neprihvaćen AI review rešite upstream dokaz; ne prepisujte istoriju. Odbijenu verziju zamenite novom i ponovite review.",
         "limitations": "Sadržaj ostaje tenant/product ograničen i deterministički dostupan bez aktivnog AI provajdera. Prethodni AI sadržaj zahteva postojeći ljudski review; izvoz nije metodološko odobrenje.",
         "provenance_review": "Proverite content_sha256, source_manifest_sha256, identitete izvora, review trag i export SHA-256 pre distribucije; čovek odgovara za tumačenje i deljenje.",
     },
     {
-        "id": "ISI-H09", "inventory_id": "INV-A15", "title": "Administracija", "coverage": "VERIFIED",
+        "id": "ISI-H09",
+        "inventory_id": "INV-A15",
+        "title": "Administracija",
+        "coverage": "VERIFIED",
         "what": "Administracija upravlja članovima, product access-om, rolama, pozivima, workspace-ima i nazivom organizacije uz audit.",
         "when": "Za odobrenu institucionalnu promenu pristupa ili proveru administrativnog traga.",
         "roles_permissions": "Backend capabilities određuju članstvo members.read/members.manage, workspace.manage, audit.read i organization.manage. Membership status i naziv zahtevaju organization-wide dozvolu; osetljive izmene mogu zahtevati potvrdu lozinke.",
@@ -130,20 +174,26 @@ SHARED_HELP_TOPICS = (
         "provenance_review": "Uspešne mutacije imaju append-only admin audit trag; proverite aktera, akciju i scope. Administrator je odgovoran za najmanji potreban pristup.",
     },
     {
-        "id": "ISI-H10", "inventory_id": "INV-A16", "title": "Bezbednost naloga", "coverage": "VERIFIED",
+        "id": "ISI-H10",
+        "inventory_id": "INV-A16",
+        "title": "Bezbednost naloga",
+        "coverage": "VERIFIED",
         "what": "Prikazuje sopstvene sesije, opoziva druge sesije i osvežava potvrdu identiteta lozinkom.",
         "when": "Pre privilegovanog rada ili ako uređaj više ne treba da ima pristup.",
         "roles_permissions": "Samo sopstveni nalog sa važećom sesijom; step-up ne daje nove role. Stvarni MFA provajder još nije verifikovan.",
-        "steps": "1) Otvorite Bezbednost naloga. 2) Za step-up unesite Trenutnu lozinku i Potvrdi identitet. 3) Pregledajte sesije. 4) Opozovi sesiju za izabranu drugu sesiju ili Opozovi sve druge sesije. 5) Za trenutnu sesiju koristite Odjavi se.",
+        "steps": "1) Otvorite Bezbednost naloga. 2) Za step-up unesite Trenutnu lozinku i Potvrdi identitet. 3) Pregledajte sesije. 4) Potvrdite opoziv izabrane druge aktivne sesije pa Opozovi sesiju, ili zasebno potvrdite sve druge sesije pa Opozovi sve druge sesije. Pregledajte potvrdu i nov status. 5) Za trenutnu sesiju koristite Odjavi se.",
         "fields_statuses": "Opis uređaja je ograničen; created_at, last_seen_at, expires_at, opozvana/aktivna i trenutna sesija opisuju različite činjenice. Neopozvana sesija može biti istekla; backend proverava rok i idle timeout.",
         "example": "Sa sadašnjeg uređaja opozovite raniju sesiju izgubljenog uređaja bez prikazivanja pune mrežne adrese ili user-agent-a.",
         "non_goals": "Ekran ne upravlja tuđim sesijama, ne prikazuje tokene i nije aktivacija produkcionog MFA.",
         "errors_recovery": "Ako lozinka nije potvrđena, proverite unos ili koristite oporavak nakon odjave. Za isteklu sesiju prijavite se ponovo; kod izgubljenog odgovora proverite ponovo listu pre ponavljanja opoziva.",
-        "limitations": "Ne delite lozinku ili opis privatnih sesija. UI oznaka aktivna ne zaobilazi backend expiry/revocation. MFA provider integration ostaje odložen; produkcioni SMTP/server provera pripada ISI-28.",
+        "limitations": "Ne delite lozinku ili opis privatnih sesija. UI oznaka aktivna ne zaobilazi backend expiry/revocation. MFA provider integration ostaje odložen; SMTP je pending po odluci vlasnika; završni server dokaz novih tokova vodi se zasebno.",
         "provenance_review": "Backend AuthSession i bezbednosni događaji su autoritet; opoziv i password assurance ostaju auditable, bez beleženja sirovih tajni u Help-u.",
     },
     {
-        "id": "ISI-H11", "inventory_id": "INV-A17", "title": "Pristup samo po pozivu", "coverage": "VERIFIED",
+        "id": "ISI-H11",
+        "inventory_id": "INV-A17",
+        "title": "Pristup samo po pozivu",
+        "coverage": "VERIFIED",
         "what": "Institucionalni pristup je invitation-only; javna samoregistracija nije prisutna (NOT_PRESENT).",
         "when": "Kada želite institucionalni pristup, ali nemate nalog ili odobreno članstvo.",
         "roles_permissions": "Ovlašćeni administrator upravlja pozivima i pristupom. Posetilac ne može sam kreirati tenant, članstvo ili rolu.",
@@ -156,17 +206,20 @@ SHARED_HELP_TOPICS = (
         "provenance_review": "Kanonski inventory INV-A17 ostaje NOT_PRESENT; auth route set i 27A testovi proveravaju odsustvo javne registracije. Ljudsko odobrenje pristupa ostaje obavezno.",
     },
     {
-        "id": "ISI-H12", "inventory_id": "INV-A21", "title": "Kako koristiti zajedničku Pomoć", "coverage": "VERIFIED",
-        "what": "Povezuje dvanaest zajedničkih tema sa ISI Shared User Guide-om i kanonskom Help Coverage Matrix.",
+        "id": "ISI-H12",
+        "inventory_id": "INV-A21",
+        "title": "Kako koristiti zajedničku Pomoć",
+        "coverage": "VERIFIED",
+        "what": "Povezuje osnovne zajedničke teme sa detaljnim korisničkim tokovima, objašnjenjima polja i datiranim ilustracijama. SIMPA i ORDO imaju zasebnu pomoć za svoje metodologije.",
         "when": "Pre nepoznate akcije, pri grešci ili proveri granica podržanog ponašanja.",
         "roles_permissions": "Javna Pomoć prikazuje samo H01–H05 i H11. Prijavljena ISI Help navigacija prikazuje sve teme, bez pristupa tenant podacima i bez dodeljivanja prava.",
-        "steps": "1) Otvorite ISI Help ili kontekstualnu Pomoć u Podaci/Izveštaji/Administracija/Bezbednost. 2) Izaberite temu. 3) Pročitajte korake, oporavak i granice. 4) Za metodologiju otvorite zasebni SIMPA Help ili ORDO Help; za shared AI koristite postojeći AI User Guide.",
-        "fields_statuses": "MISSING/PARTIAL/COMPLETE/VERIFIED su Help stanja. VERIFIED znači lokalno testiranu pokrivenost, ne CI_VERIFIED, SERVER_VERIFIED ili završetak ISI-27. A07 ostaje neprodukcijski kritičan otvoren Help; A20 je OUT_OF_SCOPE/NOT_PRESENT.",
+        "steps": "1) Otvorite ISI Help ili kontekstualnu Pomoć u Podaci/Izveštaji/Administracija/Bezbednost. 2) Izaberite osnovnu temu. 3) Za opširniji postupak izaberite Detaljan korisnički tok i pročitajte korake, polja, ilustracije i oporavak. 4) Za metodologiju otvorite SIMPA Help ili ORDO Help, gde je spisak ograničen na odgovarajući proizvod. 5) Proverite datum ilustracije i stvarni status svog izvora pre rada.",
+        "fields_statuses": "Tema pomoći otvara sažeto uputstvo; Detaljan korisnički tok otvara prošireno poglavlje. Ilustracije označavaju datum i da li prikazuju sintetički primer ili ranije pregledan server. Primer ne potvrđuje stanje vašeg naloga, podataka ili metodologije.",
         "example": "Pre izvoza otvorite H08; pre tumačenja forecast-a koristite ORDO-H10, bez prepisivanja njegove metodologije u shared Help.",
         "non_goals": "Help nije pravni savet, metodološko odobrenje ili automatska institucionalna odluka; ne uvodi novi model ili domen.",
         "errors_recovery": "Ako UI i Help odstupaju, zaustavite pogođenu akciju i prijavite nesenzitivan opis uz temu i verziju aplikacije, bez lozinki, linkova ili privatnih podataka.",
-        "limitations": "Za numerički model shared Help-a XAI je NOT_APPLICABLE: Help ne računa rezultate. Ranije domain/AI napomene o globalnom PARTIAL opisuju prethodne faze; aktuelna top-level matrica je autoritet.",
-        "provenance_review": "Autoriteti: docs/help/ISI-SHARED-USER-GUIDE.md, ISI-HELP-COVERAGE-MATRIX.md i tests/test_isi_27a_*.py. Domain autoriteti ostaju SIMPA-USER-GUIDE.md, ORDO-USER-GUIDE.md i ISI-AI-USER-GUIDE.md. Ljudski review i kasniji 27D/ISI-28 gate ostaju odvojeni.",
+        "limitations": "Pomoć ne računa analitičke rezultate i ne potvrđuje tačnost AI nalaza. Raspoloživost radnje zavisi od objavljene aplikacije, vašeg konteksta i dozvola; datirani ekrani mogu sadržati ranije nazive menija.",
+        "provenance_review": "Uputstvo se usaglašava sa pregledanom implementacijom. Za stručne zaključke proverite originalne izvore, verziju metodologije i sačuvani rezultat. Ljudski pregled podataka i odobrenje institucionalne upotrebe ostaju zasebne odgovornosti.",
     },
 )
 PUBLIC_HELP_TOPIC_IDS = ("ISI-H01", "ISI-H02", "ISI-H03", "ISI-H04", "ISI-H05", "ISI-H11")
@@ -178,6 +231,7 @@ def shared_help_topic(topic_id: str) -> dict[str, str]:
 
 def _render_topic(topic: dict[str, str], *, public: bool = False) -> None:
     from src.streamlit_app.help_manual import render_topic
+
     render_topic(topic, public=public)
 
 
@@ -187,11 +241,25 @@ def render_shared_help(*, public: bool = False) -> None:
     st.caption("Institucionalni pristup je isključivo po pozivu; nema javne registracije.")
     topics = [topic for topic in SHARED_HELP_TOPICS if not public or topic["id"] in PUBLIC_HELP_TOPIC_IDS]
     selected = st.selectbox(
-        "Tema pomoći", [topic["id"] for topic in topics],
+        "Tema pomoći",
+        [topic["id"] for topic in topics],
         format_func=lambda value: f"{value} · {shared_help_topic(value)['title']}",
         key="isi_public_help_topic" if public else "isi_shared_help_topic",
     )
     _render_topic(next(topic for topic in topics if topic["id"] == selected), public=public)
+    if not public:
+        from src.streamlit_app.help_manual import chapters, render_chapter
+
+        extra = {key: value for key, value in chapters("SIMPA").items() if "ORDO" in value["products"]}
+        detailed = st.selectbox(
+            "Detaljan korisnički tok",
+            list(extra),
+            index=None,
+            format_func=lambda key: extra[key]["title"],
+            key="isi_shared_workflow",
+        )
+        if detailed is not None:
+            render_chapter(detailed, product="SIMPA")
 
 
 def render_topic_summary(topic_id: str) -> None:

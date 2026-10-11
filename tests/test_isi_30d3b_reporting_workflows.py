@@ -280,7 +280,7 @@ def test_export_revalidates_every_render_and_failure_hides_previous_content(monk
 def test_guide_ten_items_and_technical_boundaries():
     text = Path("docs/help/ISI-REPORTING-WORKFLOWS-GUIDE.md").read_text()
     assert all(f"## {i}." in text for i in range(1, 11))
-    assert all(x in text for x in ["UNCALIBRATED", "409", "superseded", "30E", "report.read"])
+    assert all(x in text for x in ["UNCALIBRATED", "409", "superseded", "Datirane ilustracije", "report.read"])
 
 
 def test_context_roundtrip_does_not_revive_previous_confirmation(monkeypatch):

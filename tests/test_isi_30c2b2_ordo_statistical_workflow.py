@@ -332,7 +332,7 @@ def test_help_ten_item_and_truthful_limits():
         "PROPOSED",
         "VALIDATED",
         "RETIRED",
-        "30E",
+        "Datirane ilustracije",
     ]:
         assert term in guide
 

@@ -52,5 +52,5 @@ ne pokreće model i ne daje institucionalni zaključak. Provera kvaliteta nije
 pravna potvrda niti dokaz reprezentativnosti. Koristite samo odobrene podatke.
 AI i analitika zahtevaju zasebno kontrolisan analitički ugovor i validaciju.
 Identitet izvora/verzije/obrade/ocene i otisci ostaju proverljiva provenijencija.
-Nove ilustracije i Word pokrivenost ovog toka pripadaju30E; ovaj tekst sam nije
-potpuno završena vizuelna acceptance evidencija.
+Datirane ilustracije ovog toka nalaze se u detaljnom Help-u. Primeri ne potvrđuju
+vaše stvarne podatke ili institucionalnu validaciju.

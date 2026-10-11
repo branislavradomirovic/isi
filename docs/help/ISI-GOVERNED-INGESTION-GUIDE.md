@@ -62,4 +62,4 @@ Nema URL/secret/JSON konzole, imputacije, automatske institucionalne validacije,
 novog modela ili zaključka o korisnicima. Autor potvrđuje šemu i operativnu politiku;
 ne unosite tajne u nazive, šifre i reference. Aktivni ugovori i otisci, verzija
 izvora, run i ocena čine provenijenciju. Analitički ugovori i njihova validacija
-su zaseban korak. Screenshots/Word parity za ovaj novi tok ostaju30E.
+su zaseban korak. Datirane ilustracije opisuju ovaj tok u detaljnom Help-u.
