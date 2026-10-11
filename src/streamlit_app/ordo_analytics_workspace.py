@@ -8,6 +8,7 @@ import streamlit as st
 
 from src.domains.ordo.analytics_xai import build_forecast_xai, build_scenario_xai
 from src.streamlit_app import data_api, ordo_analytics_api
+from src.streamlit_app.ordo_spatial_analytics_workspace import render_ordo_spatial_aggregation
 from src.streamlit_app.ordo_methodology_workspace import render_ordo_methodology
 from src.streamlit_app.xai_charts import MAX_ORIGINS, backtest_chart, forecast_chart, render_chart
 
@@ -687,6 +688,7 @@ def render_ordo_analytics(*, token: str, shell: dict[str, Any]) -> None:
     organization_id, workspace_id = scope
     permissions = set(shell.get("product", {}).get("permission_codes", []))
     render_ordo_methodology(token=token, shell=shell)
+    render_ordo_spatial_aggregation(token=token, shell=shell)
     runs = _safe(ordo_analytics_api.runs, token, organization_id, workspace_id) or []
 
     artifacts = _eligible_artifacts(token, organization_id, workspace_id)

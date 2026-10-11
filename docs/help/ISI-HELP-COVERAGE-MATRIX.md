@@ -268,3 +268,6 @@ Existing direct_observation DRAFT/propose/reference-suite/run/human validate/ret
 ## 30C2A ORDO authoring — PARTIAL
 
 Existing global direct_observation method DRAFT/propose/human validate/retire; optional identity-based spatial-rule metadata, full source_requirements review; explicit time-series authoring/lifecycle and validated-spec/discovered-identity forecast: docs/help/ORDO-METHODOLOGY-WORKFLOWS-GUIDE.md. Local/browser and illustrated Word30E required. Statistical/spatial execution customer reachability remains named30C2B. No automatic champion or institutional conclusion.
+
+## 30C2B1 ORDO identity aggregation — PARTIAL
+ORDO-SPATIAL-AGGREGATION-GUIDE.md: explicit scoped load/selection/reviewed method/confirmation/execution/current GIS revalidation/recovery; ten items. Action illustrations and Word parity pending30E.

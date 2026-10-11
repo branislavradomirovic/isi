@@ -173,3 +173,13 @@ class ScenarioContractMetadata(BaseModel):
     scenario_is_forecast: Literal[False] = False
     causal_claim: Literal[False] = False
     automatic_policy_recommendation: Literal[False] = False
+
+
+class SpatialAggregationRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+    organization_id: uuid.UUID
+    workspace_id: uuid.UUID
+    reviewed_methodology_id: uuid.UUID
+    analytics_run_id: uuid.UUID
+    indicator_code: str = Field(min_length=1, max_length=140)
+    target_spatial_unit_id: uuid.UUID
