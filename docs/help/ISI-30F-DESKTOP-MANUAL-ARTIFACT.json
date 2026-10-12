@@ -1,0 +1,15 @@
+{
+  "filename": "ISI_prirucnik_desktop.docx",
+  "sha256": "bda018d69c22978c6368ce8741dff7a4ea205b2d3dae9359258567baf3918e62",
+  "page_count": 182,
+  "index_page_numbers": true,
+  "index_entries": 250,
+  "internal_links": 500,
+  "figures": 122,
+  "basic_topics": 36,
+  "detailed_chapters": 19,
+  "view": "DESKTOP",
+  "mobile_scope": "Public landing portal only",
+  "layout_review_evidence": "automation/evidence/ISI-30F/desktop-docs/word-layout-review.json",
+  "institutional_production_readiness": false
+}

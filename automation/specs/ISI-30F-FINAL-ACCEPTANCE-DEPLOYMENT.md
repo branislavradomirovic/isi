@@ -101,3 +101,45 @@ evidence is under automation/evidence/ISI-30F. SMTPpending, no new backups per o
 PREPRODUCTION_TESTING retained. Full institutional-production certification,
 real-data methodology/extraction calibration, alert delivery/offsite recovery and
 remaining legal identity facts are not claimed by this technical release.
+
+### 2026-10-12 live GUI copy recovery — exact bounded surface
+
+Owner-authenticated empty SIMPA test workspace revealed active historical ISI08/09
+phase descriptions suggesting later AI/methodology work was unavailable. Classify
+these active descriptions REMOVE_BEFORE_NEXT_SLICE and correct only visible copy
+in src/streamlit_app/simpa_workspace.py and ordo_workspace.py. Translate overview/
+indicator headings into existing Serbian UI language and point to separately
+available analytics/AI under existing permissions. Preserve conceptual/uncalibrated
+status, no invented JLS/statistics/formulas, no fake observations and product scopes.
+Dead ORDO placeholder functions remain REQUIRED_COMPATIBILITY and are not activated.
+Dated Word/Help screenshots remain LEGITIMATE_HISTORY as explicitly captioned
+examples; no screen grants live permissions. Add tests/test_isi_30f_current_domain_copy.py
+for actual renderer labels, absence of historical phase promises and product guards.
+No backend/schema/model/provider/permission/dependency change; inventory impactNONE.
+Run focused and full regression, policy/mypy/pip/diff, exact-scope analyzer/review,
+then standing approved commit/push, fresh usage/manual acceptance and signed
+ISI-only activation. Canceled documentation run38179173193 is not acceptance.
+
+## Owner correction 2026-10-12 — desktop documentation contract
+
+Baseline: canonical main 29fd3be3ac879c641505458a6c3f0e3495e36cbc.
+Owner explicitly requests desktop/laptop-only authenticated SIMPA/ORDO Help and Word, a navigable index, uniform contextual screenshots at normal browser scale, no invented functionality. Mobile documentation is relevant only to the public landing portal.
+
+Mutable surface: Help asset references/metadata and relevant existing guides; Help presentation/navigation; documentation builders and artifact manifest; replacement desktop screenshots captured from existing UI with labeled synthetic fixtures; focused documentation tests; MasterPlan inventory INV-A21 and technical/status ledgers. Preserve the already started current-domain copy recovery. No analytical, permission, database, provider, ingress or deployment topology changes.
+
+Legacy classification: mobile product illustrations REMOVE_BEFORE_NEXT_SLICE from active documentation, retained as LEGITIMATE_HISTORY assets/evidence. Prior dated desktop illustrations remain legitimate only where they show current functionality at a readable scale. Stretching a narrow screenshot is REMOVE_BEFORE_NEXT_SLICE. Prior 30E acceptance remains historical and does not certify this revision.
+
+Acceptance: every active private illustration is desktop (minimum width 1200px); no mobile references in private topics/chapters; no image upscaling; sections and caption identity remain source-backed; chapter/section navigation and Word bookmarks/internal links resolve; public six-topic and product restrictions unchanged; render and inspect every Word page; focused and full regression pass; independent exact candidate review precedes authorized commit/acceptance/deployment. All final statuses remain evidence-backed. Public landing mobile responsiveness is retained.
+Canonical system inventory impact: INV-A21 existing Help/manual presentation and asset governance; no new product/service or permission boundary.
+
+Desktop revision validation note: the first ad-hoc regression launch omitted the virtualenv executable directory from PATH and failed subprocess Alembic discovery. It was interrupted and retained as failed environment evidence; rerun uses the existing deterministic runner environment. Existing E701/E702 style debt in the two copy-recovery modules is normalized without changing their AST (equality asserted before/after formatting). No test exemptions or behavior changes were introduced for these findings.
+
+The legacy ISI-10 UI contract pins the historical `Destination Foundation` title. Classify this title assertion REMOVE_BEFORE_NEXT_SLICE and update it to the owner-reviewed current ORDO title; retain ORDO API isolation and the no-generated-values assertion. Add the latter phrase to the current conceptual catalog caption so the existing safety guarantee remains explicit to users.
+
+Desktop Word reproducibility: retain the existing approved ISI typography/page geometry in `docs/help/templates/ISI-MANUAL-TEMPLATE.docx`, with body and image relationships removed. The template contains no screenshots, tenant data or credentials. The current desktop builder uses this controlled template rather than requiring a machine-local historical generated document. INV-A21 records this documentation-tool surface; no runtime dependency is added.
+
+Customer-facing Help copy standardization: remove internal development-phase labels from existing topic descriptions and explain the same numerical/AI/human-review limitations in current functional terms. This is editorial only in the three existing Help topic modules; article IDs, coverage metadata, permissions, product filtering and functional availability remain unchanged. Legacy phase descriptions remain in historical specifications/evidence, not customer instructions.
+
+Final desktop layout review: 182 rendered pages inspected, 122 figures, 250 indexed entries with printed page numbers and 500 internal links. The superseded ISI-30A SIMPA overview illustration is inactive ARCHIVED_SUPERSEDED_DESKTOP (LEGITIMATE_HISTORY); current desktop profile context replaces its active references. All 36 topics and 19 detailed chapters retain source-backed coverage. Exact document SHA and review evidence are recorded in docs/help/ISI-30F-DESKTOP-MANUAL-ARTIFACT.json; hosted/server verification of this revision remains pending.
+
+Native Help review found the Streamlit inner image container overflowing a narrow desktop window despite a bounded 960px image. Constrain the existing inner image container to available width with proportional height; retain the 960px maximum and source-backed desktop captures. Targeted test checks the presentation rule. Re-run exact local gates after this correction.

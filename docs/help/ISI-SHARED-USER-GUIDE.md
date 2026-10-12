@@ -494,7 +494,7 @@ Za nepostojeću signup akciju polja, tokeni i numerički model nisu primenljivi:
 
 **Poreklo i ljudski pregled (provenance_review)**
 
-Kanonski inventory INV-A17 ostaje NOT_PRESENT; auth route set i 27A testovi proveravaju odsustvo javne registracije. Ljudsko odobrenje pristupa ostaje obavezno.
+Javna samoregistracija nije dostupna. Poziv i odobrenje ovlašćenog administratora ostaju obavezni; čitanje javne pomoći ne dodeljuje pristup.
 
 ## ISI-H12 — Kako koristiti zajedničku Pomoć
 

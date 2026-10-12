@@ -203,7 +203,7 @@ SHARED_HELP_TOPICS = (
         "non_goals": "Nema signup/register forme, javnog kreiranja naloga, kupovine pristupa ili anonimnog pridruživanja organizaciji.",
         "errors_recovery": "Ako očekujete poziv, proverite sa administratorom odobrenje i adresu. Reset ili email-verification zahtev ne kreira novi nalog.",
         "limitations": "Za nepostojeću signup akciju polja, tokeni i numerički model nisu primenljivi: NOT_APPLICABLE jer akcija ne postoji. Ne koristite tuđi poziv.",
-        "provenance_review": "Kanonski inventory INV-A17 ostaje NOT_PRESENT; auth route set i 27A testovi proveravaju odsustvo javne registracije. Ljudsko odobrenje pristupa ostaje obavezno.",
+        "provenance_review": "Javna samoregistracija nije dostupna. Poziv i odobrenje ovlašćenog administratora ostaju obavezni; čitanje javne pomoći ne dodeljuje pristup.",
     },
     {
         "id": "ISI-H12",

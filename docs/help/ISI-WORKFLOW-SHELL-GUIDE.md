@@ -13,7 +13,7 @@ u detaljnom Help-u; stanje stvarnih podataka i server izdanja proverava se zaseb
 
 Promena konteksta i osvežavanje pristupa odbacuju nezavršene unose. Pre prelaska
 sačuvajte rad postojećim dugmetom u obrascu. Odjava čisti lokalno stanje sesije;
-backend određuje trajanje i opoziv pristupa. Na telefonu otvorite bočni meni
+backend određuje trajanje i opoziv pristupa. Na desktop/laptop uređaju otvorite bočni meni
 ugrađenim dugmetom u zaglavlju. Tastaturom koristite Tab/Shift+Tab i Enter/Space.
 
 | Polje/radnja | Značenje |

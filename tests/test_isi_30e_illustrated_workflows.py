@@ -17,7 +17,8 @@ def test_locked_new_workflows_and_screen_identity():
         chapter = data["chapters"][c["code"]]
         assert chapter["products"] == c["products"] and chapter["guide"] == c["guide"]
         assert len(chapter["sections"]) == 10
-        assert chapter["screens"] == c["screens"]
+        assert set(n for n in c["screens"] if data["assets"][n]["view"] == "DESKTOP") <= set(chapter["screens"])
+        assert all(data["assets"][n]["view"] == "DESKTOP" for n in chapter["screens"])
         assert sorted(n for values in chapter["screen_sections"].values() for n in values) == sorted(chapter["screens"])
     for name, item in plan["assets"].items():
         assert len(item["source_sha256"]) == 64

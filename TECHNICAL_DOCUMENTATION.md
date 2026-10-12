@@ -993,3 +993,14 @@ evidence is under automation/evidence/ISI-30F. SMTPpending, no new backups per o
 PREPRODUCTION_TESTING retained. Full institutional-production certification,
 real-data methodology/extraction calibration, alert delivery/offsite recovery and
 remaining legal identity facts are not claimed by this technical release.
+
+30F live GUI recovery: active historical SIMPA ISI08/09 and ORDO ISI10 copy is
+REMOVE_BEFORE_NEXT_SLICE, resolved by bounded current Serbian overview/indicator
+descriptions and separate analytics/AI navigation. Dead ORDO placeholders remain
+REQUIRED_COMPATIBILITY; dated manual examples LEGITIMATE_HISTORY. No runtime
+behavior/schema/permission/model/provider/dependency/inventory change. New copy
+tests/full regression and exact final acceptance required before activation.
+
+### Desktop Help/manual correction (2026-10-12, candidate)
+Authenticated SIMPA/ORDO documentation targets desktop/laptop usage. Mobile product screenshots are removed from active references and retained as historical evidence. Existing image hash/path/public/product guards are preserved; Help renders contextual desktop images at a bounded width without upscaling and exposes a section index. The revised Word edition uses real heading styles, bookmarks and deterministic internal links; its every-page review and final release evidence remain pending until executed. Public landing mobile behavior remains in scope.
+The desktop Word builder now uses a repository-controlled, content-free ISI template rather than a machine-local earlier generated manual. Existing styles/page geometry are retained; source screenshots remain native captures. Printed index page numbers are derived from the rendered outline and checked for stability, while Word heading bookmarks provide internal navigation.

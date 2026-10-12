@@ -1,0 +1,397 @@
+{
+  "baseline": "29fd3be3ac879c641505458a6c3f0e3495e36cbc",
+  "view": "DESKTOP",
+  "viewport": [
+    1280,
+    900
+  ],
+  "zoom_percent": 100,
+  "assets": {
+    "ISI-30F-desktop-recovery-close.jpg": {
+      "source": "automation/evidence/ISI-30F/desktop-docs/recovery-close.png",
+      "source_sha256": "9faefc654fd3666beeaa06720de0eb9e3e8e901512143acbdad73827b4af8a95",
+      "chapter": "RECOVERY",
+      "section": "4",
+      "caption": "Dead-letter — desktop obrazloženje, ishod i zasebna potvrda zatvaranja",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "d12571df15a7ee1351b678ade40b805aaa68e29138048adc3a4cb76aff79e6ee",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-privacy-confirmation.jpg": {
+      "source": "automation/evidence/ISI-30F/desktop-docs/privacy-confirmation.png",
+      "source_sha256": "0e77a8dc42dec44367fd5593bb1ac140dd6f3ba9317f06a8e51d5d41e7ecb013",
+      "chapter": "PRIVACY",
+      "section": "4",
+      "caption": "Anonimizacija — desktop klasifikacija odvojenog izlaza i izričita potvrda predloga",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "415e6e2079ec06c96e3fd6bd88960a2beb10589545771f2882c1c0697882bbb8",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-ingestion-connector.jpg": {
+      "source": "automation/evidence/ISI-30F/desktop-docs/ingestion-connector.png",
+      "source_sha256": "33b4d293d0ae05d08b833769e367b0add20e2c4c99a938871ea2f5c1afe8790c",
+      "chapter": "INGESTION",
+      "section": "4",
+      "caption": "Konektor ulaznih datoteka — desktop ugovor i izričita potvrda registracije",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "facb1128ea9f8b20b998e31d725d5de065ae2f4b6ce1707c0aff2f073dea9f6b",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-simpa-statistical-fields.jpg": {
+      "source": "automation/evidence/ISI-30F/desktop-docs/simpa-statistical-fields.png",
+      "source_sha256": "cb349ca07d6b5bde5a2a3d0224498cf8fa3117f315f4122e6ac383f4bef86c59",
+      "chapter": "SIMPA_METHOD",
+      "section": "4",
+      "caption": "SIMPA statistički ugovor — desktop semantika, ciljna testna metodologija i ulazna polja",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "95f686f053a70e8b16b8fda42691fc5320d2f3b11329c159381afe109cf20812",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-simpa-statistical-confirmation.jpg": {
+      "source": "automation/evidence/ISI-30F/desktop-docs/simpa-statistical-confirmation.png",
+      "source_sha256": "f873eeb3d54e0389608927de6d5e23a3becdce31980d6b06b0dbeb545b7931e1",
+      "chapter": "SIMPA_METHOD",
+      "section": "4",
+      "caption": "SIMPA statistički nacrt — desktop ograničenja i zasebna potvrda; sintetički validated preduslov",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "872f0def1666c5ae63727d8aee26d0aa8451649aee8b551609922ded04cff4a3",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-governance-record-decision.jpg": {
+      "source": "automation/evidence/ISI-30F/desktop-docs/governance-record-decision.png",
+      "source_sha256": "9989e00df7fb6fa80f0be927496a2e1022c463c45d3f2bf1b031d5d2bea0ff7a",
+      "chapter": "GOVERNANCE",
+      "section": "4",
+      "caption": "Karantin — desktop poređenje zapisa i odluka ljudskog pregleda",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "3ba8650695de5ece3b157d3766f4e917c528111215239fe5e34c83eb7b67ce92",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-datasets-feature-lifecycle.jpg": {
+      "source": "automation/evidence/ISI-30F/desktop-docs/datasets-feature-lifecycle.png",
+      "source_sha256": "b3c4c8ad5fcf57afa48e53f3e96775752a03c4471742ca12bde1ca2ec280aebb",
+      "chapter": "DATASETS",
+      "section": "4",
+      "caption": "Feature verzija — desktop izbor kontrolisanih ulaza i metodologije",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "d4babde3c107cc4c2455e673766c0d8c9ef565d81b101d0df273e3e6d8bdd841",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-datasets-feature-state.jpg": {
+      "source": "automation/evidence/ISI-30F/desktop-docs/datasets-feature-state.png",
+      "source_sha256": "66de5c5babf8a1fb5b828b0652429e5cd9d0b8b50ad6066278bdf0e9ca4ed98d",
+      "chapter": "DATASETS",
+      "section": "5",
+      "caption": "Feature verzija — desktop stanje, revizija i izričita potvrda promene",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "d4d8dbe5126912cedb3a8b28fc7d11ff3e24378915c17d40ac09799a0d8ca1fd",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-ai-review-form.jpg": {
+      "source": "automation/evidence/ISI-30F/desktop-docs/ai-review-form.png",
+      "source_sha256": "3f18a765f3c18445f5f4e53ade783c32cf2ab6013097f8fe9f1e662043378dd5",
+      "chapter": "AI_REVIEW",
+      "section": "4",
+      "caption": "AI evaluacija — desktop dokazi, ograničenja i ljudski pregled",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "13ce97bbebae10362f0447f06fa7239967d027245b766b19debf49ec062f82bd",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-data-version.jpg": {
+      "source": "automation/evidence/ISI-30F/desktop-docs/data-version.png",
+      "source_sha256": "5b334876fa546902825a05d49a492cdd7653b02b88041b7a1da5b36ac8962a53",
+      "chapter": "DATA",
+      "section": "4",
+      "caption": "Nova verzija izvora — desktop obrazac i izričita potvrda",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "891e685bb1c9ef70eccb7eb5d13566d1f6d9f600208f2da4575cae1a79cbcb74",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-data-retry.jpg": {
+      "source": "automation/evidence/ISI-30F/desktop-docs/data-retry.png",
+      "source_sha256": "3471e2f0b87a39b745da46e9f09ff0c5efb31f969cf3be2d4db8f6cdc87fb06a",
+      "chapter": "DATA",
+      "section": "8",
+      "caption": "Neuspela obrada — desktop status i potvrda ponavljanja",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "b85e4d5abcfe880520f725133dbc9bfb0937876dbe9ac28995602ea2d5d6b668",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-recovery-dead-letter.jpg": {
+      "source": "automation/evidence/ISI-30F/desktop-docs/recovery-dead-letter.png",
+      "source_sha256": "4d2d884316ba25ca50d35b917ab14e3694647ee1940f641ac209c0822602efcd",
+      "chapter": "RECOVERY",
+      "section": "4",
+      "caption": "Dead-letter — desktop vraćanje u obradu i obrazloženo zatvaranje",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "dceea5cdbb7f7fa62e01b0e0dfb2465a8bf3146e546a422a43cde58446e9914f",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-privacy-proposal.jpg": {
+      "source": "automation/evidence/ISI-30F/desktop-docs/privacy-proposal.png",
+      "source_sha256": "4477f89e7039771ad9a452826fa105246ee5835a9c2eb7431c070cbe8bcc5ddb",
+      "chapter": "PRIVACY",
+      "section": "4",
+      "caption": "Anonimizacija — izbor odvojenog izlaza u desktop prikazu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "74dc89c678546e8da01dfb1d7d09d1836e3570b69c04d7a10be688eb29337fbe",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-admin-invitation.jpg": {
+      "source": "automation/evidence/ISI-30F/desktop-docs/admin-invitation.png",
+      "source_sha256": "7a8021cde07bb99c511c4db1751dd68c017f02aeb1c245777d758d13bc2744c0",
+      "chapter": "ADMIN",
+      "section": "4",
+      "caption": "Administracija poziva — desktop obrazac i zasebna rola",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "54caa274d739b40b01c67fecb5dd01b7317cf3a008450bd2d72da6b69b600100",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-admin-workspace.jpg": {
+      "source": "automation/evidence/ISI-30F/desktop-docs/admin-workspace.png",
+      "source_sha256": "421e8df7b2b64b77a0b06707ef3f9c096a022f9cec772e838561d7dc52c7a15f",
+      "chapter": "ADMIN",
+      "section": "4",
+      "caption": "Administracija radnih prostora — desktop obrazac",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "d14b09c13c5a5d5192655caded3d6b763a1dc64b34247125722b90ee1a433aa1",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-security-assurance.jpg": {
+      "source": "automation/evidence/ISI-30F/desktop-docs/security-assurance.png",
+      "source_sha256": "f6cae13c4d44fde0eaf015f73d82fdc6c88b4b630635f1a309abca19507a2491",
+      "chapter": "SECURITY",
+      "section": "4",
+      "caption": "Bezbednost — prazan desktop obrazac potvrde identiteta",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "0aa5e373d784fb9897e0f1ef3fac977fc18cd1c5be37bc8fa7a5465f79a3bb48",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-reports-readonly.jpg": {
+      "source": "automation/evidence/ISI-30F/desktop-docs/reports-readonly.png",
+      "source_sha256": "672098212c3aa3d60df485fcd3b22cec180af07423166a3618d94c4d821bad18",
+      "chapter": "LINKED",
+      "section": "8",
+      "caption": "Izveštaji — desktop pregled bez prava kreiranja",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "6e9885480a82b153ceee1288350a20a41943da60dd5dc25597576c3192b55e42",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-reports-ordo-context.jpg": {
+      "source": "automation/evidence/ISI-30F/desktop-docs/reports-ordo-context.png",
+      "source_sha256": "aaa420f286969486a944186d4bfa13a8ce69abbc89a38cda436dc49f8c2c9774",
+      "chapter": "LINKED",
+      "section": "4",
+      "caption": "Izveštaji — odvojeni ORDO kontekst u desktop prikazu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "8cda7cdeb246b0e2107102f0559a117c640501233b5a03dd85a77e978c218a69",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-simpa-profile-context.jpg": {
+      "source": "automation/evidence/ISI-30F/desktop-docs/simpa-profile-context.png",
+      "source_sha256": "954aff354659320f34fb36fca57e6f7e449cf64c8dea1b7bbb69afa80361a622",
+      "chapter": "SHELL",
+      "section": "4",
+      "caption": "SIMPA — desktop pregled bez izmišljenih institucionalnih podataka",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "7c477d3d274800d186f309b4ca709b4f85f31bcc1f184bbd60bbc4f42f456e7a",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-simpa-profile-form.jpg": {
+      "source": "automation/evidence/ISI-30F/desktop-docs/simpa-profile-form.png",
+      "source_sha256": "3eab37871947afa98a6a56bdec24cadfda67bd5629486dd0ab8946d893424c14",
+      "chapter": "SHELL",
+      "section": "4",
+      "caption": "SIMPA — desktop konfiguracija lokalnog sistema i aktera",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "5c4bfb8d687df2949a91609e725edccd1111e7e67ba951e803b7b95bcf048d91",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    }
+  },
+  "chapters": {
+    "GIS": [
+      "ISI-29C-simpa-desktop.jpg",
+      "ISI-29C-ordo-desktop.jpg"
+    ],
+    "SHAP": [
+      "ISI-29D-desktop-matrix.jpg",
+      "ISI-29D-desktop-waterfall.jpg"
+    ],
+    "EXTRACTION": [
+      "ISI-29E-desktop-source.jpg",
+      "ISI-29E-desktop-review.jpg"
+    ],
+    "LINKED": [
+      "ISI-30D3B-desktop-explicit-selection.jpg",
+      "ISI-30D3B-desktop-linked-inputs.jpg",
+      "ISI-30D3B-desktop-draft-evidence.jpg",
+      "ISI-30D3B-desktop-review-confirmation.jpg",
+      "ISI-30D3B-desktop-publish-confirmation.jpg",
+      "ISI-30D3B-desktop-export.jpg",
+      "ISI-30F-desktop-reports-readonly.jpg",
+      "ISI-30F-desktop-reports-ordo-context.jpg"
+    ],
+    "SHELL": [
+      "ISI-30A-desktop-simpa.jpg",
+      "ISI-30A-desktop-ordo-scenarios.jpg",
+      "ISI-30A-desktop-status-confirmation.jpg",
+      "ISI-30F-desktop-simpa-profile-context.jpg",
+      "ISI-30F-desktop-simpa-profile-form.jpg"
+    ],
+    "DATA": [
+      "ISI-30B-desktop-source.jpg",
+      "ISI-30B-desktop-output.jpg",
+      "ISI-30B-desktop-evaluation.jpg",
+      "ISI-30F-desktop-data-version.jpg",
+      "ISI-30F-desktop-data-retry.jpg"
+    ],
+    "INGESTION": [
+      "ISI-30B2-final-desktop-policy-validation.jpg",
+      "ISI-30B2-final-desktop-ingest-created.jpg",
+      "ISI-30B2-final-desktop-mapping-created.jpg",
+      "ISI-30B2-final-desktop-records-created.jpg",
+      "ISI-30B2-final-desktop-policy-created.jpg",
+      "ISI-30F-desktop-ingestion-connector.jpg"
+    ],
+    "DATASETS": [
+      "ISI-30B3-desktop-snapshot.jpg",
+      "ISI-30B3-desktop-registry.jpg",
+      "ISI-30B3-desktop-contract.jpg",
+      "ISI-30B3-desktop-feature-registry.jpg",
+      "ISI-30F-desktop-datasets-feature-lifecycle.jpg",
+      "ISI-30F-desktop-datasets-feature-state.jpg"
+    ],
+    "RECOVERY": [
+      "ISI-30B4A-desktop-backfill.jpg",
+      "ISI-30B4A-desktop-replay.jpg",
+      "ISI-30F-desktop-recovery-dead-letter.jpg",
+      "ISI-30F-desktop-recovery-close.jpg"
+    ],
+    "GOVERNANCE": [
+      "ISI-30B4B-desktop-record-comparison.jpg",
+      "ISI-30B4B-desktop-profile.jpg",
+      "ISI-30F-desktop-governance-record-decision.jpg"
+    ],
+    "PRIVACY": [
+      "ISI-30B4C-desktop-hold.jpg",
+      "ISI-30B4C-desktop-export.jpg",
+      "ISI-30F-desktop-privacy-proposal.jpg",
+      "ISI-30F-desktop-privacy-confirmation.jpg"
+    ],
+    "SIMPA_METHOD": [
+      "ISI-30C1-desktop-review.jpg",
+      "ISI-30C1-desktop-draft.jpg",
+      "ISI-30F-desktop-simpa-statistical-fields.jpg",
+      "ISI-30F-desktop-simpa-statistical-confirmation.jpg"
+    ],
+    "ORDO_METHOD": [
+      "ISI-30C2A-desktop-authoring-final.jpg",
+      "ISI-30C2A-desktop-forecast-final.jpg",
+      "ISI-30C2A-desktop-review-final.jpg",
+      "ISI-30C2A-desktop-validated-final.jpg"
+    ],
+    "ORDO_SPATIAL": [
+      "ISI-30C2B1-desktop-explicit-inputs.jpg",
+      "ISI-30C2B1-desktop-review.jpg",
+      "ISI-30C2B1-desktop-success.jpg"
+    ],
+    "ORDO_STAT": [
+      "ISI-30C2B2-desktop-authoring-fields.jpg",
+      "ISI-30C2B2-desktop-success-reset.jpg",
+      "ISI-30C2B2-desktop-authoring-success.jpg",
+      "ISI-30C2B2-desktop-specification.jpg"
+    ],
+    "ADMIN": [
+      "ISI-30D1-desktop-confirmation.jpg",
+      "ISI-30D1-desktop-readonly.jpg",
+      "ISI-30D1-desktop-review.jpg",
+      "ISI-30D1-desktop-session-review.jpg",
+      "ISI-30D1-desktop-success.jpg",
+      "ISI-30F-desktop-admin-invitation.jpg",
+      "ISI-30F-desktop-admin-workspace.jpg"
+    ],
+    "AI_REVIEW": [
+      "ISI-30D2-desktop-readonly-boundaries.jpg",
+      "ISI-30D2-desktop-ai-overview.jpg",
+      "ISI-30D2-desktop-job-xai.jpg",
+      "ISI-30F-desktop-ai-review-form.jpg"
+    ],
+    "RESULTS": [
+      "ISI-30D3A-desktop-forecast.jpg",
+      "ISI-30D3A-desktop-not-estimated.jpg",
+      "ISI-30D3A-desktop-citations.jpg",
+      "ISI-30D3A-desktop-interval.jpg",
+      "ISI-30D3A-desktop-shap.jpg"
+    ],
+    "SECURITY": [
+      "ISI-30D4-desktop-inventory.jpg",
+      "ISI-30D4-desktop-confirmation.jpg",
+      "ISI-30D4-desktop-receipt.jpg",
+      "ISI-30F-desktop-security-assurance.jpg"
+    ]
+  },
+  "template": {
+    "path": "docs/help/templates/ISI-MANUAL-TEMPLATE.docx",
+    "sha256": "a229060a594634769369bc0cfe79e3b5c78acaf6db641a226c4c12de9b19701d"
+  }
+}

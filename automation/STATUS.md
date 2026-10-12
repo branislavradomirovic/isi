@@ -611,3 +611,13 @@ evidence is under automation/evidence/ISI-30F. SMTPpending, no new backups per o
 PREPRODUCTION_TESTING retained. Full institutional-production certification,
 real-data methodology/extraction calibration, alert delivery/offsite recovery and
 remaining legal identity facts are not claimed by this technical release.
+
+30F live GUI recovery: active historical SIMPA ISI08/09 and ORDO ISI10 copy is
+REMOVE_BEFORE_NEXT_SLICE, resolved by bounded current Serbian overview/indicator
+descriptions and separate analytics/AI navigation. Dead ORDO placeholders remain
+REQUIRED_COMPATIBILITY; dated manual examples LEGITIMATE_HISTORY. No runtime
+behavior/schema/permission/model/provider/dependency/inventory change. New copy
+tests/full regression and exact final acceptance required before activation.
+
+## 2026-10-12 — owner desktop documentation correction
+IN_PROGRESS: SIMPA/ORDO Help/manual desktop-only revision, bounded images, navigable index and replacement desktop captures. Earlier 30E mobile-mixed edition is historical and is not acceptance evidence for this correction. New candidate remains unstaged; no new release/deployment claim.

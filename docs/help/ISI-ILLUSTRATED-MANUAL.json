@@ -53,7 +53,7 @@
       ],
       "availability": "Uputstvo opisuje lokalno provereni korisnički tok. Dostupnost u vašem okruženju zavisi od objavljene verzije, prava, stvarnih izvora i institucionalnih preduslova.",
       "screens": [
-        "ISI-30A-desktop-simpa.jpg",
+        "ISI-30F-desktop-simpa-profile-context.jpg",
         "ISI-30A-desktop-ordo-scenarios.jpg"
       ],
       "related_chapters": [
@@ -77,8 +77,8 @@
       ],
       "availability": "Uputstvo opisuje lokalno provereni korisnički tok. Dostupnost u vašem okruženju zavisi od objavljene verzije, prava, stvarnih izvora i institucionalnih preduslova.",
       "screens": [
-        "ISI-30B-mobile-version-created.jpg",
-        "ISI-30B-mobile-readonly.jpg"
+        "ISI-30B-desktop-source.jpg",
+        "ISI-30B-desktop-output.jpg"
       ],
       "sections": [
         [
@@ -200,8 +200,7 @@
       ],
       "availability": "Uputstvo opisuje lokalno provereni korisnički tok. Dostupnost u vašem okruženju zavisi od objavljene verzije, prava, stvarnih izvora i institucionalnih preduslova.",
       "screens": [
-        "ISI-30D2-desktop-readonly-boundaries.jpg",
-        "ISI-30D2-mobile-xai-boundaries.jpg"
+        "ISI-30D2-desktop-readonly-boundaries.jpg"
       ],
       "related_chapters": [
         "AI_REVIEW",
@@ -212,7 +211,7 @@
       "fields": [],
       "availability": "Dostupnost radnje zavisi od aktivnog konteksta, dozvola i odgovarajućih ulaznih podataka.",
       "screens": [
-        "screenshots-simpa-overview.jpg"
+        "ISI-30F-desktop-simpa-profile-context.jpg"
       ]
     },
     "SIMPA-H02": {
@@ -248,7 +247,7 @@
       ],
       "availability": "Dostupnost radnje zavisi od aktivnog konteksta, dozvola i odgovarajućih ulaznih podataka.",
       "screens": [
-        "screenshots-simpa-profile.jpg"
+        "ISI-30F-desktop-simpa-profile-form.jpg"
       ]
     },
     "SIMPA-H03": {
@@ -617,9 +616,14 @@
       ],
       "screens": [
         "ISI-29C-simpa-desktop.jpg",
-        "ISI-29C-ordo-desktop.jpg",
-        "ISI-29C-simpa-mobile.jpg"
-      ]
+        "ISI-29C-ordo-desktop.jpg"
+      ],
+      "screen_sections": {
+        "4": [
+          "ISI-29C-simpa-desktop.jpg",
+          "ISI-29C-ordo-desktop.jpg"
+        ]
+      }
     },
     "SHAP": {
       "title": "SIMPA — SHAP matrica i doprinosi",
@@ -670,9 +674,14 @@
       ],
       "screens": [
         "ISI-29D-desktop-matrix.jpg",
-        "ISI-29D-desktop-waterfall.jpg",
-        "ISI-29D-mobile-invalid.jpg"
-      ]
+        "ISI-29D-desktop-waterfall.jpg"
+      ],
+      "screen_sections": {
+        "4": [
+          "ISI-29D-desktop-matrix.jpg",
+          "ISI-29D-desktop-waterfall.jpg"
+        ]
+      }
     },
     "EXTRACTION": {
       "title": "Entiteti i nalazi — izvor, pregled i obuhvat",
@@ -724,9 +733,14 @@
       ],
       "screens": [
         "ISI-29E-desktop-source.jpg",
-        "ISI-29E-desktop-review.jpg",
-        "ISI-29E-mobile-review.jpg"
-      ]
+        "ISI-29E-desktop-review.jpg"
+      ],
+      "screen_sections": {
+        "4": [
+          "ISI-29E-desktop-source.jpg",
+          "ISI-29E-desktop-review.jpg"
+        ]
+      }
     },
     "LINKED": {
       "title": "Izveštaji pregled objavljivanje i izvoz",
@@ -741,9 +755,8 @@
         "ISI-30D3B-desktop-review-confirmation.jpg",
         "ISI-30D3B-desktop-publish-confirmation.jpg",
         "ISI-30D3B-desktop-export.jpg",
-        "ISI-30D3B-mobile-export.jpg",
-        "ISI-30D3B-mobile-readonly.jpg",
-        "ISI-30D3B-mobile-ordo-context.jpg"
+        "ISI-30F-desktop-reports-readonly.jpg",
+        "ISI-30F-desktop-reports-ordo-context.jpg"
       ],
       "guide": "ISI-REPORTING-WORKFLOWS-GUIDE.md",
       "sections": [
@@ -794,17 +807,14 @@
           "ISI-30D3B-desktop-linked-inputs.jpg",
           "ISI-30D3B-desktop-draft-evidence.jpg",
           "ISI-30D3B-desktop-review-confirmation.jpg",
-          "ISI-30D3B-desktop-publish-confirmation.jpg"
+          "ISI-30D3B-desktop-publish-confirmation.jpg",
+          "ISI-30F-desktop-reports-ordo-context.jpg"
         ],
         "5": [
-          "ISI-30D3B-desktop-export.jpg",
-          "ISI-30D3B-mobile-export.jpg"
+          "ISI-30D3B-desktop-export.jpg"
         ],
         "8": [
-          "ISI-30D3B-mobile-readonly.jpg"
-        ],
-        "10": [
-          "ISI-30D3B-mobile-ordo-context.jpg"
+          "ISI-30F-desktop-reports-readonly.jpg"
         ]
       }
     },
@@ -815,12 +825,10 @@
         "ORDO"
       ],
       "screens": [
-        "ISI-30A-desktop-simpa.jpg",
+        "ISI-30F-desktop-simpa-profile-context.jpg",
         "ISI-30A-desktop-ordo-scenarios.jpg",
         "ISI-30A-desktop-status-confirmation.jpg",
-        "ISI-30A-mobile-sidebar.jpg",
-        "ISI-30A-mobile-ordo-scenarios.jpg",
-        "ISI-30A-mobile-review-form.jpg"
+        "ISI-30F-desktop-simpa-profile-form.jpg"
       ],
       "guide": "ISI-WORKFLOW-SHELL-GUIDE.md",
       "sections": [
@@ -834,7 +842,7 @@
         ],
         [
           "Radni kontekst i polja",
-          "1. Prijavite se svojim institucionalnim nalogom.\n2. U bočnom meniju izaberite organizaciju, SIMPA ili ORDO i radni prostor.\n3. Proverite naziv organizacije/proizvoda/prostora iznad sadržaja pre svakog unosa.\n4. Otvorite željenu funkciju; prikazuju se samo dozvoljene i podržane stavke.\n5. Ako je administrator promenio pristup, izaberite **Osveži pristup**.\n\nPromena konteksta i osvežavanje pristupa odbacuju nezavršene unose. Pre prelaska\nsačuvajte rad postojećim dugmetom u obrascu. Odjava čisti lokalno stanje sesije;\nbackend određuje trajanje i opoziv pristupa. Na telefonu otvorite bočni meni\nugrađenim dugmetom u zaglavlju. Tastaturom koristite Tab/Shift+Tab i Enter/Space.\n\n| Polje/radnja | Značenje |\n|---|---|\n|Organizacija|Institucija u čijem kontekstu radite; ne spaja podatke drugih institucija|\n|Proizvod|SIMPA ili ORDO, prema dodeljenom pristupu|\n|Radni prostor|Izdvojeni kontekst rada i podataka unutar proizvoda|\n|Osveži pristup|Ponovo učitava serverom odobreni pristup; ne dodeljuje novu ulogu|\n|Odjavi se|Opoziva tekuću sesiju kada je usluga dostupna i čisti lokalne unose|\n\nAko nemate radni prostor ili funkciju, kontaktirajte administratora. Ako je\nusluga nedostupna, pokušajte ponovo kada se veza obnovi; ne menjajte organizaciju\nda biste zaobišli ograničenje. Primer: sintetički reviewer prelazi sa ORDO\nprostora A na B, prethodni tekst obrasca se odbacuje, a operacije koriste B.\nOvaj vodič ne dodeljuje dozvole i ne potvrđuje stanje institucionalnih podataka."
+          "1. Prijavite se svojim institucionalnim nalogom.\n2. U bočnom meniju izaberite organizaciju, SIMPA ili ORDO i radni prostor.\n3. Proverite naziv organizacije/proizvoda/prostora iznad sadržaja pre svakog unosa.\n4. Otvorite željenu funkciju; prikazuju se samo dozvoljene i podržane stavke.\n5. Ako je administrator promenio pristup, izaberite **Osveži pristup**.\n\nPromena konteksta i osvežavanje pristupa odbacuju nezavršene unose. Pre prelaska\nsačuvajte rad postojećim dugmetom u obrascu. Odjava čisti lokalno stanje sesije;\nbackend određuje trajanje i opoziv pristupa. Otvorite bočni meni\nugrađenim dugmetom u zaglavlju. Tastaturom koristite Tab/Shift+Tab i Enter/Space.\n\n| Polje/radnja | Značenje |\n|---|---|\n|Organizacija|Institucija u čijem kontekstu radite; ne spaja podatke drugih institucija|\n|Proizvod|SIMPA ili ORDO, prema dodeljenom pristupu|\n|Radni prostor|Izdvojeni kontekst rada i podataka unutar proizvoda|\n|Osveži pristup|Ponovo učitava serverom odobreni pristup; ne dodeljuje novu ulogu|\n|Odjavi se|Opoziva tekuću sesiju kada je usluga dostupna i čisti lokalne unose|\n\nAko nemate radni prostor ili funkciju, kontaktirajte administratora. Ako je\nusluga nedostupna, pokušajte ponovo kada se veza obnovi; ne menjajte organizaciju\nda biste zaobišli ograničenje. Primer: sintetički reviewer prelazi sa ORDO\nprostora A na B, prethodni tekst obrasca se odbacuje, a operacije koriste B.\nOvaj vodič ne dodeljuje dozvole i ne potvrđuje stanje institucionalnih podataka."
         ],
         [
           "ORDO scenariji korak po korak",
@@ -849,8 +857,8 @@
           "Sintetički scenario beleži pretpostavke i povezuje prihvatljiv snimak. Autor čita originalne izvore i ne upisuje izmišljeni procenat poboljšanja."
         ],
         [
-          "Mobilni i tastaturni pristup",
-          "Otvorite bočni meni na telefonu. Tab i Shift Tab menjaju fokus; Enter i Space aktiviraju kontrolu. Tabela ostaje dostupna uz grafički prikaz."
+          "Desktop prikaz i tastaturna navigacija",
+          "SIMPA i ORDO koriste se na desktop/laptop uređajima. Bočni meni omogućava izbor funkcije. Tab i Shift+Tab pomeraju fokus; Enter i Space aktiviraju odgovarajuću kontrolu. Za grafikon je dostupan tabelarni pregled izvornog rezultata."
         ],
         [
           "Greške i oporavak",
@@ -867,14 +875,10 @@
       ],
       "screen_sections": {
         "4": [
-          "ISI-30A-desktop-simpa.jpg",
+          "ISI-30F-desktop-simpa-profile-context.jpg",
           "ISI-30A-desktop-ordo-scenarios.jpg",
-          "ISI-30A-desktop-status-confirmation.jpg"
-        ],
-        "10": [
-          "ISI-30A-mobile-sidebar.jpg",
-          "ISI-30A-mobile-ordo-scenarios.jpg",
-          "ISI-30A-mobile-review-form.jpg"
+          "ISI-30A-desktop-status-confirmation.jpg",
+          "ISI-30F-desktop-simpa-profile-form.jpg"
         ]
       }
     },
@@ -885,13 +889,11 @@
         "ORDO"
       ],
       "screens": [
-        "ISI-30B-mobile-version-created.jpg",
-        "ISI-30B-mobile-readonly.jpg",
-        "ISI-30B-mobile-retry.jpg",
         "ISI-30B-desktop-source.jpg",
         "ISI-30B-desktop-output.jpg",
-        "ISI-30B-mobile-output.jpg",
-        "ISI-30B-desktop-evaluation.jpg"
+        "ISI-30B-desktop-evaluation.jpg",
+        "ISI-30F-desktop-data-version.jpg",
+        "ISI-30F-desktop-data-retry.jpg"
       ],
       "guide": "ISI-DATA-WORKFLOWS-GUIDE.md",
       "sections": [
@@ -939,18 +941,14 @@
       "screen_sections": {
         "4": [
           "ISI-30B-desktop-source.jpg",
-          "ISI-30B-desktop-evaluation.jpg"
+          "ISI-30B-desktop-evaluation.jpg",
+          "ISI-30F-desktop-data-version.jpg"
         ],
         "5": [
-          "ISI-30B-mobile-version-created.jpg",
-          "ISI-30B-desktop-output.jpg",
-          "ISI-30B-mobile-output.jpg"
+          "ISI-30B-desktop-output.jpg"
         ],
         "8": [
-          "ISI-30B-mobile-readonly.jpg"
-        ],
-        "10": [
-          "ISI-30B-mobile-retry.jpg"
+          "ISI-30F-desktop-data-retry.jpg"
         ]
       }
     },
@@ -961,14 +959,12 @@
         "ORDO"
       ],
       "screens": [
-        "ISI-30B2-final-mobile-mapping.jpg",
         "ISI-30B2-final-desktop-policy-validation.jpg",
         "ISI-30B2-final-desktop-ingest-created.jpg",
         "ISI-30B2-final-desktop-mapping-created.jpg",
         "ISI-30B2-final-desktop-records-created.jpg",
         "ISI-30B2-final-desktop-policy-created.jpg",
-        "ISI-30B2-final-mobile-connector.jpg",
-        "ISI-30B2-final-mobile-ingest-created.jpg"
+        "ISI-30F-desktop-ingestion-connector.jpg"
       ],
       "guide": "ISI-GOVERNED-INGESTION-GUIDE.md",
       "sections": [
@@ -1015,18 +1011,14 @@
       ],
       "screen_sections": {
         "4": [
-          "ISI-30B2-final-desktop-policy-validation.jpg"
+          "ISI-30B2-final-desktop-policy-validation.jpg",
+          "ISI-30F-desktop-ingestion-connector.jpg"
         ],
         "5": [
           "ISI-30B2-final-desktop-ingest-created.jpg",
           "ISI-30B2-final-desktop-mapping-created.jpg",
           "ISI-30B2-final-desktop-records-created.jpg",
-          "ISI-30B2-final-desktop-policy-created.jpg",
-          "ISI-30B2-final-mobile-ingest-created.jpg"
-        ],
-        "10": [
-          "ISI-30B2-final-mobile-mapping.jpg",
-          "ISI-30B2-final-mobile-connector.jpg"
+          "ISI-30B2-final-desktop-policy-created.jpg"
         ]
       }
     },
@@ -1037,14 +1029,12 @@
         "ORDO"
       ],
       "screens": [
-        "ISI-30B3-mobile-lifecycle.jpg",
         "ISI-30B3-desktop-snapshot.jpg",
         "ISI-30B3-desktop-registry.jpg",
-        "ISI-30B3-mobile-confirmation.jpg",
-        "ISI-30B3-mobile-feature.jpg",
         "ISI-30B3-desktop-contract.jpg",
         "ISI-30B3-desktop-feature-registry.jpg",
-        "ISI-30B3-mobile-feature-lifecycle.jpg"
+        "ISI-30F-desktop-datasets-feature-lifecycle.jpg",
+        "ISI-30F-desktop-datasets-feature-state.jpg"
       ],
       "guide": "ISI-ANALYTICAL-AUTHORING-GUIDE.md",
       "sections": [
@@ -1094,13 +1084,11 @@
           "ISI-30B3-desktop-snapshot.jpg",
           "ISI-30B3-desktop-registry.jpg",
           "ISI-30B3-desktop-contract.jpg",
-          "ISI-30B3-desktop-feature-registry.jpg"
+          "ISI-30B3-desktop-feature-registry.jpg",
+          "ISI-30F-desktop-datasets-feature-lifecycle.jpg"
         ],
-        "10": [
-          "ISI-30B3-mobile-lifecycle.jpg",
-          "ISI-30B3-mobile-confirmation.jpg",
-          "ISI-30B3-mobile-feature.jpg",
-          "ISI-30B3-mobile-feature-lifecycle.jpg"
+        "5": [
+          "ISI-30F-desktop-datasets-feature-state.jpg"
         ]
       }
     },
@@ -1112,9 +1100,9 @@
       ],
       "screens": [
         "ISI-30B4A-desktop-backfill.jpg",
-        "ISI-30B4A-mobile-resolve.jpg",
-        "ISI-30B4A-mobile-requeue.jpg",
-        "ISI-30B4A-desktop-replay.jpg"
+        "ISI-30B4A-desktop-replay.jpg",
+        "ISI-30F-desktop-recovery-dead-letter.jpg",
+        "ISI-30F-desktop-recovery-close.jpg"
       ],
       "guide": "ISI-INGESTION-RECOVERY-GUIDE.md",
       "sections": [
@@ -1162,11 +1150,9 @@
       "screen_sections": {
         "4": [
           "ISI-30B4A-desktop-backfill.jpg",
-          "ISI-30B4A-desktop-replay.jpg"
-        ],
-        "10": [
-          "ISI-30B4A-mobile-resolve.jpg",
-          "ISI-30B4A-mobile-requeue.jpg"
+          "ISI-30B4A-desktop-replay.jpg",
+          "ISI-30F-desktop-recovery-close.jpg",
+          "ISI-30F-desktop-recovery-dead-letter.jpg"
         ]
       }
     },
@@ -1177,10 +1163,9 @@
         "ORDO"
       ],
       "screens": [
-        "ISI-30B4B-mobile-confirmation.jpg",
         "ISI-30B4B-desktop-record-comparison.jpg",
-        "ISI-30B4B-mobile-record-decision.jpg",
-        "ISI-30B4B-desktop-profile.jpg"
+        "ISI-30B4B-desktop-profile.jpg",
+        "ISI-30F-desktop-governance-record-decision.jpg"
       ],
       "guide": "ISI-SOURCE-GOVERNANCE-GUIDE.md",
       "sections": [
@@ -1228,11 +1213,8 @@
       "screen_sections": {
         "4": [
           "ISI-30B4B-desktop-record-comparison.jpg",
-          "ISI-30B4B-desktop-profile.jpg"
-        ],
-        "10": [
-          "ISI-30B4B-mobile-confirmation.jpg",
-          "ISI-30B4B-mobile-record-decision.jpg"
+          "ISI-30B4B-desktop-profile.jpg",
+          "ISI-30F-desktop-governance-record-decision.jpg"
         ]
       }
     },
@@ -1243,11 +1225,10 @@
         "ORDO"
       ],
       "screens": [
-        "ISI-30B4C-mobile-proposal.jpg",
-        "ISI-30B4C-mobile-read-only.jpg",
         "ISI-30B4C-desktop-hold.jpg",
         "ISI-30B4C-desktop-export.jpg",
-        "ISI-30B4C-mobile-export.jpg"
+        "ISI-30F-desktop-privacy-proposal.jpg",
+        "ISI-30F-desktop-privacy-confirmation.jpg"
       ],
       "guide": "ISI-PRIVACY-CONTROLS-GUIDE.md",
       "sections": [
@@ -1294,17 +1275,12 @@
       ],
       "screen_sections": {
         "4": [
-          "ISI-30B4C-desktop-hold.jpg"
+          "ISI-30B4C-desktop-hold.jpg",
+          "ISI-30F-desktop-privacy-confirmation.jpg",
+          "ISI-30F-desktop-privacy-proposal.jpg"
         ],
         "5": [
-          "ISI-30B4C-desktop-export.jpg",
-          "ISI-30B4C-mobile-export.jpg"
-        ],
-        "8": [
-          "ISI-30B4C-mobile-read-only.jpg"
-        ],
-        "10": [
-          "ISI-30B4C-mobile-proposal.jpg"
+          "ISI-30B4C-desktop-export.jpg"
         ]
       }
     },
@@ -1314,10 +1290,10 @@
         "SIMPA"
       ],
       "screens": [
-        "ISI-30C1-mobile-statistical.jpg",
         "ISI-30C1-desktop-review.jpg",
-        "ISI-30C1-mobile-review.jpg",
-        "ISI-30C1-desktop-draft.jpg"
+        "ISI-30C1-desktop-draft.jpg",
+        "ISI-30F-desktop-simpa-statistical-fields.jpg",
+        "ISI-30F-desktop-simpa-statistical-confirmation.jpg"
       ],
       "guide": "SIMPA-METHODOLOGY-WORKFLOWS-GUIDE.md",
       "sections": [
@@ -1365,11 +1341,9 @@
       "screen_sections": {
         "4": [
           "ISI-30C1-desktop-review.jpg",
-          "ISI-30C1-desktop-draft.jpg"
-        ],
-        "10": [
-          "ISI-30C1-mobile-statistical.jpg",
-          "ISI-30C1-mobile-review.jpg"
+          "ISI-30C1-desktop-draft.jpg",
+          "ISI-30F-desktop-simpa-statistical-fields.jpg",
+          "ISI-30F-desktop-simpa-statistical-confirmation.jpg"
         ]
       }
     },
@@ -1382,10 +1356,7 @@
         "ISI-30C2A-desktop-authoring-final.jpg",
         "ISI-30C2A-desktop-forecast-final.jpg",
         "ISI-30C2A-desktop-review-final.jpg",
-        "ISI-30C2A-desktop-validated-final.jpg",
-        "ISI-30C2A-mobile-authoring-final.jpg",
-        "ISI-30C2A-mobile-readonly-final.jpg",
-        "ISI-30C2A-mobile-validation-final.jpg"
+        "ISI-30C2A-desktop-validated-final.jpg"
       ],
       "guide": "ORDO-METHODOLOGY-WORKFLOWS-GUIDE.md",
       "sections": [
@@ -1436,13 +1407,6 @@
           "ISI-30C2A-desktop-forecast-final.jpg",
           "ISI-30C2A-desktop-review-final.jpg",
           "ISI-30C2A-desktop-validated-final.jpg"
-        ],
-        "8": [
-          "ISI-30C2A-mobile-readonly-final.jpg"
-        ],
-        "10": [
-          "ISI-30C2A-mobile-authoring-final.jpg",
-          "ISI-30C2A-mobile-validation-final.jpg"
         ]
       }
     },
@@ -1453,10 +1417,7 @@
       ],
       "screens": [
         "ISI-30C2B1-desktop-explicit-inputs.jpg",
-        "ISI-30C2B1-mobile-readonly.jpg",
-        "ISI-30C2B1-mobile-reset.jpg",
         "ISI-30C2B1-desktop-review.jpg",
-        "ISI-30C2B1-mobile-review.jpg",
         "ISI-30C2B1-desktop-success.jpg"
       ],
       "guide": "ORDO-SPATIAL-AGGREGATION-GUIDE.md",
@@ -1509,13 +1470,6 @@
         ],
         "5": [
           "ISI-30C2B1-desktop-success.jpg"
-        ],
-        "8": [
-          "ISI-30C2B1-mobile-readonly.jpg",
-          "ISI-30C2B1-mobile-reset.jpg"
-        ],
-        "10": [
-          "ISI-30C2B1-mobile-review.jpg"
         ]
       }
     },
@@ -1525,13 +1479,10 @@
         "ORDO"
       ],
       "screens": [
-        "ISI-30C2B2-mobile-success-reset.jpg",
-        "ISI-30C2B2-mobile-readonly.jpg",
         "ISI-30C2B2-desktop-authoring-fields.jpg",
         "ISI-30C2B2-desktop-success-reset.jpg",
         "ISI-30C2B2-desktop-authoring-success.jpg",
-        "ISI-30C2B2-desktop-specification.jpg",
-        "ISI-30C2B2-mobile-review-confirmation.jpg"
+        "ISI-30C2B2-desktop-specification.jpg"
       ],
       "guide": "ORDO-STATISTICAL-SPECIFICATION-GUIDE.md",
       "sections": [
@@ -1585,12 +1536,7 @@
           "ISI-30C2B2-desktop-authoring-success.jpg"
         ],
         "8": [
-          "ISI-30C2B2-mobile-success-reset.jpg",
-          "ISI-30C2B2-mobile-readonly.jpg",
           "ISI-30C2B2-desktop-success-reset.jpg"
-        ],
-        "10": [
-          "ISI-30C2B2-mobile-review-confirmation.jpg"
         ]
       }
     },
@@ -1606,10 +1552,8 @@
         "ISI-30D1-desktop-review.jpg",
         "ISI-30D1-desktop-session-review.jpg",
         "ISI-30D1-desktop-success.jpg",
-        "ISI-30D1-mobile-actions.jpg",
-        "ISI-30D1-mobile-invitation.jpg",
-        "ISI-30D1-mobile-session-review.jpg",
-        "ISI-30D1-mobile-workspace.jpg"
+        "ISI-30F-desktop-admin-invitation.jpg",
+        "ISI-30F-desktop-admin-workspace.jpg"
       ],
       "guide": "ISI-ADMINISTRATION-WORKFLOWS-GUIDE.md",
       "sections": [
@@ -1658,19 +1602,15 @@
         "4": [
           "ISI-30D1-desktop-confirmation.jpg",
           "ISI-30D1-desktop-review.jpg",
-          "ISI-30D1-desktop-session-review.jpg"
+          "ISI-30D1-desktop-session-review.jpg",
+          "ISI-30F-desktop-admin-invitation.jpg",
+          "ISI-30F-desktop-admin-workspace.jpg"
         ],
         "5": [
           "ISI-30D1-desktop-success.jpg"
         ],
         "8": [
           "ISI-30D1-desktop-readonly.jpg"
-        ],
-        "10": [
-          "ISI-30D1-mobile-actions.jpg",
-          "ISI-30D1-mobile-invitation.jpg",
-          "ISI-30D1-mobile-session-review.jpg",
-          "ISI-30D1-mobile-workspace.jpg"
         ]
       }
     },
@@ -1682,10 +1622,9 @@
       ],
       "screens": [
         "ISI-30D2-desktop-readonly-boundaries.jpg",
-        "ISI-30D2-mobile-xai-boundaries.jpg",
         "ISI-30D2-desktop-ai-overview.jpg",
-        "ISI-30D2-mobile-review-success.jpg",
-        "ISI-30D2-desktop-job-xai.jpg"
+        "ISI-30D2-desktop-job-xai.jpg",
+        "ISI-30F-desktop-ai-review-form.jpg"
       ],
       "guide": "ISI-AI-REVIEW-WORKFLOWS-GUIDE.md",
       "sections": [
@@ -1733,16 +1672,11 @@
       "screen_sections": {
         "4": [
           "ISI-30D2-desktop-ai-overview.jpg",
-          "ISI-30D2-desktop-job-xai.jpg"
-        ],
-        "5": [
-          "ISI-30D2-mobile-review-success.jpg"
+          "ISI-30D2-desktop-job-xai.jpg",
+          "ISI-30F-desktop-ai-review-form.jpg"
         ],
         "8": [
           "ISI-30D2-desktop-readonly-boundaries.jpg"
-        ],
-        "10": [
-          "ISI-30D2-mobile-xai-boundaries.jpg"
         ]
       }
     },
@@ -1757,9 +1691,7 @@
         "ISI-30D3A-desktop-not-estimated.jpg",
         "ISI-30D3A-desktop-citations.jpg",
         "ISI-30D3A-desktop-interval.jpg",
-        "ISI-30D3A-desktop-shap.jpg",
-        "ISI-30D3A-mobile-shap.jpg",
-        "ISI-30D3A-mobile-citations.jpg"
+        "ISI-30D3A-desktop-shap.jpg"
       ],
       "guide": "ISI-RESULT-EVIDENCE-GUIDE.md",
       "sections": [
@@ -1811,10 +1743,6 @@
           "ISI-30D3A-desktop-citations.jpg",
           "ISI-30D3A-desktop-interval.jpg",
           "ISI-30D3A-desktop-shap.jpg"
-        ],
-        "10": [
-          "ISI-30D3A-mobile-shap.jpg",
-          "ISI-30D3A-mobile-citations.jpg"
         ]
       }
     },
@@ -1828,8 +1756,7 @@
         "ISI-30D4-desktop-inventory.jpg",
         "ISI-30D4-desktop-confirmation.jpg",
         "ISI-30D4-desktop-receipt.jpg",
-        "ISI-30D4-mobile-assurance-form.jpg",
-        "ISI-30D4-mobile-receipt.jpg"
+        "ISI-30F-desktop-security-assurance.jpg"
       ],
       "guide": "ISI-ACCOUNT-SECURITY-WORKFLOWS-GUIDE.md",
       "sections": [
@@ -1877,14 +1804,11 @@
       "screen_sections": {
         "4": [
           "ISI-30D4-desktop-inventory.jpg",
-          "ISI-30D4-desktop-confirmation.jpg"
+          "ISI-30D4-desktop-confirmation.jpg",
+          "ISI-30F-desktop-security-assurance.jpg"
         ],
         "5": [
-          "ISI-30D4-desktop-receipt.jpg",
-          "ISI-30D4-mobile-receipt.jpg"
-        ],
-        "10": [
-          "ISI-30D4-mobile-assurance-form.jpg"
+          "ISI-30D4-desktop-receipt.jpg"
         ]
       }
     }
@@ -1894,829 +1818,1435 @@
       "sha256": "3f569b0bd0f2c540d0a64406f0e3a77b80d1f7d7043546e573d7155657159470",
       "caption": "Javni ISI portal",
       "kind": "SERVER_BASELINE",
-      "captured": "2026-10-07"
+      "captured": "2026-10-07",
+      "width": 1425,
+      "height": 990,
+      "view": "DESKTOP"
     },
     "screenshots-login.jpg": {
       "sha256": "877e4ec0abf3dc3e96d47df191830b462ad143d62d1dc4b0381311935476f4b0",
       "caption": "Prijava u platformu",
       "kind": "SERVER_BASELINE",
-      "captured": "2026-10-07"
+      "captured": "2026-10-07",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "screenshots-help-invitation.jpg": {
       "sha256": "31a3bd31acdab8f80aacb2237df3c57433abd3c162bd22cc44664f53631cf889",
       "caption": "Uputstvo za prihvatanje poziva",
       "kind": "SERVER_BASELINE",
-      "captured": "2026-10-07"
+      "captured": "2026-10-07",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "screenshots-login-recovery.jpg": {
       "sha256": "92bc1045b90f87f20b1298e7c851fc99817a0e326f0fc14445274b574b17c437",
       "caption": "Prijava i oporavak pristupa",
       "kind": "SERVER_BASELINE",
-      "captured": "2026-10-07"
+      "captured": "2026-10-07",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "screenshots-simpa-overview.jpg": {
       "sha256": "267b8feecd3d3a33a9599c2e92515dc953a1f59847288400b0a0d079cb021e7b",
       "caption": "SIMPA — pregled radnog prostora",
       "kind": "SERVER_BASELINE",
-      "captured": "2026-10-07"
+      "captured": "2026-10-07",
+      "width": 1418,
+      "height": 1247,
+      "view": "DESKTOP"
     },
     "screenshots-data.jpg": {
       "sha256": "4d1f638c1c0179b855ba81fc11d036dbd8a826dfcba894641a43821db40242fe",
       "caption": "Zajednički radni prostor za podatke",
       "kind": "SERVER_BASELINE",
-      "captured": "2026-10-07"
+      "captured": "2026-10-07",
+      "width": 1418,
+      "height": 1247,
+      "view": "DESKTOP"
     },
     "screenshots-reports.jpg": {
       "sha256": "5444b888bf8015f79a5f83b9711a79bb70f9e341f13b92a1c1ee866d78dfc828",
       "caption": "Zajednički izveštaji",
       "kind": "SERVER_BASELINE",
-      "captured": "2026-10-07"
+      "captured": "2026-10-07",
+      "width": 1418,
+      "height": 1247,
+      "view": "DESKTOP"
     },
     "screenshots-admin-overview.jpg": {
       "sha256": "8f0a2b12f7464d7c7f5e23e1964c7eb3c6d5f45eabe76478b7e85fafc720059c",
       "caption": "Administracija platforme",
       "kind": "SERVER_BASELINE",
-      "captured": "2026-10-07"
+      "captured": "2026-10-07",
+      "width": 1418,
+      "height": 1247,
+      "view": "DESKTOP"
     },
     "screenshots-security.jpg": {
       "sha256": "8831879c4b300704ea674e87e50ffda29b32b8bae3c2018b0adb1e593d39e7dc",
       "caption": "Bezbednost naloga",
       "kind": "SERVER_BASELINE",
-      "captured": "2026-10-07"
+      "captured": "2026-10-07",
+      "width": 1418,
+      "height": 1247,
+      "view": "DESKTOP"
     },
     "screenshots-public-help.jpg": {
       "sha256": "fd8841fc138e7b97242be061db6109fbd695b33354484618ca5bd4964580fbef",
       "caption": "Javna pomoć za pristup platformi",
       "kind": "SERVER_BASELINE",
-      "captured": "2026-10-07"
+      "captured": "2026-10-07",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "screenshots-shared-help.jpg": {
       "sha256": "7503664089ca8dc1922b13f13bfeadc66c593f7ef7e78c246b852c064bfb06f5",
       "caption": "Zajednička pomoć",
       "kind": "SERVER_BASELINE",
-      "captured": "2026-10-07"
+      "captured": "2026-10-07",
+      "width": 1418,
+      "height": 1247,
+      "view": "DESKTOP"
     },
     "screenshots-simpa-profile.jpg": {
       "sha256": "2705d8ebb0950593dcbc43de354b88b0e2107cbb429c7e3ee785cb2d4162e76c",
       "caption": "SIMPA — profil lokalnog sistema",
       "kind": "SERVER_BASELINE",
-      "captured": "2026-10-07"
+      "captured": "2026-10-07",
+      "width": 1020,
+      "height": 915,
+      "view": "ARCHIVED_CROPPED_DESKTOP"
     },
     "screenshots-simpa-cycle.jpg": {
       "sha256": "603dedbae76da5193672fba846c9fe7292462e59b0222817c270016e9bc69ad1",
       "caption": "SIMPA — monitoring ciklusi",
       "kind": "SERVER_BASELINE",
-      "captured": "2026-10-07"
+      "captured": "2026-10-07",
+      "width": 1418,
+      "height": 1247,
+      "view": "DESKTOP"
     },
     "screenshots-simpa-indicators.jpg": {
       "sha256": "8e53b4f78e080379ac45dd57032b63003b96ef815ff1c1dbf988f6eed6fdf487",
       "caption": "SIMPA — indikatori",
       "kind": "SERVER_BASELINE",
-      "captured": "2026-10-07"
+      "captured": "2026-10-07",
+      "width": 1418,
+      "height": 1247,
+      "view": "DESKTOP"
     },
     "screenshots-simpa-analysis.jpg": {
       "sha256": "0478cbbc7808bfef9907293bb42dade8023459699c941089914cdca4a52efc3e",
       "caption": "SIMPA — analitički radni prostor",
       "kind": "SERVER_BASELINE",
-      "captured": "2026-10-07"
+      "captured": "2026-10-07",
+      "width": 1418,
+      "height": 1247,
+      "view": "DESKTOP"
     },
     "screenshots-simpa-statistics.jpg": {
       "sha256": "99f7ee8fd8da799eceeb54888eaecf673604cb0f711dc3ac91fc7be8d2c72cbb",
       "caption": "SIMPA — statistički radni prostor",
       "kind": "SERVER_BASELINE",
-      "captured": "2026-10-07"
+      "captured": "2026-10-07",
+      "width": 1418,
+      "height": 1247,
+      "view": "DESKTOP"
     },
     "screenshots-ordo-overview.jpg": {
       "sha256": "c33a6d81a6b5363fd7533202a55227841bf98d10d0a13e94d5cc1b3f2d17a111",
       "caption": "ORDO — pregled radnog prostora",
       "kind": "SERVER_BASELINE",
-      "captured": "2026-10-07"
+      "captured": "2026-10-07",
+      "width": 1418,
+      "height": 1247,
+      "view": "DESKTOP"
     },
     "screenshots-ordo-indicators.jpg": {
       "sha256": "8def8813ca2db65e70ed6904d76309fe4ddf36ceebb0a7a48021041501a8e116",
       "caption": "ORDO — indikatori",
       "kind": "SERVER_BASELINE",
-      "captured": "2026-10-07"
+      "captured": "2026-10-07",
+      "width": 1418,
+      "height": 1247,
+      "view": "DESKTOP"
     },
     "screenshots-ordo-analysis.jpg": {
       "sha256": "0dca77125f3e0c09925406daf1724fc5769b8eafaaa9fc7b2fad07112bdecee5",
       "caption": "ORDO — analitički radni prostor",
       "kind": "SERVER_BASELINE",
-      "captured": "2026-10-07"
+      "captured": "2026-10-07",
+      "width": 1418,
+      "height": 1247,
+      "view": "DESKTOP"
     },
     "screenshots-ordo-forecast.jpg": {
       "sha256": "d2dd7f6370de48d78e375ded343ab4957392114deff90b21d1b255050ef04b9e",
       "caption": "ORDO — prognoze",
       "kind": "SERVER_BASELINE",
-      "captured": "2026-10-07"
+      "captured": "2026-10-07",
+      "width": 1418,
+      "height": 1247,
+      "view": "DESKTOP"
     },
     "screenshots-ordo-goal.jpg": {
       "sha256": "aaac0edc540c16d86ffc3e556049eaff402c0ed379944de270fd6bbe2cfdf832",
       "caption": "ORDO — razvojni ciljevi",
       "kind": "SERVER_BASELINE",
-      "captured": "2026-10-07"
+      "captured": "2026-10-07",
+      "width": 1418,
+      "height": 1247,
+      "view": "DESKTOP"
     },
     "screenshots-ordo-help.jpg": {
       "sha256": "30bf9145b6dc23ae557459b954f2adfb55be902a5a303974c12070c8a4c7c4f6",
       "caption": "ORDO — izbor pomoći",
       "kind": "SERVER_BASELINE",
-      "captured": "2026-10-07"
+      "captured": "2026-10-07",
+      "width": 1418,
+      "height": 1247,
+      "view": "DESKTOP"
     },
     "ISI-29C-simpa-desktop.jpg": {
       "sha256": "2eb8106121e05936b3505a9047dd28226caf35d66a2aa19d9016b74b79b0041d",
       "caption": "SIMPA GIS — potvrđena geometrija, izbor i povezana tabela",
       "kind": "SYNTHETIC",
-      "captured": "2026-10-09"
+      "captured": "2026-10-09",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-29C-ordo-desktop.jpg": {
       "sha256": "42f5e6eb389d99148dea408bdcb8e663d5e065969e6176308905fd3ee17a8155",
       "caption": "ORDO karta, tabela i rezultat",
       "kind": "SYNTHETIC",
-      "captured": "2026-10-08"
+      "captured": "2026-10-08",
+      "width": 1280,
+      "height": 1000,
+      "view": "DESKTOP"
     },
     "ISI-29C-simpa-mobile.jpg": {
       "sha256": "cc581ab179c367b7b2d2a7e0928a2e18d4caad019d9399ee24a0e3684fd9b819",
       "caption": "GIS mobilni prikaz",
       "kind": "SYNTHETIC",
-      "captured": "2026-10-08"
+      "captured": "2026-10-08",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-29D-desktop-matrix.jpg": {
       "sha256": "f176dcc6cdad389bb80c720405476e1fd81de74d5e47c8b0414fdf485269cb9a",
       "caption": "SHAP matrica i heatmap",
       "kind": "SYNTHETIC",
-      "captured": "2026-10-08"
+      "captured": "2026-10-08",
+      "width": 1280,
+      "height": 900,
+      "view": "DESKTOP"
     },
     "ISI-29D-desktop-waterfall.jpg": {
       "sha256": "e6db065172375b5420f7c100eadf3aa74bce8b029ea50550045e29f0456ac603",
       "caption": "Lokalni waterfall izabranog uzorka",
       "kind": "SYNTHETIC",
-      "captured": "2026-10-08"
+      "captured": "2026-10-08",
+      "width": 1280,
+      "height": 900,
+      "view": "DESKTOP"
     },
     "ISI-29D-mobile-invalid.jpg": {
       "sha256": "be928d5606858a650c0c424f55124eb9f8a54ade95f4e29293cc35a8e7d5c59d",
       "caption": "Blokiran dokaz",
       "kind": "SYNTHETIC",
-      "captured": "2026-10-08"
+      "captured": "2026-10-08",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-29E-desktop-source.jpg": {
       "sha256": "0c9f4fe8d9b0e082e142406d98652cd39303cdeb976de1b291aa43543fb2129a",
       "caption": "Izvor i originalni citati",
       "kind": "SYNTHETIC",
-      "captured": "2026-10-08"
+      "captured": "2026-10-08",
+      "width": 1280,
+      "height": 900,
+      "view": "DESKTOP"
     },
     "ISI-29E-desktop-review.jpg": {
       "sha256": "3b86d177457ba0b4b4abdebd87d7f8797d721099b4d57eab877b56a3023e0912",
       "caption": "Pregled identiteta i teritorije",
       "kind": "SYNTHETIC",
-      "captured": "2026-10-08"
+      "captured": "2026-10-08",
+      "width": 1280,
+      "height": 900,
+      "view": "DESKTOP"
     },
     "ISI-29E-mobile-review.jpg": {
       "sha256": "738ad73859072310813d972f996edbca543b35fe73fc6aea89c28b551ed124cf",
       "caption": "Mobilni pregled",
       "kind": "SYNTHETIC",
-      "captured": "2026-10-08"
+      "captured": "2026-10-08",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-29F-desktop-form.jpg": {
       "sha256": "f53e69a5b2e24cde215c3fa1da36c9b8f3bba91bc4982bc7632ccae1810f6318",
       "caption": "Novi povezani izveštaj",
       "kind": "SYNTHETIC",
-      "captured": "2026-10-08"
+      "captured": "2026-10-08",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-29F-desktop-map.jpg": {
       "sha256": "a04f5bf87ebf2f057528dde86aa2ac149cb2267ec2c8824a2a15d0a2e0ee816d",
       "caption": "Pregled nalaza i karte",
       "kind": "SYNTHETIC",
-      "captured": "2026-10-08"
+      "captured": "2026-10-08",
+      "width": 1280,
+      "height": 900,
+      "view": "DESKTOP"
     },
     "ISI-29F-desktop-review.jpg": {
       "sha256": "b2611c73e0d53d89b7f4301b545c1c0a0c65b05534d0ab8eea8caf049e52acaf",
       "caption": "Review izveštaja",
       "kind": "SYNTHETIC",
-      "captured": "2026-10-08"
+      "captured": "2026-10-08",
+      "width": 1280,
+      "height": 900,
+      "view": "DESKTOP"
     },
     "ISI-29F-desktop-approved.jpg": {
       "sha256": "a601eda9aeda71d3b3308aace92acf89015309033a9c1be96451aeaa4baefd22",
       "caption": "Eksplicitna publikacija",
       "kind": "SYNTHETIC",
-      "captured": "2026-10-08"
+      "captured": "2026-10-08",
+      "width": 1280,
+      "height": 900,
+      "view": "DESKTOP"
     },
     "ISI-29F-desktop-export.jpg": {
       "sha256": "6b71fdc4026ec7e6125d93d5a2dbabd22421879d0c19d1d68c92c98ba4c5ab9b",
       "caption": "Preuzimanje odobrenog artefakta",
       "kind": "SYNTHETIC",
-      "captured": "2026-10-08"
+      "captured": "2026-10-08",
+      "width": 1280,
+      "height": 900,
+      "view": "DESKTOP"
     },
     "ISI-29F-mobile-ordo-map.jpg": {
       "sha256": "06a5e4e4825e07fadb901fb4410d8e2d8afda1dad250fa4a45540fb01151d1b7",
       "caption": "ORDO mobilna karta",
       "kind": "SYNTHETIC",
-      "captured": "2026-10-08"
+      "captured": "2026-10-08",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30A-desktop-simpa.jpg": {
       "caption": "Navigacija i kontekst — SIMPA pregled i kontekst",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "4721e060c1168dc39938005b2ed529bc570b43b7f21ec8605227b4b079c2aa65"
+      "sha256": "4721e060c1168dc39938005b2ed529bc570b43b7f21ec8605227b4b079c2aa65",
+      "width": 1280,
+      "height": 900,
+      "view": "ARCHIVED_SUPERSEDED_DESKTOP"
     },
     "ISI-30A-desktop-ordo-scenarios.jpg": {
       "caption": "Navigacija i kontekst — ORDO scenariji",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "a65e2efef32fe32f01c64254d3ff3f957ef4eb3f354f3fdf033049fea9a29924"
+      "sha256": "a65e2efef32fe32f01c64254d3ff3f957ef4eb3f354f3fdf033049fea9a29924",
+      "width": 1280,
+      "height": 900,
+      "view": "DESKTOP"
     },
     "ISI-30A-desktop-status-confirmation.jpg": {
       "caption": "Navigacija i kontekst — Potvrda statusa scenarija",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "e51d48e9b725701c2d1001e5e68633c17111c428a6a1c2af549c34dab9dce972"
+      "sha256": "e51d48e9b725701c2d1001e5e68633c17111c428a6a1c2af549c34dab9dce972",
+      "width": 1280,
+      "height": 900,
+      "view": "DESKTOP"
     },
     "ISI-30A-mobile-sidebar.jpg": {
       "caption": "Navigacija i kontekst — Izbor radnog konteksta na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "b40a196747c129f935b0e57570780648f8a3313841714445cb29cac1efefb078"
+      "sha256": "b40a196747c129f935b0e57570780648f8a3313841714445cb29cac1efefb078",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30A-mobile-ordo-scenarios.jpg": {
       "caption": "Navigacija i kontekst — ORDO scenariji na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "7db9ef49f8b9442c91af5a554f4b4cb3f98f84f3e07f43585ffda44ba4d335d8"
+      "sha256": "7db9ef49f8b9442c91af5a554f4b4cb3f98f84f3e07f43585ffda44ba4d335d8",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30A-mobile-review-form.jpg": {
       "caption": "Navigacija i kontekst — Obrazac stručnog pregleda na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "d85a4bd2dab3aede537a55ab18ae17ccedbc59eda2faaf61103b6447d901f136"
+      "sha256": "d85a4bd2dab3aede537a55ab18ae17ccedbc59eda2faaf61103b6447d901f136",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30B-mobile-version-created.jpg": {
       "caption": "Verzije izvora kvalitet i obrada — Registrovana nova verzija na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "066c5cbcd0ffb1eb9827f1138e0b5f547dc5468f349bd2001463aef7a1ce480e"
+      "sha256": "066c5cbcd0ffb1eb9827f1138e0b5f547dc5468f349bd2001463aef7a1ce480e",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30B-mobile-readonly.jpg": {
       "caption": "Verzije izvora kvalitet i obrada — Pregled bez prava izmene na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "81f9611dfe3a67d21d47501b6c6e376a1456f2744150ddaa06874fe1da17e931"
+      "sha256": "81f9611dfe3a67d21d47501b6c6e376a1456f2744150ddaa06874fe1da17e931",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30B-mobile-retry.jpg": {
       "caption": "Verzije izvora kvalitet i obrada — Potvrda ponavljanja neuspele obrade na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "2cb82d83e8f7bd1aeb16ceb6552bc344912ff90f784a818c390afa295bc264a8"
+      "sha256": "2cb82d83e8f7bd1aeb16ceb6552bc344912ff90f784a818c390afa295bc264a8",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30B-desktop-source.jpg": {
       "caption": "Verzije izvora kvalitet i obrada — Izvor verzija i kvalitet",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "cd6a0c7d291a87bb09ed8fb02d651ccbb81d0db919fed26a64fcb1b64939b421"
+      "sha256": "cd6a0c7d291a87bb09ed8fb02d651ccbb81d0db919fed26a64fcb1b64939b421",
+      "width": 1280,
+      "height": 900,
+      "view": "DESKTOP"
     },
     "ISI-30B-desktop-output.jpg": {
       "caption": "Verzije izvora kvalitet i obrada — Kontrolisani izlaz obrade",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "b9b70867d30b8a8a5aecdac14f3d9cda68399a150d1d57bfb1c4ad8ebb000921"
+      "sha256": "b9b70867d30b8a8a5aecdac14f3d9cda68399a150d1d57bfb1c4ad8ebb000921",
+      "width": 1280,
+      "height": 900,
+      "view": "DESKTOP"
     },
     "ISI-30B-mobile-output.jpg": {
       "caption": "Verzije izvora kvalitet i obrada — Kontrolisani izlaz obrade na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "952698001b40a08dee783b8147e5ba40a2533351a866872ef73cfcb38af9f615"
+      "sha256": "952698001b40a08dee783b8147e5ba40a2533351a866872ef73cfcb38af9f615",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30B-desktop-evaluation.jpg": {
       "caption": "Verzije izvora kvalitet i obrada — Ocena kvaliteta i svežine",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "28d9ebe679763799e5afe81685e8e1d96c7d4c72eb60a198e26cf3d4c6dd3be2"
+      "sha256": "28d9ebe679763799e5afe81685e8e1d96c7d4c72eb60a198e26cf3d4c6dd3be2",
+      "width": 1280,
+      "height": 900,
+      "view": "DESKTOP"
     },
     "ISI-30B2-final-mobile-mapping.jpg": {
       "caption": "Konektori mapiranje i kontrolisana obrada — Mapiranje kolona na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "0e0d6cb7a8adf0acf25a95a82d2134220df8cc114597c6bb878bbc5772f689e5"
+      "sha256": "0e0d6cb7a8adf0acf25a95a82d2134220df8cc114597c6bb878bbc5772f689e5",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30B2-final-desktop-policy-validation.jpg": {
       "caption": "Konektori mapiranje i kontrolisana obrada — Provera operativne politike",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "18ceedc7ee0f8d81c0c36f6cdadaaafa54621dbf7e78732d8f866535a1c5190e"
+      "sha256": "18ceedc7ee0f8d81c0c36f6cdadaaafa54621dbf7e78732d8f866535a1c5190e",
+      "width": 1280,
+      "height": 900,
+      "view": "DESKTOP"
     },
     "ISI-30B2-final-desktop-ingest-created.jpg": {
       "caption": "Konektori mapiranje i kontrolisana obrada — Sačuvana kontrolisana obrada",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "9893477884a466f8c70f6e6ec43f2ea40c1fc7915fa6280e895ddabd561b6e52"
+      "sha256": "9893477884a466f8c70f6e6ec43f2ea40c1fc7915fa6280e895ddabd561b6e52",
+      "width": 1280,
+      "height": 900,
+      "view": "DESKTOP"
     },
     "ISI-30B2-final-desktop-mapping-created.jpg": {
       "caption": "Konektori mapiranje i kontrolisana obrada — Sačuvano mapiranje kolona",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "0650f74b1d4666e8a759081034239dcf4852499ec57c6210da94c8d234b25656"
+      "sha256": "0650f74b1d4666e8a759081034239dcf4852499ec57c6210da94c8d234b25656",
+      "width": 1280,
+      "height": 900,
+      "view": "DESKTOP"
     },
     "ISI-30B2-final-desktop-records-created.jpg": {
       "caption": "Konektori mapiranje i kontrolisana obrada — Sačuvana politika identiteta zapisa",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "c175634ceb3764f7525cbf3493bb401a6d2aaedb3695eab9d7642652ca43551e"
+      "sha256": "c175634ceb3764f7525cbf3493bb401a6d2aaedb3695eab9d7642652ca43551e",
+      "width": 1280,
+      "height": 900,
+      "view": "DESKTOP"
     },
     "ISI-30B2-final-desktop-policy-created.jpg": {
       "caption": "Konektori mapiranje i kontrolisana obrada — Sačuvana operativna politika",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "6f850fcc36260b967600cfcac8817d0accb1f8cb0cd4874a190599f76dc2b6e3"
+      "sha256": "6f850fcc36260b967600cfcac8817d0accb1f8cb0cd4874a190599f76dc2b6e3",
+      "width": 1280,
+      "height": 900,
+      "view": "DESKTOP"
     },
     "ISI-30B2-final-mobile-connector.jpg": {
       "caption": "Konektori mapiranje i kontrolisana obrada — Konektor i aktivni ugovor na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "7cd2b1b90e1fb09059ea0d523a06d7c222c7af4a6ea93e72798fa6ae65f0fd47"
+      "sha256": "7cd2b1b90e1fb09059ea0d523a06d7c222c7af4a6ea93e72798fa6ae65f0fd47",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30B2-final-mobile-ingest-created.jpg": {
       "caption": "Konektori mapiranje i kontrolisana obrada — Sačuvana kontrolisana obrada na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "c276b222e140d71035f5dc0e1a1d87c51ae3311eba8c7de8a1e58db78028c832"
+      "sha256": "c276b222e140d71035f5dc0e1a1d87c51ae3311eba8c7de8a1e58db78028c832",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30B3-mobile-lifecycle.jpg": {
       "caption": "Analitički skupovi i feature verzije — Životni ciklus artefakta na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "c0690d7c702c519e569e3e18c402a0e52771d5de2f160d259aba91133576afd1"
+      "sha256": "c0690d7c702c519e569e3e18c402a0e52771d5de2f160d259aba91133576afd1",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30B3-desktop-snapshot.jpg": {
       "caption": "Analitički skupovi i feature verzije — Verzija analitičkog skupa",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "74666dcac6ad3887a150a732c721c86374c09bd2b858f16f87ed7bfb50095c0e"
+      "sha256": "74666dcac6ad3887a150a732c721c86374c09bd2b858f16f87ed7bfb50095c0e",
+      "width": 1280,
+      "height": 900,
+      "view": "DESKTOP"
     },
     "ISI-30B3-desktop-registry.jpg": {
       "caption": "Analitički skupovi i feature verzije — Registar i izbor",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "6f513afca9955819f8cbed5e218aa6869692dd1fbc0c669533090b3e3a5dcc0e"
+      "sha256": "6f513afca9955819f8cbed5e218aa6869692dd1fbc0c669533090b3e3a5dcc0e",
+      "width": 1280,
+      "height": 900,
+      "view": "DESKTOP"
     },
     "ISI-30B3-mobile-confirmation.jpg": {
       "caption": "Analitički skupovi i feature verzije — Izričita potvrda operacije na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "94d13ff25e024f267460cc633bf9e5ef0e5200997b004df47f5b70b7feaf3e0e"
+      "sha256": "94d13ff25e024f267460cc633bf9e5ef0e5200997b004df47f5b70b7feaf3e0e",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30B3-mobile-feature.jpg": {
       "caption": "Analitički skupovi i feature verzije — Feature verzija na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "cc429a0f3a59e3ed521017fb76aae74d84ac6a8d37d70ae4f66fc44f3dd5d8fe"
+      "sha256": "cc429a0f3a59e3ed521017fb76aae74d84ac6a8d37d70ae4f66fc44f3dd5d8fe",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30B3-desktop-contract.jpg": {
       "caption": "Analitički skupovi i feature verzije — Ugovor polja",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "ba9adfb41634c4b7d6c21398286ceba7dd51faeb5b35ca4ebfd2325a6d14bb52"
+      "sha256": "ba9adfb41634c4b7d6c21398286ceba7dd51faeb5b35ca4ebfd2325a6d14bb52",
+      "width": 1280,
+      "height": 900,
+      "view": "DESKTOP"
     },
     "ISI-30B3-desktop-feature-registry.jpg": {
       "caption": "Analitički skupovi i feature verzije — Feature registar",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "ce7dcce2a27136373785d74b45a59d161781797dd56f4e0269a285ccac8800c2"
+      "sha256": "ce7dcce2a27136373785d74b45a59d161781797dd56f4e0269a285ccac8800c2",
+      "width": 1280,
+      "height": 900,
+      "view": "DESKTOP"
     },
     "ISI-30B3-mobile-feature-lifecycle.jpg": {
       "caption": "Analitički skupovi i feature verzije — Životni ciklus feature verzije na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "4e027ecdaea0d7bcee38ae2d858dc3b9d71d3d0b52ea1cbc3212ec0d3561f0d0"
+      "sha256": "4e027ecdaea0d7bcee38ae2d858dc3b9d71d3d0b52ea1cbc3212ec0d3561f0d0",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30B4A-desktop-backfill.jpg": {
       "caption": "Backfill replay i neuspele obrade — Potvrda istorijske obrade",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "b0d2959a54dfef76dcf9714a99de89f960b7c2722215c8ae7d9c630e29ff4c87"
+      "sha256": "b0d2959a54dfef76dcf9714a99de89f960b7c2722215c8ae7d9c630e29ff4c87",
+      "width": 1280,
+      "height": 900,
+      "view": "DESKTOP"
     },
     "ISI-30B4A-mobile-resolve.jpg": {
       "caption": "Backfill replay i neuspele obrade — Pregled i razrešenje stavke na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "9cded274bc6bf72225033dfab5d680dad07aca4585f931448bee5e3efb5eaf2a"
+      "sha256": "9cded274bc6bf72225033dfab5d680dad07aca4585f931448bee5e3efb5eaf2a",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30B4A-mobile-requeue.jpg": {
       "caption": "Backfill replay i neuspele obrade — Potvrda ponovnog raspoređivanja na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "94bb3a11944beda733426db7bd2f77d93d54e930beef47b8a9323fa5d50635d3"
+      "sha256": "94bb3a11944beda733426db7bd2f77d93d54e930beef47b8a9323fa5d50635d3",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30B4A-desktop-replay.jpg": {
       "caption": "Backfill replay i neuspele obrade — Ponovna obrada nepromenljivog sadržaja",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "9a9467b849b2f74610aa122c02d802f9a6b41c5312e9a2c31d75039478ef21d4"
+      "sha256": "9a9467b849b2f74610aa122c02d802f9a6b41c5312e9a2c31d75039478ef21d4",
+      "width": 1280,
+      "height": 900,
+      "view": "DESKTOP"
     },
     "ISI-30B4B-mobile-confirmation.jpg": {
       "caption": "Izvorni governance i karantin — Izričita potvrda operacije na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "8b13c6c277668b01b7ae3f12bfa4ea798e0191617ee65cc148947ff3b5f28b7c"
+      "sha256": "8b13c6c277668b01b7ae3f12bfa4ea798e0191617ee65cc148947ff3b5f28b7c",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30B4B-desktop-record-comparison.jpg": {
       "caption": "Izvorni governance i karantin — Poređenje aktuelnog i karantinskog zapisa",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "bddf3d93aa8829d54ca009dfbf0ff413bbe816c7e474e8940eb836b81d8e9525"
+      "sha256": "bddf3d93aa8829d54ca009dfbf0ff413bbe816c7e474e8940eb836b81d8e9525",
+      "width": 1280,
+      "height": 900,
+      "view": "DESKTOP"
     },
     "ISI-30B4B-mobile-record-decision.jpg": {
       "caption": "Izvorni governance i karantin — Odluka o karantinskom zapisu na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "e1b74ff4f885944da4a10d0d9524c60aef19c39b618b6ebe7eeeafc78ea6a1e3"
+      "sha256": "e1b74ff4f885944da4a10d0d9524c60aef19c39b618b6ebe7eeeafc78ea6a1e3",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30B4B-desktop-profile.jpg": {
       "caption": "Izvorni governance i karantin — Governance profil izvora",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "3ff75290c69b4acddafec04fec852807fdbf84d426420389ab54d0b4147f9b83"
+      "sha256": "3ff75290c69b4acddafec04fec852807fdbf84d426420389ab54d0b4147f9b83",
+      "width": 1280,
+      "height": 900,
+      "view": "DESKTOP"
     },
     "ISI-30B4C-mobile-proposal.jpg": {
       "caption": "Čuvanje hold anonimizacija i izvoz — Predlog anonimizacije na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "1b5916fbe102a732321fb67ef10d069681da3de82c5f0521d055ad9a83a24568"
+      "sha256": "1b5916fbe102a732321fb67ef10d069681da3de82c5f0521d055ad9a83a24568",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30B4C-mobile-read-only.jpg": {
       "caption": "Čuvanje hold anonimizacija i izvoz — Pregled bez prava izmene na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "ccc0635b422047088583d8e50263b8d01861d034654c9f0defb97f7c29dce148"
+      "sha256": "ccc0635b422047088583d8e50263b8d01861d034654c9f0defb97f7c29dce148",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30B4C-desktop-hold.jpg": {
       "caption": "Čuvanje hold anonimizacija i izvoz — Zabrana fizičkog brisanja",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "ad930c3f6668998db23035d99cc858058e6402cda6410393ad67c2a4a433046c"
+      "sha256": "ad930c3f6668998db23035d99cc858058e6402cda6410393ad67c2a4a433046c",
+      "width": 1280,
+      "height": 900,
+      "view": "DESKTOP"
     },
     "ISI-30B4C-desktop-export.jpg": {
       "caption": "Čuvanje hold anonimizacija i izvoz — Priprema i preuzimanje artefakta",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "c1628f49521d1646cffc28a0a7027efc7e47198aa3b3b1632e31344865270f59"
+      "sha256": "c1628f49521d1646cffc28a0a7027efc7e47198aa3b3b1632e31344865270f59",
+      "width": 1280,
+      "height": 900,
+      "view": "DESKTOP"
     },
     "ISI-30B4C-mobile-export.jpg": {
       "caption": "Čuvanje hold anonimizacija i izvoz — Priprema i preuzimanje artefakta na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "e654fd9c1240d482b2d6ed158df32cfb7399c55a4210c488647ecf1b57c3e91d"
+      "sha256": "e654fd9c1240d482b2d6ed158df32cfb7399c55a4210c488647ecf1b57c3e91d",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30C1-mobile-statistical.jpg": {
       "caption": "SIMPA metodologija i referentne provere — Statistički ugovor i granice na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "fa5893b196166b46135753f09bf49d62dfda2783c6f0d5fa0feeea824222e1fe"
+      "sha256": "fa5893b196166b46135753f09bf49d62dfda2783c6f0d5fa0feeea824222e1fe",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30C1-desktop-review.jpg": {
       "caption": "SIMPA metodologija i referentne provere — Pregled i odluka",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "f9461f8917d7a9f0abc8d8eca969a8e8dd6db3bcd450b4a9c36cf454899a7e13"
+      "sha256": "f9461f8917d7a9f0abc8d8eca969a8e8dd6db3bcd450b4a9c36cf454899a7e13",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30C1-mobile-review.jpg": {
       "caption": "SIMPA metodologija i referentne provere — Pregled i odluka na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "6e026f49e3330bebe36c03a7a0e5629c6e9d607c6ee8aedb63638a358f31d506"
+      "sha256": "6e026f49e3330bebe36c03a7a0e5629c6e9d607c6ee8aedb63638a358f31d506",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30C1-desktop-draft.jpg": {
       "caption": "SIMPA metodologija i referentne provere — Metodološki nacrt",
       "kind": "SYNTHETIC",
       "captured": "2026-10-10",
-      "sha256": "426f8bc23c2af2f37421bf93cd5f95346886d8ed03411caa530531b66194f9e3"
+      "sha256": "426f8bc23c2af2f37421bf93cd5f95346886d8ed03411caa530531b66194f9e3",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30C2A-desktop-authoring-final.jpg": {
       "caption": "ORDO metodologija i prognoze — Autorski parametri",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "5723d25e65a44dd7439e77a3201ba7917b0e08796997d96aa3d15112fe5c8b75"
+      "sha256": "5723d25e65a44dd7439e77a3201ba7917b0e08796997d96aa3d15112fe5c8b75",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30C2A-desktop-forecast-final.jpg": {
       "caption": "ORDO metodologija i prognoze — Prognoza i vremenski dokaz",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "b1a1854b1b5493c5536c5cd139fb430c64239a5050dfa0eaf126e874c65ff39b"
+      "sha256": "b1a1854b1b5493c5536c5cd139fb430c64239a5050dfa0eaf126e874c65ff39b",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30C2A-desktop-review-final.jpg": {
       "caption": "ORDO metodologija i prognoze — Pregled i odluka",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "d0292900b562c2942f3619978663b859b707dfac273f57b1e5e985cb9fd5b109"
+      "sha256": "d0292900b562c2942f3619978663b859b707dfac273f57b1e5e985cb9fd5b109",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30C2A-desktop-validated-final.jpg": {
       "caption": "ORDO metodologija i prognoze — Potvrđeno stanje metodologije",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "74861c5ebdd4afda561b59eaf2c3c2f431c4518067b14f6ee3208505e3426c38"
+      "sha256": "74861c5ebdd4afda561b59eaf2c3c2f431c4518067b14f6ee3208505e3426c38",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30C2A-mobile-authoring-final.jpg": {
       "caption": "ORDO metodologija i prognoze — Autorski parametri na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "95de3855c1b45ace1720258f58031d1406cf3a0acaf1dd998d8780e85d928d84"
+      "sha256": "95de3855c1b45ace1720258f58031d1406cf3a0acaf1dd998d8780e85d928d84",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30C2A-mobile-readonly-final.jpg": {
       "caption": "ORDO metodologija i prognoze — Pregled bez prava izmene na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "caff5f013f97c52ebab80d02bc6c2a701eaf781724e159fe33e11818f9bbd63e"
+      "sha256": "caff5f013f97c52ebab80d02bc6c2a701eaf781724e159fe33e11818f9bbd63e",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30C2A-mobile-validation-final.jpg": {
       "caption": "ORDO metodologija i prognoze — Potvrda validacije na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "517356346b8086b35a4d45eba336f8a28d385c112523875fece7977f7b066104"
+      "sha256": "517356346b8086b35a4d45eba336f8a28d385c112523875fece7977f7b066104",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30C2B1-desktop-explicit-inputs.jpg": {
       "caption": "ORDO prostorna agregacija — Izričit izbor ulaza",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "1afb684f7dd8e73b9d430452e9e06869e1c13f8340a20cdaea018d36cfc30d75"
+      "sha256": "1afb684f7dd8e73b9d430452e9e06869e1c13f8340a20cdaea018d36cfc30d75",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30C2B1-mobile-readonly.jpg": {
       "caption": "ORDO prostorna agregacija — Pregled bez prava izmene na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "03a392ce08e5561c0ef24f54d425e584c54d917a28d9ec71fe72533d273024e1"
+      "sha256": "03a392ce08e5561c0ef24f54d425e584c54d917a28d9ec71fe72533d273024e1",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30C2B1-mobile-reset.jpg": {
       "caption": "ORDO prostorna agregacija — Poništena prethodna potvrda na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "bcb513dd7d94a7778e6bf3bd8cda9fcbfb6101f6e53a73f786cb8721bf98e6ca"
+      "sha256": "bcb513dd7d94a7778e6bf3bd8cda9fcbfb6101f6e53a73f786cb8721bf98e6ca",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30C2B1-desktop-review.jpg": {
       "caption": "ORDO prostorna agregacija — Pregled i odluka",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "72369f20316ce735bc22d41c2e5883d1893923ca1a4a0459b91b2ae52eaddd99"
+      "sha256": "72369f20316ce735bc22d41c2e5883d1893923ca1a4a0459b91b2ae52eaddd99",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30C2B1-mobile-review.jpg": {
       "caption": "ORDO prostorna agregacija — Pregled i odluka na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "244c6f737a459cb6e89b77fc98c75bc5f381b98c706041147ff0bc5df66a3a76"
+      "sha256": "244c6f737a459cb6e89b77fc98c75bc5f381b98c706041147ff0bc5df66a3a76",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30C2B1-desktop-success.jpg": {
       "caption": "ORDO prostorna agregacija — Potvrda uspešne operacije",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "71b5c622a03555675205f1781291b3f6b3d16dae1fc111d86472ce735563d9e3"
+      "sha256": "71b5c622a03555675205f1781291b3f6b3d16dae1fc111d86472ce735563d9e3",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30C2B2-mobile-success-reset.jpg": {
       "caption": "ORDO statističke specifikacije — Rezultat i poništene prethodne potvrde na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "63e90423615d4916de29c295dc9a255fffdd312cd223164c38c2979eebf77260"
+      "sha256": "63e90423615d4916de29c295dc9a255fffdd312cd223164c38c2979eebf77260",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30C2B2-mobile-readonly.jpg": {
       "caption": "ORDO statističke specifikacije — Pregled bez prava izmene na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "62f533536274887ba963ff605eb2ebbf3d21525d9bb06a6ef84d6604d05258b2"
+      "sha256": "62f533536274887ba963ff605eb2ebbf3d21525d9bb06a6ef84d6604d05258b2",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30C2B2-desktop-authoring-fields.jpg": {
       "caption": "ORDO statističke specifikacije — Autorska polja specifikacije",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "0da9c375c6dd83c7159eab2f614bf9e78ecf368a16fa5f7303f0bff21c4ce580"
+      "sha256": "0da9c375c6dd83c7159eab2f614bf9e78ecf368a16fa5f7303f0bff21c4ce580",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30C2B2-desktop-success-reset.jpg": {
       "caption": "ORDO statističke specifikacije — Rezultat i poništene prethodne potvrde",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "b2981ffd4ae984cafc36f10cd02c09fc6c2db0269a96656afa338f04205772c1"
+      "sha256": "b2981ffd4ae984cafc36f10cd02c09fc6c2db0269a96656afa338f04205772c1",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30C2B2-desktop-authoring-success.jpg": {
       "caption": "ORDO statističke specifikacije — Potvrda registrovanog nacrta",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "313e1550297c0bd4594e41be6b85fb9ccb0200ee5260a749e1c943b6e98c89fb"
+      "sha256": "313e1550297c0bd4594e41be6b85fb9ccb0200ee5260a749e1c943b6e98c89fb",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30C2B2-desktop-specification.jpg": {
       "caption": "ORDO statističke specifikacije — Sačuvana specifikacija",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "3aacf523d004e99bde673bb854e9c9897043be60127fc4d32a33e69e51c29ffb"
+      "sha256": "3aacf523d004e99bde673bb854e9c9897043be60127fc4d32a33e69e51c29ffb",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30C2B2-mobile-review-confirmation.jpg": {
       "caption": "ORDO statističke specifikacije — Odluka i potvrda pregleda na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "ec9e83c57a6c1415c7810976539041eba1cf72711a69005c13a1efba23d4d7ab"
+      "sha256": "ec9e83c57a6c1415c7810976539041eba1cf72711a69005c13a1efba23d4d7ab",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30D1-desktop-confirmation.jpg": {
       "caption": "Administracija i prava pristupa — Izričita potvrda operacije",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "9ba8fa90270682d5670f4b0e3a84a6d44757296138d7b9ee16ff37528aac4baf"
+      "sha256": "9ba8fa90270682d5670f4b0e3a84a6d44757296138d7b9ee16ff37528aac4baf",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30D1-desktop-readonly.jpg": {
       "caption": "Administracija i prava pristupa — Pregled bez prava izmene",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "75df34f6ebb2daa8371e0f6427eb3f4057ae80711816a3687fa84736b27943df"
+      "sha256": "75df34f6ebb2daa8371e0f6427eb3f4057ae80711816a3687fa84736b27943df",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30D1-desktop-review.jpg": {
       "caption": "Administracija i prava pristupa — Pregled i odluka",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "5772055d766e746fcaa6ff0e5fb9fe80798ba3f554a9188e48008e0209ac027f"
+      "sha256": "5772055d766e746fcaa6ff0e5fb9fe80798ba3f554a9188e48008e0209ac027f",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30D1-desktop-session-review.jpg": {
       "caption": "Administracija i prava pristupa — Pregled sesija člana",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "69011dda71ff0007023cada875b33c97d68275f14e096b7bdf0d7d856ca4199a"
+      "sha256": "69011dda71ff0007023cada875b33c97d68275f14e096b7bdf0d7d856ca4199a",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30D1-desktop-success.jpg": {
       "caption": "Administracija i prava pristupa — Potvrda uspešne operacije",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "0bbdb35013a6c8c325ac319c3f1c95faedaa0f0d79d947041ba1cc179e8e0977"
+      "sha256": "0bbdb35013a6c8c325ac319c3f1c95faedaa0f0d79d947041ba1cc179e8e0977",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30D1-mobile-actions.jpg": {
       "caption": "Administracija i prava pristupa — Administrativne operacije i potvrde na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "9d68215a466822c6613c3989f4be43f916016d2e82f1c2bd5f564ca749c5c100"
+      "sha256": "9d68215a466822c6613c3989f4be43f916016d2e82f1c2bd5f564ca749c5c100",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30D1-mobile-invitation.jpg": {
       "caption": "Administracija i prava pristupa — Poziv i granice isporuke na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "4046a9805026dc8c40e891abf455bf8d2f7001e694f22106d983892ea30aa3f2"
+      "sha256": "4046a9805026dc8c40e891abf455bf8d2f7001e694f22106d983892ea30aa3f2",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30D1-mobile-session-review.jpg": {
       "caption": "Administracija i prava pristupa — Pregled sesija člana na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "305786e83fd0f4b79c8b0773252ebae55ad212e6f58b6ba48f98cdcf9b880092"
+      "sha256": "305786e83fd0f4b79c8b0773252ebae55ad212e6f58b6ba48f98cdcf9b880092",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30D1-mobile-workspace.jpg": {
       "caption": "Administracija i prava pristupa — Radni prostor i status na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "8aa6feefa83d101f786438fc7ce76acdbd6a2451137fd2bb1d7d3eace980e781"
+      "sha256": "8aa6feefa83d101f786438fc7ce76acdbd6a2451137fd2bb1d7d3eace980e781",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30D2-desktop-readonly-boundaries.jpg": {
       "caption": "AI poslovi dokazi i ljudski pregled — Granice pregleda bez prava izmene",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "07d03a1536cd6228705cbb48fe810a9cb7abf5b2deee35869171210978ca869d"
+      "sha256": "07d03a1536cd6228705cbb48fe810a9cb7abf5b2deee35869171210978ca869d",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30D2-mobile-xai-boundaries.jpg": {
       "caption": "AI poslovi dokazi i ljudski pregled — XAI i nepodržana objašnjenja na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "11c950e2087eaa84348431b019774950ff7261ea330a8f7f975958887916153d"
+      "sha256": "11c950e2087eaa84348431b019774950ff7261ea330a8f7f975958887916153d",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30D2-desktop-ai-overview.jpg": {
       "caption": "AI poslovi dokazi i ljudski pregled — AI registar i izbor",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "a9d006cddb4fea9e7edafdc4c65005f0c166dffd97a6c20590a531ee42dba44f"
+      "sha256": "a9d006cddb4fea9e7edafdc4c65005f0c166dffd97a6c20590a531ee42dba44f",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30D2-mobile-review-success.jpg": {
       "caption": "AI poslovi dokazi i ljudski pregled — Potvrda ljudskog pregleda na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "36c15236e3d8ef2c1d302e7e4a7b1ad345ce4131c20a8abdae8e6b9e617c3d93"
+      "sha256": "36c15236e3d8ef2c1d302e7e4a7b1ad345ce4131c20a8abdae8e6b9e617c3d93",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30D2-desktop-job-xai.jpg": {
       "caption": "AI poslovi dokazi i ljudski pregled — AI posao i XAI dokaz",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "bf0c79f3b4396e8fa3e8dc22f6fd77cd619e11522d6bbf7cbd760e3169b6949d"
+      "sha256": "bf0c79f3b4396e8fa3e8dc22f6fd77cd619e11522d6bbf7cbd760e3169b6949d",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30D3A-desktop-forecast.jpg": {
       "caption": "Čitljivi rezultati XAI i citati — Prognoza i vremenski dokaz",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "61633d6b06b0afbf50203d88365a0e8bbaa7b2707471fed902c1e02670cb62ad"
+      "sha256": "61633d6b06b0afbf50203d88365a0e8bbaa7b2707471fed902c1e02670cb62ad",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30D3A-desktop-not-estimated.jpg": {
       "caption": "Čitljivi rezultati XAI i citati — Razlog neizračunatog rezultata",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "48a3cbea58c8b20ab7e72c0811c9d651613bf78f6611c9c7db95a45a16d94826"
+      "sha256": "48a3cbea58c8b20ab7e72c0811c9d651613bf78f6611c9c7db95a45a16d94826",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30D3A-desktop-citations.jpg": {
       "caption": "Čitljivi rezultati XAI i citati — Citati i poreklo nalaza",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "5102639e5b97bd432105690f2eaa8018f1a39b7f41d6393f2880b8fd0e7a4cd3"
+      "sha256": "5102639e5b97bd432105690f2eaa8018f1a39b7f41d6393f2880b8fd0e7a4cd3",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30D3A-desktop-interval.jpg": {
       "caption": "Čitljivi rezultati XAI i citati — Interval postojećeg rezultata",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "11e5b182e84d19e1ede5b8a16d75b51872063f50c3ba5bc62633cf4f6d885b02"
+      "sha256": "11e5b182e84d19e1ede5b8a16d75b51872063f50c3ba5bc62633cf4f6d885b02",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30D3A-desktop-shap.jpg": {
       "caption": "Čitljivi rezultati XAI i citati — SHAP matrica i doprinosi",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "7f90c28eaad965573f9ef70487a3712a9466e74976c2dcb43c6a8eb496d3a60c"
+      "sha256": "7f90c28eaad965573f9ef70487a3712a9466e74976c2dcb43c6a8eb496d3a60c",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30D3A-mobile-shap.jpg": {
       "caption": "Čitljivi rezultati XAI i citati — SHAP matrica i doprinosi na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "4d1c46b239a63f336ce033079e8d411c6ef7240b7f94acd81e47847e54d161b7"
+      "sha256": "4d1c46b239a63f336ce033079e8d411c6ef7240b7f94acd81e47847e54d161b7",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30D3A-mobile-citations.jpg": {
       "caption": "Čitljivi rezultati XAI i citati — Citati i poreklo nalaza na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "2d1143df1b5e6eebb06b08e39be43c6314244e695951a352be6f7264e37b341b"
+      "sha256": "2d1143df1b5e6eebb06b08e39be43c6314244e695951a352be6f7264e37b341b",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30D3B-desktop-explicit-selection.jpg": {
       "caption": "Izveštaji pregled objavljivanje i izvoz — Izričit izbor izvora",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "7b2ccbdef443c963a5a871c5799eb54610a5701afad9cd9022cb93b6b35ef916"
+      "sha256": "7b2ccbdef443c963a5a871c5799eb54610a5701afad9cd9022cb93b6b35ef916",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30D3B-desktop-linked-inputs.jpg": {
       "caption": "Izveštaji pregled objavljivanje i izvoz — Polja i potvrde povezanog nalaza",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "38a9a330223123f131836d1e2e74c37da16a053fc7564d94814f0863ed874cb8"
+      "sha256": "38a9a330223123f131836d1e2e74c37da16a053fc7564d94814f0863ed874cb8",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30D3B-desktop-draft-evidence.jpg": {
       "caption": "Izveštaji pregled objavljivanje i izvoz — Nacrt sa izvorima i nalazom",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "94f2bab450992d49ce0e5ada457b7f582220923e97c64b3d32261237ee0b7b1a"
+      "sha256": "94f2bab450992d49ce0e5ada457b7f582220923e97c64b3d32261237ee0b7b1a",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30D3B-desktop-review-confirmation.jpg": {
       "caption": "Izveštaji pregled objavljivanje i izvoz — Odluka i potvrda pregleda",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "1eaf379c0110cabef24387fb9162706dc6f54943f397dad06958775729dfb850"
+      "sha256": "1eaf379c0110cabef24387fb9162706dc6f54943f397dad06958775729dfb850",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30D3B-desktop-publish-confirmation.jpg": {
       "caption": "Izveštaji pregled objavljivanje i izvoz — Zasebna potvrda objavljivanja",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "1a9e36432fa5fc22b35d6a32a260eefe9673074dd9ef4d7c66806ac9fb036749"
+      "sha256": "1a9e36432fa5fc22b35d6a32a260eefe9673074dd9ef4d7c66806ac9fb036749",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30D3B-desktop-export.jpg": {
       "caption": "Izveštaji pregled objavljivanje i izvoz — Priprema i preuzimanje artefakta",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "e1eb9a0e5eec1c4f2675e80253da52d4a9729593b7011a25652e84832c41e6ac"
+      "sha256": "e1eb9a0e5eec1c4f2675e80253da52d4a9729593b7011a25652e84832c41e6ac",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30D3B-mobile-export.jpg": {
       "caption": "Izveštaji pregled objavljivanje i izvoz — Priprema i preuzimanje artefakta na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "abdc349a6beef6f5e6ae8cec83b12b783604107184405f9f7f366408c9c9d6d6"
+      "sha256": "abdc349a6beef6f5e6ae8cec83b12b783604107184405f9f7f366408c9c9d6d6",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30D3B-mobile-readonly.jpg": {
       "caption": "Izveštaji pregled objavljivanje i izvoz — Pregled bez prava izmene na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "d22393bbb9ea83088d68f886da0908c9117c3a0ce71e25ff35bcf2baad9b67a8"
+      "sha256": "d22393bbb9ea83088d68f886da0908c9117c3a0ce71e25ff35bcf2baad9b67a8",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30D3B-mobile-ordo-context.jpg": {
       "caption": "Izveštaji pregled objavljivanje i izvoz — Odvojeni ORDO kontekst na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "d2e778309c1b11f84800c3a72bc61bca28edc5b520240cc255a59a3e7e7e5d56"
+      "sha256": "d2e778309c1b11f84800c3a72bc61bca28edc5b520240cc255a59a3e7e7e5d56",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30D4-desktop-inventory.jpg": {
       "caption": "Nalog pristup i bezbednost sesija — Obrazac i pregled naloga",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "5be7d8833bdd39a8795ede96b1ec752bdea96f7101e8970eecd30bd82e9dfd79"
+      "sha256": "5be7d8833bdd39a8795ede96b1ec752bdea96f7101e8970eecd30bd82e9dfd79",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30D4-desktop-confirmation.jpg": {
       "caption": "Nalog pristup i bezbednost sesija — Izričita potvrda operacije",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "0a648ebf134000654dee3139d9b7f296d95fc2d468d8eff3ab7d9f656421bb5d"
+      "sha256": "0a648ebf134000654dee3139d9b7f296d95fc2d468d8eff3ab7d9f656421bb5d",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30D4-desktop-receipt.jpg": {
       "caption": "Nalog pristup i bezbednost sesija — Potvrđen rezultat opoziva",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "d8120942492ecb1a15d04b81f1b07e5d88c375774025bb089ae6b79db6aa7b2a"
+      "sha256": "d8120942492ecb1a15d04b81f1b07e5d88c375774025bb089ae6b79db6aa7b2a",
+      "width": 1280,
+      "height": 720,
+      "view": "DESKTOP"
     },
     "ISI-30D4-mobile-assurance-form.jpg": {
       "caption": "Nalog pristup i bezbednost sesija — Obrazac lične potvrde identiteta na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "fc6e35ee6c576b43b63045a93ce25d1c166bc8589aad1797af7207adf779a665"
+      "sha256": "fc6e35ee6c576b43b63045a93ce25d1c166bc8589aad1797af7207adf779a665",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
     },
     "ISI-30D4-mobile-receipt.jpg": {
       "caption": "Nalog pristup i bezbednost sesija — Potvrđen rezultat opoziva na mobilnom ekranu",
       "kind": "SYNTHETIC",
       "captured": "2026-10-11",
-      "sha256": "f356fa519abd3ff18729e604cdd121d4a2c325c1bdb1840aec06bfc406f21f1b"
+      "sha256": "f356fa519abd3ff18729e604cdd121d4a2c325c1bdb1840aec06bfc406f21f1b",
+      "width": 390,
+      "height": 844,
+      "view": "MOBILE"
+    },
+    "ISI-30F-desktop-recovery-close.jpg": {
+      "caption": "Dead-letter — desktop obrazloženje, ishod i zasebna potvrda zatvaranja",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "d12571df15a7ee1351b678ade40b805aaa68e29138048adc3a4cb76aff79e6ee",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-privacy-confirmation.jpg": {
+      "caption": "Anonimizacija — desktop klasifikacija odvojenog izlaza i izričita potvrda predloga",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "415e6e2079ec06c96e3fd6bd88960a2beb10589545771f2882c1c0697882bbb8",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-ingestion-connector.jpg": {
+      "caption": "Konektor ulaznih datoteka — desktop ugovor i izričita potvrda registracije",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "facb1128ea9f8b20b998e31d725d5de065ae2f4b6ce1707c0aff2f073dea9f6b",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-simpa-statistical-fields.jpg": {
+      "caption": "SIMPA statistički ugovor — desktop semantika, ciljna testna metodologija i ulazna polja",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "95f686f053a70e8b16b8fda42691fc5320d2f3b11329c159381afe109cf20812",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-simpa-statistical-confirmation.jpg": {
+      "caption": "SIMPA statistički nacrt — desktop ograničenja i zasebna potvrda; sintetički validated preduslov",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "872f0def1666c5ae63727d8aee26d0aa8451649aee8b551609922ded04cff4a3",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-governance-record-decision.jpg": {
+      "caption": "Karantin — desktop poređenje zapisa i odluka ljudskog pregleda",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "3ba8650695de5ece3b157d3766f4e917c528111215239fe5e34c83eb7b67ce92",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-datasets-feature-lifecycle.jpg": {
+      "caption": "Feature verzija — desktop izbor kontrolisanih ulaza i metodologije",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "d4babde3c107cc4c2455e673766c0d8c9ef565d81b101d0df273e3e6d8bdd841",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-datasets-feature-state.jpg": {
+      "caption": "Feature verzija — desktop stanje, revizija i izričita potvrda promene",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "d4d8dbe5126912cedb3a8b28fc7d11ff3e24378915c17d40ac09799a0d8ca1fd",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-ai-review-form.jpg": {
+      "caption": "AI evaluacija — desktop dokazi, ograničenja i ljudski pregled",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "13ce97bbebae10362f0447f06fa7239967d027245b766b19debf49ec062f82bd",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-data-version.jpg": {
+      "caption": "Nova verzija izvora — desktop obrazac i izričita potvrda",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "891e685bb1c9ef70eccb7eb5d13566d1f6d9f600208f2da4575cae1a79cbcb74",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-data-retry.jpg": {
+      "caption": "Neuspela obrada — desktop status i potvrda ponavljanja",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "b85e4d5abcfe880520f725133dbc9bfb0937876dbe9ac28995602ea2d5d6b668",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-recovery-dead-letter.jpg": {
+      "caption": "Dead-letter — desktop vraćanje u obradu i obrazloženo zatvaranje",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "dceea5cdbb7f7fa62e01b0e0dfb2465a8bf3146e546a422a43cde58446e9914f",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-privacy-proposal.jpg": {
+      "caption": "Anonimizacija — izbor odvojenog izlaza u desktop prikazu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "74dc89c678546e8da01dfb1d7d09d1836e3570b69c04d7a10be688eb29337fbe",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-admin-invitation.jpg": {
+      "caption": "Administracija poziva — desktop obrazac i zasebna rola",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "54caa274d739b40b01c67fecb5dd01b7317cf3a008450bd2d72da6b69b600100",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-admin-workspace.jpg": {
+      "caption": "Administracija radnih prostora — desktop obrazac",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "d14b09c13c5a5d5192655caded3d6b763a1dc64b34247125722b90ee1a433aa1",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-security-assurance.jpg": {
+      "caption": "Bezbednost — prazan desktop obrazac potvrde identiteta",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "0aa5e373d784fb9897e0f1ef3fac977fc18cd1c5be37bc8fa7a5465f79a3bb48",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-reports-readonly.jpg": {
+      "caption": "Izveštaji — desktop pregled bez prava kreiranja",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "6e9885480a82b153ceee1288350a20a41943da60dd5dc25597576c3192b55e42",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-reports-ordo-context.jpg": {
+      "caption": "Izveštaji — odvojeni ORDO kontekst u desktop prikazu",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "8cda7cdeb246b0e2107102f0559a117c640501233b5a03dd85a77e978c218a69",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-simpa-profile-context.jpg": {
+      "caption": "SIMPA — desktop pregled bez izmišljenih institucionalnih podataka",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "7c477d3d274800d186f309b4ca709b4f85f31bcc1f184bbd60bbc4f42f456e7a",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
+    },
+    "ISI-30F-desktop-simpa-profile-form.jpg": {
+      "caption": "SIMPA — desktop konfiguracija lokalnog sistema i aktera",
+      "kind": "SYNTHETIC",
+      "captured": "2026-10-12",
+      "sha256": "5c4bfb8d687df2949a91609e725edccd1111e7e67ba951e803b7b95bcf048d91",
+      "view": "DESKTOP",
+      "width": 1280,
+      "height": 900
     }
+  },
+  "presentation": {
+    "authenticated_view": "DESKTOP",
+    "minimum_capture_width": 1200,
+    "new_capture_viewport": [
+      1280,
+      900
+    ],
+    "browser_zoom_percent": 100,
+    "image_max_display_width": 960,
+    "public_landing_mobile": true,
+    "legacy_mobile_assets": "RETAINED_HISTORY_NOT_REFERENCED"
   }
 }

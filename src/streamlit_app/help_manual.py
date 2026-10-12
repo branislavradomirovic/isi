@@ -4,6 +4,7 @@ from pathlib import Path
 import hashlib
 import json
 import re
+import unicodedata
 import streamlit as st
 
 ROOT = Path(__file__).resolve().parents[2] / "docs/help"
@@ -44,6 +45,8 @@ def image_bytes(name, metadata):
 def _screens(data, names):
     for name in names:
         metadata = data["assets"][name]
+        if metadata.get("view") != "DESKTOP" or metadata.get("width", 0) < 1200:
+            raise ValueError("help_desktop_asset_required")
         kind = (
             "lokalni sintetički primer"
             if metadata["kind"] == "SYNTHETIC"
@@ -52,8 +55,28 @@ def _screens(data, names):
         st.image(
             image_bytes(name, metadata),
             caption=f"{metadata['caption']} · {kind} · {metadata['captured']}",
-            width="stretch",
+            width=min(metadata.get("width", 1280), 960),
         )
+
+
+def section_anchor(title):
+    """Stable ASCII anchors, shared by the section index and rendered headings."""
+    value = unicodedata.normalize("NFKD", title).encode("ascii", "ignore").decode().lower()
+    return "help-" + re.sub(r"[^a-z0-9]+", "-", value).strip("-")
+
+
+def _section_index(titles):
+    st.markdown(
+        '<style>[data-testid="stImageContainer"] { max-width: 100%; }'
+        '[data-testid="stImageContainer"] img { height: auto; }</style>',
+        unsafe_allow_html=True,
+    )
+    with st.expander("Sadržaj ovog uputstva", expanded=True):
+        st.markdown("\n".join(f"- [{title}](#{section_anchor(title)})" for title in titles))
+
+
+def _section(title, level=4):
+    st.subheader(title, anchor=section_anchor(title))
 
 
 def render_topic(topic, *, public=False):
@@ -63,11 +86,12 @@ def render_topic(topic, *, public=False):
     data = manual()
     detail = data["topics"][topic["id"]]
     st.markdown(f"### {topic['title']}")
+    _section_index([label for label, _ in LABELS])
     st.info(
         "Ekrani u uputstvu prikazuju dokumentovani primer i datum snimanja. Stvarni podaci i dostupne radnje zavise od vašeg konteksta i dozvola."
     )
     for label, field in LABELS:
-        st.markdown(f"**{label}**")
+        _section(label)
         if field == "steps":
             steps = [x.strip() for x in re.split(r"\s*\d+\)\s*", topic[field]) if x.strip()]
             for i, step in enumerate(steps, 1):
@@ -103,11 +127,12 @@ def render_chapter(code, *, product):
     data = manual()
     chapter = values[code]
     st.markdown("### " + chapter["title"])
+    _section_index([title for title, _ in chapter["sections"]])
     st.caption(
         "Detaljno uputstvo sa označenim sintetičkim ekranima. Primer ne potvrđuje stvarne institucionalne podatke ili metodologiju."
     )
     for i, (title, body) in enumerate(chapter["sections"], 1):
-        st.markdown("#### " + title)
+        _section(title)
         st.markdown(body)
         mapping = chapter.get("screen_sections")
         if mapping is not None:
