@@ -217,19 +217,23 @@ def render_simpa_help(*, shell: dict[str, Any]) -> None:
     st.caption(
         "Izaberite temu za postupak korak po korak, objašnjenje polja, korisničke ekrane, primere i rešavanje problema."
     )
-    from src.streamlit_app.help_manual import chapters, render_chapter, render_topic
+    from src.streamlit_app.help_manual import chapters, render_chapter, render_topic, topic_label, workflow_selector
 
     extra = chapters("SIMPA")
-    selected = st.selectbox(
-        "Help tema",
-        [topic["id"] for topic in SIMPA_HELP_TOPICS] + list(extra),
-        format_func=lambda value: extra[value]["title"] if value in extra else f"{value} · {_topic(value)['title']}",
-        key="simpa_illustrated_help_topic",
-    )
-    if selected in extra:
-        render_chapter(selected, product="SIMPA")
-        return
-    render_topic(_topic(selected))
+    topic_col, detail_col = st.columns(2)
+    with topic_col:
+        selected = st.selectbox(
+            f"Kratke teme ({len(SIMPA_HELP_TOPICS)} dostupno)",
+            [topic["id"] for topic in SIMPA_HELP_TOPICS],
+            format_func=lambda value: topic_label(_topic(value)),
+            key="simpa_illustrated_help_topic",
+        )
+    with detail_col:
+        detailed = workflow_selector(extra, key="simpa_illustrated_help_workflow")
+    if detailed is not None:
+        render_chapter(detailed, product="SIMPA")
+    else:
+        render_topic(_topic(selected))
 
 
 __all__ = ["HELP_REQUIRED_FIELDS", "SIMPA_HELP_TOPICS", "render_simpa_help"]

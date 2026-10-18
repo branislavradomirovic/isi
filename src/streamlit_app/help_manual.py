@@ -106,9 +106,12 @@ def render_topic(topic, *, public=False):
     if topic["id"] in {"ISI-H03", "ISI-H04", "ISI-H05", "ISI-H11"}:
         st.warning("SMTP je pending po odluci vlasnika. Ne očekujte novu produkcionu email isporuku.")
     if detail.get("related_chapters"):
-        st.caption(
-            "Detaljni korisnički tokovi: "
-            + "; ".join(data["chapters"][code]["title"] for code in detail["related_chapters"])
+        related = [data["chapters"][code] for code in detail["related_chapters"]]
+        image_count = sum(len(chapter["screens"]) for chapter in related)
+        st.info(
+            f"Povezani detaljni tokovi imaju ukupno {image_count} desktop snimaka. "
+            "Izaberite tok u polju za detaljna poglavlja na vrhu Help-a: "
+            + "; ".join(chapter["title"] for chapter in related)
         )
     for title, text in detail.get("sections", []):
         st.markdown("#### " + title)
@@ -117,6 +120,37 @@ def render_topic(topic, *, public=False):
 
 def chapters(product):
     return {key: value for key, value in manual()["chapters"].items() if product in value["products"]}
+
+
+def chapter_label(chapter):
+    count = len(chapter["screens"])
+    return f"{chapter['title']} · {count} desktop {screen_noun(count)}"
+
+
+def topic_label(topic):
+    count = len(manual()["topics"][topic["id"]]["screens"])
+    return f"{topic['id']} · {topic['title']} · {count} desktop {screen_noun(count)}"
+
+
+def screen_noun(count):
+    if count % 10 == 1 and count % 100 != 11:
+        return "snimak"
+    if count % 10 in {2, 3, 4} and count % 100 not in {12, 13, 14}:
+        return "snimka"
+    return "snimaka"
+
+
+def workflow_selector(values, *, key, label="Detaljni tok sa ekranima"):
+    """Keep multi-screen procedures visible and separate from short topic summaries."""
+    options = {chapter_label(chapter): code for code, chapter in values.items()}
+    selected = st.selectbox(
+        f"{label} ({len(values)} dostupno)",
+        list(options),
+        index=None,
+        placeholder="Izaberite detaljno poglavlje",
+        key=key,
+    )
+    return options.get(selected)
 
 
 def render_chapter(code, *, product):
@@ -129,7 +163,8 @@ def render_chapter(code, *, product):
     st.markdown("### " + chapter["title"])
     _section_index([title for title, _ in chapter["sections"]])
     st.caption(
-        "Detaljno uputstvo sa označenim sintetičkim ekranima. Primer ne potvrđuje stvarne institucionalne podatke ili metodologiju."
+        "Snimci su označeni izvorom i datumom. Prikazuju dokumentovani desktop primer; "
+        "ne potvrđuju stvarne institucionalne podatke, dozvole ili metodologiju."
     )
     for i, (title, body) in enumerate(chapter["sections"], 1):
         _section(title)

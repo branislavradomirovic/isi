@@ -1670,3 +1670,26 @@ descriptions and separate analytics/AI navigation. Dead ORDO placeholders remain
 REQUIRED_COMPATIBILITY; dated manual examples LEGITIMATE_HISTORY. No runtime
 behavior/schema/permission/model/provider/dependency/inventory change. New copy
 tests/full regression and exact final acceptance required before activation.
+
+## 2026-10-18 — Help illustration parity candidate
+
+Owner-prioritized Help review found that multi-screen workflow content was hard to
+find: the shared selector followed the full short-topic content, while SIMPA/ORDO
+combined short topics and detailed workflows in one selector. The local candidate
+places separate short-topic and detailed-workflow selectors at the top of the
+authenticated Help pages and shows desktop screenshot counts on each option. Related
+shared topics state the detailed-image count and names. Public Help remains
+six-topic allowlisted, product-specific Help remains isolated, and SIMPA SHAP stays
+SIMPA-only. Exact ordered identity/hash comparison confirms that all Word
+illustrations are included in Help:122 placements across96 unique desktop captures.
+No synthetic replacement or new product capability was added. The desktop Word
+manual was rebuilt and rendered:182 pages,250 indexed entries,500 internal links;
+all pages passed visual review. Focused Help tests pass:27 passed; the full suite
+passes with1823 passed and46 inherited skips. All seven deterministic local gates
+and the independent exact-candidate analyzer pass. This establishes local
+IMPLEMENTED/REVIEW_VERIFIED only. On 2026-10-18 the owner explicitly requested
+publication to the existing ISI endpoint for colleague review, superseding the
+prior planned owner walkthrough before commit/deployment. Exact-main hosted
+acceptance and controlled ISI-only deployment remain required before
+CI_VERIFIED/SERVER_VERIFIED. Canonical system inventory impact: INV-A21
+presentation/discoverability only.

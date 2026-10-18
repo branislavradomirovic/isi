@@ -1,6 +1,6 @@
 # ISI Autonomous Industrialization Status
 
-## Current reconciliation — 2026-10-12
+## Current reconciliation — 2026-10-18
 
 30A–30F software is CI_VERIFIED / REVIEW_VERIFIED / SERVER_VERIFIED at exact source
 0e8bf51382e776818959f68bffa608df3105f4af, required acceptance38177682021 all12
@@ -12,11 +12,26 @@ PREPRODUCTION_TESTING remains in force; SMTPpending, new backups owner-deferred,
 alerts/offsite/real-data calibration/legal facts not certified. This documentation
 closeout awaits its own final exact-main acceptance and signed activation.
 
+Owner-requested Help/Word illustration parity is the active local candidate on
+main 023fe5eb6f9befdb4ed7dc77d5bae8aa9d46bb22, matching GitHub main. Short topics
+and detailed workflows are separate top-of-page choices with screenshot counts.
+Exact asset identity/hash comparison confirms every Word illustration placement
+is represented in Help:122 placements,96 unique desktop captures. The 182-page
+Word edition was rebuilt, its 250-entry/500-link index checked, and all pages
+visually inspected. Focused Help tests pass:27 passed; full regression passes:
+1823 passed,46 inherited skips. All seven deterministic local gates and the
+independent exact-candidate analyzer pass. Candidate has local
+IMPLEMENTED/REVIEW_VERIFIED status only. On 2026-10-18 the owner explicitly
+requested publication to the existing ISI endpoint for colleague review,
+superseding the previously planned owner walkthrough before deployment. It
+remains uncommitted and undeployed pending final exact-SHA acceptance and the
+controlled ISI-only rollout; no public/mobile landing behavior changed.
+
 Historical source-specific status below is LEGITIMATE_HISTORY, superseded by dated closeouts.
 
 This is the human-facing live execution ledger. The MasterPlan is the canonical roadmap/architecture/governance authority; `automation/tasks.json`, accepted code, exact-main GitHub Actions and recorded evidence provide synchronized execution proof.
 
-Last status update: 2026-10-12.
+Last status update: 2026-10-18.
 
 ## Historical execution ledger before current reconciliation
 

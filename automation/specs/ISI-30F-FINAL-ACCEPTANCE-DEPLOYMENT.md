@@ -27,9 +27,11 @@ No new branch/worktree/provider/model/dependency is introduced.
 ## Exact mutable surface
 
 This specification; MasterPlan; TECHNICAL_DOCUMENTATION.md; automation/STATUS.md;
-automation/tasks.json. Documentation-only release lock: no application or schema
-change. Canonical system inventory impact: NONE. Existing deployment/Help/auth
-components and their ownership are unchanged; 30E already updated Help inventory.
+automation/tasks.json. Help-presentation release lock: authenticated Help
+navigation/visibility and its controlled Word manual/evidence only; no
+domain/business logic, schema, dependency, data or permission change. Canonical
+system inventory impact: INV-A21 presentation/discoverability. Existing
+deployment/Help/auth components and their ownership are unchanged.
 All execution artifacts remain ignored under automation/evidence/ISI-30F.
 
 ## Acceptance contract
@@ -143,3 +145,11 @@ Customer-facing Help copy standardization: remove internal development-phase lab
 Final desktop layout review: 182 rendered pages inspected, 122 figures, 250 indexed entries with printed page numbers and 500 internal links. The superseded ISI-30A SIMPA overview illustration is inactive ARCHIVED_SUPERSEDED_DESKTOP (LEGITIMATE_HISTORY); current desktop profile context replaces its active references. All 36 topics and 19 detailed chapters retain source-backed coverage. Exact document SHA and review evidence are recorded in docs/help/ISI-30F-DESKTOP-MANUAL-ARTIFACT.json; hosted/server verification of this revision remains pending.
 
 Native Help review found the Streamlit inner image container overflowing a narrow desktop window despite a bounded 960px image. Constrain the existing inner image container to available width with proportional height; retain the 960px maximum and source-backed desktop captures. Targeted test checks the presentation rule. Re-run exact local gates after this correction.
+
+### Owner-requested Help navigation and screenshot discoverability — 2026-10-18
+
+Baseline local main HEAD 023fe5eb6f9befdb4ed7dc77d5bae8aa9d46bb22; clean at task start. Existing36 short topics and19 detailed chapters contain their desktop images, but discovery review found private workflow selectors below long topic content and mixed with short topics in SIMPA/ORDO. The previously accepted desktop screenshot assets remain in scope; no synthetic or fabricated screen is added.
+
+Locked mutable surface: `src/streamlit_app/help_manual.py`, `src/streamlit_app/shared_help_workspace.py`, `src/streamlit_app/simpa_help_workspace.py`, `src/streamlit_app/ordo_help_workspace.py`, `docs/help/ISI-SHARED-USER-GUIDE.md`, `tools/docs/build_isi30f_desktop_manual.py`, `tools/docs/index_isi30f_manual.py`, `docs/help/ISI-30F-DESKTOP-MANUAL-ARTIFACT.json`, `tests/test_isi_29f_illustrated_help.py`, `tests/test_isi_30e_illustrated_workflows.py`, `tests/test_isi_30f_desktop_help.py`, this contract, task/technical/roadmap/coverage status, the read-only analyzer and generated ignored Word/evidence outputs. Add separate top-of-page short-topic and detailed-workflow selectors; show desktop screenshot counts; preserve public six-topic allowlist, SIMPA/ORDO chapter filtering and SIMPA-only SHAP. Correct chapter source/date caption so it does not label every figure synthetic. Record the exact ordered list of Word illustration asset identities/hashes in the artifact manifest and test that Help topic/chapter placements match it. No new domain functionality, data, permissions, screenshots, dependency, backend or schema. Existing action illustrations and chapter-section placement remain authoritative; on 2026-10-18 the owner explicitly directed publication to the existing ISI endpoint so ISI colleagues can review it, superseding the previously planned owner walkthrough before publication. The 29F regression must exercise topics through the short-topic selector and detailed procedures through the dedicated workflow selector.
+
+Canonical system inventory impact: INV-A21 existing Help/manual presentation only; no component or authority boundary change. The inaccessible-below-fold workflow selector is `REMOVE_BEFORE_NEXT_SLICE`; accepted dated assets remain `LEGITIMATE_HISTORY` and continue to carry provenance/date labels. Acceptance requires focused Help tests, full regression and deterministic task gates; Word edition must be rebuilt, indexed, rendered and every page visually checked. Current inventory comparison finds122 Word figure placements across96 unique captured images, all reachable in Help. Current local evidence is 27 focused tests passed,1823 regression tests passed,46 inherited skips, seven gates passed and independent exact-candidate analysis passed. The owner explicitly requested publication to the existing ISI endpoint for colleague review; the prior pre-publication owner walkthrough is superseded. No hosted checkpoint or server deployment has yet run for this candidate.

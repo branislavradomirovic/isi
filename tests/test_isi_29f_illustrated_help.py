@@ -40,11 +40,16 @@ def test_every_domain_topic_and_new_manual_chapter_renders_in_correct_context(pr
     app=AppTest.from_string(code).run(timeout=30)
     assert not app.exception
     topics=SIMPA_HELP_TOPICS if product=='SIMPA' else ORDO_HELP_TOPICS
-    for key in [x['id'] for x in topics]+list(h.chapters(product)):
+    for key in [x['id'] for x in topics]:
         app.selectbox[0].select(key).run(timeout=30)
         assert not app.exception
         assert len(app.markdown)>=10
         assert app.get('image')  # actual local image protobuf rendered
+    for label in app.selectbox[1].options:
+        app.selectbox[1].select(label).run(timeout=30)
+        assert not app.exception
+        assert len(app.markdown)>=10
+        assert app.get('image')  # detailed chapters render their local illustrations
     assert ('SHAP' in h.chapters(product)) == (product=='SIMPA')
 
 

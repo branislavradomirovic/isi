@@ -240,26 +240,35 @@ def render_shared_help(*, public: bool = False) -> None:
     st.title("ISI Help · Pomoć")
     st.caption("Institucionalni pristup je isključivo po pozivu; nema javne registracije.")
     topics = [topic for topic in SHARED_HELP_TOPICS if not public or topic["id"] in PUBLIC_HELP_TOPIC_IDS]
-    selected = st.selectbox(
-        "Tema pomoći",
-        [topic["id"] for topic in topics],
-        format_func=lambda value: f"{value} · {shared_help_topic(value)['title']}",
-        key="isi_public_help_topic" if public else "isi_shared_help_topic",
-    )
-    _render_topic(next(topic for topic in topics if topic["id"] == selected), public=public)
-    if not public:
-        from src.streamlit_app.help_manual import chapters, render_chapter
+    from src.streamlit_app.help_manual import topic_label
 
-        extra = {key: value for key, value in chapters("SIMPA").items() if "ORDO" in value["products"]}
-        detailed = st.selectbox(
-            "Detaljan korisnički tok",
-            list(extra),
-            index=None,
-            format_func=lambda key: extra[key]["title"],
-            key="isi_shared_workflow",
+    if public:
+        selected = st.selectbox(
+            f"Kratka tema ({len(topics)} dostupno)",
+            [topic["id"] for topic in topics],
+            format_func=lambda value: topic_label(shared_help_topic(value)),
+            key="isi_public_help_topic",
         )
-        if detailed is not None:
-            render_chapter(detailed, product="SIMPA")
+        _render_topic(next(topic for topic in topics if topic["id"] == selected), public=True)
+        return
+
+    from src.streamlit_app.help_manual import chapters, render_chapter, workflow_selector
+
+    extra = {key: value for key, value in chapters("SIMPA").items() if "ORDO" in value["products"]}
+    topic_col, detail_col = st.columns(2)
+    with topic_col:
+        selected = st.selectbox(
+            f"Kratke teme ({len(topics)} dostupno)",
+            [topic["id"] for topic in topics],
+            format_func=lambda value: topic_label(shared_help_topic(value)),
+            key="isi_shared_help_topic",
+        )
+    with detail_col:
+        detailed = workflow_selector(extra, key="isi_shared_workflow")
+    if detailed is not None:
+        render_chapter(detailed, product="SIMPA")
+    else:
+        _render_topic(next(topic for topic in topics if topic["id"] == selected))
 
 
 def render_topic_summary(topic_id: str) -> None:

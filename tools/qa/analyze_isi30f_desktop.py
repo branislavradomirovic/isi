@@ -7,20 +7,18 @@ import subprocess
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[2]
-BASELINE = '29fd3be3ac879c641505458a6c3f0e3495e36cbc'
+BASELINE = '023fe5eb6f9befdb4ed7dc77d5bae8aa9d46bb22'
 FILES = [
     'TECHNICAL_DOCUMENTATION.md','automation/STATUS.md','automation/tasks.json',
     'automation/specs/ISI-30F-FINAL-ACCEPTANCE-DEPLOYMENT.md',
-    'automation/contracts/ISI-30F-DESKTOP-DOCUMENTATION.json',
     'docs/roadmap/ISI-AUTONOMOUS-INDUSTRIALIZATION-MASTER-PLAN.md',
-    'docs/help/ISI-ILLUSTRATED-MANUAL.json','docs/help/ISI-HELP-COVERAGE-MATRIX.md',
-    'docs/help/ISI-SHARED-USER-GUIDE.md','docs/help/ISI-WORKFLOW-SHELL-GUIDE.md','docs/help/ISI-30F-DESKTOP-MANUAL-ARTIFACT.json','docs/help/templates/ISI-MANUAL-TEMPLATE.docx',
-    'src/streamlit_app/help_manual.py','src/streamlit_app/shared_help_workspace.py','src/streamlit_app/simpa_workspace.py','src/streamlit_app/ordo_workspace.py',
+    'docs/help/ISI-HELP-COVERAGE-MATRIX.md',
+    'docs/help/ISI-30F-DESKTOP-MANUAL-ARTIFACT.json',
+    'src/streamlit_app/help_manual.py','src/streamlit_app/shared_help_workspace.py',
     'src/streamlit_app/simpa_help_workspace.py','src/streamlit_app/ordo_help_workspace.py',
-    'tests/test_isi_10_contract.py','tests/test_isi_30e_illustrated_workflows.py',
-    'tests/test_isi_30f_current_domain_copy.py','tests/test_isi_30f_desktop_help.py',
-    'tools/docs/build_isi30f_desktop_help.py','tools/docs/build_isi30f_desktop_manual.py','tools/docs/index_isi30f_manual.py',
-    'tools/qa/run_isi30f_desktop.py','tools/qa/analyze_isi30f_desktop.py',
+    'tests/test_isi_29f_illustrated_help.py','tests/test_isi_30e_illustrated_workflows.py',
+    'tests/test_isi_30f_desktop_help.py',
+    'tools/docs/build_isi30f_desktop_manual.py','tools/qa/analyze_isi30f_desktop.py',
 ]
 
 
@@ -34,9 +32,9 @@ def manifest():
     assert not git('diff','--cached','--name-only') and not git('stash','list')
     assert git('worktree','list','--porcelain').count('worktree ') == 1
     contract=json.loads((ROOT/'automation/contracts/ISI-30F-DESKTOP-DOCUMENTATION.json').read_text())
-    assert contract['baseline']==BASELINE
-    assets=['docs/help/screens/'+name for name in contract['assets']]
-    files=sorted(FILES+assets)
+    assert contract['baseline']=='29fd3be3ac879c641505458a6c3f0e3495e36cbc'
+    assert git('merge-base',contract['baseline'],BASELINE)==contract['baseline']
+    files=sorted(FILES)
     actual=set(git('diff','--name-only').splitlines())|set(git('ls-files','--others','--exclude-standard').splitlines())
     assert actual==set(files), {'unexpected':sorted(actual-set(files)),'missing':sorted(set(files)-actual)}
     hashes={name:hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in files}

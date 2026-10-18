@@ -79,7 +79,7 @@ def build():
         sec.footer_distance = Cm(1.0)
         sec.header.paragraphs[0].text = "ISI  Korisnički i administratorski priručnik"
         for p in sec.footer.paragraphs:
-            p.text = "12. oktobar 2026  |  Desktop izdanje  |  "
+            p.text = "18. oktobar 2026  |  Desktop izdanje  |  "
             page = OxmlElement("w:fldSimple")
             page.set(qn("w:instr"), "PAGE")
             p._p.append(page)
@@ -215,7 +215,7 @@ def build():
 
     d.add_paragraph("Detaljno uputstvo za ISI platformu SIMPA i ORDO", style="Title")
     d.add_paragraph("Korisnički i administratorski priručnik", style="Subtitle")
-    para("Desktop izdanje za preprodukcijsko testiranje · 12. oktobar 2026")
+    para("Desktop izdanje za preprodukcijsko testiranje · 18. oktobar 2026")
     para("SIMPA i ORDO su dokumentovani za desktop/laptop rad. Sve ilustracije prikazuju desktop ekran u normalnoj razmeri. Mobilni prikaz se odnosi samo na javni ISI landing portal.")
     para(
         "Priručnik opisuje implementirane korisničke tokove, kontrolisani rad sa podacima, SIMPA i ORDO analitiku, XAI, GIS, nalaze, izveštaje i administraciju. Dostupnost zavisi od stvarnih dozvola, izvora, metodologije i modela u izabranom radnom prostoru."
@@ -239,7 +239,7 @@ def build():
         "Osnovne teme opisuju svrhu, pristup, postupak, polja, oporavak i ljudsku odgovornost. Detaljna poglavlja zatim prikazuju nove tokove sa popunjenim sintetičkim primerima i kontrolama potvrde. Za promenjene tokove sledite aktuelna detaljna poglavlja ovog izdanja."
     )
     para(
-        "U aplikaciji otvorite Pomoć. U ISI Help-u izaberite osnovnu temu ili zaseban Detaljan korisnički tok; u SIMPA/ORDO Help-u dostupna su samo pripadajuća poglavlja. Javna Pomoć prikazuje šest tema pristupa i ne otvara privatne operacije."
+        "U aplikaciji otvorite Pomoć. Na vrhu su odvojeni izbori za kratke teme i detaljne tokove; uz svaku stavku prikazan je broj desktop snimaka. Detaljno poglavlje prikazuje odgovarajuće ekrane pored koraka. U SIMPA/ORDO Help-u dostupni su samo tokovi aktivnog proizvoda. Javna Pomoć prikazuje šest tema pristupa i ne otvara privatne operacije."
     )
     for group, values in [
         ("ISI zajedničke teme", SHARED_HELP_TOPICS),
@@ -326,6 +326,17 @@ def build():
     (ROOT / "automation/evidence/ISI-30F/desktop-docs/manual-authoring.json").write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2) + "\n"
     )
+    artifact_path = ROOT / "docs/help/ISI-30F-DESKTOP-MANUAL-ARTIFACT.json"
+    artifact = json.loads(artifact_path.read_text())
+    artifact.update(
+        filename=output.name,
+        sha256=manifest["sha256"],
+        figures=len(figures),
+        basic_topics=len(topics),
+        detailed_chapters=len(chapters),
+        illustrations=figures,
+    )
+    artifact_path.write_text(json.dumps(artifact, ensure_ascii=False, indent=2) + "\n")
     print(
         json.dumps({"filename": output.name, "figures": len(figures), "topics": len(topics), "chapters": len(chapters)})
     )

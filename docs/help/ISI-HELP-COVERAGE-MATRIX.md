@@ -283,6 +283,10 @@ ORDO-STATISTICAL-SPECIFICATION-GUIDE.md ten-item typed authoring/pagination/revi
 
 30D3B ISI-REPORTING-WORKFLOWS-GUIDE.md covers ten reporting workflow items; explicit selections/current evidence confirmations; action-level illustrations/Word parity pending30E.
 
+### 30F Help illustration parity — local candidate, 2026-10-18
+
+Review found that existing multi-screen workflow chapters were difficult to discover because private workflow selection appeared below long topic content and was mixed with short SIMPA/ORDO topics. The local candidate separates these selectors at the top of each authenticated Help surface and labels each detailed choice with its desktop screenshot count. It retains36 short topics,19 detailed chapters, the public six-topic allowlist, product filtering and SIMPA-only SHAP. The manual contains122 figure placements (96 unique images); an exact ordered asset/hash parity check confirms every figure is present in a Help topic or detailed chapter. Focused tests pass (27 passed), full regression passes (1823 passed,46 inherited skips), all seven local gates pass and the independent exact-candidate analyzer passes. The owner's controlled walkthrough follows this Help closeout. Historical VERIFIED coverage rows are not promoted by this candidate; no hosted/server verification is claimed.
+
 
 ## 2026-10-11 — 30D3B reviewed closeout and30D4 scope lock
 30D3B IMPLEMENTED/REVIEW_VERIFIED b6812a4:40focused/1781regression PASS/46 inherited skips, seven gates and1280/390/native reporting QA.30D4 IN_PROGRESS typed self-session inventory, fresh identity/status-bound revoke confirmations and safe receipts; existing invitation/recovery/pending SMTP preserved. Exact automation/specs/ISI-30D4-ACCOUNT-SECURITY-WORKFLOWS.md. No auth backend/schema/provider/role expansion; GoraNova real onboarding remains controlled30F, owner credential entry. Illustrated HelpWord30E and final30F pending; hosted/server f587ed0 unchanged.

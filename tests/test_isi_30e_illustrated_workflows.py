@@ -33,14 +33,37 @@ def test_shared_private_workflow_selection_and_public_absence():
         "from src.streamlit_app.shared_help_workspace import render_shared_help\nrender_shared_help()"
     ).run(timeout=30)
     assert not at.exception and len(at.selectbox[0].options) == 12
-    assert at.selectbox[1].label == "Detaljan korisnički tok" and at.selectbox[1].value is None
-    for key in at.selectbox[1].options:
-        at.selectbox[1].select(key).run(timeout=30)
+    assert at.selectbox[0].label == "Kratke teme (12 dostupno)"
+    assert at.selectbox[1].label == "Detaljni tok sa ekranima (14 dostupno)" and at.selectbox[1].value is None
+    for label in at.selectbox[1].options:
+        at.selectbox[1].select(label).run(timeout=30)
         assert not at.exception and at.get("image")
     public = AppTest.from_string(
         "from src.streamlit_app.shared_help_workspace import render_shared_help\nrender_shared_help(public=True)"
     ).run()
     assert not public.exception and len(public.selectbox) == 1 and len(public.selectbox[0].options) == 6
+    assert "Kratka tema (6 dostupno)" == public.selectbox[0].label
+
+
+@pytest.mark.parametrize(
+    "product,module,topic_count,detail_key,forbidden",
+    [
+        ("SIMPA", "simpa_help_workspace", 12, "SIMPA — SHAP matrica", "ORDO metodologija"),
+        ("ORDO", "ordo_help_workspace", 12, "ORDO metodologija", "SIMPA — SHAP matrica"),
+    ],
+)
+def test_product_help_exposes_separate_screen_counted_workflows(product, module, topic_count, detail_key, forbidden):
+    at = AppTest.from_string(
+        f'from src.streamlit_app.{module} import render_{product.lower()}_help\n'
+        f'render_{product.lower()}_help(shell={{"product":{{"code":"{product}"}}}})'
+    ).run(timeout=30)
+    assert not at.exception and len(at.selectbox) == 2
+    assert at.selectbox[0].label == f"Kratke teme ({topic_count} dostupno)"
+    assert at.selectbox[1].label.startswith("Detaljni tok sa ekranima (")
+    selected_label = next(option for option in at.selectbox[1].options if detail_key in option)
+    assert all(forbidden not in option for option in at.selectbox[1].options)
+    at.selectbox[1].select(selected_label).run(timeout=30)
+    assert not at.exception and at.get("image")
 
 
 @pytest.mark.parametrize(

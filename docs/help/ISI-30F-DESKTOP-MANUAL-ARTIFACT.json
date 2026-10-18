@@ -1,6 +1,6 @@
 {
   "filename": "ISI_prirucnik_desktop.docx",
-  "sha256": "bda018d69c22978c6368ce8741dff7a4ea205b2d3dae9359258567baf3918e62",
+  "sha256": "d37f26bc41426633c492300091f0c2f94927820801c33b2563924a920843a8a6",
   "page_count": 182,
   "index_page_numbers": true,
   "index_entries": 250,
@@ -11,5 +11,495 @@
   "view": "DESKTOP",
   "mobile_scope": "Public landing portal only",
   "layout_review_evidence": "automation/evidence/ISI-30F/desktop-docs/word-layout-review.json",
-  "institutional_production_readiness": false
+  "institutional_production_readiness": false,
+  "illustrations": [
+    {
+      "asset": "screenshots-public-home.jpg",
+      "sha256": "3f569b0bd0f2c540d0a64406f0e3a77b80d1f7d7043546e573d7155657159470"
+    },
+    {
+      "asset": "screenshots-login.jpg",
+      "sha256": "877e4ec0abf3dc3e96d47df191830b462ad143d62d1dc4b0381311935476f4b0"
+    },
+    {
+      "asset": "screenshots-help-invitation.jpg",
+      "sha256": "31a3bd31acdab8f80aacb2237df3c57433abd3c162bd22cc44664f53631cf889"
+    },
+    {
+      "asset": "screenshots-login-recovery.jpg",
+      "sha256": "92bc1045b90f87f20b1298e7c851fc99817a0e326f0fc14445274b574b17c437"
+    },
+    {
+      "asset": "screenshots-login-recovery.jpg",
+      "sha256": "92bc1045b90f87f20b1298e7c851fc99817a0e326f0fc14445274b574b17c437"
+    },
+    {
+      "asset": "ISI-30F-desktop-simpa-profile-context.jpg",
+      "sha256": "7c477d3d274800d186f309b4ca709b4f85f31bcc1f184bbd60bbc4f42f456e7a"
+    },
+    {
+      "asset": "ISI-30A-desktop-ordo-scenarios.jpg",
+      "sha256": "a65e2efef32fe32f01c64254d3ff3f957ef4eb3f354f3fdf033049fea9a29924"
+    },
+    {
+      "asset": "ISI-30B-desktop-source.jpg",
+      "sha256": "cd6a0c7d291a87bb09ed8fb02d651ccbb81d0db919fed26a64fcb1b64939b421"
+    },
+    {
+      "asset": "ISI-30B-desktop-output.jpg",
+      "sha256": "b9b70867d30b8a8a5aecdac14f3d9cda68399a150d1d57bfb1c4ad8ebb000921"
+    },
+    {
+      "asset": "ISI-30D3B-desktop-explicit-selection.jpg",
+      "sha256": "7b2ccbdef443c963a5a871c5799eb54610a5701afad9cd9022cb93b6b35ef916"
+    },
+    {
+      "asset": "ISI-30D3B-desktop-linked-inputs.jpg",
+      "sha256": "38a9a330223123f131836d1e2e74c37da16a053fc7564d94814f0863ed874cb8"
+    },
+    {
+      "asset": "ISI-30D1-desktop-confirmation.jpg",
+      "sha256": "9ba8fa90270682d5670f4b0e3a84a6d44757296138d7b9ee16ff37528aac4baf"
+    },
+    {
+      "asset": "ISI-30D1-desktop-readonly.jpg",
+      "sha256": "75df34f6ebb2daa8371e0f6427eb3f4057ae80711816a3687fa84736b27943df"
+    },
+    {
+      "asset": "ISI-30D4-desktop-inventory.jpg",
+      "sha256": "5be7d8833bdd39a8795ede96b1ec752bdea96f7101e8970eecd30bd82e9dfd79"
+    },
+    {
+      "asset": "ISI-30D4-desktop-confirmation.jpg",
+      "sha256": "0a648ebf134000654dee3139d9b7f296d95fc2d468d8eff3ab7d9f656421bb5d"
+    },
+    {
+      "asset": "screenshots-public-help.jpg",
+      "sha256": "fd8841fc138e7b97242be061db6109fbd695b33354484618ca5bd4964580fbef"
+    },
+    {
+      "asset": "ISI-30D2-desktop-readonly-boundaries.jpg",
+      "sha256": "07d03a1536cd6228705cbb48fe810a9cb7abf5b2deee35869171210978ca869d"
+    },
+    {
+      "asset": "ISI-30F-desktop-simpa-profile-context.jpg",
+      "sha256": "7c477d3d274800d186f309b4ca709b4f85f31bcc1f184bbd60bbc4f42f456e7a"
+    },
+    {
+      "asset": "ISI-30F-desktop-simpa-profile-form.jpg",
+      "sha256": "5c4bfb8d687df2949a91609e725edccd1111e7e67ba951e803b7b95bcf048d91"
+    },
+    {
+      "asset": "screenshots-simpa-cycle.jpg",
+      "sha256": "603dedbae76da5193672fba846c9fe7292462e59b0222817c270016e9bc69ad1"
+    },
+    {
+      "asset": "screenshots-simpa-indicators.jpg",
+      "sha256": "8e53b4f78e080379ac45dd57032b63003b96ef815ff1c1dbf988f6eed6fdf487"
+    },
+    {
+      "asset": "screenshots-simpa-analysis.jpg",
+      "sha256": "0478cbbc7808bfef9907293bb42dade8023459699c941089914cdca4a52efc3e"
+    },
+    {
+      "asset": "screenshots-simpa-analysis.jpg",
+      "sha256": "0478cbbc7808bfef9907293bb42dade8023459699c941089914cdca4a52efc3e"
+    },
+    {
+      "asset": "screenshots-simpa-analysis.jpg",
+      "sha256": "0478cbbc7808bfef9907293bb42dade8023459699c941089914cdca4a52efc3e"
+    },
+    {
+      "asset": "screenshots-simpa-analysis.jpg",
+      "sha256": "0478cbbc7808bfef9907293bb42dade8023459699c941089914cdca4a52efc3e"
+    },
+    {
+      "asset": "screenshots-simpa-statistics.jpg",
+      "sha256": "99f7ee8fd8da799eceeb54888eaecf673604cb0f711dc3ac91fc7be8d2c72cbb"
+    },
+    {
+      "asset": "screenshots-simpa-statistics.jpg",
+      "sha256": "99f7ee8fd8da799eceeb54888eaecf673604cb0f711dc3ac91fc7be8d2c72cbb"
+    },
+    {
+      "asset": "screenshots-simpa-statistics.jpg",
+      "sha256": "99f7ee8fd8da799eceeb54888eaecf673604cb0f711dc3ac91fc7be8d2c72cbb"
+    },
+    {
+      "asset": "screenshots-simpa-analysis.jpg",
+      "sha256": "0478cbbc7808bfef9907293bb42dade8023459699c941089914cdca4a52efc3e"
+    },
+    {
+      "asset": "screenshots-ordo-overview.jpg",
+      "sha256": "c33a6d81a6b5363fd7533202a55227841bf98d10d0a13e94d5cc1b3f2d17a111"
+    },
+    {
+      "asset": "screenshots-ordo-overview.jpg",
+      "sha256": "c33a6d81a6b5363fd7533202a55227841bf98d10d0a13e94d5cc1b3f2d17a111"
+    },
+    {
+      "asset": "screenshots-ordo-overview.jpg",
+      "sha256": "c33a6d81a6b5363fd7533202a55227841bf98d10d0a13e94d5cc1b3f2d17a111"
+    },
+    {
+      "asset": "screenshots-ordo-indicators.jpg",
+      "sha256": "8def8813ca2db65e70ed6904d76309fe4ddf36ceebb0a7a48021041501a8e116"
+    },
+    {
+      "asset": "screenshots-ordo-analysis.jpg",
+      "sha256": "0dca77125f3e0c09925406daf1724fc5769b8eafaaa9fc7b2fad07112bdecee5"
+    },
+    {
+      "asset": "screenshots-ordo-forecast.jpg",
+      "sha256": "d2dd7f6370de48d78e375ded343ab4957392114deff90b21d1b255050ef04b9e"
+    },
+    {
+      "asset": "screenshots-ordo-analysis.jpg",
+      "sha256": "0dca77125f3e0c09925406daf1724fc5769b8eafaaa9fc7b2fad07112bdecee5"
+    },
+    {
+      "asset": "screenshots-ordo-goal.jpg",
+      "sha256": "aaac0edc540c16d86ffc3e556049eaff402c0ed379944de270fd6bbe2cfdf832"
+    },
+    {
+      "asset": "screenshots-ordo-analysis.jpg",
+      "sha256": "0dca77125f3e0c09925406daf1724fc5769b8eafaaa9fc7b2fad07112bdecee5"
+    },
+    {
+      "asset": "screenshots-ordo-forecast.jpg",
+      "sha256": "d2dd7f6370de48d78e375ded343ab4957392114deff90b21d1b255050ef04b9e"
+    },
+    {
+      "asset": "screenshots-ordo-analysis.jpg",
+      "sha256": "0dca77125f3e0c09925406daf1724fc5769b8eafaaa9fc7b2fad07112bdecee5"
+    },
+    {
+      "asset": "screenshots-ordo-help.jpg",
+      "sha256": "30bf9145b6dc23ae557459b954f2adfb55be902a5a303974c12070c8a4c7c4f6"
+    },
+    {
+      "asset": "ISI-29C-simpa-desktop.jpg",
+      "sha256": "2eb8106121e05936b3505a9047dd28226caf35d66a2aa19d9016b74b79b0041d"
+    },
+    {
+      "asset": "ISI-29C-ordo-desktop.jpg",
+      "sha256": "42f5e6eb389d99148dea408bdcb8e663d5e065969e6176308905fd3ee17a8155"
+    },
+    {
+      "asset": "ISI-29D-desktop-matrix.jpg",
+      "sha256": "f176dcc6cdad389bb80c720405476e1fd81de74d5e47c8b0414fdf485269cb9a"
+    },
+    {
+      "asset": "ISI-29D-desktop-waterfall.jpg",
+      "sha256": "e6db065172375b5420f7c100eadf3aa74bce8b029ea50550045e29f0456ac603"
+    },
+    {
+      "asset": "ISI-29E-desktop-source.jpg",
+      "sha256": "0c9f4fe8d9b0e082e142406d98652cd39303cdeb976de1b291aa43543fb2129a"
+    },
+    {
+      "asset": "ISI-29E-desktop-review.jpg",
+      "sha256": "3b86d177457ba0b4b4abdebd87d7f8797d721099b4d57eab877b56a3023e0912"
+    },
+    {
+      "asset": "ISI-30D3B-desktop-explicit-selection.jpg",
+      "sha256": "7b2ccbdef443c963a5a871c5799eb54610a5701afad9cd9022cb93b6b35ef916"
+    },
+    {
+      "asset": "ISI-30D3B-desktop-linked-inputs.jpg",
+      "sha256": "38a9a330223123f131836d1e2e74c37da16a053fc7564d94814f0863ed874cb8"
+    },
+    {
+      "asset": "ISI-30D3B-desktop-draft-evidence.jpg",
+      "sha256": "94f2bab450992d49ce0e5ada457b7f582220923e97c64b3d32261237ee0b7b1a"
+    },
+    {
+      "asset": "ISI-30D3B-desktop-review-confirmation.jpg",
+      "sha256": "1eaf379c0110cabef24387fb9162706dc6f54943f397dad06958775729dfb850"
+    },
+    {
+      "asset": "ISI-30D3B-desktop-publish-confirmation.jpg",
+      "sha256": "1a9e36432fa5fc22b35d6a32a260eefe9673074dd9ef4d7c66806ac9fb036749"
+    },
+    {
+      "asset": "ISI-30F-desktop-reports-ordo-context.jpg",
+      "sha256": "8cda7cdeb246b0e2107102f0559a117c640501233b5a03dd85a77e978c218a69"
+    },
+    {
+      "asset": "ISI-30D3B-desktop-export.jpg",
+      "sha256": "e1eb9a0e5eec1c4f2675e80253da52d4a9729593b7011a25652e84832c41e6ac"
+    },
+    {
+      "asset": "ISI-30F-desktop-reports-readonly.jpg",
+      "sha256": "6e9885480a82b153ceee1288350a20a41943da60dd5dc25597576c3192b55e42"
+    },
+    {
+      "asset": "ISI-30F-desktop-simpa-profile-context.jpg",
+      "sha256": "7c477d3d274800d186f309b4ca709b4f85f31bcc1f184bbd60bbc4f42f456e7a"
+    },
+    {
+      "asset": "ISI-30A-desktop-ordo-scenarios.jpg",
+      "sha256": "a65e2efef32fe32f01c64254d3ff3f957ef4eb3f354f3fdf033049fea9a29924"
+    },
+    {
+      "asset": "ISI-30A-desktop-status-confirmation.jpg",
+      "sha256": "e51d48e9b725701c2d1001e5e68633c17111c428a6a1c2af549c34dab9dce972"
+    },
+    {
+      "asset": "ISI-30F-desktop-simpa-profile-form.jpg",
+      "sha256": "5c4bfb8d687df2949a91609e725edccd1111e7e67ba951e803b7b95bcf048d91"
+    },
+    {
+      "asset": "ISI-30B-desktop-source.jpg",
+      "sha256": "cd6a0c7d291a87bb09ed8fb02d651ccbb81d0db919fed26a64fcb1b64939b421"
+    },
+    {
+      "asset": "ISI-30B-desktop-evaluation.jpg",
+      "sha256": "28d9ebe679763799e5afe81685e8e1d96c7d4c72eb60a198e26cf3d4c6dd3be2"
+    },
+    {
+      "asset": "ISI-30F-desktop-data-version.jpg",
+      "sha256": "891e685bb1c9ef70eccb7eb5d13566d1f6d9f600208f2da4575cae1a79cbcb74"
+    },
+    {
+      "asset": "ISI-30B-desktop-output.jpg",
+      "sha256": "b9b70867d30b8a8a5aecdac14f3d9cda68399a150d1d57bfb1c4ad8ebb000921"
+    },
+    {
+      "asset": "ISI-30F-desktop-data-retry.jpg",
+      "sha256": "b85e4d5abcfe880520f725133dbc9bfb0937876dbe9ac28995602ea2d5d6b668"
+    },
+    {
+      "asset": "ISI-30B2-final-desktop-policy-validation.jpg",
+      "sha256": "18ceedc7ee0f8d81c0c36f6cdadaaafa54621dbf7e78732d8f866535a1c5190e"
+    },
+    {
+      "asset": "ISI-30F-desktop-ingestion-connector.jpg",
+      "sha256": "facb1128ea9f8b20b998e31d725d5de065ae2f4b6ce1707c0aff2f073dea9f6b"
+    },
+    {
+      "asset": "ISI-30B2-final-desktop-ingest-created.jpg",
+      "sha256": "9893477884a466f8c70f6e6ec43f2ea40c1fc7915fa6280e895ddabd561b6e52"
+    },
+    {
+      "asset": "ISI-30B2-final-desktop-mapping-created.jpg",
+      "sha256": "0650f74b1d4666e8a759081034239dcf4852499ec57c6210da94c8d234b25656"
+    },
+    {
+      "asset": "ISI-30B2-final-desktop-records-created.jpg",
+      "sha256": "c175634ceb3764f7525cbf3493bb401a6d2aaedb3695eab9d7642652ca43551e"
+    },
+    {
+      "asset": "ISI-30B2-final-desktop-policy-created.jpg",
+      "sha256": "6f850fcc36260b967600cfcac8817d0accb1f8cb0cd4874a190599f76dc2b6e3"
+    },
+    {
+      "asset": "ISI-30B3-desktop-snapshot.jpg",
+      "sha256": "74666dcac6ad3887a150a732c721c86374c09bd2b858f16f87ed7bfb50095c0e"
+    },
+    {
+      "asset": "ISI-30B3-desktop-registry.jpg",
+      "sha256": "6f513afca9955819f8cbed5e218aa6869692dd1fbc0c669533090b3e3a5dcc0e"
+    },
+    {
+      "asset": "ISI-30B3-desktop-contract.jpg",
+      "sha256": "ba9adfb41634c4b7d6c21398286ceba7dd51faeb5b35ca4ebfd2325a6d14bb52"
+    },
+    {
+      "asset": "ISI-30B3-desktop-feature-registry.jpg",
+      "sha256": "ce7dcce2a27136373785d74b45a59d161781797dd56f4e0269a285ccac8800c2"
+    },
+    {
+      "asset": "ISI-30F-desktop-datasets-feature-lifecycle.jpg",
+      "sha256": "d4babde3c107cc4c2455e673766c0d8c9ef565d81b101d0df273e3e6d8bdd841"
+    },
+    {
+      "asset": "ISI-30F-desktop-datasets-feature-state.jpg",
+      "sha256": "d4d8dbe5126912cedb3a8b28fc7d11ff3e24378915c17d40ac09799a0d8ca1fd"
+    },
+    {
+      "asset": "ISI-30B4A-desktop-backfill.jpg",
+      "sha256": "b0d2959a54dfef76dcf9714a99de89f960b7c2722215c8ae7d9c630e29ff4c87"
+    },
+    {
+      "asset": "ISI-30B4A-desktop-replay.jpg",
+      "sha256": "9a9467b849b2f74610aa122c02d802f9a6b41c5312e9a2c31d75039478ef21d4"
+    },
+    {
+      "asset": "ISI-30F-desktop-recovery-close.jpg",
+      "sha256": "d12571df15a7ee1351b678ade40b805aaa68e29138048adc3a4cb76aff79e6ee"
+    },
+    {
+      "asset": "ISI-30F-desktop-recovery-dead-letter.jpg",
+      "sha256": "dceea5cdbb7f7fa62e01b0e0dfb2465a8bf3146e546a422a43cde58446e9914f"
+    },
+    {
+      "asset": "ISI-30B4B-desktop-record-comparison.jpg",
+      "sha256": "bddf3d93aa8829d54ca009dfbf0ff413bbe816c7e474e8940eb836b81d8e9525"
+    },
+    {
+      "asset": "ISI-30B4B-desktop-profile.jpg",
+      "sha256": "3ff75290c69b4acddafec04fec852807fdbf84d426420389ab54d0b4147f9b83"
+    },
+    {
+      "asset": "ISI-30F-desktop-governance-record-decision.jpg",
+      "sha256": "3ba8650695de5ece3b157d3766f4e917c528111215239fe5e34c83eb7b67ce92"
+    },
+    {
+      "asset": "ISI-30B4C-desktop-hold.jpg",
+      "sha256": "ad930c3f6668998db23035d99cc858058e6402cda6410393ad67c2a4a433046c"
+    },
+    {
+      "asset": "ISI-30F-desktop-privacy-confirmation.jpg",
+      "sha256": "415e6e2079ec06c96e3fd6bd88960a2beb10589545771f2882c1c0697882bbb8"
+    },
+    {
+      "asset": "ISI-30F-desktop-privacy-proposal.jpg",
+      "sha256": "74dc89c678546e8da01dfb1d7d09d1836e3570b69c04d7a10be688eb29337fbe"
+    },
+    {
+      "asset": "ISI-30B4C-desktop-export.jpg",
+      "sha256": "c1628f49521d1646cffc28a0a7027efc7e47198aa3b3b1632e31344865270f59"
+    },
+    {
+      "asset": "ISI-30C1-desktop-review.jpg",
+      "sha256": "f9461f8917d7a9f0abc8d8eca969a8e8dd6db3bcd450b4a9c36cf454899a7e13"
+    },
+    {
+      "asset": "ISI-30C1-desktop-draft.jpg",
+      "sha256": "426f8bc23c2af2f37421bf93cd5f95346886d8ed03411caa530531b66194f9e3"
+    },
+    {
+      "asset": "ISI-30F-desktop-simpa-statistical-fields.jpg",
+      "sha256": "95f686f053a70e8b16b8fda42691fc5320d2f3b11329c159381afe109cf20812"
+    },
+    {
+      "asset": "ISI-30F-desktop-simpa-statistical-confirmation.jpg",
+      "sha256": "872f0def1666c5ae63727d8aee26d0aa8451649aee8b551609922ded04cff4a3"
+    },
+    {
+      "asset": "ISI-30C2A-desktop-authoring-final.jpg",
+      "sha256": "5723d25e65a44dd7439e77a3201ba7917b0e08796997d96aa3d15112fe5c8b75"
+    },
+    {
+      "asset": "ISI-30C2A-desktop-forecast-final.jpg",
+      "sha256": "b1a1854b1b5493c5536c5cd139fb430c64239a5050dfa0eaf126e874c65ff39b"
+    },
+    {
+      "asset": "ISI-30C2A-desktop-review-final.jpg",
+      "sha256": "d0292900b562c2942f3619978663b859b707dfac273f57b1e5e985cb9fd5b109"
+    },
+    {
+      "asset": "ISI-30C2A-desktop-validated-final.jpg",
+      "sha256": "74861c5ebdd4afda561b59eaf2c3c2f431c4518067b14f6ee3208505e3426c38"
+    },
+    {
+      "asset": "ISI-30C2B1-desktop-explicit-inputs.jpg",
+      "sha256": "1afb684f7dd8e73b9d430452e9e06869e1c13f8340a20cdaea018d36cfc30d75"
+    },
+    {
+      "asset": "ISI-30C2B1-desktop-review.jpg",
+      "sha256": "72369f20316ce735bc22d41c2e5883d1893923ca1a4a0459b91b2ae52eaddd99"
+    },
+    {
+      "asset": "ISI-30C2B1-desktop-success.jpg",
+      "sha256": "71b5c622a03555675205f1781291b3f6b3d16dae1fc111d86472ce735563d9e3"
+    },
+    {
+      "asset": "ISI-30C2B2-desktop-authoring-fields.jpg",
+      "sha256": "0da9c375c6dd83c7159eab2f614bf9e78ecf368a16fa5f7303f0bff21c4ce580"
+    },
+    {
+      "asset": "ISI-30C2B2-desktop-specification.jpg",
+      "sha256": "3aacf523d004e99bde673bb854e9c9897043be60127fc4d32a33e69e51c29ffb"
+    },
+    {
+      "asset": "ISI-30C2B2-desktop-authoring-success.jpg",
+      "sha256": "313e1550297c0bd4594e41be6b85fb9ccb0200ee5260a749e1c943b6e98c89fb"
+    },
+    {
+      "asset": "ISI-30C2B2-desktop-success-reset.jpg",
+      "sha256": "b2981ffd4ae984cafc36f10cd02c09fc6c2db0269a96656afa338f04205772c1"
+    },
+    {
+      "asset": "ISI-30D1-desktop-confirmation.jpg",
+      "sha256": "9ba8fa90270682d5670f4b0e3a84a6d44757296138d7b9ee16ff37528aac4baf"
+    },
+    {
+      "asset": "ISI-30D1-desktop-review.jpg",
+      "sha256": "5772055d766e746fcaa6ff0e5fb9fe80798ba3f554a9188e48008e0209ac027f"
+    },
+    {
+      "asset": "ISI-30D1-desktop-session-review.jpg",
+      "sha256": "69011dda71ff0007023cada875b33c97d68275f14e096b7bdf0d7d856ca4199a"
+    },
+    {
+      "asset": "ISI-30F-desktop-admin-invitation.jpg",
+      "sha256": "54caa274d739b40b01c67fecb5dd01b7317cf3a008450bd2d72da6b69b600100"
+    },
+    {
+      "asset": "ISI-30F-desktop-admin-workspace.jpg",
+      "sha256": "d14b09c13c5a5d5192655caded3d6b763a1dc64b34247125722b90ee1a433aa1"
+    },
+    {
+      "asset": "ISI-30D1-desktop-success.jpg",
+      "sha256": "0bbdb35013a6c8c325ac319c3f1c95faedaa0f0d79d947041ba1cc179e8e0977"
+    },
+    {
+      "asset": "ISI-30D1-desktop-readonly.jpg",
+      "sha256": "75df34f6ebb2daa8371e0f6427eb3f4057ae80711816a3687fa84736b27943df"
+    },
+    {
+      "asset": "ISI-30D2-desktop-ai-overview.jpg",
+      "sha256": "a9d006cddb4fea9e7edafdc4c65005f0c166dffd97a6c20590a531ee42dba44f"
+    },
+    {
+      "asset": "ISI-30D2-desktop-job-xai.jpg",
+      "sha256": "bf0c79f3b4396e8fa3e8dc22f6fd77cd619e11522d6bbf7cbd760e3169b6949d"
+    },
+    {
+      "asset": "ISI-30F-desktop-ai-review-form.jpg",
+      "sha256": "13ce97bbebae10362f0447f06fa7239967d027245b766b19debf49ec062f82bd"
+    },
+    {
+      "asset": "ISI-30D2-desktop-readonly-boundaries.jpg",
+      "sha256": "07d03a1536cd6228705cbb48fe810a9cb7abf5b2deee35869171210978ca869d"
+    },
+    {
+      "asset": "ISI-30D3A-desktop-forecast.jpg",
+      "sha256": "61633d6b06b0afbf50203d88365a0e8bbaa7b2707471fed902c1e02670cb62ad"
+    },
+    {
+      "asset": "ISI-30D3A-desktop-not-estimated.jpg",
+      "sha256": "48a3cbea58c8b20ab7e72c0811c9d651613bf78f6611c9c7db95a45a16d94826"
+    },
+    {
+      "asset": "ISI-30D3A-desktop-citations.jpg",
+      "sha256": "5102639e5b97bd432105690f2eaa8018f1a39b7f41d6393f2880b8fd0e7a4cd3"
+    },
+    {
+      "asset": "ISI-30D3A-desktop-interval.jpg",
+      "sha256": "11e5b182e84d19e1ede5b8a16d75b51872063f50c3ba5bc62633cf4f6d885b02"
+    },
+    {
+      "asset": "ISI-30D3A-desktop-shap.jpg",
+      "sha256": "7f90c28eaad965573f9ef70487a3712a9466e74976c2dcb43c6a8eb496d3a60c"
+    },
+    {
+      "asset": "ISI-30D4-desktop-inventory.jpg",
+      "sha256": "5be7d8833bdd39a8795ede96b1ec752bdea96f7101e8970eecd30bd82e9dfd79"
+    },
+    {
+      "asset": "ISI-30D4-desktop-confirmation.jpg",
+      "sha256": "0a648ebf134000654dee3139d9b7f296d95fc2d468d8eff3ab7d9f656421bb5d"
+    },
+    {
+      "asset": "ISI-30F-desktop-security-assurance.jpg",
+      "sha256": "0aa5e373d784fb9897e0f1ef3fac977fc18cd1c5be37bc8fa7a5465f79a3bb48"
+    },
+    {
+      "asset": "ISI-30D4-desktop-receipt.jpg",
+      "sha256": "d8120942492ecb1a15d04b81f1b07e5d88c375774025bb089ae6b79db6aa7b2a"
+    }
+  ]
 }
